@@ -1,0 +1,83 @@
+# Android (Kotlin) 
+# ----------------------
+
+# Gradle files
+.gradle/
+build/
+!gradle-wrapper.jar
+.gradle/
+local.properties
+
+# Android Studio
+.idea/
+.idea/caches
+.idea/libraries
+.idea/modules.xml
+.idea/workspace.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+.idea/dictionaries
+.idea/vcs.xml
+.idea/gradle.xml
+.idea/misc.xml
+.idea/tasks.xml
+.idea/codestyles/
+.idea/inspectionProfiles/
+.idea/inspectionProfiles
+.idea/codeStyles/
+.idea/encodings.xml
+.idea/sonarlint/
+.idea/scopes/
+.idea/libraries/
+.idea/modules/
+.idea/vcs/
+.idea/project/.idea/
+.idea/dictionaries/
+.idea/profiles_settings.xml
+
+# Keystore files
+*.jks
+
+# Google Services (Firebase)
+google-services.json
+
+# Android Log Files
+*.log
+
+# Android lint
+lint/reports/
+lint-results.xml
+lint-results.html
+
+# External native build folder generated in Android Studio 2.2 and later
+.externalNativeBuild
+
+# IntelliJ
+*.iml
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/gradle.xml
+.idea/dictionaries
+.idea/libraries
+.idea/shelf
+.idea/modules.xml
+.idea/description.xml
+.idea/*.iml
+
+# User-specific configurations
+.idea/
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/dictionaries
+.idea/**/shelf
+.idea/modules.xml
+.idea/misc.xml
+.idea/vcs.xml
+.idea/assetWizardSettings.xml
+
+# Android NDK
+/ndk/
+
+# MacOS
+.DS_Store
