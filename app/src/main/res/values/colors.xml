@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="app_color">#B78945</color>
+    <color name="grey">#E7E7E7</color>
+    <color name="icon_color">#A8A8A8</color>
+    <color name="spinner_color">#A9A8AA</color>
+    <color name="profile_text_color">#1A1917</color>
+    <color name="search_color">#E9E9E9</color>
+    <color name="black_bg">#333333</color>
+    <color name="light_black">#6F7179</color>
+    <color name="yellow">#E7A600</color>
+    <color name="light_grey">#434343</color>
+    <color name="light_white">#F2F2F7</color>
+    <color name="light_black_item">#313131</color>
+    <color name="border_time_color">#BFBFBF</color>
+    <color name="bg_time_color">#F3F3F3</color>
+    <color name="light_app_color">#DCBF72</color>
+    <color name="green_color">#1ED400</color>
+    <color name="dark_brown">#83764C</color>
+    <color name="btn_text_color">#FFD25F</color>
+</resources>

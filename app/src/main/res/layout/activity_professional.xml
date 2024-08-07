@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <androidx.drawerlayout.widget.DrawerLayout
+            android:id="@+id/drawer_Layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/main"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white">
+
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/professionalContainer"
+                    android:name="androidx.navigation.fragment.NavHostFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    app:defaultNavHost="true"
+                    app:navGraph="@navigation/professional"
+                    app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.bottomnavigation.BottomNavigationView
+                    android:id="@+id/bottomNavigationView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:labelVisibilityMode="labeled"
+                    app:itemTextColor="@color/selector_bottom_navigation"
+                    app:itemIconTint="@color/selector_bottom_navigation"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:menu="@menu/bottom_nav_menu" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <com.google.android.material.navigation.NavigationView
+                android:id="@+id/nav_view1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                android:background="@color/black_bg"
+                android:fitsSystemWindows="true"
+                app:headerLayout="@layout/nav_header_home"
+                app:menu="@menu/nav_professional_items" />
+
+
+        </androidx.drawerlayout.widget.DrawerLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

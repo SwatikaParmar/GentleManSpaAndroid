@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cvTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:strokeWidth="@dimen/_1sdp"
+        app:strokeColor="@color/border_time_color"
+        app:cardUseCompatPadding="true"
+        app:cardCornerRadius="@dimen/_3sdp">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clTime"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/bg_time_color"
+            android:paddingVertical="@dimen/_1sdp"
+            android:paddingHorizontal="@dimen/_3sdp">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvTime"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="10:30 AM"
+                android:textSize="@dimen/_12ssp"
+                android:textColor="@color/black"
+                android:gravity="center"
+                />
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+</layout>

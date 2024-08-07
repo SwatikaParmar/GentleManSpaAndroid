@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="onClick"
+            type="android.view.View.OnClickListener" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black_bg">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_7sdp"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivArrowBack"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:padding="@dimen/_3sdp"
+                android:onClick="@{onClick}"
+                android:src="@drawable/arrow_back"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/white" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:includeFontPadding="false"
+                android:text="Make Appointment"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_13ssp"
+                app:fontFamily="@font/poppins_medium"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/clHeader"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fillViewport="true">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cvService"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="@dimen/_5sdp"
+                        android:layout_marginHorizontal="@dimen/_10sdp"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/clDoctors"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/_7sdp"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <com.google.android.material.imageview.ShapeableImageView
+                                android:id="@+id/ivDoctor"
+                                android:layout_width="@dimen/_70sdp"
+                                android:layout_height="@dimen/_70sdp"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/professional_placeholder"
+                                app:shapeAppearance="@style/CornerCut10"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"/>
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="0dp"
+                                android:layout_height="0dp"
+                                app:layout_constraintBottom_toBottomOf="@id/ivDoctor"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toEndOf="@+id/ivDoctor"
+                                app:layout_constraintTop_toTopOf="@+id/ivDoctor">
+
+                                <androidx.appcompat.widget.AppCompatTextView
+                                    android:id="@+id/tvServiceName"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Brandon Lebsack"
+                                    android:textColor="@color/light_black_item"
+                                    android:textSize="@dimen/_12ssp"
+                                    android:singleLine="true"
+                                    android:layout_marginHorizontal="@dimen/_5sdp"
+                                    android:ellipsize="end"
+                                    android:includeFontPadding="false"
+                                    android:fontFamily="@font/poppins_semibold"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    />
+
+                                <androidx.appcompat.widget.AppCompatTextView
+                                    android:id="@+id/tvSpecialist"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Skin Care Specialist"
+                                    android:textColor="@color/light_grey"
+                                    android:singleLine="true"
+                                    android:layout_marginHorizontal="@dimen/_5sdp"
+                                    android:ellipsize="end"
+                                    android:textSize="@dimen/_11ssp"
+                                    android:includeFontPadding="false"
+                                    android:fontFamily="@font/poppins"
+                                    app:layout_constraintTop_toBottomOf="@+id/tvServiceName"
+                                    app:layout_constraintStart_toStartOf="parent" />
+
+
+
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+
+
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/clCalender"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        app:layout_constraintTop_toBottomOf="@+id/cvService"
+                        android:layout_marginHorizontal="@dimen/_10sdp">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvAppointmentSchedule"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Appointment Schedule"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_12ssp"
+                            android:fontFamily="@font/poppins_semibold"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"/>
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/cvCalender"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:cardCornerRadius="@dimen/_5sdp"
+                            android:layout_marginTop="@dimen/_8sdp"
+                            app:layout_constraintTop_toBottomOf="@+id/tvAppointmentSchedule">
+
+                            <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+                                android:id="@+id/calendarView"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                app:mcv_selectionMode="multiple"
+                                android:visibility="visible"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:mcv_showOtherDates="decorated_disabled"
+                                android:layout_marginHorizontal="@dimen/_5sdp"
+                                app:mcv_dateTextAppearance="@style/CalenderViewDateStyle"
+                                android:theme="@style/CalenderViewStyle"
+                                app:mcv_headerTextAppearance="@style/CalenderViewMonthCustomText"
+                                app:mcv_weekDayTextAppearance="@style/CalenderViewWeekCustomText"
+                                app:layout_constraintTop_toBottomOf="@+id/tvAppointmentSchedule"/>
+
+                        </com.google.android.material.card.MaterialCardView>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/llDays"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/_10sdp"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:background="@drawable/radio_button_background"
+                        android:orientation="horizontal"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/clCalender">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvMorning"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginEnd="@dimen/_4sdp"
+                            android:layout_weight="1"
+                            android:onClick="@{onClick}"
+                            android:background="@drawable/radio_button_background"
+                            android:fontFamily="@font/poppins_medium"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:padding="@dimen/_3sdp"
+                            android:text="Morning"
+                            android:textColor="@drawable/select_unselect_colortxt"
+                            android:textSize="@dimen/_12sdp"
+                            />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvEvening"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/radio_button_background"
+                            android:fontFamily="@font/poppins_medium"
+                            android:gravity="center"
+                            android:onClick="@{onClick}"
+                            android:maxLines="1"
+                            android:padding="@dimen/_3sdp"
+                            android:text="Evening"
+                            android:textColor="@drawable/select_unselect_colortxt"
+                            android:textSize="@dimen/_12sdp"
+                            />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvDate"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="Thu, 1 Aug 2024"
+                        android:textColor="@color/white"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:layout_marginHorizontal="@dimen/_10sdp"
+                        android:textSize="@dimen/_11ssp"
+                        android:includeFontPadding="false"
+                        android:fontFamily="@font/poppins_medium"
+                        app:layout_constraintTop_toBottomOf="@+id/llDays"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+
+
+
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@id/cvTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        app:cardCornerRadius="@dimen/_5sdp"
+                        android:layout_marginHorizontal="@dimen/_10sdp"
+                        app:layout_constraintTop_toBottomOf="@+id/tvDate">
+
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvTime"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                            app:spanCount="4"
+                            tools:itemCount="5"
+                            android:layout_margin="@dimen/_2sdp"
+                            android:splitMotionEvents="false"
+                            android:nestedScrollingEnabled="false"
+                            tools:listitem="@layout/item_time_slots_service"
+                            />
+                    </com.google.android.material.card.MaterialCardView>
+
+
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvViewSlot"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="View All Slots"
+                        android:textColor="@color/app_color"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:layout_marginHorizontal="@dimen/_10sdp"
+                        android:textSize="@dimen/_11ssp"
+                        android:visibility="gone"
+                        android:includeFontPadding="false"
+                        android:fontFamily="@font/poppins_medium"
+                        app:layout_constraintTop_toBottomOf="@+id/cvTime"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+
+
+                    <View
+                        android:id="@+id/secondView"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/_1sdp"
+                        android:visibility="gone"
+                        android:background="@color/app_color"
+                        app:layout_constraintStart_toStartOf="@id/tvViewSlot"
+                        app:layout_constraintEnd_toEndOf="@id/tvViewSlot"
+                        app:layout_constraintBottom_toBottomOf="@+id/tvViewSlot"/>
+
+
+
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnBookAppointment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Book Appointment"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_13ssp"
+                        app:cornerRadius="@dimen/_20sdp"
+                        android:textAllCaps="false"
+                        android:fontFamily="@font/poppins"
+                        android:layout_marginHorizontal="@dimen/_35sdp"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        app:layout_constraintTop_toBottomOf="@+id/secondView"
+                        />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            </androidx.core.widget.NestedScrollView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

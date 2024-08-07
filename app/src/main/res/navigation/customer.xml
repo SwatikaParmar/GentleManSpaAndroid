@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/customer"
+    app:startDestination="@id/homeCustomerFragment">
+
+    <fragment
+        android:id="@+id/homeCustomerFragment"
+        android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.home.HomeCustomerFragment"
+        android:label="fragment_home_customer"
+        tools:layout="@layout/fragment_home_customer" >
+        <action
+            android:id="@+id/action_homeCustomerFragment_to_serviceFragment"
+            app:destination="@id/serviceFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/serviceFragment"
+        android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.service.ServiceFragment"
+        android:label="ServiceFragment"
+        tools:layout="@layout/fragment_service">
+        <action
+            android:id="@+id/action_serviceFragment_to_selectProfessionalFragment"
+            app:destination="@id/selectProfessionalFragment" />
+        <action
+            android:id="@+id/action_serviceFragment_to_serviceDetailFragment"
+            app:destination="@id/serviceDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/selectProfessionalFragment"
+        android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.SelectProfessionalFragment"
+        android:label="SelectProfessionalFragment"
+        tools:layout="@layout/fragment_select_professional">
+        <action
+            android:id="@+id/action_selectProfessionalFragment_to_makeAppointmentFragment"
+            app:destination="@id/makeAppointmentFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/makeAppointmentFragment"
+        android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.MakeAppointmentFragment"
+        android:label="MakeAppointmentFragment"
+        tools:layout="@layout/fragment_make_appointment"/>
+    <fragment
+        android:id="@+id/profileCustomerFragment"
+        android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.profile.ProfileCustomerFragment"
+        android:label="ProfileCustomerFragment"
+        tools:layout="@layout/fragment_profile_customer">
+        <action
+            android:id="@+id/action_profileCustomerFragment_to_editProfileCustomerFragment"
+            app:destination="@id/editProfileCustomerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editProfileCustomerFragment"
+        android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.EditProfileCustomerFragment"
+        android:label="EditProfileCustomerFragment"
+        tools:layout="@layout/fragment_edit_profile_customer"/>
+    <fragment
+        android:id="@+id/serviceDetailFragment"
+        android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.serviceDetail.ServiceDetailFragment"
+        android:label="ServiceDetailFragment"
+        tools:layout="@layout/fragment_service_detail">
+        <argument
+            android:name="serviceId"
+            app:argType="integer"
+            android:defaultValue="0"/>
+        <argument
+            android:name="spaDetailId"
+            app:argType="integer"
+            android:defaultValue="0"/>
+    </fragment>
+</navigation>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="@dimen/_8sdp"
+        app:cardUseCompatPadding="true"
+        android:layout_marginHorizontal="@dimen/_8sdp"
+        app:cardElevation="@dimen/_2sdp"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/light_white"
+            android:padding="@dimen/_7sdp">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/ivService"
+                android:layout_width="@dimen/_80sdp"
+                android:layout_height="@dimen/_80sdp"
+                android:src="@drawable/professional_placeholder"
+                app:strokeColor="@color/white"
+                app:strokeWidth="@dimen/_1sdp"
+                android:scaleType="fitXY"
+                app:shapeAppearance="@style/CornerCut10"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/tvDetails"
+                android:layout_width="@dimen/_18sdp"
+                android:layout_height="@dimen/_18sdp"
+                android:src="@drawable/about_us"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvServiceName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:ellipsize="end"
+                android:fontFamily="@font/poppins_semibold"
+                android:includeFontPadding="false"
+                android:maxLines="2"
+                android:text="Brandon Lebsack"
+                android:textColor="@color/light_black_item"
+                android:textSize="@dimen/_13ssp"
+                app:layout_constraintEnd_toStartOf="@+id/tvDetails"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@+id/ivService"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvSpecialist"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Skin Care Specialist"
+                android:textColor="@color/light_grey"
+                android:includeFontPadding="false"
+                android:fontFamily="@font/poppins"
+                android:textSize="@dimen/_11ssp"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:layout_marginEnd="@dimen/_5sdp"
+                app:layout_constraintTop_toBottomOf="@+id/tvServiceName"
+                app:layout_constraintStart_toEndOf="@+id/ivService"
+                app:layout_constraintEnd_toStartOf="@+id/tvDetails"/>
+
+
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+</layout>

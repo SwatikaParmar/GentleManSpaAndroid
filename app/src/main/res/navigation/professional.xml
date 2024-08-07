@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dashboard"
+    app:startDestination="@id/homeProfessionalFragment">
+
+    <fragment
+        android:id="@+id/homeProfessionalFragment"
+        android:name="com.app.gentlemanspa.ui.professionalDashboard.fragment.home.HomeProfessionalFragment"
+        android:label="fragment_home_professional"
+        tools:layout="@layout/fragment_home_professional" />
+    <fragment
+        android:id="@+id/profileProfessionalFragment"
+        android:name="com.app.gentlemanspa.ui.professionalDashboard.fragment.profile.ProfileProfessionalFragment"
+        android:label="ProfileProfessionalFragment"
+        tools:layout="@layout/fragment_profile_professional">
+        <action
+            android:id="@+id/action_profileProfessionalFragment_to_editProfileProfessionalFragment"
+            app:destination="@id/editProfileProfessionalFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editProfileProfessionalFragment"
+        android:name="com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.EditProfileProfessionalFragment"
+        android:label="EditProfileProfessionalFragment"
+        tools:layout="@layout/fragment_edit_profile_professional">
+        <action
+            android:id="@+id/action_editProfileProfessionalFragment_to_selectCountryFragment"
+            app:destination="@id/selectCountryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/selectCountryFragment"
+        android:name="com.app.gentlemanspa.ui.professionalDashboard.fragment.selectCountry.SelectCountryFragment"
+        android:label="SelectCountryFragment"
+        tools:layout="@layout/fragment_select_country"/>
+
+
+</navigation>

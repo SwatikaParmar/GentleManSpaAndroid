@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/_5sdp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clFirst"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_10sdp"
+            app:layout_constraintTop_toTopOf="parent"
+            >
+
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvSpaName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            app:fontFamily="@font/poppins_medium"
+            android:includeFontPadding="false"
+            android:textSize="@dimen/_13ssp"
+            android:textColor="@color/black"
+            android:text="Spa"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:fontFamily="@font/poppins_medium"
+            android:textSize="@dimen/_12ssp"
+            android:textColor="@color/black"
+            android:includeFontPadding="false"
+            android:layout_marginTop="@dimen/_3sdp"
+            android:text="Address:"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvSpaName"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvAddressValue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:fontFamily="@font/poppins"
+            android:textSize="@dimen/_12ssp"
+            android:textColor="@color/spinner_color"
+            android:includeFontPadding="false"
+            android:text="addressValue"
+            android:layout_marginTop="@dimen/_3sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvAddress"
+            />
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/spinner_color"
+            android:layout_marginTop="@dimen/_5sdp"
+            app:layout_constraintTop_toBottomOf="@+id/clFirst"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
