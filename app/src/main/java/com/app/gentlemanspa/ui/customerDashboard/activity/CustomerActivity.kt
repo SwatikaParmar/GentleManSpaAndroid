@@ -53,7 +53,7 @@ class CustomerActivity : AppCompatActivity() {
                 }
 
                 R.id.history -> {
-                    // navController.navigate(R.id.notificationFragment)
+                    navController.navigate(R.id.historyCustomerFragment)
                     true
                 }
 

@@ -43,19 +43,21 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
     private var categoriesList: ArrayList<CategoriesItem> = ArrayList()
     private lateinit var bottomSheetLayout: BottomSheetLocationBinding
     private lateinit var bottomSheet: BottomSheetDialog
-    private var locationAddressList: ArrayList<LocationItem> =ArrayList()
-    private lateinit var binding : FragmentHomeCustomerBinding
-    private var mainLoader :Int =0
+    private var locationAddressList: ArrayList<LocationItem> = ArrayList()
+    private lateinit var binding: FragmentHomeCustomerBinding
+    private var mainLoader: Int = 0
     private val headerHandler: Handler = Handler(Looper.getMainLooper())
 
-    private val viewModel: HomeCustomerViewModel by viewModels { ViewModelFactory(
-        InitialRepository()
-    ) }
+    private val viewModel: HomeCustomerViewModel by viewModels {
+        ViewModelFactory(
+            InitialRepository()
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-         bottomSheet = BottomSheetDialog(requireContext(), R.style.DialogTheme_transparent)
-         bottomSheetLayout = BottomSheetLocationBinding.inflate(layoutInflater)
+        bottomSheet = BottomSheetDialog(requireContext(), R.style.DialogTheme_transparent)
+        bottomSheetLayout = BottomSheetLocationBinding.inflate(layoutInflater)
         initObserver()
     }
 
@@ -66,7 +68,7 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
         // Inflate the layout for this fragment
         if (!this::binding.isInitialized) {
             binding = FragmentHomeCustomerBinding.inflate(layoutInflater, container, false)
-            viewModel.getLocationAddress()
+            // viewModel.getLocationAddress()
         }
         return binding.root
     }
@@ -89,7 +91,7 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
     }
 
     private fun setProductsAdapter() {
-       productsAdapter  = ProductsAdapter()
+        productsAdapter = ProductsAdapter()
         binding.rvProducts.adapter = productsAdapter
     }
 
@@ -98,14 +100,14 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
             it?.let { result ->
                 when (result.status) {
                     Status.LOADING -> {
-                     //   MyApplication.showProgress(requireContext())
+                        //   MyApplication.showProgress(requireContext())
                     }
 
                     Status.SUCCESS -> {
                         MyApplication.hideProgress()
                         locationAddressList.clear()
                         it.data?.data?.let { it1 -> locationAddressList.addAll(it1) }
-                        setLocationBottomSheet()
+                        // setLocationBottomSheet()
                     }
 
                     Status.ERROR -> {
@@ -120,14 +122,15 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
             it?.let { result ->
                 when (result.status) {
                     Status.LOADING -> {
-                      //  MyApplication.showProgress(requireContext())
+                        //  MyApplication.showProgress(requireContext())
                     }
 
                     Status.SUCCESS -> {
                         MyApplication.hideProgress()
                         locationAddressList.clear()
                         it.data?.data?.let { it1 -> locationAddressList.addAll(it1) }
-                        bottomSheetLayout.rvLocation.adapter = LocationAddressAdapter(locationAddressList)
+                        bottomSheetLayout.rvLocation.adapter =
+                            LocationAddressAdapter(locationAddressList)
 
                     }
 
@@ -168,8 +171,8 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
             it?.let { result ->
                 when (result.status) {
                     Status.LOADING -> {
-                        if (mainLoader ==0){
-                            mainLoader =1
+                        if (mainLoader == 0) {
+                            mainLoader = 1
                             MyApplication.showProgress(requireContext())
                         }
 
@@ -197,9 +200,10 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
         categoriesAdapter = CategoriesAdapter(categoriesList)
         binding.rvCategories.adapter = categoriesAdapter
 
-        categoriesAdapter.setOnCategoriesCallbacks(object : CategoriesAdapter.CategoriesCallbacks{
+        categoriesAdapter.setOnCategoriesCallbacks(object : CategoriesAdapter.CategoriesCallbacks {
             override fun rootCategories() {
-                val action = HomeCustomerFragmentDirections.actionHomeCustomerFragmentToServiceFragment()
+                val action =
+                    HomeCustomerFragmentDirections.actionHomeCustomerFragmentToServiceFragment()
                 findNavController().navigate(action)
             }
 
@@ -238,7 +242,6 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
     }
 
 
-
     override fun onResume() {
         super.onResume()
         headerHandler.postDelayed(headerRunnable, 2000) // Slide duration 3 seconds
@@ -251,7 +254,7 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-        when(v) {
+        when (v) {
             binding.ivDrawer -> {
                 (activity as CustomerActivity).isDrawer(true)
             }
@@ -288,10 +291,10 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
                         viewModel.search.set(s.toString())
                         viewModel.getSearchLocationAddress()
                     } else {
-                       // bottomSheetLayout.rvLocation.visibility = View.GONE
+                        // bottomSheetLayout.rvLocation.visibility = View.GONE
                     }
                 } else {
-                   // bottomSheetLayout.rvLocation.visibility = View.GONE
+                    // bottomSheetLayout.rvLocation.visibility = View.GONE
                 }
 
             }
@@ -299,7 +302,6 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
             override fun afterTextChanged(s: Editable) {
             }
         })
-
 
 
     }

@@ -33,6 +33,20 @@
         android:name="com.app.gentlemanspa.ui.professionalDashboard.fragment.selectCountry.SelectCountryFragment"
         android:label="SelectCountryFragment"
         tools:layout="@layout/fragment_select_country"/>
+    <fragment
+        android:id="@+id/scheduleProfessionalFragment"
+        android:name="com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.ScheduleProfessionalFragment"
+        android:label="ScheduleProfessionalFragment"
+        tools:layout="@layout/fragment_schedule_professional">
+        <action
+            android:id="@+id/action_scheduleProfessionalFragment_to_createScheduleFragment"
+            app:destination="@id/createScheduleFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/createScheduleFragment"
+        android:name="com.app.gentlemanspa.ui.professionalDashboard.fragment.CreateScheduleFragment"
+        android:label="CreateScheduleFragment"
+        tools:layout="@layout/fragment_create_schedule"/>
 
 
 </navigation>

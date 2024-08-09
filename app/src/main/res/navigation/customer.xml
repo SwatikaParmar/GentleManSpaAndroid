@@ -68,4 +68,9 @@
             app:argType="integer"
             android:defaultValue="0"/>
     </fragment>
+    <fragment
+        android:id="@+id/historyCustomerFragment"
+        android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.history.HistoryCustomerFragment"
+        android:label="HistoryCustomerFragment"
+        tools:layout="@layout/fragment_history_customer"/>
 </navigation>

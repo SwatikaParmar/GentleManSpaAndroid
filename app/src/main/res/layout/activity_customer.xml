@@ -43,7 +43,7 @@
                     app:itemTextColor="@color/selector_bottom_navigation"
                     app:itemIconTint="@color/selector_bottom_navigation"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:menu="@menu/bottom_nav_menu" />
+                    app:menu="@menu/bottom_nav_customer" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

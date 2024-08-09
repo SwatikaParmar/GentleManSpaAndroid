@@ -17,6 +17,7 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.CategoriesR
 import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.model.ProfessionalResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.ServiceResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.serviceDetail.model.ServiceDetailResponse
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.model.WeekDaysResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.selectCountry.model.country.CountryResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.selectCountry.model.states.StatesResponse
 import okhttp3.MultipartBody
@@ -101,32 +102,35 @@ interface ApiInterface {
 
     @GET(ApiConstants.PROFESSIONAL_LIST)
     suspend fun getProfessionalList(@Query("serviceId") serviceId: Int?,@Query("spaDetailId") spaDetailId: Int?): ProfessionalResponse
-/*
 
-    @POST(ApiConstants.EMAIL_OTP)
-    suspend fun emailOtp(
-        @Body body: EmailOtpRequest?
-    ): EmailOtpResponse
+    @GET(ApiConstants.WEEK_DAYS)
+    suspend fun getWeekDays(): WeekDaysResponse
+    /*
+
+        @POST(ApiConstants.EMAIL_OTP)
+        suspend fun emailOtp(
+            @Body body: EmailOtpRequest?
+        ): EmailOtpResponse
 
 
 
-    @GET(ApiConstants.SPECIALITY)
-    suspend fun getSpeciality(
-    ): BrowserServicesResponse
+        @GET(ApiConstants.SPECIALITY)
+        suspend fun getSpeciality(
+        ): BrowserServicesResponse
 
-    @GET(ApiConstants.SERVICE_DETAIL)
-    suspend fun getServiceDetail(@Query("serviceTypeValue") serviceTypeValue: Int?
-    ): ServiceDetailResponse
+        @GET(ApiConstants.SERVICE_DETAIL)
+        suspend fun getServiceDetail(@Query("serviceTypeValue") serviceTypeValue: Int?
+        ): ServiceDetailResponse
 
-    @GET(ApiConstants.TOP_DOCTORS)
-    suspend fun getTopDoctors(@Query("pageNumber") pageNumber: Int?,
-                              @Query("pageSize") pageSize: Int?
-    ): TopDoctorsResponse
+        @GET(ApiConstants.TOP_DOCTORS)
+        suspend fun getTopDoctors(@Query("pageNumber") pageNumber: Int?,
+                                  @Query("pageSize") pageSize: Int?
+        ): TopDoctorsResponse
 
-    @GET(ApiConstants.TOP_DOCTORS)
-    suspend fun getSearchTopFindDoctors( @Query("pageNumber") pageNumber: Int?,
-                                         @Query("pageSize") pageSize: Int?,  @Query("searchQuery") searchQuery: String?): TopDoctorsResponse
-*/
+        @GET(ApiConstants.TOP_DOCTORS)
+        suspend fun getSearchTopFindDoctors( @Query("pageNumber") pageNumber: Int?,
+                                             @Query("pageSize") pageSize: Int?,  @Query("searchQuery") searchQuery: String?): TopDoctorsResponse
+    */
 
   /*  @POST(ApiConstants.RESET_PASSWORD)
     suspend fun resetPassword(

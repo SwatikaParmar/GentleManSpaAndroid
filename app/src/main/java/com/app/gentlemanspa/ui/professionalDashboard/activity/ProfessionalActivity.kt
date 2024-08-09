@@ -41,12 +41,12 @@ class ProfessionalActivity : AppCompatActivity() {
                     true
                 }
 
-                R.id.cart -> {
-                   // navController.navigate(R.id.myAppointmentFragment)
+                R.id.schedule -> {
+                    navController.navigate(R.id.scheduleProfessionalFragment)
                     true
                 }
 
-                R.id.history -> {
+                R.id.notification -> {
                    // navController.navigate(R.id.notificationFragment)
                     true
                 }

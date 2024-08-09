@@ -19,6 +19,7 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.CategoriesR
 import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.model.ProfessionalResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.ServiceResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.serviceDetail.model.ServiceDetailResponse
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.model.WeekDaysResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.selectCountry.model.country.CountryResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.selectCountry.model.states.StatesResponse
 import com.app.gentlemanspa.utils.Api
@@ -149,6 +150,14 @@ class InitialRepository {
     suspend fun getProfessionalList(serviceId: Int?,spaDetailId: Int?): Flow<ProfessionalResponse?> {
         return flow {
             val result =Api.apiInterface?.getProfessionalList(serviceId,spaDetailId)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+
+
+    suspend fun getWeekDays(): Flow<WeekDaysResponse?> {
+        return flow {
+            val result =Api.apiInterface?.getWeekDays()
             emit(result)
         }.flowOn(Dispatchers.IO)
     }
