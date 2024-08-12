@@ -44,7 +44,7 @@
     </fragment>
     <fragment
         android:id="@+id/createScheduleFragment"
-        android:name="com.app.gentlemanspa.ui.professionalDashboard.fragment.CreateScheduleFragment"
+        android:name="com.app.gentlemanspa.ui.professionalDashboard.fragment.createSchedule.CreateScheduleFragment"
         android:label="CreateScheduleFragment"
         tools:layout="@layout/fragment_create_schedule"/>
 

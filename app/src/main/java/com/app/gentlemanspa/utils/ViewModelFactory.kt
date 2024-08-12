@@ -7,6 +7,7 @@ import com.app.gentlemanspa.ui.auth.fragment.login.viewModel.LoginViewModel
 import com.app.gentlemanspa.ui.auth.fragment.register.viewModel.RegisterViewModel
 import com.app.gentlemanspa.ui.auth.fragment.setPassword.viewModel.SetPasswordViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.viewModel.HomeCustomerViewModel
+import com.app.gentlemanspa.ui.customerDashboard.fragment.productDetail.viewModel.ProductDetailViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.viewModel.ProfessionalViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.service.viewModel.ServiceViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.serviceDetail.viewModel.ServiceDetailViewModel
@@ -70,6 +71,10 @@ class ViewModelFactory(
 
             modelClass.isAssignableFrom(ScheduleViewModel::class.java) -> {
                 return ScheduleViewModel(repository) as T
+            }
+
+            modelClass.isAssignableFrom(ProductDetailViewModel::class.java) -> {
+                return ProductDetailViewModel(repository) as T
             }
 
            /*

@@ -27,6 +27,7 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.home.adapter.ProductsA
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.BannerItem
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.CategoriesItem
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.LocationItem
+import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductsListItem
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.viewModel.HomeCustomerViewModel
 import com.app.gentlemanspa.utils.ViewModelFactory
 import com.app.gentlemanspa.utils.showToast
@@ -36,7 +37,6 @@ import com.google.android.material.tabs.TabLayoutMediator
 
 
 class HomeCustomerFragment : Fragment(), View.OnClickListener {
-    private lateinit var productsAdapter: ProductsAdapter
     private lateinit var categoriesAdapter: CategoriesAdapter
     private lateinit var bannerCustomerAdapter: BannerCustomerAdapter
     private var bannerCustomerList: ArrayList<BannerItem> = ArrayList()
@@ -47,6 +47,7 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
     private lateinit var binding: FragmentHomeCustomerBinding
     private var mainLoader: Int = 0
     private val headerHandler: Handler = Handler(Looper.getMainLooper())
+    private var productsList : ArrayList<ProductsListItem> = ArrayList()
 
     private val viewModel: HomeCustomerViewModel by viewModels {
         ViewModelFactory(
@@ -86,13 +87,22 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
 
         viewModel.getBanner()
         viewModel.getCategories()
+        viewModel.getProductsList()
 
-        setProductsAdapter()
+
     }
 
     private fun setProductsAdapter() {
-        productsAdapter = ProductsAdapter()
+        val productsAdapter = ProductsAdapter(productsList)
         binding.rvProducts.adapter = productsAdapter
+
+        productsAdapter.setOnClickProducts(object : ProductsAdapter.ProductsCallbacks{
+            override fun rootProducts(item: ProductsListItem) {
+                val action =  HomeCustomerFragmentDirections.actionHomeCustomerFragmentToProductDetailFragment(item.productId)
+                findNavController().navigate(action)
+            }
+
+        })
     }
 
     private fun initObserver() {
@@ -184,6 +194,34 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
 
                         it.data?.data?.let { it1 -> categoriesList.addAll(it1) }
                         setCategoriesAdapter()
+
+                    }
+
+                    Status.ERROR -> {
+                        requireContext().showToast(it.message.toString())
+                        MyApplication.hideProgress()
+                    }
+                }
+            }
+        }
+
+        viewModel.resultProductsData.observe(this) {
+            it?.let { result ->
+                when (result.status) {
+                    Status.LOADING -> {
+                        if (mainLoader == 0) {
+                            mainLoader = 1
+                            MyApplication.showProgress(requireContext())
+                        }
+
+                    }
+
+                    Status.SUCCESS -> {
+                        MyApplication.hideProgress()
+                        productsList.clear()
+
+                        it.data?.data?.dataList?.let { it1 -> productsList.addAll(it1) }
+                        setProductsAdapter()
 
                     }
 

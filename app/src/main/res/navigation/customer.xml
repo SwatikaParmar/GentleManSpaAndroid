@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_homeCustomerFragment_to_serviceFragment"
             app:destination="@id/serviceFragment" />
+        <action
+            android:id="@+id/action_homeCustomerFragment_to_productDetailFragment"
+            app:destination="@id/productDetailFragment" />
     </fragment>
     <fragment
         android:id="@+id/serviceFragment"
@@ -73,4 +76,13 @@
         android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.history.HistoryCustomerFragment"
         android:label="HistoryCustomerFragment"
         tools:layout="@layout/fragment_history_customer"/>
+    <fragment
+        android:id="@+id/productDetailFragment"
+        android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.productDetail.ProductDetailFragment"
+        android:label="ProductDetailFragment"
+        tools:layout="@layout/fragment_product_detail">
+        <argument
+            android:name="productId"
+            app:argType="integer" />
+    </fragment>
 </navigation>

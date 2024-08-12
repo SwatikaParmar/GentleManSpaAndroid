@@ -16,6 +16,8 @@ import com.app.gentlemanspa.ui.professionalDashboard.fragment.profile.model.GetP
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.model.UpdateProfileProfessionalRequest
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.model.UpdateProfileProfessionalResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.CategoriesResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductsResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.productDetail.model.ProductDetailResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.model.ProfessionalResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.ServiceResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.serviceDetail.model.ServiceDetailResponse
@@ -158,6 +160,21 @@ class InitialRepository {
     suspend fun getWeekDays(): Flow<WeekDaysResponse?> {
         return flow {
             val result =Api.apiInterface?.getWeekDays()
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+
+
+    suspend fun getProductsList(pageNumber: Int?,pageSize: Int?): Flow<ProductsResponse?> {
+        return flow {
+            val result =Api.apiInterface?.getProductsList(pageNumber,pageSize)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+
+    suspend fun getProductDetails(id: Int?): Flow<ProductDetailResponse?> {
+        return flow {
+            val result =Api.apiInterface?.getProductDetails(id)
             emit(result)
         }.flowOn(Dispatchers.IO)
     }

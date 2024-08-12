@@ -25,6 +25,8 @@ object ApiConstants {
     const val SERVICE_DETAIL ="Service/GetServiceDetail"
     const val PROFESSIONAL_LIST ="Professional/GetProfessionalList"
     const val WEEK_DAYS ="Content/GetWeekdays"
+    const val PRODUCT_LIST ="Product/GetProductList"
+    const val PRODUCT_DETAILS ="Product/GetProductDetails"
 
 
 

@@ -50,6 +50,7 @@ class ProfileProfessionalFragment : Fragment(), View.OnClickListener {
 
     private fun initUI() {
         binding.onClick = this
+        (activity as ProfessionalActivity).bottomNavigation(true)
         viewModel.getProfessionalDetail()
     }
 

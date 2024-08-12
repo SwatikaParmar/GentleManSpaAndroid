@@ -14,6 +14,8 @@ import com.app.gentlemanspa.ui.professionalDashboard.fragment.profile.model.GetP
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.model.UpdateProfileProfessionalRequest
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.model.UpdateProfileProfessionalResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.CategoriesResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductsResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.productDetail.model.ProductDetailResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.model.ProfessionalResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.ServiceResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.serviceDetail.model.ServiceDetailResponse
@@ -105,6 +107,13 @@ interface ApiInterface {
 
     @GET(ApiConstants.WEEK_DAYS)
     suspend fun getWeekDays(): WeekDaysResponse
+
+
+    @GET(ApiConstants.PRODUCT_LIST)
+    suspend fun getProductsList(@Query("PageNumber") pageNumber: Int?,@Query("PageSize") pageSize: Int?): ProductsResponse
+
+    @GET(ApiConstants.PRODUCT_DETAILS)
+    suspend fun getProductDetails(@Query("id") id: Int?): ProductDetailResponse
     /*
 
         @POST(ApiConstants.EMAIL_OTP)

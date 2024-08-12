@@ -10,6 +10,7 @@ import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.BannerResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.CategoriesResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.LocationResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductsResponse
 import com.app.gentlemanspa.utils.CommonFunctions
 import com.app.gentlemanspa.utils.Resource
 import kotlinx.coroutines.flow.catch
@@ -26,6 +27,7 @@ class HomeCustomerViewModel (private var initialRepository: InitialRepository) :
     val resultSearchLocationAddress = MutableLiveData<Resource<LocationResponse>>()
     val resultBanner = MutableLiveData<Resource<BannerResponse>>()
     val resultCategories = MutableLiveData<Resource<CategoriesResponse>>()
+    val resultProductsData= MutableLiveData<Resource<ProductsResponse>>()
 
 
     fun getLocationAddress() {
@@ -127,6 +129,32 @@ class HomeCustomerViewModel (private var initialRepository: InitialRepository) :
                             Resource.success(message = it.messages, data = it)
                     } else {
                         resultCategories.value =
+                            Resource.error(data = null, message = it?.messages)
+                    }
+                }
+        }
+    }
+
+    fun getProductsList() {
+        resultProductsData.value = Resource.loading(null)
+        viewModelScope.launch {
+            initialRepository.getProductsList(1,1000)
+                .onStart { }
+                .onCompletion { }
+                .catch { exception ->
+                    if (!CommonFunctions.getError(exception)!!.contains("401"))
+                        resultProductsData.value =
+                            Resource.error(
+                                data = null,
+                                message = CommonFunctions.getError(exception)
+                            )
+                }
+                .collect {
+                    if (it?.statusCode == 200) {
+                        resultProductsData.value =
+                            Resource.success(message = it.messages, data = it)
+                    } else {
+                        resultProductsData.value =
                             Resource.error(data = null, message = it?.messages)
                     }
                 }

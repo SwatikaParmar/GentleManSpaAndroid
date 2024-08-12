@@ -11,6 +11,7 @@ import com.app.gentlemanspa.base.MyApplication
 import com.app.gentlemanspa.databinding.FragmentScheduleProfessionalBinding
 import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.network.Status
+import com.app.gentlemanspa.ui.professionalDashboard.activity.ProfessionalActivity
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.adapter.ScheduleAdapter
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.model.WeekDaysItem
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.viewModel.ScheduleViewModel
@@ -47,6 +48,7 @@ class ScheduleProfessionalFragment : Fragment() {
     }
 
     private fun initUI() {
+        (activity as ProfessionalActivity).bottomNavigation(true)
         viewModel.getWeekDays()
     }
 

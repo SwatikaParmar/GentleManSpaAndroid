@@ -35,7 +35,7 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
 
     private fun initUI() {
         binding.ivDrawer.setOnClickListener(this)
-
+        (activity as ProfessionalActivity).bottomNavigation(true)
 
         binding.tlAppointment.removeAllTabs()
         binding.tlAppointment.addTab(binding.tlAppointment.newTab().setText("UPCOMING"))

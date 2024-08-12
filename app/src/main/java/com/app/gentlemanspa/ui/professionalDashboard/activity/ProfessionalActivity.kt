@@ -12,6 +12,8 @@ import com.app.gentlemanspa.databinding.ActivityProfessionalBinding
 import com.app.gentlemanspa.ui.auth.activity.AuthActivity
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.HomeCustomerFragment
 import com.app.gentlemanspa.utils.AppPrefs
+import com.app.gentlemanspa.utils.setGone
+import com.app.gentlemanspa.utils.setVisible
 
 class ProfessionalActivity : AppCompatActivity() {
     private lateinit var binding : ActivityProfessionalBinding
@@ -98,6 +100,15 @@ class ProfessionalActivity : AppCompatActivity() {
 
             binding.drawerLayout.closeDrawer(GravityCompat.START)
             true
+        }
+    }
+
+
+    fun bottomNavigation(isBoolean: Boolean) {
+        if (isBoolean){
+            binding.bottomNavigationView.setVisible()
+        }else{
+            binding.bottomNavigationView.setGone()
         }
     }
 
