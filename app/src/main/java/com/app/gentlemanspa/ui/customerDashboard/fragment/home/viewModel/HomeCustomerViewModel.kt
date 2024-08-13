@@ -4,13 +4,12 @@ import android.app.Application
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
 import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.BannerResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.CategoriesResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.LocationResponse
-import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductsResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductCategoriesResponse
 import com.app.gentlemanspa.utils.CommonFunctions
 import com.app.gentlemanspa.utils.Resource
 import kotlinx.coroutines.flow.catch
@@ -27,7 +26,7 @@ class HomeCustomerViewModel (private var initialRepository: InitialRepository) :
     val resultSearchLocationAddress = MutableLiveData<Resource<LocationResponse>>()
     val resultBanner = MutableLiveData<Resource<BannerResponse>>()
     val resultCategories = MutableLiveData<Resource<CategoriesResponse>>()
-    val resultProductsData= MutableLiveData<Resource<ProductsResponse>>()
+    val resultProductCategories = MutableLiveData<Resource<ProductCategoriesResponse>>()
 
 
     fun getLocationAddress() {
@@ -135,15 +134,15 @@ class HomeCustomerViewModel (private var initialRepository: InitialRepository) :
         }
     }
 
-    fun getProductsList() {
-        resultProductsData.value = Resource.loading(null)
+    fun getProductCategories() {
+        resultProductCategories.value = Resource.loading(null)
         viewModelScope.launch {
-            initialRepository.getProductsList(1,1000)
+            initialRepository.getProductCategories()
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->
                     if (!CommonFunctions.getError(exception)!!.contains("401"))
-                        resultProductsData.value =
+                        resultProductCategories.value =
                             Resource.error(
                                 data = null,
                                 message = CommonFunctions.getError(exception)
@@ -151,15 +150,17 @@ class HomeCustomerViewModel (private var initialRepository: InitialRepository) :
                 }
                 .collect {
                     if (it?.statusCode == 200) {
-                        resultProductsData.value =
+                        resultProductCategories.value =
                             Resource.success(message = it.messages, data = it)
                     } else {
-                        resultProductsData.value =
+                        resultProductCategories.value =
                             Resource.error(data = null, message = it?.messages)
                     }
                 }
         }
     }
+
+
 
 
 

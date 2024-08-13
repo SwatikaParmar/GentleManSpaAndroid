@@ -1,4 +1,4 @@
-package com.app.gentlemanspa.ui.customerDashboard.fragment.home.adapter
+package com.app.gentlemanspa.ui.customerDashboard.fragment.product.adapter
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.app.gentlemanspa.databinding.ItemProductsBinding
 import com.app.gentlemanspa.network.ApiConstants
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductsListItem
+import com.app.gentlemanspa.utils.setGone
+import com.app.gentlemanspa.utils.setVisible
 import com.bumptech.glide.Glide
 
 class ProductsAdapter(var productsList: ArrayList<ProductsListItem>) : RecyclerView.Adapter<ProductsAdapter.ViewHolder>() {
@@ -26,15 +28,45 @@ class ProductsAdapter(var productsList: ArrayList<ProductsListItem>) : RecyclerV
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        var count :Int =1
 
         val item = productsList[position]
         holder.binding.apply {
-            tvProducts.text = item.name
+            tvServiceName.text = item.name
             tvRupees.text = "$${item.listingPrice}"
-            Glide.with(holder.itemView.context).load(ApiConstants.BASE_FILE +item.image).into(ivCategories)
+            tvLessRupees.text = "$${item.basePrice}"
+            Glide.with(holder.itemView.context).load(ApiConstants.BASE_FILE +item.image).into(ivService)
+
+            ivMinus.setOnClickListener {
+
+                count --
+                if (count>=1){
+                    tvCount.text = count.toString()
+                }else{
+                    clAddCart.setVisible()
+                    clPlusMinus.setGone()
+
+                }
+
+            }
+
+            clAddCart.setOnClickListener {
+                count =1
+                clAddCart.setGone()
+                clPlusMinus.setVisible()
+                tvCount.text =count.toString()
+
+            }
+
+            ivPlus.setOnClickListener {
+                count ++
+                tvCount.text = count.toString()
+            }
             root.setOnClickListener {
                 productsCallbacks.rootProducts(item)
             }
+
+
         }
 
     }

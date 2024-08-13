@@ -150,6 +150,7 @@
                         android:paddingVertical="@dimen/_2sdp"
                         android:paddingHorizontal="@dimen/_7sdp"
                         android:layout_marginEnd="@dimen/_10sdp"
+                        android:onClick="@{onClick}"
                         android:background="@drawable/bg_app_color"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tvRupees">
@@ -161,7 +162,7 @@
                             android:text="Add To Cart"
                             android:textAllCaps="false"
                             android:textSize="@dimen/_10ssp"
-                            android:textColor="@color/white"
+                            android:textColor="@color/black"
                             app:cornerRadius="@dimen/_20sdp"
                             android:fontFamily="@font/poppins_medium"
                             app:layout_constraintTop_toTopOf="parent"
@@ -176,6 +177,66 @@
                             android:visibility="gone"
                             android:layout_marginStart="@dimen/_3sdp"
                             app:layout_constraintStart_toEndOf="@+id/tvAddCart"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/clPlusMinus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:layout_marginEnd="@dimen/_10sdp"
+                        android:background="@drawable/bg_app_color"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvRupees">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/ivMinus"
+                            android:layout_width="@dimen/_20sdp"
+                            android:layout_height="@dimen/_20sdp"
+                            android:src="@drawable/minus"
+                            android:padding="@dimen/_3sdp"
+                            android:onClick="@{onClick}"
+                            android:layout_marginHorizontal="@dimen/_3sdp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/tvCount"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="0dp"
+                            android:text="0"
+                            android:textAllCaps="false"
+                            android:textSize="@dimen/_10ssp"
+                            android:textColor="@color/black"
+                            app:cornerRadius="@dimen/_20sdp"
+                            android:gravity="center"
+                            android:minWidth="@dimen/_25sdp"
+                            android:paddingHorizontal="@dimen/_5sdp"
+                            android:layout_margin="0.75dp"
+                            android:background="@color/white"
+                            android:fontFamily="@font/poppins_medium"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/ivMinus"
+                            app:layout_constraintEnd_toStartOf="@+id/ivPlus"
+                            />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/ivPlus"
+                            android:layout_width="@dimen/_20sdp"
+                            android:layout_height="@dimen/_20sdp"
+                            android:src="@drawable/plus"
+                            android:padding="@dimen/_3sdp"
+                            android:onClick="@{onClick}"
+                            android:layout_marginHorizontal="@dimen/_3sdp"
+                            app:layout_constraintStart_toEndOf="@+id/tvCount"
+                            app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"/>
 

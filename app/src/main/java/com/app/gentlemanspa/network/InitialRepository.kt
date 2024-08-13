@@ -16,6 +16,7 @@ import com.app.gentlemanspa.ui.professionalDashboard.fragment.profile.model.GetP
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.model.UpdateProfileProfessionalRequest
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.model.UpdateProfileProfessionalResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.CategoriesResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductCategoriesResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductsResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.productDetail.model.ProductDetailResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.model.ProfessionalResponse
@@ -112,6 +113,13 @@ class InitialRepository {
         }.flowOn(Dispatchers.IO)
     }
 
+    suspend fun getProductCategories(): Flow<ProductCategoriesResponse?> {
+        return flow {
+            val result =Api.apiInterface?.getProductCategories()
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+
     suspend fun getBanner(): Flow<BannerResponse?> {
         return flow {
             val result =Api.apiInterface?.getBanner()
@@ -165,9 +173,9 @@ class InitialRepository {
     }
 
 
-    suspend fun getProductsList(pageNumber: Int?,pageSize: Int?): Flow<ProductsResponse?> {
+    suspend fun getProductsList(pageNumber: Int?,pageSize: Int?,mainCategoryId: Int?): Flow<ProductsResponse?> {
         return flow {
-            val result =Api.apiInterface?.getProductsList(pageNumber,pageSize)
+            val result =Api.apiInterface?.getProductsList(pageNumber,pageSize,mainCategoryId)
             emit(result)
         }.flowOn(Dispatchers.IO)
     }

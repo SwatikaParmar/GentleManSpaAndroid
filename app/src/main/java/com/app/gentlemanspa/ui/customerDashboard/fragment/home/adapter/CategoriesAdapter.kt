@@ -32,7 +32,7 @@ class CategoriesAdapter(private var categoriesList: ArrayList<CategoriesItem>) :
                 R.drawable.service_placeholder).error(R.drawable.service_placeholder).into(ivCategories)
 
             root.setOnClickListener {
-                categoriesCallbacks.rootCategories()
+                categoriesCallbacks.rootCategories(item,position)
             }
         }
 
@@ -43,7 +43,7 @@ class CategoriesAdapter(private var categoriesList: ArrayList<CategoriesItem>) :
     }
 
     interface CategoriesCallbacks {
-        fun rootCategories()
+        fun rootCategories(item: CategoriesItem, position: Int)
     }
 
 }

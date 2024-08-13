@@ -33,7 +33,7 @@ data class CategoriesItem(
 	val categoryName: String? = "",
 
 	@field:SerializedName("categoryId")
-	val categoryId: Int? = 0,
+	val categoryId: Int = 0,
 
 	@field:SerializedName("categoryDescription")
 	val categoryDescription: String? = "",

@@ -77,8 +77,10 @@ class CustomerActivity : AppCompatActivity() {
     fun bottomNavigation(isBoolean: Boolean) {
         if (isBoolean){
             binding.bottomNavigationView.setVisible()
+            binding.viewBottom.setVisible()
         }else{
             binding.bottomNavigationView.setGone()
+            binding.viewBottom.setGone()
         }
     }
 

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_8sdp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ivCategories"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_80sdp"
+            app:shapeAppearance="@style/CornerCut5"
+            android:scaleType="centerCrop"
+            app:strokeWidth="@dimen/_1sdp"
+            app:strokeColor="@color/app_color"
+            android:src="@drawable/salon_placeholder"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvCategories"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_medium"
+            android:gravity="center"
+            android:text="Hair"
+            android:layout_marginTop="@dimen/_3sdp"
+            android:includeFontPadding="false"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_11ssp"
+            app:layout_constraintEnd_toEndOf="@+id/ivCategories"
+            app:layout_constraintStart_toStartOf="@+id/ivCategories"
+            app:layout_constraintTop_toBottomOf="@+id/ivCategories" />
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

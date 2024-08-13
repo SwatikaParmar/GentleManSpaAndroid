@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.app.gentlemanspa.base.MyApplication
 import com.app.gentlemanspa.databinding.FragmentServiceBinding
 import com.app.gentlemanspa.network.InitialRepository
@@ -24,6 +25,8 @@ import com.app.gentlemanspa.utils.showToast
 class ServiceFragment : Fragment(), View.OnClickListener {
     private var mainLoader: Int=0
     private var categoryId : Int ?=0
+    private val args : ServiceFragmentArgs by navArgs()
+    private var selectPosition : Int =0
     private var serviceList: ArrayList<ServiceListItem> = ArrayList()
     private lateinit var serviceCategoriesAdapter: ServiceCategoriesAdapter
     private lateinit var serviceAdapter: ServiceAdapter
@@ -36,6 +39,8 @@ class ServiceFragment : Fragment(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        selectPosition = args.selectPosition
+        categoryId = args.categoryId
         initObserver()
     }
 
@@ -58,7 +63,8 @@ class ServiceFragment : Fragment(), View.OnClickListener {
 
     private fun initUI() {
         viewModel.getCategories()
-
+        viewModel.categoryId.set(categoryId)
+        viewModel.getServiceList()
         binding.onClick = this
     }
 
@@ -77,7 +83,7 @@ class ServiceFragment : Fragment(), View.OnClickListener {
     }
 
     private fun setCategoriesServiceAdapter() {
-        serviceCategoriesAdapter  = ServiceCategoriesAdapter(categoriesList)
+        serviceCategoriesAdapter  = ServiceCategoriesAdapter(categoriesList,selectPosition)
         binding.rvCategories.adapter = serviceCategoriesAdapter
         serviceCategoriesAdapter.setOnServiceCategories(object :ServiceCategoriesAdapter.ServiceCategoriesCallbacks{
             override fun rootServiceCategories(item: CategoriesItem?, position: Int?) {
@@ -109,9 +115,7 @@ class ServiceFragment : Fragment(), View.OnClickListener {
                         MyApplication.hideProgress()
                         categoriesList.clear()
                         it.data?.data?.let { it1 -> categoriesList.addAll(it1) }
-                        categoryId = categoriesList[0].categoryId
-                        viewModel.categoryId.set(categoryId)
-                        viewModel.getServiceList()
+
                         setCategoriesServiceAdapter()
 
                     }

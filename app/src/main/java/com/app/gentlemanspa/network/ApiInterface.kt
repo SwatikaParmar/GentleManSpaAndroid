@@ -14,6 +14,7 @@ import com.app.gentlemanspa.ui.professionalDashboard.fragment.profile.model.GetP
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.model.UpdateProfileProfessionalRequest
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.model.UpdateProfileProfessionalResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.CategoriesResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductCategoriesResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductsResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.productDetail.model.ProductDetailResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.model.ProfessionalResponse
@@ -83,6 +84,9 @@ interface ApiInterface {
     @GET(ApiConstants.CATEGORIES)
     suspend fun getCategories(): CategoriesResponse
 
+    @GET(ApiConstants.PRODUCT_CATEGORIES)
+    suspend fun getProductCategories(): ProductCategoriesResponse
+
     @GET(ApiConstants.BANNER)
     suspend fun getBanner(): BannerResponse
 
@@ -110,7 +114,10 @@ interface ApiInterface {
 
 
     @GET(ApiConstants.PRODUCT_LIST)
-    suspend fun getProductsList(@Query("PageNumber") pageNumber: Int?,@Query("PageSize") pageSize: Int?): ProductsResponse
+    suspend fun getProductsList(@Query("PageNumber") pageNumber: Int?,
+                                @Query("PageSize") pageSize: Int?,
+                                @Query("MainCategoryId") mainCategoryId: Int?
+    ): ProductsResponse
 
     @GET(ApiConstants.PRODUCT_DETAILS)
     suspend fun getProductDetails(@Query("id") id: Int?): ProductDetailResponse

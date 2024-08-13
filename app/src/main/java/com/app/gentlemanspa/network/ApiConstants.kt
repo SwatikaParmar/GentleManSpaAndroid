@@ -19,6 +19,7 @@ object ApiConstants {
     const val STATES ="Content/GetStates"
     const val SPECIALITY ="Content/GetAllSpecialities"
     const val CATEGORIES ="Content/GetCategories"
+    const val PRODUCT_CATEGORIES ="Product/ProductCategories"
     const val BANNER ="Content/GetBanners"
     const val LOCATION_ADDRESS ="Admin/GetSpas"
     const val SERVICE_LIST ="Service/GetServiceList"

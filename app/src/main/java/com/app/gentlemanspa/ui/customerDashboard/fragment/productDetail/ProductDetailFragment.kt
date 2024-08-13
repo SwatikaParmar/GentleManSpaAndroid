@@ -26,15 +26,17 @@ import com.app.gentlemanspa.utils.showToast
 import com.bumptech.glide.Glide
 
 
-class ProductDetailFragment : Fragment() {
-    private var mainLoader: Int=0
-    private lateinit var binding : FragmentProductDetailBinding
-    private val args : ProductDetailFragmentArgs by navArgs()
+class ProductDetailFragment : Fragment(), View.OnClickListener {
+    private var mainLoader: Int = 0
+    private var count: Int = 0
+    private lateinit var binding: FragmentProductDetailBinding
+    private val args: ProductDetailFragmentArgs by navArgs()
     private val viewModel: ProductDetailViewModel by viewModels {
         ViewModelFactory(
             InitialRepository()
         )
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -42,13 +44,12 @@ class ProductDetailFragment : Fragment() {
     }
 
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding = FragmentProductDetailBinding.inflate(layoutInflater,container, false)
+        binding = FragmentProductDetailBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
@@ -60,6 +61,7 @@ class ProductDetailFragment : Fragment() {
     private fun initUI() {
         viewModel.id.set(args.productId)
         viewModel.getProductDetails()
+        binding.onClick = this
     }
 
     @SuppressLint("SetTextI18n")
@@ -68,8 +70,8 @@ class ProductDetailFragment : Fragment() {
             it?.let { result ->
                 when (result.status) {
                     Status.LOADING -> {
-                        if (mainLoader ==0){
-                            mainLoader =1
+                        if (mainLoader == 0) {
+                            mainLoader = 1
                             MyApplication.showProgress(requireContext())
                         }
                     }
@@ -78,11 +80,13 @@ class ProductDetailFragment : Fragment() {
                         MyApplication.hideProgress()
                         val data = it.data?.data
                         binding.tvProductName.text = data?.name
-                       // binding.tvTime.text = "${data?.durationInMinutes} mins"
+                        // binding.tvTime.text = "${data?.durationInMinutes} mins"
                         binding.tvRupees.text = "$${decimalRoundToInt(data?.listingPrice)}"
                         binding.tvLessRupees.text = "$${decimalRoundToInt(data?.basePrice)}"
 
-                        Glide.with(requireContext()).load(ApiConstants.BASE_FILE + (data?.images?.get(0))).into(binding.ivProduct)
+                        Glide.with(requireContext())
+                            .load(ApiConstants.BASE_FILE + (data?.images?.get(0)))
+                            .into(binding.ivProduct)
 
 
 
@@ -97,6 +101,36 @@ class ProductDetailFragment : Fragment() {
                         MyApplication.hideProgress()
                     }
                 }
+            }
+        }
+    }
+
+    override fun onClick(v: View?) {
+        when (v) {
+            binding.ivMinus -> {
+
+                count--
+                if (count >= 1) {
+                    binding.tvCount.text = count.toString()
+                } else {
+                    binding.clAddCart.setVisible()
+                    binding.clPlusMinus.setGone()
+
+                }
+
+            }
+
+            binding.clAddCart -> {
+                count = 1
+                binding.clAddCart.setGone()
+                binding.clPlusMinus.setVisible()
+                binding.tvCount.text = count.toString()
+
+            }
+
+            binding.ivPlus -> {
+                count++
+                binding.tvCount.text = count.toString()
             }
         }
     }

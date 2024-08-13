@@ -9,9 +9,11 @@ import com.app.gentlemanspa.base.MyApplication.Companion.context
 import com.app.gentlemanspa.databinding.ItemCategoriesServiceBinding
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.CategoriesItem
 
-class ServiceCategoriesAdapter (private var categoriesList: ArrayList<CategoriesItem>) : RecyclerView.Adapter<ServiceCategoriesAdapter.ViewHolder>() {
+class ServiceCategoriesAdapter(
+    private var categoriesList: ArrayList<CategoriesItem>,
+    private var positionHor: Int
+) : RecyclerView.Adapter<ServiceCategoriesAdapter.ViewHolder>() {
 
-    private var positionHor: Int=0
     private lateinit var serviceCategoriesCallbacks :ServiceCategoriesCallbacks
 
     class ViewHolder(val binding : ItemCategoriesServiceBinding) : RecyclerView.ViewHolder(binding.root)
