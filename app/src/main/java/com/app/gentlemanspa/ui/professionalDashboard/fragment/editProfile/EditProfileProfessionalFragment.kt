@@ -46,6 +46,10 @@ import com.app.gentlemanspa.utils.showToast
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -366,7 +370,7 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
         if (result.resultCode == Activity.RESULT_OK) {
             // Handle the gallery result
             val imageUri = result.data?.data
-            profileImage = File(imageUri?.path.toString())
+            profileImage = File(imageUri?.path)
             binding.ivProfile.setImageURI(imageUri)
             // Use the imageUri
         }
@@ -537,6 +541,34 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
 
 
 
+    }
+
+/*
+    val productId = it.data.data.productId
+    val listOfImages = ArrayList<MultipartBody.Part>()
+    for (i in 0 until productsPhoto.size) {
+        listOfImages.add(
+            prepareFilePart(
+                "ProductImage",
+                productsPhoto[i].productPhotos
+            )
+        )
+    }
+
+    viewModel.getProductsPhoto(
+    getTextRequestBodyParams(productId.toString())!!,
+    listOfImages
+    )*/
+
+
+
+    private fun prepareFilePart(partName: String, file: File): MultipartBody.Part {
+        val requestFile = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), file)
+        return MultipartBody.Part.createFormData(partName, file.name, requestFile)
+    }
+
+    private fun getTextRequestBodyParams(value: String?): RequestBody? {
+        return value?.toRequestBody("text/form-data".toMediaTypeOrNull())
     }
 
     companion object {

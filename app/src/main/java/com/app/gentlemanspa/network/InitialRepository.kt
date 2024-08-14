@@ -22,6 +22,9 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.productDetail.model.Pr
 import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.model.ProfessionalResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.ServiceResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.serviceDetail.model.ServiceDetailResponse
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.AddProductRequest
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.AddProductResponse
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.UploadProductImageResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.model.WeekDaysResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.selectCountry.model.country.CountryResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.selectCountry.model.states.StatesResponse
@@ -183,6 +186,21 @@ class InitialRepository {
     suspend fun getProductDetails(id: Int?): Flow<ProductDetailResponse?> {
         return flow {
             val result =Api.apiInterface?.getProductDetails(id)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+
+
+    suspend fun addProduct(body: AddProductRequest): Flow<AddProductResponse?> {
+        return flow {
+            val result =Api.apiInterface?.addProduct(body)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+
+    suspend fun uploadProductImage(projectId : RequestBody?, productImages: ArrayList<MultipartBody.Part>?):Flow<UploadProductImageResponse?>{
+        return flow {
+            val result =Api.apiInterface?.uploadProductImage(projectId,productImages)
             emit(result)
         }.flowOn(Dispatchers.IO)
     }

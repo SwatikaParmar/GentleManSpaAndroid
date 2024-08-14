@@ -82,6 +82,10 @@ class ProfessionalActivity : AppCompatActivity() {
                     // navController.navigate(R.id.myConsultsFragment)
                 }
 
+                R.id.addProduct -> {
+                     navController.navigate(R.id.addProductFragment)
+                }
+
                 R.id.navPrivacyPolicyProfessional -> {
                     //  navController.navigate(R.id.medicalRecordsFragment)
                 }

@@ -20,6 +20,9 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.productDetail.model.Pr
 import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.model.ProfessionalResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.ServiceResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.serviceDetail.model.ServiceDetailResponse
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.AddProductRequest
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.AddProductResponse
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.UploadProductImageResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.model.WeekDaysResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.selectCountry.model.country.CountryResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.selectCountry.model.states.StatesResponse
@@ -121,6 +124,19 @@ interface ApiInterface {
 
     @GET(ApiConstants.PRODUCT_DETAILS)
     suspend fun getProductDetails(@Query("id") id: Int?): ProductDetailResponse
+
+
+    @POST(ApiConstants.ADD_PRODUCT)
+    suspend fun addProduct(
+        @Body body: AddProductRequest?
+    ): AddProductResponse
+
+
+    @Multipart
+    @POST(ApiConstants.UPLOAD_PRODUCT_IMAGE)
+    suspend fun uploadProductImage(
+        @Part("ProductId") productId : RequestBody? , @Part images:ArrayList<MultipartBody.Part>?
+    ): UploadProductImageResponse
     /*
 
         @POST(ApiConstants.EMAIL_OTP)

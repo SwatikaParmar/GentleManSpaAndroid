@@ -72,6 +72,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
                         }else if (it.data?.data?.role =="Professional"){
                             AppPrefs(requireContext()).setString("TOKEN",it.data?.data?.token)
                             AppPrefs(requireContext()).setString("ROLE",it.data?.data?.role)
+                            AppPrefs(requireContext()).setString("CREATED_BY",it.data?.data?.id)
                             requireActivity().showToast(it.data.messages.toString())
                             startActivity(Intent(requireContext(), ProfessionalActivity::class.java))
                             requireActivity().finishAffinity()

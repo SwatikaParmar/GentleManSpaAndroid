@@ -28,6 +28,8 @@ object ApiConstants {
     const val WEEK_DAYS ="Content/GetWeekdays"
     const val PRODUCT_LIST ="Product/GetProductList"
     const val PRODUCT_DETAILS ="Product/GetProductDetails"
+    const val ADD_PRODUCT ="Product/AddProduct"
+    const val UPLOAD_PRODUCT_IMAGE ="Upload/UploadProductImage"
 
 
 

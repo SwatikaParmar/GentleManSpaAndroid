@@ -19,7 +19,11 @@
             android:icon="@drawable/my_profile_icon"
             />
 
-
+        <item
+            android:id="@+id/addProduct"
+            android:title="Add Product"
+            android:icon="@drawable/product"
+            />
 
         <item
             android:id="@+id/navPrivacyPolicyProfessional"

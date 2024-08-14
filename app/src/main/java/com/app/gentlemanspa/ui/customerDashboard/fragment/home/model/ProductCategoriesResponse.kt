@@ -36,7 +36,7 @@ data class ProductCategoriesItem(
 	val mainCategoryId: Int = 0,
 
 	@field:SerializedName("categoryName")
-	val categoryName: String? = null,
+	val categoryName: String = "",
 
 	@field:SerializedName("createDate")
 	val createDate: String? = null
