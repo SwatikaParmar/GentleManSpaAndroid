@@ -22,13 +22,17 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.ServiceR
 import com.app.gentlemanspa.ui.customerDashboard.fragment.serviceDetail.model.ServiceDetailResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.AddProductRequest
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.AddProductResponse
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.UpdateProductRequest
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.UpdateProductResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.UploadProductImageResponse
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.product.model.DeleteProductResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.model.WeekDaysResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.selectCountry.model.country.CountryResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.selectCountry.model.states.StatesResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -132,11 +136,20 @@ interface ApiInterface {
     ): AddProductResponse
 
 
+    @POST(ApiConstants.UPDATE_PRODUCT)
+    suspend fun updateProduct(
+        @Body body: UpdateProductRequest?
+    ): UpdateProductResponse
+
+
     @Multipart
     @POST(ApiConstants.UPLOAD_PRODUCT_IMAGE)
     suspend fun uploadProductImage(
         @Part("ProductId") productId : RequestBody? , @Part images:ArrayList<MultipartBody.Part>?
     ): UploadProductImageResponse
+
+    @DELETE(ApiConstants.DELETE_PRODUCT)
+    suspend fun getDeleteProduct(@Query("id") id: Int?): DeleteProductResponse
     /*
 
         @POST(ApiConstants.EMAIL_OTP)

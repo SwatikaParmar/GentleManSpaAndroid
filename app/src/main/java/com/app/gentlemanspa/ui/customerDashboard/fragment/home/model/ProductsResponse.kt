@@ -45,7 +45,14 @@ data class ProductsListItem(
 	val status: String? = null,
 
 	@field:SerializedName("createDate")
-	val createDate: String? = null
+	val createDate: String? = null,
+
+	@field:SerializedName("mainCategoryId")
+	val mainCategoryId: Int? = null,
+
+	@field:SerializedName("subCategoryId")
+	val subCategoryId: Int? = null,
+
 ) : Parcelable
 
 @Parcelize

@@ -29,7 +29,9 @@ object ApiConstants {
     const val PRODUCT_LIST ="Product/GetProductList"
     const val PRODUCT_DETAILS ="Product/GetProductDetails"
     const val ADD_PRODUCT ="Product/AddProduct"
+    const val UPDATE_PRODUCT ="Product/UpdateProduct"
     const val UPLOAD_PRODUCT_IMAGE ="Upload/UploadProductImage"
+    const val DELETE_PRODUCT ="Product/DeleteProduct"
 
 
 

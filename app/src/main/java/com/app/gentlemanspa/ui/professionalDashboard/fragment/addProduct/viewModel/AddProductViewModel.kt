@@ -10,6 +10,8 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductCate
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductsResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.AddProductRequest
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.AddProductResponse
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.UpdateProductRequest
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.UpdateProductResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.UploadProductImageResponse
 import com.app.gentlemanspa.utils.CommonFunctions
 import com.app.gentlemanspa.utils.Resource
@@ -35,11 +37,13 @@ class AddProductViewModel (private var initialRepository: InitialRepository) : A
     val  spaDetailId = ObservableField<Int>()
     val  mainCategoryId = ObservableField<Int>()
     val  basePrice = ObservableField<Int>()
+    val  productUpdateId = ObservableField<Int>()
     val  productId = ObservableField<RequestBody>()
     val  productImages = ObservableField<ArrayList<MultipartBody.Part>>()
 
     val resultProductCategories = MutableLiveData<Resource<ProductCategoriesResponse>>()
     val resultAddProduct= MutableLiveData<Resource<AddProductResponse>>()
+    val resultUpdateProduct= MutableLiveData<Resource<UpdateProductResponse>>()
     val resultUploadProductImage= MutableLiveData<Resource<UploadProductImageResponse>>()
 
     fun getProductCategories() {
@@ -92,6 +96,33 @@ class AddProductViewModel (private var initialRepository: InitialRepository) : A
                             Resource.success(message = it.messages, data = it)
                     } else {
                         resultAddProduct.value =
+                            Resource.error(data = null, message = it?.messages)
+                    }
+                }
+        }
+    }
+
+
+    fun updateProduct() {
+        resultUpdateProduct.value = Resource.loading(null)
+        viewModelScope.launch {
+            initialRepository.updateProduct(UpdateProductRequest(listingPrice.get(),productUpdateId.get(),name.get(),description.get(),subCategoryId.get(),spaDetailId.get(),mainCategoryId.get(),basePrice.get()))
+                .onStart { }
+                .onCompletion { }
+                .catch { exception ->
+                    if (!CommonFunctions.getError(exception)!!.contains("401"))
+                        resultUpdateProduct.value =
+                            Resource.error(
+                                data = null,
+                                message = CommonFunctions.getError(exception)
+                            )
+                }
+                .collect {
+                    if (it?.statusCode == 200) {
+                        resultUpdateProduct.value =
+                            Resource.success(message = it.messages, data = it)
+                    }  else {
+                        resultUpdateProduct.value =
                             Resource.error(data = null, message = it?.messages)
                     }
                 }

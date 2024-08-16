@@ -24,7 +24,10 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.ServiceR
 import com.app.gentlemanspa.ui.customerDashboard.fragment.serviceDetail.model.ServiceDetailResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.AddProductRequest
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.AddProductResponse
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.UpdateProductRequest
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.UpdateProductResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.UploadProductImageResponse
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.product.model.DeleteProductResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.model.WeekDaysResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.selectCountry.model.country.CountryResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.selectCountry.model.states.StatesResponse
@@ -198,9 +201,24 @@ class InitialRepository {
         }.flowOn(Dispatchers.IO)
     }
 
+
+    suspend fun updateProduct(body: UpdateProductRequest): Flow<UpdateProductResponse?> {
+        return flow {
+            val result =Api.apiInterface?.updateProduct(body)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+
     suspend fun uploadProductImage(projectId : RequestBody?, productImages: ArrayList<MultipartBody.Part>?):Flow<UploadProductImageResponse?>{
         return flow {
             val result =Api.apiInterface?.uploadProductImage(projectId,productImages)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+
+    suspend fun getDeleteProduct(id: Int?): Flow<DeleteProductResponse?> {
+        return flow {
+            val result =Api.apiInterface?.getDeleteProduct(id)
             emit(result)
         }.flowOn(Dispatchers.IO)
     }

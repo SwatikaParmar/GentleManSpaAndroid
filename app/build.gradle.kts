@@ -81,4 +81,6 @@ dependencies {
 
     implementation (libs.material.calendarview)
 
+    implementation ("com.daimajia.swipelayout:library:1.2.0@aar")
+
 }

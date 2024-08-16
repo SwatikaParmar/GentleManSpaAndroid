@@ -51,7 +51,27 @@
         android:id="@+id/addProductFragment"
         android:name="com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.AddProductFragment"
         android:label="AddProductFragment"
-        tools:layout="@layout/fragment_add_product"/>
+        tools:layout="@layout/fragment_add_product">
+
+        <argument
+            android:name="ProductListItem"
+            app:argType="com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductsListItem"
+            app:nullable="true" />
+
+        <argument
+            android:name="AddType"
+            app:argType="integer" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/productProfessionalFragment"
+        android:name="com.app.gentlemanspa.ui.professionalDashboard.fragment.product.ProductProfessionalFragment"
+        android:label="ProductProfessionalFragment"
+        tools:layout="@layout/fragment_product_professional">
+        <action
+            android:id="@+id/action_productProfessionalFragment_to_addProductFragment"
+            app:destination="@id/addProductFragment" />
+    </fragment>
 
 
 </navigation>

@@ -6,6 +6,8 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -23,8 +25,11 @@ import androidx.core.content.FileProvider
 import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import com.app.gentlemanspa.R
 import com.app.gentlemanspa.base.MyApplication
+import com.app.gentlemanspa.base.MyApplication.Companion.hideProgress
+import com.app.gentlemanspa.base.MyApplication.Companion.showProgress
 import com.app.gentlemanspa.databinding.FragmentAddProductBinding
 import com.app.gentlemanspa.databinding.ImagePickerBottomBinding
 import com.app.gentlemanspa.network.InitialRepository
@@ -53,6 +58,7 @@ import java.util.Locale
 
 class AddProductFragment : Fragment(), View.OnClickListener {
 
+    private var addType: Int=0
     private var mainCategoryId: Int =0
     private var messagesProduct: String=""
     private var productsPhoto: ArrayList<File> = ArrayList()
@@ -61,6 +67,7 @@ class AddProductFragment : Fragment(), View.OnClickListener {
     private var productCategoriesList: ArrayList<ProductCategoriesItem> = ArrayList()
     private var currentPhotoPath: String?= null
     private var onPermissionsGranted: (() -> Unit)? = null
+    private val args : AddProductFragmentArgs by navArgs()
     private val viewModel: AddProductViewModel by viewModels {
         ViewModelFactory(
             InitialRepository()
@@ -69,6 +76,7 @@ class AddProductFragment : Fragment(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        addType =args.AddType
         initObserver()
     }
 
@@ -90,6 +98,20 @@ class AddProductFragment : Fragment(), View.OnClickListener {
 
     private fun initUI() {
         (activity as ProfessionalActivity).bottomNavigation(false)
+
+        if (addType ==0) {
+            binding.tvTitle.text ="Add Product"
+            binding.btnAddProduct.text ="Add Product"
+        }else {
+            val data = args.ProductListItem
+            binding.tvTitle.text ="Update Product"
+            binding.btnAddProduct.text ="Update Product"
+            binding.etProductName.setText(data?.name)
+            binding.etBasePrice.setText(data?.basePrice.toString())
+            binding.etListingPrice.setText(data?.listingPrice.toString())
+            binding.etDescription.setText(data?.description)
+
+        }
         binding.onClick = this
         viewModel.getProductCategories()
     }
@@ -105,7 +127,7 @@ class AddProductFragment : Fragment(), View.OnClickListener {
                     }
 
                     Status.SUCCESS -> {
-                        MyApplication.hideProgress()
+                        hideProgress()
                         productCategoriesList.clear()
 
                         it.data?.data?.let { it1 -> productCategoriesList.addAll(it1) }
@@ -115,16 +137,18 @@ class AddProductFragment : Fragment(), View.OnClickListener {
 
                     Status.ERROR -> {
                         requireContext().showToast(it.message.toString())
-                        MyApplication.hideProgress()
+                        hideProgress()
                     }
                 }
             }
+
+        }
 
             viewModel.resultAddProduct.observe(this) {
                 it?.let { result ->
                     when (result.status) {
                         Status.LOADING -> {
-                            MyApplication.showProgress(requireContext())
+                            showProgress(requireActivity())
 
                         }
 
@@ -153,11 +177,12 @@ class AddProductFragment : Fragment(), View.OnClickListener {
 
                         Status.ERROR -> {
                             requireContext().showToast(it.message.toString())
-                            MyApplication.hideProgress()
+                            hideProgress()
                         }
                     }
                 }
             }
+
 
             viewModel.resultUploadProductImage.observe(this) {
                 it?.let { result ->
@@ -170,18 +195,59 @@ class AddProductFragment : Fragment(), View.OnClickListener {
                         }
 
                         Status.SUCCESS -> {
-                            MyApplication.hideProgress()
+                            hideProgress()
                             requireContext().showToast(messagesProduct)
                         }
 
                         Status.ERROR -> {
                             requireContext().showToast(it.message.toString())
-                            MyApplication.hideProgress()
+                            hideProgress()
                         }
                     }
                 }
             }
-        }
+
+            viewModel.resultUpdateProduct.observe(this) {
+                it?.let { result ->
+                    when (result.status) {
+                        Status.LOADING -> {
+                            showProgress(requireActivity())
+
+                        }
+
+                        Status.SUCCESS -> {
+                            hideProgress()
+                           /* val productId = getTextRequestBodyParams(it.data?.data?.productId.toString())
+                            val listOfImages = ArrayList<MultipartBody.Part>()
+                            for (i in 0 until productsPhoto.size) {
+                                listOfImages.add(
+                                    prepareFilePart(
+                                        "Images",
+                                        productsPhoto[i]
+                                    )
+                                )
+                            }
+
+                            messagesProduct = it.data?.messages.toString()
+
+
+                            viewModel.productId.set(productId)
+                            viewModel.productImages.set(listOfImages)
+
+                            viewModel.uploadProductImage()*/
+                            requireContext().showToast(it.data?.messages.toString())
+
+
+                        }
+
+                        Status.ERROR -> {
+                            requireContext().showToast(it.message.toString())
+                            hideProgress()
+                        }
+                    }
+                }
+            }
+
     }
 
     private fun setCategoriesProductAdapter() {
@@ -226,6 +292,12 @@ class AddProductFragment : Fragment(), View.OnClickListener {
                 }
             }
 
+        for (i in productCategoriesList.indices){
+            if (productCategoriesList[i].mainCategoryId ==args.ProductListItem?.mainCategoryId){
+                binding.spProductCategories.setSelection(i)
+            }
+        }
+
     }
 
 
@@ -234,6 +306,7 @@ class AddProductFragment : Fragment(), View.OnClickListener {
             // Handle the camera result
             // val imageUri = result.data?.data
             profileImage = File(currentPhotoPath)
+            compressImageFile(profileImage!!)
             productsPhoto.add(profileImage!!)
             setProductPhotoAdapter()
 
@@ -251,6 +324,7 @@ class AddProductFragment : Fragment(), View.OnClickListener {
             // Handle the gallery result
             val imageUri = result.data?.data
             profileImage = uriToFile(imageUri!!)
+            compressImageFile(profileImage!!)
             productsPhoto.add(profileImage!!)
             setProductPhotoAdapter()
             // Use the imageUri
@@ -311,6 +385,13 @@ class AddProductFragment : Fragment(), View.OnClickListener {
     private fun openGallery() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         galleryLauncher.launch(intent)
+    }
+
+    private fun compressImageFile(imageFile: File) {
+        val bitmap = BitmapFactory.decodeFile(imageFile.absolutePath)
+        val outputStream = FileOutputStream(imageFile)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, outputStream) // 80 is the compression quality
+        outputStream.close()
     }
 
 
@@ -416,19 +497,33 @@ class AddProductFragment : Fragment(), View.OnClickListener {
             binding.btnAddProduct -> {
 
                 if (isValidation()) {
-
-
                     val createdBy = AppPrefs(requireContext()).getString("CREATED_BY")
 
-                    viewModel.listingPrice.set(binding.etListingPrice.text.toString().toInt())
-                    viewModel.createdBy.set(createdBy)
-                    viewModel.name.set(binding.etProductName.text.toString())
-                    viewModel.description.set(binding.etDescription.text.toString())
-                    viewModel.subCategoryId.set(0)
-                    viewModel.spaDetailId.set(21)
-                    viewModel.mainCategoryId.set(mainCategoryId)
-                    viewModel.basePrice.set(binding.etBasePrice.text.toString().toInt())
-                    viewModel.addProduct()
+                    if (addType ==0){
+                        viewModel.listingPrice.set(binding.etListingPrice.text.toString().toInt())
+                        viewModel.createdBy.set(createdBy)
+                        viewModel.name.set(binding.etProductName.text.toString())
+                        viewModel.description.set(binding.etDescription.text.toString())
+                        viewModel.subCategoryId.set(0)
+                        viewModel.spaDetailId.set(21)
+                        viewModel.mainCategoryId.set(mainCategoryId)
+                        viewModel.basePrice.set(binding.etBasePrice.text.toString().toInt())
+                        viewModel.addProduct()
+                    }else{
+                        viewModel.productUpdateId.set(args.ProductListItem?.productId)
+                        viewModel.listingPrice.set(binding.etListingPrice.text.toString().toInt())
+                        viewModel.createdBy.set(createdBy)
+                        viewModel.name.set(binding.etProductName.text.toString())
+                        viewModel.description.set(binding.etDescription.text.toString())
+                        viewModel.subCategoryId.set(0)
+                        viewModel.spaDetailId.set(21)
+                        viewModel.mainCategoryId.set(mainCategoryId)
+                        viewModel.basePrice.set(binding.etBasePrice.text.toString().toInt())
+                        viewModel.updateProduct()
+                    }
+
+
+
 
                 }
 
@@ -440,9 +535,12 @@ class AddProductFragment : Fragment(), View.OnClickListener {
 
     private fun isValidation(): Boolean {
         when {
-            productsPhoto.size == 0 -> {
-                requireContext().showToast("Please upload atleast one image")
-            }
+
+
+            (addType == 0 && productsPhoto.size == 0) -> {
+                    requireContext().showToast("Please upload atleast one image")
+                }
+
 
             binding.etProductName.text.toString().trim().isEmpty() -> {
                 requireContext().showToast("Enter product name")

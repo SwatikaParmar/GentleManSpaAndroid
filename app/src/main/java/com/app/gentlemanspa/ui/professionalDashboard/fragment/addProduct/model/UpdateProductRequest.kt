@@ -5,26 +5,7 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class AddProductResponse(
-
-	@field:SerializedName("data")
-	val data: AddProductData? = null,
-
-	@field:SerializedName("messages")
-	val messages: String? = null,
-
-	@field:SerializedName("statusCode")
-	val statusCode: Int? = null,
-
-	@field:SerializedName("isSuccess")
-	val isSuccess: Boolean? = null
-) : Parcelable
-
-@Parcelize
-data class AddProductData(
-
-	@field:SerializedName("image")
-	val image: String? = null,
+data class UpdateProductRequest(
 
 	@field:SerializedName("listingPrice")
 	val listingPrice: Int? = null,
@@ -39,17 +20,14 @@ data class AddProductData(
 	val description: String? = null,
 
 	@field:SerializedName("subCategoryId")
-	val subCategoryId: String? = null,
+	val subCategoryId: Int? = null,
+
+	@field:SerializedName("spaDetailId")
+	val spaDetailId: Int? = null,
 
 	@field:SerializedName("mainCategoryId")
 	val mainCategoryId: Int? = null,
 
 	@field:SerializedName("basePrice")
-	val basePrice: Int? = null,
-
-	@field:SerializedName("status")
-	val status: Boolean? = null,
-
-	@field:SerializedName("createDate")
-	val createDate: String? = null
+	val basePrice: Int? = null
 ) : Parcelable

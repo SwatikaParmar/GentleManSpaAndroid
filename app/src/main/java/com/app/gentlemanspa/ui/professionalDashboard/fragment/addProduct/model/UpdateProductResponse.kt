@@ -1,14 +1,11 @@
 package com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model
 
-import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
 
-@Parcelize
-data class AddProductResponse(
+data class UpdateProductResponse(
 
 	@field:SerializedName("data")
-	val data: AddProductData? = null,
+	val data: UpdateProductData? = null,
 
 	@field:SerializedName("messages")
 	val messages: String? = null,
@@ -18,10 +15,9 @@ data class AddProductResponse(
 
 	@field:SerializedName("isSuccess")
 	val isSuccess: Boolean? = null
-) : Parcelable
+)
 
-@Parcelize
-data class AddProductData(
+data class UpdateProductData(
 
 	@field:SerializedName("image")
 	val image: String? = null,
@@ -39,17 +35,17 @@ data class AddProductData(
 	val description: String? = null,
 
 	@field:SerializedName("subCategoryId")
-	val subCategoryId: String? = null,
+	val subCategoryId: Any? = null,
 
 	@field:SerializedName("mainCategoryId")
-	val mainCategoryId: Int? = null,
+	val mainCategoryId: Any? = null,
 
 	@field:SerializedName("basePrice")
 	val basePrice: Int? = null,
 
 	@field:SerializedName("status")
-	val status: Boolean? = null,
+	val status: Any? = null,
 
 	@field:SerializedName("createDate")
-	val createDate: String? = null
-) : Parcelable
+	val createDate: Any? = null
+)
