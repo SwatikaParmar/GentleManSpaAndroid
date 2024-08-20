@@ -134,6 +134,10 @@ class ProductProfessionalFragment : Fragment(), View.OnClickListener {
                 val action = ProductProfessionalFragmentDirections.actionProductProfessionalFragmentToAddProductFragment(null,0)
                 findNavController().navigate(action)
             }
+
+            binding.ivArrowBack -> {
+                findNavController().popBackStack()
+            }
         }
 
     }

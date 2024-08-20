@@ -24,9 +24,11 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivArrowBack"
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="@dimen/_20sdp"
                 android:padding="@dimen/_3sdp"
+                android:onClick="@{onClick}"
                 android:src="@drawable/arrow_back"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -146,7 +148,7 @@
                     android:hint="Base Price"
                     android:imeOptions="actionNext"
                     android:includeFontPadding="false"
-                    android:inputType="text"
+                    android:inputType="numberDecimal"
                     android:padding="@dimen/_8sdp"
                     android:singleLine="true"
                     app:layout_constraintTop_toBottomOf="@+id/spProductCategories" />
@@ -163,7 +165,7 @@
                     android:hint="Listing Price"
                     android:imeOptions="actionNext"
                     android:includeFontPadding="false"
-                    android:inputType="text"
+                    android:inputType="numberDecimal"
                     android:padding="@dimen/_8sdp"
                     android:singleLine="true"
                     app:layout_constraintTop_toBottomOf="@+id/etBasePrice" />

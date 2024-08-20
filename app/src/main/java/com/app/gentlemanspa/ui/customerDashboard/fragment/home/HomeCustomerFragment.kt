@@ -30,6 +30,7 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.LocationIte
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductCategoriesItem
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.viewModel.HomeCustomerViewModel
 import com.app.gentlemanspa.utils.ViewModelFactory
+import com.app.gentlemanspa.utils.setVisible
 import com.app.gentlemanspa.utils.showToast
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -213,6 +214,7 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
                         it.data?.data?.let { it1 -> productCategoriesList.addAll(it1) }
                         setProductCategoriesAdapter()
 
+                        binding.clMain.setVisible()
                     }
 
                     Status.ERROR -> {

@@ -25,6 +25,7 @@ import androidx.core.content.FileProvider
 import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.app.gentlemanspa.R
 import com.app.gentlemanspa.base.MyApplication
@@ -197,6 +198,7 @@ class AddProductFragment : Fragment(), View.OnClickListener {
                         Status.SUCCESS -> {
                             hideProgress()
                             requireContext().showToast(messagesProduct)
+                            findNavController().popBackStack()
                         }
 
                         Status.ERROR -> {
@@ -236,6 +238,7 @@ class AddProductFragment : Fragment(), View.OnClickListener {
 
                             viewModel.uploadProductImage()*/
                             requireContext().showToast(it.data?.messages.toString())
+                            findNavController().popBackStack()
 
 
                         }
@@ -492,6 +495,10 @@ class AddProductFragment : Fragment(), View.OnClickListener {
         when(v) {
             binding.cvDisplayPicture -> {
                 setImagePickerBottomSheet()
+            }
+
+            binding.ivArrowBack->{
+                findNavController().popBackStack()
             }
 
             binding.btnAddProduct -> {
