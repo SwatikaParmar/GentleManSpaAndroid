@@ -17,20 +17,17 @@ import android.provider.OpenableColumns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.databinding.ObservableField
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.app.gentlemanspa.R
-import com.app.gentlemanspa.base.MyApplication
 import com.app.gentlemanspa.base.MyApplication.Companion.hideProgress
 import com.app.gentlemanspa.base.MyApplication.Companion.showProgress
+import com.app.gentlemanspa.databinding.BottomProductCategoryBinding
 import com.app.gentlemanspa.databinding.FragmentAddProductBinding
 import com.app.gentlemanspa.databinding.ImagePickerBottomBinding
 import com.app.gentlemanspa.network.InitialRepository
@@ -39,11 +36,13 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductCate
 import com.app.gentlemanspa.ui.professionalDashboard.activity.ProfessionalActivity
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.adapter.ProductCategoryAdapter
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.adapter.ProductPhotoAdapter
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.AddPhotoRequest
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.viewModel.AddProductViewModel
 import com.app.gentlemanspa.utils.AppPrefs
 import com.app.gentlemanspa.utils.CommonFunctions
 import com.app.gentlemanspa.utils.CommonFunctions.getTextRequestBodyParams
 import com.app.gentlemanspa.utils.CommonFunctions.prepareFilePart
+import com.app.gentlemanspa.utils.DecimalDigitsInputFilter
 import com.app.gentlemanspa.utils.ViewModelFactory
 import com.app.gentlemanspa.utils.showToast
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -62,7 +61,7 @@ class AddProductFragment : Fragment(), View.OnClickListener {
     private var addType: Int=0
     private var mainCategoryId: Int =0
     private var messagesProduct: String=""
-    private var productsPhoto: ArrayList<File> = ArrayList()
+    private var productsPhoto: ArrayList<AddPhotoRequest> = ArrayList()
     private var profileImage: File?= null
     private lateinit var binding : FragmentAddProductBinding
     private var productCategoriesList: ArrayList<ProductCategoriesItem> = ArrayList()
@@ -113,8 +112,13 @@ class AddProductFragment : Fragment(), View.OnClickListener {
             binding.etDescription.setText(data?.description)
 
         }
+         productsPhoto.add(AddPhotoRequest(profileImage,R.drawable.plus))
+        setProductPhotoAdapter()
         binding.onClick = this
         viewModel.getProductCategories()
+
+        binding.etBasePrice.filters = arrayOf(DecimalDigitsInputFilter(2))
+        binding.etListingPrice.filters = arrayOf(DecimalDigitsInputFilter(2))
     }
 
     private fun initObserver() {
@@ -132,7 +136,6 @@ class AddProductFragment : Fragment(), View.OnClickListener {
                         productCategoriesList.clear()
 
                         it.data?.data?.let { it1 -> productCategoriesList.addAll(it1) }
-                        setCategoriesProductAdapter()
 
                     }
 
@@ -161,7 +164,7 @@ class AddProductFragment : Fragment(), View.OnClickListener {
                                 listOfImages.add(
                                     prepareFilePart(
                                         "Images",
-                                        productsPhoto[i]
+                                        productsPhoto[i].image!!
                                     )
                                 )
                             }
@@ -253,55 +256,7 @@ class AddProductFragment : Fragment(), View.OnClickListener {
 
     }
 
-    private fun setCategoriesProductAdapter() {
-        val model = ProductCategoriesItem("", 0,false,0,"Select Product Categories","")
-        productCategoriesList.add(0, model)
 
-        val adapter = ProductCategoryAdapter(requireContext(), productCategoriesList)
-        binding.spProductCategories.adapter = adapter
-        binding.spProductCategories.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-                }
-
-                override fun onItemSelected(
-                    parent: AdapterView<*>?,
-                    view: View?,
-                    position: Int,
-                    id: Long,
-                ) {
-                    val value = parent!!.getItemAtPosition(position).toString()
-                    if (value == "Select Product Categories") {
-                        (view as TextView?)?.setTextColor(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.spinner_color
-                            )
-                        )
-
-                    } else {
-                        if (view != null) {
-                            (view as TextView).setTextColor(
-                                ContextCompat.getColor(
-                                    requireContext(),
-                                    R.color.black
-                                )
-                            )
-                        }
-                    }
-
-                    mainCategoryId = productCategoriesList[position].mainCategoryId
-                    //requireContext().showToast(productCategoriesList[position].categoryName)
-                }
-            }
-
-        for (i in productCategoriesList.indices){
-            if (productCategoriesList[i].mainCategoryId ==args.ProductListItem?.mainCategoryId){
-                binding.spProductCategories.setSelection(i)
-            }
-        }
-
-    }
 
 
     private var cameraLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -310,7 +265,7 @@ class AddProductFragment : Fragment(), View.OnClickListener {
             // val imageUri = result.data?.data
             profileImage = File(currentPhotoPath)
             compressImageFile(profileImage!!)
-            productsPhoto.add(profileImage!!)
+            productsPhoto.add(AddPhotoRequest(profileImage!!,0))
             setProductPhotoAdapter()
 
            // binding.ivProfile.setImageURI(Uri.fromFile(profileImage))
@@ -319,7 +274,15 @@ class AddProductFragment : Fragment(), View.OnClickListener {
     }
 
     private fun setProductPhotoAdapter() {
-        binding.rvProductsPhoto.adapter = ProductPhotoAdapter(productsPhoto)
+        val productPhotoAdapter = ProductPhotoAdapter(productsPhoto)
+        binding.rvProductsPhoto.adapter = productPhotoAdapter
+
+        productPhotoAdapter.setOnClickUploadProduct(object : ProductPhotoAdapter.UploadProductCallback{
+            override fun rootUploadProduct() {
+                setImagePickerBottomSheet()
+            }
+
+        })
     }
 
     private var  galleryLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -328,7 +291,7 @@ class AddProductFragment : Fragment(), View.OnClickListener {
             val imageUri = result.data?.data
             profileImage = uriToFile(imageUri!!)
             compressImageFile(profileImage!!)
-            productsPhoto.add(profileImage!!)
+            productsPhoto.add(AddPhotoRequest(profileImage!!,0))
             setProductPhotoAdapter()
             // Use the imageUri
         }
@@ -423,8 +386,6 @@ class AddProductFragment : Fragment(), View.OnClickListener {
             //openCamera()
             onPermissionsGranted?.invoke()
         } else {
-
-
             CommonFunctions.goToAppSettings(requireContext())
 
         }
@@ -493,8 +454,8 @@ class AddProductFragment : Fragment(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         when(v) {
-            binding.cvDisplayPicture -> {
-                setImagePickerBottomSheet()
+            binding.tvProductCategory -> {
+                setProductCategoryBottom()
             }
 
             binding.ivArrowBack->{
@@ -515,6 +476,7 @@ class AddProductFragment : Fragment(), View.OnClickListener {
                         viewModel.spaDetailId.set(21)
                         viewModel.mainCategoryId.set(mainCategoryId)
                         viewModel.basePrice.set(binding.etBasePrice.text.toString().toInt())
+                        viewModel.stock.set(binding.etInstock.text.toString().toInt())
                         viewModel.addProduct()
                     }else{
                         viewModel.productUpdateId.set(args.ProductListItem?.productId)
@@ -526,6 +488,7 @@ class AddProductFragment : Fragment(), View.OnClickListener {
                         viewModel.spaDetailId.set(21)
                         viewModel.mainCategoryId.set(mainCategoryId)
                         viewModel.basePrice.set(binding.etBasePrice.text.toString().toInt())
+                        viewModel.stock.set(binding.etInstock.text.toString().toInt())
                         viewModel.updateProduct()
                     }
 
@@ -536,6 +499,40 @@ class AddProductFragment : Fragment(), View.OnClickListener {
 
             }
         }
+
+    }
+
+
+
+    private fun setProductCategoryBottom() {
+        val bottomSheet = BottomSheetDialog(requireContext(), R.style.DialogTheme_transparent)
+        val bottomSheetLayout = BottomProductCategoryBinding.inflate(layoutInflater)
+        bottomSheet.setContentView(bottomSheetLayout.root)
+
+        val productCategoryAdapter = ProductCategoryAdapter(productCategoriesList)
+        bottomSheetLayout.rvProductCategory.adapter = productCategoryAdapter
+
+        productCategoryAdapter.setOnClickUploadProduct(object : ProductCategoryAdapter.ProductCategoryCallback{
+            override fun rootProductCategory(item: ProductCategoriesItem) {
+                binding.tvProductCategory.text= item.categoryName
+                mainCategoryId = item.mainCategoryId
+                bottomSheet.dismiss()
+            }
+
+        })
+
+
+
+        bottomSheet.behavior.maxWidth = Resources.getSystem().displayMetrics.widthPixels
+        bottomSheet.setCancelable(true)
+        bottomSheet.show()
+
+        bottomSheet.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+
+        bottomSheetLayout.ivCross.setOnClickListener {
+            bottomSheet.dismiss()
+        }
+
 
     }
 
@@ -553,8 +550,8 @@ class AddProductFragment : Fragment(), View.OnClickListener {
                 requireContext().showToast("Enter product name")
             }
 
-            binding.spProductCategories.selectedItem.toString() =="Select Product Categories" -> {
-                requireContext().showToast("Please select product categories")
+            binding.tvProductCategory.text.toString().isEmpty()  -> {
+                requireContext().showToast("Please select product category")
             }
 
             binding.etBasePrice.text.toString().trim().isEmpty() -> {
@@ -570,6 +567,10 @@ class AddProductFragment : Fragment(), View.OnClickListener {
                 requireContext().showToast(
                     "Please do not enter Base Price more than Listing Price"
                 )
+            }
+
+            binding.etInstock.text.toString().trim().isEmpty() -> {
+                requireContext().showToast("Enter in stock")
             }
 
             binding.etDescription.text.toString().isEmpty() -> {

@@ -47,5 +47,11 @@ data class UpdateProductData(
 	val status: Any? = null,
 
 	@field:SerializedName("createDate")
-	val createDate: Any? = null
+	val createDate: Any? = null,
+
+	@field:SerializedName("stock")
+	val stock: Int? = null,
+
+	@field:SerializedName("quantity")
+	val quantity: Int? = null
 )

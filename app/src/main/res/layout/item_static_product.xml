@@ -7,31 +7,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/clRemove"
-            android:layout_width="@dimen/_15sdp"
-            android:layout_height="@dimen/_15sdp"
-            android:background="@drawable/bg_circle_white"
-            android:elevation="@dimen/_5sdp"
-            android:visibility="gone"
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivRemove"
+            android:layout_width="@dimen/_10sdp"
+            android:layout_height="@dimen/_10sdp"
+            android:elevation="@dimen/_15sdp"
+            android:src="@drawable/cross"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/cvDisplayPicture">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivRemove"
-                android:layout_width="@dimen/_12sdp"
-                android:layout_height="@dimen/_12sdp"
-                android:elevation="@dimen/_7sdp"
-                android:src="@drawable/cross"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                 />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-
+            app:layout_constraintTop_toTopOf="@+id/cvDisplayPicture" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cvDisplayPicture"
@@ -49,7 +32,7 @@
 
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/plusBtn"
+                    android:id="@+id/addProfileBtn"
                     android:layout_width="@dimen/_30sdp"
                     android:layout_height="@dimen/_30sdp"
                     android:layout_centerInParent="true"
@@ -58,17 +41,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/addProfileBtn"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_centerInParent="true"
-                    android:visibility="gone"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/banner_placeholder" />
             </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 
         </com.google.android.material.card.MaterialCardView>

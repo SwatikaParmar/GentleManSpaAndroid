@@ -16,6 +16,8 @@
         android:layout_height="match_parent"
         android:background="@color/black_bg">
 
+
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/clHeader"
             android:layout_width="match_parent"
@@ -68,6 +70,7 @@
                     android:backgroundTint="@color/white"
                     app:cardCornerRadius="@dimen/_10sdp"
                     app:cardUseCompatPadding="true"
+                    android:visibility="gone"
                     android:onClick="@{onClick}"
                     android:layout_marginStart="@dimen/_15sdp"
                     app:layout_constraintStart_toStartOf="parent"
@@ -92,17 +95,15 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvProductsPhoto"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_5sdp"
                     android:nestedScrollingEnabled="false"
-                    android:orientation="horizontal"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:layout_constraintBottom_toBottomOf="@id/cvDisplayPicture"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/cvDisplayPicture"
-                    app:layout_constraintTop_toTopOf="@id/cvDisplayPicture"
-                    tools:itemCount="5"
+                    android:orientation="vertical"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:spanCount="3"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:itemCount="10"
                     tools:listitem="@layout/item_product_photo" />
 
 
@@ -118,23 +119,35 @@
                     android:elevation="@dimen/_2sdp"
                     android:fontFamily="@font/poppins"
                     android:hint="Product Name"
+                    android:textSize="@dimen/_12ssp"
+                    android:textColor="@color/black"
                     android:imeOptions="actionNext"
                     android:includeFontPadding="false"
                     android:inputType="text"
                     android:padding="@dimen/_8sdp"
                     android:singleLine="true"
-                    app:layout_constraintTop_toBottomOf="@+id/cvDisplayPicture" />
+                    app:layout_constraintTop_toBottomOf="@+id/rvProductsPhoto" />
 
-
-                <Spinner
-                    android:id="@+id/spProductCategories"
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvProductCategory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/_15sdp"
-                    android:layout_marginTop="@dimen/_15sdp"
+                    android:layout_marginTop="@dimen/_20sdp"
                     android:background="@drawable/bg_edit_text"
-                    android:elevation="@dimen/_3sdp"
+                    android:elevation="@dimen/_2sdp"
+                    android:fontFamily="@font/poppins"
+                    android:onClick="@{onClick}"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_12ssp"
+                    android:hint="Select product category"
+                    android:imeOptions="actionNext"
+                    android:includeFontPadding="false"
+                    android:inputType="text"
+                    android:padding="@dimen/_8sdp"
+                    android:singleLine="true"
                     app:layout_constraintTop_toBottomOf="@+id/etProductName" />
+
 
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/etBasePrice"
@@ -144,6 +157,8 @@
                     android:layout_marginTop="@dimen/_15sdp"
                     android:background="@drawable/bg_edit_text"
                     android:elevation="@dimen/_2sdp"
+                    android:textSize="@dimen/_12ssp"
+                    android:textColor="@color/black"
                     android:fontFamily="@font/poppins"
                     android:hint="Base Price"
                     android:imeOptions="actionNext"
@@ -151,7 +166,7 @@
                     android:inputType="numberDecimal"
                     android:padding="@dimen/_8sdp"
                     android:singleLine="true"
-                    app:layout_constraintTop_toBottomOf="@+id/spProductCategories" />
+                    app:layout_constraintTop_toBottomOf="@+id/tvProductCategory" />
 
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/etListingPrice"
@@ -162,6 +177,8 @@
                     android:background="@drawable/bg_edit_text"
                     android:elevation="@dimen/_2sdp"
                     android:fontFamily="@font/poppins"
+                    android:textSize="@dimen/_12ssp"
+                    android:textColor="@color/black"
                     android:hint="Listing Price"
                     android:imeOptions="actionNext"
                     android:includeFontPadding="false"
@@ -169,6 +186,25 @@
                     android:padding="@dimen/_8sdp"
                     android:singleLine="true"
                     app:layout_constraintTop_toBottomOf="@+id/etBasePrice" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/etInstock"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_15sdp"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:background="@drawable/bg_edit_text"
+                    android:elevation="@dimen/_2sdp"
+                    android:fontFamily="@font/poppins"
+                    android:hint="In Stock"
+                    android:textSize="@dimen/_12ssp"
+                    android:textColor="@color/black"
+                    android:imeOptions="actionNext"
+                    android:includeFontPadding="false"
+                    android:inputType="numberDecimal"
+                    android:padding="@dimen/_8sdp"
+                    android:singleLine="true"
+                    app:layout_constraintTop_toBottomOf="@+id/etListingPrice" />
 
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/etDescription"
@@ -181,12 +217,14 @@
                     android:fontFamily="@font/poppins"
                     android:hint="Description"
                     android:gravity="top"
+                    android:textSize="@dimen/_12ssp"
+                    android:textColor="@color/black"
                     android:imeOptions="actionDone"
                     android:includeFontPadding="false"
                     android:padding="@dimen/_8sdp"
                     android:minHeight="@dimen/_100sdp"
                     android:maxHeight="@dimen/_100sdp"
-                    app:layout_constraintTop_toBottomOf="@+id/etListingPrice" />
+                    app:layout_constraintTop_toBottomOf="@+id/etInstock" />
 
 
                 <com.google.android.material.button.MaterialButton

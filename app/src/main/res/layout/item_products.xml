@@ -27,7 +27,7 @@
                 android:id="@+id/ivService"
                 android:layout_width="@dimen/_80sdp"
                 android:layout_height="@dimen/_80sdp"
-                android:src="@drawable/service_placeholder"
+                android:src="@drawable/no_product"
                 app:strokeColor="@color/white"
                 app:strokeWidth="@dimen/_1sdp"
                 android:scaleType="fitXY"

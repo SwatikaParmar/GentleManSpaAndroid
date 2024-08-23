@@ -1,53 +1,48 @@
 package com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.TextView
-import androidx.core.content.ContextCompat
-import com.app.gentlemanspa.R
+import androidx.recyclerview.widget.RecyclerView
+import com.app.gentlemanspa.databinding.ItemProductCategoryBottomBinding
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductCategoriesItem
 
 
-class ProductCategoryAdapter(context: Context, private val list: ArrayList<ProductCategoriesItem>) :
-    ArrayAdapter<String>(context, R.layout.item_spinner) {
+class ProductCategoryAdapter(private val productCategoriesList: ArrayList<ProductCategoriesItem>) : RecyclerView.Adapter<ProductCategoryAdapter.ViewHolder>(){
 
-    override fun getItem(position: Int): String {
-        return list[position].categoryName
-    }
+    private lateinit var productCategoryCallback: ProductCategoryCallback
+    class ViewHolder(val binding : ItemProductCategoryBottomBinding) : RecyclerView.ViewHolder(binding.root)
 
-    override fun getItemId(position: Int): Long {
-        try {
-            return list[position].mainCategoryId.toLong()
-        } catch (e: NumberFormatException) {
 
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val item = productCategoriesList[position]
+        holder.binding.apply {
+            tvTitle.text = item.categoryName
+            root.setOnClickListener {
+                productCategoryCallback.rootProductCategory(item)
+            }
         }
-        return 0.toLong()
     }
 
-    override fun getCount(): Int {
-        return list.size
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val binding = ItemProductCategoryBottomBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        return ViewHolder(binding)
     }
 
-    override fun isEnabled(position: Int): Boolean {
-        return position != 0
+
+    override fun getItemCount(): Int {
+        return productCategoriesList.size
     }
 
-    override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val layout =
-            LayoutInflater.from(parent.context).inflate(R.layout.item_spinner, parent, false)
-        layout.setBackgroundColor(ContextCompat.getColor(context, R.color.white))
-        val textView = layout.findViewById<TextView>(android.R.id.text1)
-        if (position == 0) {
-            textView.height = 0
-            textView.visibility = View.GONE
-        } else {
-            textView.setTextColor(ContextCompat.getColor(context, R.color.black))
-            textView.text = list[position].categoryName
 
-        }
-        return layout
+    fun setOnClickUploadProduct(click : ProductCategoryCallback){
+        productCategoryCallback = click
     }
+
+
+
+    interface ProductCategoryCallback {
+        fun rootProductCategory(item: ProductCategoriesItem)
+    }
+
 }

@@ -29,5 +29,11 @@ data class AddProductRequest(
 	val mainCategoryId: Int? = null,
 
 	@field:SerializedName("basePrice")
-	val basePrice: Int? = null
+	val basePrice: Int? = null,
+
+	@field:SerializedName("stock")
+	val stock: Int? = null,
+
+	@field:SerializedName("quantity")
+	val quantity: Int? = null
 ) : Parcelable

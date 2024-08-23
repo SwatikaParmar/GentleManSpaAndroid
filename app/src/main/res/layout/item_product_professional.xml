@@ -64,7 +64,7 @@
                             android:id="@+id/ivService"
                             android:layout_width="@dimen/_80sdp"
                             android:layout_height="@dimen/_80sdp"
-                            android:src="@drawable/service_placeholder"
+                            android:src="@drawable/no_product"
                             app:strokeColor="@color/white"
                             app:strokeWidth="@dimen/_1sdp"
                             android:scaleType="fitXY"
@@ -79,7 +79,7 @@
                             android:layout_height="wrap_content"
                             android:text="Face and Body Bleach Services"
                             android:textColor="@color/light_black_item"
-                            android:textSize="@dimen/_13ssp"
+                            android:textSize="@dimen/_12ssp"
                             android:includeFontPadding="false"
                             android:maxLines="2"
                             android:ellipsize="end"
@@ -116,7 +116,7 @@
                             android:text="$60"
                             android:textColor="@color/light_grey"
                             android:fontFamily="@font/poppins_medium"
-                            android:textSize="@dimen/_13ssp"
+                            android:textSize="@dimen/_12ssp"
                             android:includeFontPadding="false"
                             android:layout_marginTop="@dimen/_2sdp"
                             android:layout_marginStart="@dimen/_8sdp"
@@ -132,7 +132,7 @@
                             android:text="$70"
                             android:textColor="@color/app_color"
                             android:fontFamily="@font/poppins"
-                            android:textSize="@dimen/_13ssp"
+                            android:textSize="@dimen/_11ssp"
                             android:includeFontPadding="false"
                             android:layout_marginTop="@dimen/_2sdp"
                             android:layout_marginStart="@dimen/_3sdp"
@@ -147,6 +147,21 @@
                             app:layout_constraintEnd_toEndOf="@id/tvLessRupees"
                             app:layout_constraintTop_toTopOf="@id/tvLessRupees"
                             app:layout_constraintBottom_toBottomOf="@id/tvLessRupees"
+                            />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvInStock"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="In Stock: 20"
+                            android:textColor="@color/light_grey"
+                            android:fontFamily="@font/poppins_medium"
+                            android:textSize="@dimen/_10ssp"
+                            android:includeFontPadding="false"
+                            android:layout_marginTop="@dimen/_2sdp"
+                            android:layout_marginStart="@dimen/_8sdp"
+                            app:layout_constraintTop_toBottomOf="@+id/tvRupees"
+                            app:layout_constraintStart_toEndOf="@+id/ivService"
                             />
 
                         <androidx.appcompat.widget.AppCompatImageView

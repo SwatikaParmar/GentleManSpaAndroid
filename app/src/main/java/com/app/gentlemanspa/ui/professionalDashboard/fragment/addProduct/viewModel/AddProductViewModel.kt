@@ -37,6 +37,8 @@ class AddProductViewModel (private var initialRepository: InitialRepository) : A
     val  spaDetailId = ObservableField<Int>()
     val  mainCategoryId = ObservableField<Int>()
     val  basePrice = ObservableField<Int>()
+    val  stock = ObservableField<Int>()
+    val  quantity = ObservableField<Int>()
     val  productUpdateId = ObservableField<Int>()
     val  productId = ObservableField<RequestBody>()
     val  productImages = ObservableField<ArrayList<MultipartBody.Part>>()
@@ -75,7 +77,7 @@ class AddProductViewModel (private var initialRepository: InitialRepository) : A
     fun addProduct() {
         resultAddProduct.value = Resource.loading(null)
         viewModelScope.launch {
-            initialRepository.addProduct(AddProductRequest(listingPrice.get(), createdBy.get(),name.get(),description.get(), subCategoryId.get(), spaDetailId.get(), mainCategoryId.get(), basePrice.get()))
+            initialRepository.addProduct(AddProductRequest(listingPrice.get(), createdBy.get(),name.get(),description.get(), subCategoryId.get(), spaDetailId.get(), mainCategoryId.get(), basePrice.get(),stock.get(),quantity.get()))
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->
@@ -106,7 +108,7 @@ class AddProductViewModel (private var initialRepository: InitialRepository) : A
     fun updateProduct() {
         resultUpdateProduct.value = Resource.loading(null)
         viewModelScope.launch {
-            initialRepository.updateProduct(UpdateProductRequest(listingPrice.get(),productUpdateId.get(),name.get(),description.get(),subCategoryId.get(),spaDetailId.get(),mainCategoryId.get(),basePrice.get()))
+            initialRepository.updateProduct(UpdateProductRequest(listingPrice.get(),productUpdateId.get(),name.get(),description.get(),subCategoryId.get(),spaDetailId.get(),mainCategoryId.get(),basePrice.get(),stock.get(),quantity.get()))
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->

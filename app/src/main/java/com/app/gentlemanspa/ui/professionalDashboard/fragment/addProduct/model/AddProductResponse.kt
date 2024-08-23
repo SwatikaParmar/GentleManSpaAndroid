@@ -51,5 +51,11 @@ data class AddProductData(
 	val status: Boolean? = null,
 
 	@field:SerializedName("createDate")
-	val createDate: String? = null
+	val createDate: String? = null,
+
+	@field:SerializedName("stock")
+	val stock: Int? = null,
+
+	@field:SerializedName("quantity")
+	val quantity: Int? = null
 ) : Parcelable

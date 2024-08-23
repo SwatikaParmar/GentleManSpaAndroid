@@ -143,7 +143,6 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
             }
         }
 
-
         viewModel.resultBanner.observe(this) {
             it?.let { result ->
                 when (result.status) {

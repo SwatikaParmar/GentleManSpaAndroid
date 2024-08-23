@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.app.gentlemanspa.R
 import com.app.gentlemanspa.databinding.ItemProductsBinding
 import com.app.gentlemanspa.network.ApiConstants
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductsListItem
@@ -35,7 +36,8 @@ class ProductsAdapter(var productsList: ArrayList<ProductsListItem>) : RecyclerV
             tvServiceName.text = item.name
             tvRupees.text = "$${item.listingPrice}"
             tvLessRupees.text = "$${item.basePrice}"
-            Glide.with(holder.itemView.context).load(ApiConstants.BASE_FILE +item.image).into(ivService)
+            Glide.with(holder.itemView.context).load(ApiConstants.BASE_FILE +item.image).error(R.drawable.no_product).placeholder(
+                R.drawable.no_product).into(ivService)
 
             ivMinus.setOnClickListener {
 

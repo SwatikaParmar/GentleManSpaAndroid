@@ -49,8 +49,9 @@ class ProductProfessionalAdapter(private var productsList: ArrayList<ProductsLis
             tvServiceName.text = item.name
             tvDescription.text = item.description
             tvRupees.text = "$${item.listingPrice}"
+            tvInStock.text = "In Stock:${item.stock}"
             tvLessRupees.text = "$${item.basePrice}"
-            Glide.with(holder.itemView.context).load(ApiConstants.BASE_FILE +item.image).into(ivService)
+            Glide.with(holder.itemView.context).load(ApiConstants.BASE_FILE +item.image).error(R.drawable.no_product).placeholder(R.drawable.no_product).into(ivService)
 
 
             root.setOnClickListener {

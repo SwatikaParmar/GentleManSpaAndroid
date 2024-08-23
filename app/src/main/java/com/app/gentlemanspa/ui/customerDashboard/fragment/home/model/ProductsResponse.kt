@@ -53,6 +53,12 @@ data class ProductsListItem(
 	@field:SerializedName("subCategoryId")
 	val subCategoryId: Int? = null,
 
+	@field:SerializedName("stock")
+	val stock: Int? = null,
+
+	@field:SerializedName("quantity")
+	val quantity: Int? = null
+
 ) : Parcelable
 
 @Parcelize
