@@ -2,8 +2,12 @@ package com.app.gentlemanspa.utils
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
+import android.os.Environment
+import android.provider.OpenableColumns
 import android.provider.Settings
 import android.text.Editable
 import android.text.Spannable
@@ -17,17 +21,21 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.FragmentActivity
 import com.app.gentlemanspa.R
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.text.DateFormat
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
 
@@ -181,6 +189,43 @@ object CommonFunctions {
         }
 
 
+    fun uriToFile(uri: Uri, requireContext: Context, requireActivity: FragmentActivity): File? {
+        val cursor = requireActivity.contentResolver.query(uri, null, null, null, null)
+        return if (cursor != null && cursor.moveToFirst()) {
+            val index = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+            val name = cursor.getString(index)
+            val file = File(requireContext.cacheDir, name)
+            val inputStream = requireActivity.contentResolver.openInputStream(uri)
+            val outputStream = FileOutputStream(file)
+            inputStream?.copyTo(outputStream)
+            cursor.close()
+            inputStream?.close()
+            outputStream.close()
+            file
+        } else {
+            null
+        }
+    }
+
+    @Throws(IOException::class)
+    fun createImageFile(requireActivity: FragmentActivity): File {
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
+        val imageFileName = "JPEG_" + timeStamp + "_"
+        val storageDir: File? =
+            requireActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile(imageFileName, ".jpg", storageDir)
+    }
+
+    fun compressImageFile(imageFile: File) {
+        val bitmap = BitmapFactory.decodeFile(imageFile.absolutePath)
+        val outputStream = FileOutputStream(imageFile)
+        bitmap.compress(
+            Bitmap.CompressFormat.JPEG,
+            80,
+            outputStream
+        ) // 80 is the compression quality
+        outputStream.close()
+    }
 
 
 }

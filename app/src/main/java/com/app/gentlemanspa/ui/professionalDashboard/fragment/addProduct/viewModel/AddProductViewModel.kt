@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductCategoriesResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductsResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.productDetail.model.ProductDetailResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.AddProductRequest
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.AddProductResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.UpdateProductRequest
@@ -42,11 +43,13 @@ class AddProductViewModel (private var initialRepository: InitialRepository) : A
     val  productUpdateId = ObservableField<Int>()
     val  productId = ObservableField<RequestBody>()
     val  productImages = ObservableField<ArrayList<MultipartBody.Part>>()
+    val id = ObservableField<Int>()
 
     val resultProductCategories = MutableLiveData<Resource<ProductCategoriesResponse>>()
     val resultAddProduct= MutableLiveData<Resource<AddProductResponse>>()
     val resultUpdateProduct= MutableLiveData<Resource<UpdateProductResponse>>()
     val resultUploadProductImage= MutableLiveData<Resource<UploadProductImageResponse>>()
+    val resultProductDetail= MutableLiveData<Resource<ProductDetailResponse>>()
 
     fun getProductCategories() {
         resultProductCategories.value = Resource.loading(null)
@@ -151,6 +154,33 @@ class AddProductViewModel (private var initialRepository: InitialRepository) : A
                             Resource.success(message = it.messages, data = it)
                     }  else {
                         resultUploadProductImage.value =
+                            Resource.error(data = null, message = it?.messages)
+                    }
+                }
+        }
+    }
+
+
+    fun getProductDetails() {
+        resultProductDetail.value = Resource.loading(null)
+        viewModelScope.launch {
+            initialRepository.getProductDetails(id.get())
+                .onStart { }
+                .onCompletion { }
+                .catch { exception ->
+                    if (!CommonFunctions.getError(exception)!!.contains("401"))
+                        resultProductDetail.value =
+                            Resource.error(
+                                data = null,
+                                message = CommonFunctions.getError(exception)
+                            )
+                }
+                .collect {
+                    if (it?.statusCode == 200) {
+                        resultProductDetail.value =
+                            Resource.success(message = it.messages, data = it)
+                    } else {
+                        resultProductDetail.value =
                             Resource.error(data = null, message = it?.messages)
                     }
                 }

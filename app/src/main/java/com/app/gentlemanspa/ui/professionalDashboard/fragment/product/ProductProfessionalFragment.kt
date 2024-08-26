@@ -68,7 +68,6 @@ class ProductProfessionalFragment : Fragment(), View.OnClickListener {
                     Status.SUCCESS -> {
                         MyApplication.hideProgress()
                         productsList.clear()
-
                         it.data?.data?.dataList?.let { it1 -> productsList.addAll(it1) }
                         setProductsAdapter()
 
@@ -86,8 +85,6 @@ class ProductProfessionalFragment : Fragment(), View.OnClickListener {
             it?.let { result ->
                 when (result.status) {
                     Status.LOADING -> {
-
-                        //MyApplication.showProgress(requireContext())
                     }
 
                     Status.SUCCESS -> {
