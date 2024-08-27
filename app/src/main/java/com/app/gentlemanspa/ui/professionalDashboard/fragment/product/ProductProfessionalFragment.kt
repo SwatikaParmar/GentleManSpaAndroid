@@ -61,7 +61,6 @@ class ProductProfessionalFragment : Fragment(), View.OnClickListener {
             it?.let { result ->
                 when (result.status) {
                     Status.LOADING -> {
-
                         MyApplication.showProgress(requireContext())
                     }
 
@@ -110,7 +109,8 @@ class ProductProfessionalFragment : Fragment(), View.OnClickListener {
 
         productProfessionalAdapter.setOnClickProductProfessional(object : ProductProfessionalAdapter.ProductProfessionalCallbacks {
             override fun rootProductProfessional(item: ProductsListItem) {
-
+                val action = ProductProfessionalFragmentDirections.actionProductProfessionalFragmentToProductDetailProfessionalFragment(item.productId)
+                findNavController().navigate(action)
             }
 
             override fun deleteProductItem(item: ProductsListItem, position: Int) {

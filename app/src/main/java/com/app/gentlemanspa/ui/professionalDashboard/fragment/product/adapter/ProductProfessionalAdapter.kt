@@ -54,7 +54,7 @@ class ProductProfessionalAdapter(private var productsList: ArrayList<ProductsLis
             Glide.with(holder.itemView.context).load(ApiConstants.BASE_FILE +item.image).error(R.drawable.no_product).placeholder(R.drawable.no_product).into(ivService)
 
 
-            root.setOnClickListener {
+            cvProduct.setOnClickListener {
                 productProfessionalCallbacks.rootProductProfessional(item)
             }
 

@@ -71,6 +71,18 @@
         <action
             android:id="@+id/action_productProfessionalFragment_to_addProductFragment"
             app:destination="@id/addProductFragment" />
+        <action
+            android:id="@+id/action_productProfessionalFragment_to_productDetailProfessionalFragment"
+            app:destination="@id/productDetailProfessionalFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/productDetailProfessionalFragment"
+        android:name="com.app.gentlemanspa.ui.professionalDashboard.fragment.productDetail.ProductDetailProfessionalFragment"
+        android:label="ProductDetailProfessionalFragment"
+        tools:layout="@layout/fragment_product_detail_professional">
+        <argument
+            android:name="productId"
+            app:argType="integer" />
     </fragment>
 
 

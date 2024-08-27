@@ -15,6 +15,7 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.serviceDetail.viewMode
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.viewModel.AddProductViewModel
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.viewModel.UpdateProfessionalViewModel
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.product.viewModel.ProductProfessionalViewModel
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.productDetail.viewModel.ProductDetailProfessionalViewModel
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.profile.viewModel.ProfileProfessionalDetailViewModel
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.viewModel.ScheduleViewModel
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.selectCountry.viewModel.SelectCountryViewModel
@@ -90,6 +91,10 @@ class ViewModelFactory(
 
             modelClass.isAssignableFrom(ProductProfessionalViewModel::class.java) -> {
                 return ProductProfessionalViewModel(repository) as T
+            }
+
+            modelClass.isAssignableFrom(ProductDetailProfessionalViewModel::class.java) -> {
+                return ProductDetailProfessionalViewModel(repository) as T
             }
 
            /*
