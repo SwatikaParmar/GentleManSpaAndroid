@@ -8,6 +8,7 @@ import com.app.gentlemanspa.base.MyApplication.Companion.context
 import com.app.gentlemanspa.databinding.ItemProductPhotoBinding
 import com.app.gentlemanspa.databinding.ItemProductProfessionalBinding
 import com.app.gentlemanspa.databinding.ItemStaticProductBinding
+import com.app.gentlemanspa.network.ApiConstants.BASE_FILE
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.AddPhotoRequest
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.product.adapter.ProductProfessionalAdapter.ViewHolder
 import com.app.gentlemanspa.utils.setGone
@@ -41,7 +42,12 @@ class ProductPhotoAdapter(private var productPhoto: ArrayList<AddPhotoRequest>) 
         }else{
 
             holder.binding.apply {
-                Glide.with(context).load(productPhoto[position].image).into(addProfileBtn)
+                if (productPhoto[position].image != null){
+                    Glide.with(context).load(productPhoto[position].image).into(addProfileBtn)
+                }else{
+                    Glide.with(context).load(BASE_FILE+productPhoto[position].imageApi).into(addProfileBtn)
+                }
+
                 plusBtn.setGone()
                 addProfileBtn.setVisible()
                 clRemove.setVisible()
