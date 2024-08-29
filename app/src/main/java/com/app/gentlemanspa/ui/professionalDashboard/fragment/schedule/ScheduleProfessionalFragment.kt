@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.app.gentlemanspa.base.MyApplication
+import com.app.gentlemanspa.base.MyApplication.Companion.showProgress
 import com.app.gentlemanspa.databinding.FragmentScheduleProfessionalBinding
 import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.network.Status
@@ -71,7 +72,7 @@ class ScheduleProfessionalFragment : Fragment() {
             it?.let { result ->
                 when (result.status) {
                     Status.LOADING -> {
-                        MyApplication.showProgress(requireContext())
+                        showProgress(requireContext())
                     }
 
                     Status.SUCCESS -> {

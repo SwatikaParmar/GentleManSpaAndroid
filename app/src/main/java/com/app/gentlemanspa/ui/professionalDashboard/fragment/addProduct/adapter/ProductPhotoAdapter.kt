@@ -35,10 +35,7 @@ class ProductPhotoAdapter(private var productPhoto: ArrayList<AddPhotoRequest>) 
                 root.setOnClickListener {
                     uploadProductCallback.rootUploadProduct()
                 }
-
             }
-
-
         }else{
 
             holder.binding.apply {
@@ -60,7 +57,6 @@ class ProductPhotoAdapter(private var productPhoto: ArrayList<AddPhotoRequest>) 
             }
 
         }
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -68,17 +64,13 @@ class ProductPhotoAdapter(private var productPhoto: ArrayList<AddPhotoRequest>) 
         return ViewHolder(binding)
     }
 
-
     override fun getItemCount(): Int {
         return productPhoto.size
     }
 
-
     fun setOnClickUploadProduct(click : UploadProductCallback){
         uploadProductCallback = click
     }
-
-
 
     interface UploadProductCallback {
         fun rootUploadProduct()

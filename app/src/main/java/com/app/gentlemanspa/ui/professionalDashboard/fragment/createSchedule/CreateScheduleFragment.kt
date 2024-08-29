@@ -45,13 +45,13 @@ class CreateScheduleFragment : Fragment(), View.OnClickListener {
         val bottomSheet = BottomSheetDialog(requireContext(), R.style.DialogTheme_transparent)
         val bottomSheetLayout = BottomTimePickerBinding.inflate(layoutInflater)
         bottomSheet.setContentView(bottomSheetLayout.root)
-
         // Adjust the layout parameters for full screen
         val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout.root.parent as View)
         bottomSheetBehavior.peekHeight = Resources.getSystem().displayMetrics.heightPixels
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 
         // Set the TimePicker to 12-hour format
+
         bottomSheetLayout.timePicker.setIs24HourView(false)
 
         bottomSheet.setCancelable(false)
@@ -64,7 +64,6 @@ class CreateScheduleFragment : Fragment(), View.OnClickListener {
             // Determine AM/PM
             val isAM = hourOfDay < 12
             period = if (isAM) "AM" else "PM"
-
             // Round minutes to the nearest 30-minute interval
             val roundedMinute = if (minute % 30 == 0) minute else if (minute < 30) 0 else 30
             bottomSheetLayout.timePicker.minute = roundedMinute
@@ -75,7 +74,6 @@ class CreateScheduleFragment : Fragment(), View.OnClickListener {
         bottomSheetLayout.tvDone.setOnClickListener {
             val hour = bottomSheetLayout.timePicker.hour
             val minute = bottomSheetLayout.timePicker.minute
-
             // Adjust hour for 12-hour format
             val displayHour = if (hour % 12 == 0) 12 else hour % 12
 
@@ -136,6 +134,7 @@ class CreateScheduleFragment : Fragment(), View.OnClickListener {
 
             val isAM = hour < 12
             period = if (isAM) "AM" else "PM"
+
 
             // Update text views with formatted time
             binding.tvEndHour.text = displayHour.toString().padStart(2, '0')

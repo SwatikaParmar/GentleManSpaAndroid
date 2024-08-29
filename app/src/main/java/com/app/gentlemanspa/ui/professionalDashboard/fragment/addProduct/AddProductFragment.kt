@@ -92,7 +92,7 @@ class AddProductFragment : Fragment(), View.OnClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = FragmentAddProductBinding.inflate(layoutInflater, container, false)
         return binding.root
