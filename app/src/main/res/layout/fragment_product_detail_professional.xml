@@ -62,15 +62,40 @@
                     android:layout_height="match_parent"
                     android:visibility="gone">
 
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/ivProduct"
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/cvSlider"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/_120sdp"
-                        android:src="@drawable/service_placeholder"
-                        android:layout_marginHorizontal="@dimen/_20sdp"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        />
+                        android:layout_height="@dimen/_150sdp"
+                        android:layout_marginHorizontal="@dimen/_8sdp"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <androidx.viewpager2.widget.ViewPager2
+                                android:id="@+id/vpBanner"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent" />
+
+                            <com.google.android.material.tabs.TabLayout
+                                android:id="@+id/tlBanner"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:background="@android:color/transparent"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:tabBackground="@drawable/tab_indicator_circle"
+                                app:tabGravity="center"
+                                app:tabIndicator="@android:color/transparent"
+                                app:tabIndicatorColor="@null" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tvProductName"
@@ -84,7 +109,7 @@
                         android:layout_marginTop="@dimen/_10sdp"
                         android:layout_marginHorizontal="@dimen/_8sdp"
                         android:fontFamily="@font/poppins_semibold"
-                        app:layout_constraintTop_toBottomOf="@+id/ivProduct" />
+                        app:layout_constraintTop_toBottomOf="@+id/cvSlider" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tvTime"

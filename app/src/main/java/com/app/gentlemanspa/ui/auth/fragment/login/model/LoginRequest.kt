@@ -7,11 +7,11 @@ import com.google.gson.annotations.SerializedName
 @Parcelize
 data class LoginRequest(
 
-	val password: String? = null,
+	val password: String? = "",
 
-	val emailOrPhoneNumber: String? = null,
+	val emailOrPhoneNumber: String? = "",
 
-	val rememberMe: Boolean? = null,
+	val rememberMe: Boolean? = false,
 
-	val activationCode: String? = null
+	val activationCode: String? = ""
 ) : Parcelable

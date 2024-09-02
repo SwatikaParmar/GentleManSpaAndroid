@@ -2,6 +2,8 @@ package com.app.gentlemanspa.ui.professionalDashboard.fragment.productDetail
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,25 +11,22 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.app.gentlemanspa.R
+import androidx.viewpager2.widget.ViewPager2
 import com.app.gentlemanspa.base.MyApplication
-import com.app.gentlemanspa.databinding.FragmentProductDetailBinding
 import com.app.gentlemanspa.databinding.FragmentProductDetailProfessionalBinding
-import com.app.gentlemanspa.network.ApiConstants
 import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.network.Status
-import com.app.gentlemanspa.ui.customerDashboard.fragment.productDetail.ProductDetailFragmentArgs
-import com.app.gentlemanspa.ui.customerDashboard.fragment.productDetail.viewModel.ProductDetailViewModel
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.productDetail.adapter.ProductDetailBannerAdapter
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.productDetail.viewModel.ProductDetailProfessionalViewModel
 import com.app.gentlemanspa.utils.CommonFunctions.decimalRoundToInt
 import com.app.gentlemanspa.utils.ViewModelFactory
-import com.app.gentlemanspa.utils.setGone
 import com.app.gentlemanspa.utils.setVisible
 import com.app.gentlemanspa.utils.showToast
-import com.bumptech.glide.Glide
+import com.google.android.material.tabs.TabLayoutMediator
 
 
 class ProductDetailProfessionalFragment : Fragment(), View.OnClickListener {
+    private var productBannerList: ArrayList<String> = ArrayList()
     private var mainLoader: Int = 0
     private lateinit var binding: FragmentProductDetailProfessionalBinding
     private val args: ProductDetailProfessionalFragmentArgs by navArgs()
@@ -36,6 +35,7 @@ class ProductDetailProfessionalFragment : Fragment(), View.OnClickListener {
             InitialRepository()
         )
     }
+    private val headerHandler: Handler = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,12 +83,12 @@ class ProductDetailProfessionalFragment : Fragment(), View.OnClickListener {
                         // binding.tvTime.text = "${data?.durationInMinutes} mins"
                         binding.tvRupees.text = "$${decimalRoundToInt(data?.listingPrice)}"
                         binding.tvLessRupees.text = "$${decimalRoundToInt(data?.basePrice)}"
-
-                        Glide.with(requireContext())
+                        productBannerList.clear()
+                        data?.images?.let { it1 -> productBannerList.addAll(it1) }
+                        setProductBannerAdapter()
+                        /*Glide.with(requireContext())
                             .load(ApiConstants.BASE_FILE + (data?.images?.get(0)))
-                            .into(binding.ivProduct)
-
-
+                            .into(binding.ivProduct)*/
 
                         binding.tvDescription.text = data?.description
 
@@ -111,6 +111,50 @@ class ProductDetailProfessionalFragment : Fragment(), View.OnClickListener {
                 findNavController().popBackStack()
             }
         }
+    }
+
+
+    private fun setProductBannerAdapter() {
+       var productDetailBannerAdapter = ProductDetailBannerAdapter(productBannerList)
+        binding.vpBanner.adapter = productDetailBannerAdapter
+
+        if (productBannerList.size > 1) {
+            binding.tlBanner.visibility = View.VISIBLE
+        } else {
+            binding.tlBanner.visibility = View.GONE
+        }
+
+        TabLayoutMediator(binding.tlBanner, binding.vpBanner) { tab, position ->
+        }.attach()
+
+        binding.vpBanner.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                headerHandler.removeCallbacks(headerRunnable)
+                headerHandler.postDelayed(headerRunnable, 3000)
+
+                // Slide duration 3 seconds
+            }
+        })
+    }
+
+    private val headerRunnable = Runnable {
+        if (productBannerList.size > binding.vpBanner.currentItem + 1)
+            binding.vpBanner.setCurrentItem(binding.vpBanner.currentItem + 1, true)
+        else
+            binding.vpBanner.setCurrentItem(0, true)
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        headerHandler.postDelayed(headerRunnable, 2000) // Slide duration 3 seconds
+    }
+
+    override fun onPause() {
+        headerHandler.removeCallbacks(headerRunnable)
+        super.onPause()
+
     }
 
 }

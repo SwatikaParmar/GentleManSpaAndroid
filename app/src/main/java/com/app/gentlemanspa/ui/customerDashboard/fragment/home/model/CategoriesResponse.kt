@@ -14,7 +14,7 @@ data class CategoriesResponse(
 	val messages: String? = "",
 
     @field:SerializedName("statusCode")
-	val statusCode: Int? = null,
+	val statusCode: Int? = 0,
 
     @field:SerializedName("isSuccess")
 	val isSuccess: Boolean ?= false

@@ -30,14 +30,14 @@ class AddProductViewModel (private var initialRepository: InitialRepository) : A
 
 
 
-    val  listingPrice = ObservableField<Int>()
+    val  listingPrice = ObservableField<Double>()
     val  createdBy = ObservableField<String>()
     val  name = ObservableField<String>()
     val  description = ObservableField<String>()
     val  subCategoryId = ObservableField<Int>()
     val  spaDetailId = ObservableField<Int>()
     val  mainCategoryId = ObservableField<Int>()
-    val  basePrice = ObservableField<Int>()
+    val  basePrice = ObservableField<Double>()
     val  stock = ObservableField<Int>()
     val  quantity = ObservableField<Int>()
     val  productUpdateId = ObservableField<Int>()

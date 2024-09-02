@@ -8,54 +8,54 @@ import kotlinx.android.parcel.Parcelize
 data class AddProductResponse(
 
 	@field:SerializedName("data")
-	val data: AddProductData? = null,
+	val data: AddProductData?,
 
 	@field:SerializedName("messages")
-	val messages: String? = null,
+	val messages: String? = "",
 
 	@field:SerializedName("statusCode")
-	val statusCode: Int? = null,
+	val statusCode: Int? = 0,
 
 	@field:SerializedName("isSuccess")
-	val isSuccess: Boolean? = null
+	val isSuccess: Boolean? = false
 ) : Parcelable
 
 @Parcelize
 data class AddProductData(
 
 	@field:SerializedName("image")
-	val image: String? = null,
+	val image: String? = "",
 
 	@field:SerializedName("listingPrice")
-	val listingPrice: Int? = null,
+	val listingPrice: Double? = 0.00,
 
 	@field:SerializedName("productId")
-	val productId: Int? = null,
+	val productId: Int? = 0,
 
 	@field:SerializedName("name")
-	val name: String? = null,
+	val name: String? = "",
 
 	@field:SerializedName("description")
-	val description: String? = null,
+	val description: String? = "",
 
 	@field:SerializedName("subCategoryId")
-	val subCategoryId: String? = null,
+	val subCategoryId: String? = "",
 
 	@field:SerializedName("mainCategoryId")
-	val mainCategoryId: Int? = null,
+	val mainCategoryId: Int? = 0,
 
 	@field:SerializedName("basePrice")
-	val basePrice: Int? = null,
+	val basePrice: Double? = 0.00,
 
 	@field:SerializedName("status")
-	val status: Boolean? = null,
+	val status: Boolean? = false,
 
 	@field:SerializedName("createDate")
-	val createDate: String? = null,
+	val createDate: String? = "",
 
 	@field:SerializedName("stock")
-	val stock: Int? = null,
+	val stock: Int? = 0,
 
 	@field:SerializedName("quantity")
-	val quantity: Int? = null
+	val quantity: Int? = 0
 ) : Parcelable

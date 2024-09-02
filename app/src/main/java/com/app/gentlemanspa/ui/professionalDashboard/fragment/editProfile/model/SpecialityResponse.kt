@@ -11,23 +11,23 @@ data class SpecialityResponse(
 	val data: ArrayList<SpecialityItem>?,
 
 	@field:SerializedName("messages")
-	val messages: String? = null,
+	val messages: String? = "",
 
 	@field:SerializedName("statusCode")
-	val statusCode: Int? = null,
+	val statusCode: Int? = 0,
 
 	@field:SerializedName("isSuccess")
-	val isSuccess: Boolean? = null
+	val isSuccess: Boolean? = false
 ) : Parcelable
 
 @Parcelize
 data class SpecialityItem(
 
 	@field:SerializedName("speciality")
-	val speciality: String? = null,
+	val speciality: String? = "",
 
 	@field:SerializedName("specialityId")
-	val specialityId: Int? = null,
+	val specialityId: Int? = 0,
 
 	var isChecked : Boolean = false
 ) : Parcelable

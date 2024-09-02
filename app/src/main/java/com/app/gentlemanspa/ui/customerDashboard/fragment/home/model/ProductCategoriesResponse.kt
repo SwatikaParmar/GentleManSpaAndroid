@@ -11,26 +11,26 @@ data class ProductCategoriesResponse(
 	val data: ArrayList<ProductCategoriesItem>?,
 
 	@field:SerializedName("messages")
-	val messages: String? = null,
+	val messages: String? = "",
 
 	@field:SerializedName("statusCode")
-	val statusCode: Int? = null,
+	val statusCode: Int? = 0,
 
 	@field:SerializedName("isSuccess")
-	val isSuccess: Boolean? = null
+	val isSuccess: Boolean? = false
 ) : Parcelable
 
 @Parcelize
 data class ProductCategoriesItem(
 
 	@field:SerializedName("categoryImage")
-	val categoryImage: String? = null,
+	val categoryImage: String? = "",
 
 	@field:SerializedName("subCategoryId")
-	val subCategoryId: Int? = null,
+	val subCategoryId: Int? = 0,
 
 	@field:SerializedName("isNext")
-	val isNext: Boolean? = null,
+	val isNext: Boolean? = false,
 
 	@field:SerializedName("mainCategoryId")
 	val mainCategoryId: Int = 0,
@@ -39,5 +39,5 @@ data class ProductCategoriesItem(
 	val categoryName: String = "",
 
 	@field:SerializedName("createDate")
-	val createDate: String? = null
+	val createDate: String? = ""
 ) : Parcelable

@@ -7,39 +7,39 @@ import com.google.gson.annotations.SerializedName
 @Parcelize
 data class LoginResponse(
 
-	val data: Data? = null,
+	val data: Data?,
 
-	val messages: String? = null,
+	val messages: String? = "",
 
-	val statusCode: Int? = null,
+	val statusCode: Int? = 0,
 
-	val isSuccess: Boolean? = null
+	val isSuccess: Boolean? = false
 ) : Parcelable
 
 @Parcelize
 data class Data(
 
-	val firstName: String? = null,
+	val firstName: String? = "",
 
-	val lastName: String? = null,
+	val lastName: String? = "",
 
-	val passwordChanged: Boolean? = null,
+	val passwordChanged: Boolean? = false,
 
-	val phoneNumber: String? = null,
+	val phoneNumber: String? = "",
 
-	val role: String? = null,
+	val role: String? = "",
 
-	val gender: String? = null,
+	val gender: String? = "",
 
-	val profilepic: String? = null,
+	val profilepic: String? = "",
 
-	val id: String? = null,
+	val id: String? = "",
 
-	val activationCode: String? = null,
+	val activationCode: String? = "",
 
-	val email: String? = null,
+	val email: String? = "",
 
-	val token: String? = null,
+	val token: String? = "",
 
-	val status: Boolean? = null
+	val status: Boolean? = false
 ) : Parcelable

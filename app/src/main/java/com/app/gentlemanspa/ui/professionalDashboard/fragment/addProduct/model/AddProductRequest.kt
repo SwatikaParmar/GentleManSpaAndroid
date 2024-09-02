@@ -8,32 +8,32 @@ import kotlinx.android.parcel.Parcelize
 data class AddProductRequest(
 
 	@field:SerializedName("listingPrice")
-	val listingPrice: Int? = null,
+	val listingPrice: Double? = 0.00,
 
 	@field:SerializedName("createdBy")
-	val createdBy: String? = null,
+	val createdBy: String? = "",
 
 	@field:SerializedName("name")
-	val name: String? = null,
+	val name: String? = "",
 
 	@field:SerializedName("description")
-	val description: String? = null,
+	val description: String? = "",
 
 	@field:SerializedName("subCategoryId")
-	val subCategoryId: Int? = null,
+	val subCategoryId: Int? = 0,
 
 	@field:SerializedName("spaDetailId")
-	val spaDetailId: Int? = null,
+	val spaDetailId: Int? = 0,
 
 	@field:SerializedName("mainCategoryId")
-	val mainCategoryId: Int? = null,
+	val mainCategoryId: Int? = 0,
 
 	@field:SerializedName("basePrice")
-	val basePrice: Int? = null,
+	val basePrice: Double? = 0.00,
 
 	@field:SerializedName("stock")
-	val stock: Int? = null,
+	val stock: Int? = 0,
 
 	@field:SerializedName("quantity")
-	val quantity: Int? = null
+	val quantity: Int? = 0
 ) : Parcelable

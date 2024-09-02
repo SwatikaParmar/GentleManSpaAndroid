@@ -7,68 +7,68 @@ import com.google.gson.annotations.SerializedName
 @Parcelize
 data class GetProfessionalDetailResponse(
 
-	val data: Data? = null,
+	val data: Data?,
 
-	val messages: String? = null,
+	val messages: String? = "",
 
-	val statusCode: Int? = null,
+	val statusCode: Int? = 0,
 
-	val isSuccess: Boolean? = null
+	val isSuccess: Boolean? = false
 ) : Parcelable
 
 @Parcelize
 data class Data(
 
-	val firstName: String? = null,
+	val firstName: String? = "",
 
-	val lastName: String? = null,
+	val lastName: String? = "",
 
-	val phoneNumber: String? = null,
+	val phoneNumber: String? = "",
 
-	val role: String? = null,
+	val role: String? = "",
 
-	val gender: String? = null,
+	val gender: String? = "",
 
-	val professionalDetail: GetProfessionalDetail? = null,
+	val professionalDetail: GetProfessionalDetail?,
 
-	val profilepic: String? = null,
+	val profilepic: String? = "",
 
-	val id: String? = null,
+	val id: String? = "",
 
-	val email: String? = null
+	val email: String? = ""
 ) : Parcelable
 
 @Parcelize
 data class GetProfessionalDetail(
 
 	@field:SerializedName("pincode")
-	val pincode: String? = null,
+	val pincode: String? = "",
 
 	@field:SerializedName("country")
-	val country: String? = null,
+	val country: String? = "",
 
 	@field:SerializedName("award")
-	val award: String? = null,
+	val award: String? = "",
 
 	@field:SerializedName("city")
-	val city: String? = null,
+	val city: String? = "",
 
 	@field:SerializedName("streetAddress")
-	val streetAddress: String? = null,
+	val streetAddress: String? = "",
 
 	@field:SerializedName("houseNoOrBuildingName")
-	val houseNoOrBuildingName: String? = null,
+	val houseNoOrBuildingName: String? = "",
 
 	@field:SerializedName("state")
-	val state: String? = null,
+	val state: String? = "",
 
 	@field:SerializedName("trainingLevel")
-	val trainingLevel: String? = null,
+	val trainingLevel: String? = "",
 
 	@field:SerializedName("status")
-	val status: String? = null,
-	val specialityIds: String? = null,
-	val speciality: ArrayList<String>? = null,
-	val spaDetailId: String? = null,
-	val professionalDetailId: String? = null
+	val status: String? = "",
+	val specialityIds: String? = "",
+	val speciality: ArrayList<String>?,
+	val spaDetailId: String? = "",
+	val professionalDetailId: String? = ""
 ) : Parcelable

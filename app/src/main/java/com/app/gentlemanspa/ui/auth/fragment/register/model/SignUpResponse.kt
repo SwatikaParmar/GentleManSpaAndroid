@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
 @Parcelize
 data class SignUpResponse(
 
-	val data: Data? = null,
+	val data: Data?,
 
 	val messages: String? = "",
 

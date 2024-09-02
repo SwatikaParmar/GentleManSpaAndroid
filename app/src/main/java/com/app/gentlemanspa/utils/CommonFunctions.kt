@@ -95,16 +95,11 @@ object CommonFunctions {
                 "Failed to connect server"
             }
 
-
-
             else -> {
                 throwable?.localizedMessage
             }
         }
     }
-
-
-
 
 
      fun togglePasswordVisibility( passwordEditText: EditText, showPasswordImageView: ImageView, isPasswordVisible: Boolean) {
@@ -157,12 +152,7 @@ object CommonFunctions {
         val outputFormat: DateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH)
         val date = inputFormat.parse(inputDateStr)
         return date?.let { outputFormat.format(it) }.toString()
-
-
     }
-
-
-
 
         fun splitByCapitalLetters(input: String?): List<String> {
             val words = mutableListOf<String>()

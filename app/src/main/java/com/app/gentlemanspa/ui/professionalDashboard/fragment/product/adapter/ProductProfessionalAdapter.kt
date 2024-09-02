@@ -8,6 +8,7 @@ import com.app.gentlemanspa.R
 import com.app.gentlemanspa.databinding.ItemProductProfessionalBinding
 import com.app.gentlemanspa.network.ApiConstants
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductsListItem
+import com.app.gentlemanspa.utils.CommonFunctions.decimalRoundToInt
 import com.bumptech.glide.Glide
 import com.daimajia.swipe.adapters.RecyclerSwipeAdapter
 
@@ -48,9 +49,9 @@ class ProductProfessionalAdapter(private var productsList: ArrayList<ProductsLis
             }
             tvServiceName.text = item.name
             tvDescription.text = item.description
-            tvRupees.text = "$${item.listingPrice}"
+            tvRupees.text = "$${decimalRoundToInt(item.listingPrice)}"
             tvInStock.text = "In Stock:${item.stock}"
-            tvLessRupees.text = "$${item.basePrice}"
+            tvLessRupees.text = "$${decimalRoundToInt(item.basePrice)}"
             Glide.with(holder.itemView.context).load(ApiConstants.BASE_FILE +item.image).error(R.drawable.no_product).placeholder(R.drawable.no_product).into(ivService)
 
 

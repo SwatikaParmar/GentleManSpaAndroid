@@ -11,13 +11,13 @@ data class ProductDetailResponse(
 	val data: ProductDetailData? = null,
 
 	@field:SerializedName("messages")
-	val messages: String? = null,
+	val messages: String? = "",
 
 	@field:SerializedName("statusCode")
-	val statusCode: Int? = null,
+	val statusCode: Int? = 0,
 
 	@field:SerializedName("isSuccess")
-	val isSuccess: Boolean? = null
+	val isSuccess: Boolean? = false
 ) : Parcelable
 
 @Parcelize
@@ -30,26 +30,26 @@ data class ProductDetailData(
 	val listingPrice: Double? = 0.0,
 
 	@field:SerializedName("productId")
-	val productId: Int? = null,
+	val productId: Int? = 0,
 
 	@field:SerializedName("name")
-	val name: String? = null,
+	val name: String? = "",
 
 	@field:SerializedName("description")
-	val description: String? = null,
+	val description: String? = "",
 
 	@field:SerializedName("basePrice")
 	val basePrice: Double? = 0.0,
 
 	@field:SerializedName("status")
-	val status: String? = null,
+	val status: String? = "",
 
 	@field:SerializedName("createDate")
-	val createDate: String? = null,
+	val createDate: String? = "",
 
 	@field:SerializedName("stock")
-	val stock: Int? = null,
+	val stock: Int? = 0,
 
 	@field:SerializedName("quantity")
-	val quantity: Int? = null
+	val quantity: Int? = 0
 ) : Parcelable

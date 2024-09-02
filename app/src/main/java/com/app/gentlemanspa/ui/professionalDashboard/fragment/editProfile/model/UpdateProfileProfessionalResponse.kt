@@ -8,14 +8,14 @@ import com.google.gson.annotations.SerializedName
 data class UpdateProfileProfessionalResponse(
 
 	@field:SerializedName("data")
-	val data: String? = null,
+	val data: String? = "",
 
 	@field:SerializedName("messages")
-	val messages: String? = null,
+	val messages: String? = "",
 
 	@field:SerializedName("statusCode")
-	val statusCode: Int? = null,
+	val statusCode: Int? = 0,
 
 	@field:SerializedName("isSuccess")
-	val isSuccess: Boolean? = null
+	val isSuccess: Boolean? = false
 ) : Parcelable
