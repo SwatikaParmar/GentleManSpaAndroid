@@ -8,17 +8,12 @@ import androidx.lifecycle.viewModelScope
 import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.ui.auth.fragment.login.model.LoginRequest
 import com.app.gentlemanspa.ui.auth.fragment.login.model.LoginResponse
-import com.app.gentlemanspa.ui.auth.fragment.register.model.ProfileRegisterResponse
-import com.app.gentlemanspa.ui.auth.fragment.register.model.SignUpRequest
-import com.app.gentlemanspa.ui.auth.fragment.register.model.SignUpResponse
 import com.app.gentlemanspa.utils.CommonFunctions
 import com.app.gentlemanspa.utils.Resource
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
 
 class LoginViewModel (private var initialRepository: InitialRepository) : AndroidViewModel(
     Application()

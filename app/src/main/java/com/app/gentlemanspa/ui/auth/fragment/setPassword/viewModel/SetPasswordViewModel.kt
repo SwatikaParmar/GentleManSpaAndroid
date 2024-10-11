@@ -20,14 +20,10 @@ import kotlinx.coroutines.launch
 class SetPasswordViewModel(private var initialRepository: InitialRepository) : AndroidViewModel(
     Application()
 ) {
-
-
-
     val currentPassword  = ObservableField<String>()
     val newPassword  = ObservableField<String>()
     val email  = ObservableField<String>()
     val activationCode  = ObservableField<String>()
-
     val resultChangePassword = MutableLiveData<Resource<ChangePasswordResponse>>()
 
 

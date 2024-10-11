@@ -27,7 +27,6 @@ class SetPasswordFragment : Fragment(), View.OnClickListener {
     private var isPasswordVisible: Boolean = false
     private var isConfirmPasswordVisible: Boolean = false
     val args : SetPasswordFragmentArgs by navArgs()
-
     private val viewModel: SetPasswordViewModel by viewModels { ViewModelFactory(InitialRepository()) }
 
 
@@ -35,7 +34,7 @@ class SetPasswordFragment : Fragment(), View.OnClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = FragmentSetPasswordBinding.inflate(inflater, container, false)
         return binding.root

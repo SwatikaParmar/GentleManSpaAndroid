@@ -15,7 +15,6 @@ class MyApplication :Application() {
     companion object {
         @SuppressLint("StaticFieldLeak")
         lateinit var context : Context
-
         private  var dialog: Dialog? = null
         private  var avi: AVLoadingIndicatorView? = null
 
@@ -28,20 +27,16 @@ class MyApplication :Application() {
             avi = dialog?.findViewById(R.id.avi)
             avi?.show()
             dialog?.show()
-
         }
 
         fun hideProgress() {
             avi?.hide()
             dialog?.dismiss()
-
         }
     }
 
     override fun onCreate() {
         super.onCreate()
         context =applicationContext
-
-
     }
 }

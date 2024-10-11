@@ -10,6 +10,8 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.BannerRespo
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.CategoriesResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.LocationResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductCategoriesResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.model.ProfessionalResponse
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.profile.model.GetProfessionalDetailResponse
 import com.app.gentlemanspa.utils.CommonFunctions
 import com.app.gentlemanspa.utils.Resource
 import kotlinx.coroutines.flow.catch
@@ -27,6 +29,10 @@ class HomeCustomerViewModel (private var initialRepository: InitialRepository) :
     val resultBanner = MutableLiveData<Resource<BannerResponse>>()
     val resultCategories = MutableLiveData<Resource<CategoriesResponse>>()
     val resultProductCategories = MutableLiveData<Resource<ProductCategoriesResponse>>()
+    val resultProfileCustomerDetail =
+        MutableLiveData<Resource<GetProfessionalDetailResponse>>()
+
+    val resultProfessionalTeam= MutableLiveData<Resource<ProfessionalResponse>>()
 
 
     fun getLocationAddress() {
@@ -160,7 +166,57 @@ class HomeCustomerViewModel (private var initialRepository: InitialRepository) :
         }
     }
 
+    fun getCustomerDetail() {
+        resultProfileCustomerDetail.value = Resource.loading(null)
+        viewModelScope.launch {
+            initialRepository.getCustomerDetail()
+                .onStart { }
+                .onCompletion { }
+                .catch { exception ->
+                    if (!CommonFunctions.getError(exception)!!.contains("401"))
+                        resultProfileCustomerDetail.value =
+                            Resource.error(
+                                data = null,
+                                message = CommonFunctions.getError(exception)
+                            )
+                }
+                .collect {
+                    if (it?.statusCode == 200) {
+                        resultProfileCustomerDetail.value =
+                            Resource.success(message = it.messages, data = it)
+                    } else {
+                        resultProfileCustomerDetail.value =
+                            Resource.error(data = null, message = it?.messages)
+                    }
+                }
+        }
+    }
 
+    fun getProfessionalTeamList() {
+        resultProfessionalTeam.value = Resource.loading(null)
+        viewModelScope.launch {
+            initialRepository.getProfessionalTeamList()
+                .onStart { }
+                .onCompletion { }
+                .catch { exception ->
+                    if (!CommonFunctions.getError(exception)!!.contains("401"))
+                        resultProfessionalTeam.value =
+                            Resource.error(
+                                data = null,
+                                message = CommonFunctions.getError(exception)
+                            )
+                }
+                .collect {
+                    if (it?.statusCode == 200) {
+                        resultProfessionalTeam.value =
+                            Resource.success(message = it.messages, data = it)
+                    } else {
+                        resultProfileCustomerDetail.value =
+                            Resource.error(data = null, message = it?.messages)
+                    }
+                }
+        }
+    }
 
 
 

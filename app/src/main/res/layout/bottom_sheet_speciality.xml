@@ -84,7 +84,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnSubmit"
-                    android:text="Submit"
+                    android:text="@string/submit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/_8sdp"

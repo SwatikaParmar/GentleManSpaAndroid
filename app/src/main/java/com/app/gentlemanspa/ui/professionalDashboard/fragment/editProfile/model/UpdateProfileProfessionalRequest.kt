@@ -6,42 +6,19 @@ import com.google.gson.annotations.SerializedName
 
 @Parcelize
 data class UpdateProfileProfessionalRequest(
-
 	val firstName: String? = "",
-
 	val lastName: String? = "",
-
+	val dialCode: String? = "",
 	val phoneNumber: String? = "",
-
+	val email: String? = "",
 	val gender: String? = "",
-
-	val professionalDetail: ProfessionalDetail?,
-
 	val id: String? = "",
-
-	val email: String? = ""
-) : Parcelable
+	val professionalDetail: ProfessionalDetail?,
+	) : Parcelable
 
 @Parcelize
 data class ProfessionalDetail(
-
-	val pincode: String? = "",
-
-	val country: String? = "",
-
-	val award: String? = "",
-
-	val city: String? = "",
-
-	val streetAddress: String? = "",
-
-	val houseNoOrBuildingName: String? = "",
-
-	val state: String? = "",
-
-	val trainingLevel: String? = "",
-
-	val status: String? = "",
-	val specialityIds: String? = ""
-
+	val professionalDetailId: Int?=0,
+	val specialityIds: String?="",
+	val spaDetailId: Int?=0
 ) : Parcelable

@@ -1,5 +1,6 @@
 package com.app.gentlemanspa.ui.customerDashboard.fragment.profile
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,16 +9,22 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.app.gentlemanspa.R
 import com.app.gentlemanspa.databinding.FragmentProfileCustomerBinding
+import com.app.gentlemanspa.network.ApiConstants
 import com.app.gentlemanspa.ui.customerDashboard.activity.CustomerActivity
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.profile.model.GetProfessionalDetailResponse
+import com.app.gentlemanspa.utils.AppPrefs
+import com.bumptech.glide.Glide
 
 
 class ProfileCustomerFragment : Fragment(), View.OnClickListener {
 
     private lateinit var binding : FragmentProfileCustomerBinding
+    private var profileCustomerData: GetProfessionalDetailResponse? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         if (!this::binding.isInitialized) {
             binding = FragmentProfileCustomerBinding.inflate(layoutInflater, container, false)
@@ -31,8 +38,14 @@ class ProfileCustomerFragment : Fragment(), View.OnClickListener {
         initUI()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun initUI() {
         binding.onClick = this
+        profileCustomerData= AppPrefs(requireContext()).getProfileCustomerData("PROFILE_DATA")
+        binding.tvName.text="${profileCustomerData?.data?.firstName} ${profileCustomerData?.data?.lastName}"
+        binding.tvPhone.text=profileCustomerData?.data?.phoneNumber
+        Glide.with(requireContext()).load(ApiConstants.BASE_FILE +profileCustomerData?.data?.profilepic).into(binding.ivProfile)
+
     }
 
     override fun onClick(v: View?) {

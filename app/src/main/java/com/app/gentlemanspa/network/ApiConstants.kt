@@ -13,6 +13,7 @@ object ApiConstants {
     const val PROFILE_REGISTER = "Upload/UploadProfilePic"
     const val SIGN_IN = "Auth/login"
     const val CHANGE_PASSWORD = "Auth/ChangePassword"
+    const val RESET_PASSWORD = "Auth/ResetPassword"
     const val GET_PROFESSIONAL_DETAIL = "Professional/GetProfessionalProfileDetail"
     const val UPDATE_PROFESSIONAL = "Professional/UpdateProfessionalProfile"
     const val COUNTRY ="Content/GetCountries"
@@ -32,6 +33,19 @@ object ApiConstants {
     const val UPDATE_PRODUCT ="Product/UpdateProduct"
     const val UPLOAD_PRODUCT_IMAGE ="Upload/UploadProductImage"
     const val DELETE_PRODUCT ="Product/DeleteProduct"
+    const val EMAIL_OTP ="Auth/EmailOTP"
+    const val PHONE_UNIQUE ="Auth/IsPhoneUnique"
+
+
+    const val GET_CUSTOMER_DETAIL = "Customer/GetProfileDetail"
+    const val UPDATE_CUSTOMER = "Customer/UpdateProfile"
+    const val GET_CUSTOMER_SERVICE_CART_ITEMS ="Customer/GetCartItems"
+    const val ADD_CUSTOMER_SERVICE_TO_CART = "Customer/AddUpdateCartService"
+    const val SERVICE_GET_AVAILABLE_DATES = "Service/GetAvailableDates"
+    const val SERVICE_GET_AVAILABLE_TIME_SLOTS = "Service/GetAvailableTimeSlots"
+    const val ADD_PRODUCT_IN_CART = "Product/AddOrUpdateProductInCart"
+
+
 
 
 

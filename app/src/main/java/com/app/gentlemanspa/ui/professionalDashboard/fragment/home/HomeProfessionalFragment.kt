@@ -1,27 +1,56 @@
 package com.app.gentlemanspa.ui.professionalDashboard.fragment.home
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import com.app.gentlemanspa.R
+import com.app.gentlemanspa.base.MyApplication
 import com.app.gentlemanspa.databinding.FragmentHomeProfessionalBinding
+import com.app.gentlemanspa.network.ApiConstants.BASE_FILE
+import com.app.gentlemanspa.network.InitialRepository
+import com.app.gentlemanspa.network.Status
 import com.app.gentlemanspa.ui.customerDashboard.activity.CustomerActivity
 import com.app.gentlemanspa.ui.professionalDashboard.activity.ProfessionalActivity
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.home.adapter.ConfirmedAppointmentAdapter
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.home.adapter.PastAppointmentAdapter
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.home.adapter.UpcomingAppointmentAdapter
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.home.viewModel.HomeProfessionalViewModel
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.profile.viewModel.ProfileProfessionalDetailViewModel
+import com.app.gentlemanspa.utils.AppPrefs
+import com.app.gentlemanspa.utils.ViewModelFactory
+import com.app.gentlemanspa.utils.showToast
+import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 
 
 class HomeProfessionalFragment : Fragment(), View.OnClickListener {
     private lateinit var binding: FragmentHomeProfessionalBinding
+    private lateinit var profileUpdatedListener: OnProfileUpdatedListener
+
+    private val viewModel: HomeProfessionalViewModel by viewModels { ViewModelFactory(
+        InitialRepository()
+    ) }
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnProfileUpdatedListener) {
+            profileUpdatedListener = context
+        } else {
+            throw ClassCastException("$context must implement OnProfileUpdatedListener")
+        }
+    }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initObserver()
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = FragmentHomeProfessionalBinding.inflate(layoutInflater, container, false)
         return binding.root
@@ -32,11 +61,38 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
         initUI()
     }
+    private fun initObserver() {
+        viewModel.resultProfileProfessionalDetailAccount.observe(this) {
+            it?.let { result ->
+                when (result.status) {
+                    Status.LOADING -> {
+                        MyApplication.showProgress(requireContext())
+                    }
 
+                    Status.SUCCESS -> {
+                        MyApplication.hideProgress()
+                        AppPrefs(requireContext()).setProfileProfessionalData("PROFILE_DATA",it.data)
+                      //  binding.tvName.text ="${it.data?.data?.firstName} ${it.data?.data?.lastName}"
+                        //binding.tvPhone.text =it.data?.data?.phoneNumber
+                        val name = "${it.data?.data?.firstName} ${it.data?.data?.lastName}"
+                        val email = it.data?.data?.email.toString()
+                        profileUpdatedListener.onProfileUpdated(name, email,BASE_FILE +it.data?.data?.profilepic)
+                        Glide.with(requireContext()).load(BASE_FILE +it.data?.data?.profilepic).into(binding.ivProfile)
+
+                    }
+
+                    Status.ERROR -> {
+                        requireContext().showToast(it.message.toString())
+                        MyApplication.hideProgress()
+                    }
+                }
+            }
+        }
+    }
     private fun initUI() {
         binding.ivDrawer.setOnClickListener(this)
         (activity as ProfessionalActivity).bottomNavigation(true)
-
+        viewModel.getProfessionalDetail()
         binding.tlAppointment.removeAllTabs()
         binding.tlAppointment.addTab(binding.tlAppointment.newTab().setText("UPCOMING"))
         binding.tlAppointment.addTab(binding.tlAppointment.newTab().setText("CONFIRMED"))
@@ -82,7 +138,11 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
                 (activity as ProfessionalActivity).isDrawer(true)
             }
         }
+
+
     }
 
-
+    interface OnProfileUpdatedListener {
+        fun onProfileUpdated(name: String, email: String,profileImage:String)
+    }
 }

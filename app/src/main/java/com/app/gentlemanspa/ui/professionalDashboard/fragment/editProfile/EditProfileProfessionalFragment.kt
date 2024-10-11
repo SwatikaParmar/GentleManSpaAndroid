@@ -24,6 +24,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.app.gentlemanspa.R
 import com.app.gentlemanspa.base.MyApplication
+import com.app.gentlemanspa.base.MyApplication.Companion.hideProgress
+import com.app.gentlemanspa.base.MyApplication.Companion.showProgress
 import com.app.gentlemanspa.databinding.BottomSheetSpecialityBinding
 import com.app.gentlemanspa.databinding.FragmentEditProfileProfessionalBinding
 import com.app.gentlemanspa.databinding.ImagePickerBottomBinding
@@ -58,26 +60,27 @@ import java.util.Locale
 
 
 class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
-    private var commaSeparatedSpecialitiesId: String?= null
+    private var commaSeparatedSpecialitiesId: String? = null
     private lateinit var specialityAdapter: SpecialityAdapter
     private var specialityList: ArrayList<SpecialityItem> = ArrayList()
-    private var profileMessages: String?= null
-    private var profileImage: File?= null
+    private var profileMessages: String? = null
+    private var profileImage: File? = null
     private var profileData: GetProfessionalDetailResponse? = null
-    private var genderItem: Int ? = null
-    private var currentPhotoPath: String?= null
+    private var genderItem: Int? = null
+    private var currentPhotoPath: String? = null
     private var onPermissionsGranted: (() -> Unit)? = null
     private var specialityId: List<String>? = listOf()
-    private lateinit var binding : FragmentEditProfileProfessionalBinding
-    private val viewModel: UpdateProfessionalViewModel by viewModels { ViewModelFactory(
-        InitialRepository()
-    ) }
+    private lateinit var binding: FragmentEditProfileProfessionalBinding
+    private val viewModel: UpdateProfessionalViewModel by viewModels {
+        ViewModelFactory(
+            InitialRepository()
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initObserver()
     }
-
 
 
     override fun onCreateView(
@@ -108,8 +111,12 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
 
                     Status.SUCCESS -> {
                         MyApplication.hideProgress()
-                        if(profileImage != null){
-                            viewModel.profileId.set(CommonFunctions.getTextRequestBodyParams(profileData?.data?.id))
+                        if (profileImage != null) {
+                            viewModel.profileId.set(
+                                CommonFunctions.getTextRequestBodyParams(
+                                    profileData?.data?.id
+                                )
+                            )
                             viewModel.profilePic.set(
                                 CommonFunctions.prepareFilePart(
                                     "profilePic",
@@ -118,7 +125,7 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
                             )
                             viewModel.profilePicRegister()
                             profileMessages = it.data?.messages.toString()
-                        }else{
+                        } else {
                             requireContext().showToast(it.data?.messages.toString())
                         }
 
@@ -137,18 +144,18 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
             it?.let { result ->
                 when (result.status) {
                     Status.LOADING -> {
-                        MyApplication.showProgress(requireContext())
+                        showProgress(requireContext())
                     }
 
                     Status.SUCCESS -> {
-                        MyApplication.hideProgress()
+                        hideProgress()
                         requireContext().showToast(profileMessages.toString())
 
                     }
 
                     Status.ERROR -> {
                         requireContext().showToast(it.message.toString())
-                        MyApplication.hideProgress()
+                        hideProgress()
                     }
                 }
             }
@@ -200,37 +207,36 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
         binding.etLastName.setText(profileData?.data?.lastName)
         binding.etPhone.setText(profileData?.data?.phoneNumber)
         binding.etEmail.setText(profileData?.data?.email)
-        binding.etHouse.setText(profileData?.data?.professionalDetail?.houseNoOrBuildingName)
-        binding.etStreet.setText(profileData?.data?.professionalDetail?.streetAddress)
-        binding.etCountry.setText(profileData?.data?.professionalDetail?.country)
-        binding.etState.setText(profileData?.data?.professionalDetail?.state)
-        binding.etCity.setText(profileData?.data?.professionalDetail?.city)
-        binding.etPinCode.setText(profileData?.data?.professionalDetail?.pincode)
-        Glide.with(requireContext()).load(ApiConstants.BASE_FILE +profileData?.data?.profilepic).into(binding.ivProfile)
+        // binding.countryCodePicker.setCountryForPhoneCode(profileData?.data?)
+        binding.countryCodePicker.isEnabled = false
 
-        specialityId= profileData?.data?.professionalDetail?.specialityIds?.split(",")
-        var specialityName = profileData?.data?.professionalDetail?.speciality?.joinToString(",")
+        /*     binding.etHouse.setText(profileData?.data?.professionalDetail?.houseNoOrBuildingName)
+               binding.etStreet.setText(profileData?.data?.professionalDetail?.streetAddress)
+               binding.etCountry.setText(profileData?.data?.professionalDetail?.country)
+               binding.etState.setText(profileData?.data?.professionalDetail?.state)
+               binding.etCity.setText(profileData?.data?.professionalDetail?.city)
+               binding.etPinCode.setText(profileData?.data?.professionalDetail?.pincode)*/
+        Glide.with(requireContext()).load(ApiConstants.BASE_FILE + profileData?.data?.profilepic)
+            .into(binding.ivProfile)
+
+        specialityId = profileData?.data?.professionalDetail?.specialityIds?.split(",")
+        val specialityName = profileData?.data?.professionalDetail?.speciality?.joinToString(",")
 
         binding.etSpeciality.setText(specialityName)
-        if(profileData?.data?.gender=="Male"){
-            genderItem =1
-        }else if(profileData?.data?.gender=="Female"){
-            genderItem =2
-        }else if(profileData?.data?.gender=="Other"){
-            genderItem=3
+        if (profileData?.data?.gender == "Male") {
+            genderItem = 1
+        } else if (profileData?.data?.gender == "Female") {
+            genderItem = 2
+        } else if (profileData?.data?.gender == "Other") {
+            genderItem = 3
         }
-        if (genderItem !=null) {
+        if (genderItem != null) {
             binding.spGender.setSelection(genderItem!!)
         }
-      //  binding.etFirstName.setText(profileData?.data?.firstName)
-
+        //  binding.etFirstName.setText(profileData?.data?.firstName)
         viewModel.getSpeciality()
-
         binding.onClick = this
     }
-
-
-
 
 
     private fun setGenderSpinner() {
@@ -276,15 +282,14 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
                         }
                     }
 
-                    genderItem =position
+                    genderItem = position
                 }
             }
     }
 
     override fun onClick(v: View?) {
-        when(v) {
+        when (v) {
             binding.btnUpdate -> {
-
                 if (isValidation()) {
                     viewModel.firstName.set(binding.etFirstName.text.toString())
                     viewModel.lastName.set(binding.etLastName.text.toString())
@@ -292,23 +297,23 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
                     viewModel.gender.set(binding.spGender.selectedItem.toString())
                     viewModel.id.set(profileData?.data?.id)
                     viewModel.email.set(binding.etEmail.text.toString())
-                    viewModel.pincode.set(binding.etPinCode.text.toString())
-                    viewModel.country.set(binding.etCountry.text.toString())
-                    viewModel.award.set("")
-                    viewModel.city.set(binding.etCity.text.toString())
-                    viewModel.streetAddress.set(binding.etStreet.text.toString())
-                    viewModel.houseNoOrBuildingName.set(binding.etHouse.text.toString())
-                    viewModel.state.set(binding.etState.text.toString())
-                    viewModel.trainingLevel.set("")
-                    viewModel.status.set("")
+                    /*    viewModel.pincode.set(binding.etPinCode.text.toString())
+                          viewModel.country.set(binding.etCountry.text.toString())
+                          viewModel.award.set("")
+                          viewModel.city.set(binding.etCity.text.toString())
+                          viewModel.streetAddress.set(binding.etStreet.text.toString())
+                          viewModel.houseNoOrBuildingName.set(binding.etHouse.text.toString())
+                          viewModel.state.set(binding.etState.text.toString())
+                          viewModel.trainingLevel.set("")
+                          viewModel.status.set("")*/
+                    viewModel.professionalDetailId.set(profileData!!.data!!.professionalDetail!!.professionalDetailId)
                     viewModel.specialityIds.set(commaSeparatedSpecialitiesId)
                     viewModel.updateProfessional()
                 }
 
-
             }
 
-            binding.etSpeciality ->{
+            binding.etSpeciality -> {
                 setSpecialityBottom()
             }
 
@@ -322,59 +327,50 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
         when {
 
             checkString(binding.etFirstName) -> requireContext().showToast("Please enter first name")
-
             checkString(binding.etLastName) -> requireContext().showToast("Please enter last name")
-
-            binding.spGender.selectedItem.toString() == "Select Gender" -> requireContext().showToast("Please select gender")
-
+            binding.spGender.selectedItem.toString() == "Select Gender" -> requireContext().showToast(
+                "Please select gender"
+            )
             checkString(binding.etEmail) -> requireContext().showToast("Please enter email")
-
             !isValidEmail(checkValidString(binding.etEmail)) -> requireContext().showToast("Please enter a valid email address")
-
             checkString(binding.etPhone) -> requireContext().showToast("Please enter phone number")
-
             checkValidString(binding.etPhone).length != 10 -> requireContext().showToast("Please enter a valid 10 digit phone number")
 
-            checkString(binding.etSpeciality) -> requireContext().showToast("Please select speciality")
-
-            checkString(binding.etHouse) -> requireContext().showToast("Please enter house or building number")
-
-            checkString(binding.etStreet) -> requireContext().showToast("Please enter street address")
-
-            checkString(binding.etCountry) -> requireContext().showToast("Please enter country")
-
-            checkString(binding.etState) -> requireContext().showToast("Please enter state")
-
-            checkString(binding.etCity) -> requireContext().showToast("Please enter city")
-
-            checkString(binding.etPinCode) -> requireContext().showToast("Please enter pin code")
+            /*   checkString(binding.etSpeciality) -> requireContext().showToast("Please select speciality")
+                 checkString(binding.etHouse) -> requireContext().showToast("Please enter house or building number")
+                 checkString(binding.etStreet) -> requireContext().showToast("Please enter street address")
+                 checkString(binding.etCountry) -> requireContext().showToast("Please enter country")
+                 checkString(binding.etState) -> requireContext().showToast("Please enter state")
+                 checkString(binding.etCity) -> requireContext().showToast("Please enter city")
+                 checkString(binding.etPinCode) -> requireContext().showToast("Please enter pin code")*/
             else -> return true
         }
 
         return false
     }
 
+    private var cameraLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                // Handle the camera result
+                // val imageUri = result.data?.data
+                profileImage = File(currentPhotoPath)
 
-    private var cameraLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            // Handle the camera result
-            // val imageUri = result.data?.data
-            profileImage = File(currentPhotoPath)
-
-            binding.ivProfile.setImageURI(Uri.fromFile(profileImage))
-            // Use the imageUri
+                binding.ivProfile.setImageURI(Uri.fromFile(profileImage))
+                // Use the imageUri
+            }
         }
-    }
 
-    private var  galleryLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            // Handle the gallery result
-            val imageUri = result.data?.data
-            profileImage = File(imageUri?.path)
-            binding.ivProfile.setImageURI(imageUri)
-            // Use the imageUri
+    private var galleryLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                // Handle the gallery result
+                val imageUri = result.data?.data
+                profileImage = File(imageUri?.path)
+                binding.ivProfile.setImageURI(imageUri)
+                // Use the imageUri
+            }
         }
-    }
 
 
     @SuppressLint("QueryPermissionsNeeded")
@@ -404,7 +400,8 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
     private fun createImageFile(): File {
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
         val imageFileName = "JPEG_" + timeStamp + "_"
-        val storageDir: File? = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val storageDir: File? =
+            requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         return File.createTempFile(imageFileName, ".jpg", storageDir)
     }
 
@@ -414,11 +411,15 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
     }
 
 
-
     private fun checkAndRequestPermissionsForCamera(onPermissionsGranted: () -> Unit) {
         val permissions = arrayOf(Manifest.permission.CAMERA)
 
-        if (permissions.all { ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED }) {
+        if (permissions.all {
+                ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    it
+                ) == PackageManager.PERMISSION_GRANTED
+            }) {
             onPermissionsGranted()
         } else {
             this.onPermissionsGranted = onPermissionsGranted
@@ -434,14 +435,15 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if ((requestCode == REQUEST_CODE_CAMERA_PERMISSIONS || requestCode == REQUEST_CODE_GALLERY_PERMISSIONS) &&
-            grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
+            grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }
+        ) {
             // Permissions are granted, proceed with the action
             //openCamera()
             onPermissionsGranted?.invoke()
         } else {
 
 
-                CommonFunctions.goToAppSettings(requireContext())
+            CommonFunctions.goToAppSettings(requireContext())
 
         }
 
@@ -459,7 +461,12 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
             )
         }
 
-        if (permissions.all { ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED }) {
+        if (permissions.all {
+                ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    it
+                ) == PackageManager.PERMISSION_GRANTED
+            }) {
             // Permissions are already granted, proceed with the action
             //onPermissionsGranted()
             // openCamera()
@@ -467,15 +474,14 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
         } else {
             // Request permissions
             this.onPermissionsGranted = onPermissionsGranted
-            requestPermissions(permissions,REQUEST_CODE_GALLERY_PERMISSIONS)
+            requestPermissions(permissions, REQUEST_CODE_GALLERY_PERMISSIONS)
         }
     }
 
 
-
     private fun setImagePickerBottomSheet() {
 
-        val bottomSheet = BottomSheetDialog(requireContext(),R.style.DialogTheme_transparent)
+        val bottomSheet = BottomSheetDialog(requireContext(), R.style.DialogTheme_transparent)
         val bottomSheetLayout = ImagePickerBottomBinding.inflate(layoutInflater)
         bottomSheet.setContentView(bottomSheetLayout.root)
 
@@ -503,20 +509,17 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
     }
 
 
+    @SuppressLint("SetTextI18n")
     private fun setSpecialityBottom() {
         val bottomSheet = BottomSheetDialog(requireContext(), R.style.DialogTheme_transparent)
         val bottomSheetLayout = BottomSheetSpecialityBinding.inflate(layoutInflater)
         bottomSheet.setContentView(bottomSheetLayout.root)
-        bottomSheetLayout.tvCategory.text ="Select Category"
-        specialityAdapter =SpecialityAdapter(specialityList,specialityId)
+        bottomSheetLayout.tvCategory.text = "Select Specialities"
+        specialityAdapter = SpecialityAdapter(specialityList, specialityId)
         bottomSheetLayout.rvSpeciality.adapter = specialityAdapter
-
-
-
         bottomSheet.behavior.maxWidth = Resources.getSystem().displayMetrics.widthPixels
         bottomSheet.setCancelable(true)
         bottomSheet.show()
-
         bottomSheet.behavior.state = BottomSheetBehavior.STATE_EXPANDED
 
         bottomSheetLayout.ivCross.setOnClickListener {
@@ -525,41 +528,42 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
 
         bottomSheetLayout.btnSubmit.setOnClickListener {
             val selectedItems = specialityAdapter.getSelectedItems()
-            if (selectedItems.size>0){
+            if (selectedItems.size > 0) {
                 val selectedSpecialities = selectedItems.map { it.speciality }
                 val selectedSpecialitiesId = selectedItems.map { it.specialityId }
                 val specialityName = selectedSpecialities.joinToString(",")
                 binding.etSpeciality.setText(specialityName)
                 commaSeparatedSpecialitiesId = selectedSpecialitiesId.joinToString(",")
                 bottomSheet.dismiss()
-            }else{
-                Toast.makeText(requireContext(), "Please atleast one speciality checked", Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    "Please at least one speciality checked",
+                    Toast.LENGTH_LONG
+                ).show()
             }
 
         }
 
 
-
-
     }
 
-/*
-    val productId = it.data.data.productId
-    val listOfImages = ArrayList<MultipartBody.Part>()
-    for (i in 0 until productsPhoto.size) {
-        listOfImages.add(
-            prepareFilePart(
-                "ProductImage",
-                productsPhoto[i].productPhotos
+    /*
+        val productId = it.data.data.productId
+        val listOfImages = ArrayList<MultipartBody.Part>()
+        for (i in 0 until productsPhoto.size) {
+            listOfImages.add(
+                prepareFilePart(
+                    "ProductImage",
+                    productsPhoto[i].productPhotos
+                )
             )
-        )
-    }
+        }
 
-    viewModel.getProductsPhoto(
-    getTextRequestBodyParams(productId.toString())!!,
-    listOfImages
-    )*/
-
+        viewModel.getProductsPhoto(
+        getTextRequestBodyParams(productId.toString())!!,
+        listOfImages
+        )*/
 
 
     private fun prepareFilePart(partName: String, file: File): MultipartBody.Part {

@@ -4,6 +4,7 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
+@Suppress("DEPRECATED_ANNOTATION")
 @Parcelize
 data class ProductsResponse(
 
@@ -31,6 +32,10 @@ data class ProductsListItem(
 
 	@field:SerializedName("productId")
 	val productId: Int = 0,
+
+
+	@field:SerializedName("countInCart")
+	val countInCart : Int = 0,
 
 	@field:SerializedName("name")
 	val name: String? = "",

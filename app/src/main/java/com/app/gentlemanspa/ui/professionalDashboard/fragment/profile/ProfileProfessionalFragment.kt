@@ -66,7 +66,6 @@ class ProfileProfessionalFragment : Fragment(), View.OnClickListener {
 
                     Status.SUCCESS -> {
                         MyApplication.hideProgress()
-
                         AppPrefs(requireContext()).setProfileProfessionalData("PROFILE_DATA",it.data)
                         binding.tvName.text ="${it.data?.data?.firstName} ${it.data?.data?.lastName}"
                         binding.tvPhone.text =it.data?.data?.phoneNumber

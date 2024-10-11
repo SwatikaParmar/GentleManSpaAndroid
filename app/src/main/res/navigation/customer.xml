@@ -46,12 +46,31 @@
         <action
             android:id="@+id/action_selectProfessionalFragment_to_makeAppointmentFragment"
             app:destination="@id/makeAppointmentFragment" />
+
+        <action
+            android:id="@+id/action_selectProfessionalFragment_to_selectProfessionalServiceFragment"
+            app:destination="@id/selectProfessionalServiceFragment" />
     </fragment>
     <fragment
         android:id="@+id/makeAppointmentFragment"
         android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.MakeAppointmentFragment"
         android:label="MakeAppointmentFragment"
-        tools:layout="@layout/fragment_make_appointment"/>
+        tools:layout="@layout/fragment_make_appointment">
+
+     <!--   <argument android:name="professionalName"
+            app:argType="string"/>
+        <argument android:name="professionalImage"
+            app:argType="string"/>
+        <argument android:name="specialist"
+            app:argType="string"/>-->
+        <argument android:name="spaServiceId"
+            app:argType="integer"/>
+        <argument
+            android:name="professionalItem"
+            app:argType="com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.model.ProfessionalItem" />
+
+
+    </fragment>
     <fragment
         android:id="@+id/profileCustomerFragment"
         android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.profile.ProfileCustomerFragment"
@@ -110,5 +129,35 @@
         <argument
             android:name="selectPosition"
             app:argType="integer" />
+
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/selectProfessionalServiceFragment"
+        android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessionalService.SelectProfessionalServiceFragment"
+        android:label="SelectProfessionalServiceFragment"
+        tools:layout="@layout/fragment_select_professional_service">
+        <action
+            android:id="@+id/action_selectProfessionalServiceFragment_to_anyProfessionalFragment"
+            app:destination="@id/anyProfessionalFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/anyProfessionalFragment"
+        android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.anyProfessional.AnyProfessionalFragment"
+        android:label="AnyProfessionalFragment"
+        tools:layout="@layout/fragment_any_professional">
+
+        <action
+            android:id="@+id/action_anyProfessionalFragment_to_makeAppointmentFragment"
+            app:destination="@id/makeAppointmentFragment" />
+        <argument
+            android:name="spaDetailId"
+            app:argType="integer"/>
+        <argument
+            android:name="spaServiceId"
+            app:argType="integer"/>
     </fragment>
 </navigation>

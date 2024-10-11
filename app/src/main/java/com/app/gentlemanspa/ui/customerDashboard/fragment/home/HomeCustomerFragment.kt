@@ -1,22 +1,30 @@
 package com.app.gentlemanspa.ui.customerDashboard.fragment.home
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.content.res.Resources
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.app.gentlemanspa.R
 import com.app.gentlemanspa.base.MyApplication
+import com.app.gentlemanspa.base.MyApplication.Companion.hideProgress
+import com.app.gentlemanspa.base.MyApplication.Companion.showProgress
 import com.app.gentlemanspa.databinding.BottomSheetLocationBinding
 import com.app.gentlemanspa.databinding.FragmentHomeCustomerBinding
+import com.app.gentlemanspa.network.ApiConstants.BASE_FILE
 import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.network.Status
 import com.app.gentlemanspa.ui.customerDashboard.activity.CustomerActivity
@@ -24,11 +32,16 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.home.adapter.BannerCus
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.adapter.CategoriesAdapter
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.adapter.LocationAddressAdapter
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.adapter.ProductCategoriesAdapter
+import com.app.gentlemanspa.ui.customerDashboard.fragment.home.adapter.ProfessionalTeamAdapter
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.BannerItem
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.CategoriesItem
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.LocationItem
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductCategoriesItem
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.viewModel.HomeCustomerViewModel
+import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.model.ProfessionalItem
+import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.model.ProfessionalResponse
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.home.HomeProfessionalFragment.OnProfileUpdatedListener
+import com.app.gentlemanspa.utils.AppPrefs
 import com.app.gentlemanspa.utils.ViewModelFactory
 import com.app.gentlemanspa.utils.setVisible
 import com.app.gentlemanspa.utils.showToast
@@ -43,13 +56,14 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
     private var bannerCustomerList: ArrayList<BannerItem> = ArrayList()
     private var categoriesList: ArrayList<CategoriesItem> = ArrayList()
     private var productCategoriesList: ArrayList<ProductCategoriesItem> = ArrayList()
+    private var professionalTeamList: ArrayList<ProfessionalItem> = ArrayList()
     private lateinit var bottomSheetLayout: BottomSheetLocationBinding
     private lateinit var bottomSheet: BottomSheetDialog
     private var locationAddressList: ArrayList<LocationItem> = ArrayList()
     private lateinit var binding: FragmentHomeCustomerBinding
     private var mainLoader: Int = 0
     private val headerHandler: Handler = Handler(Looper.getMainLooper())
-
+    private lateinit var profileUpdatedListener: OnProfileUpdatedListener
 
     private val viewModel: HomeCustomerViewModel by viewModels {
         ViewModelFactory(
@@ -57,6 +71,14 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
         )
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnProfileUpdatedListener) {
+            profileUpdatedListener = context
+        } else {
+            throw ClassCastException("$context must implement OnProfileUpdatedListener")
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         bottomSheet = BottomSheetDialog(requireContext(), R.style.DialogTheme_transparent)
@@ -86,10 +108,11 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
     private fun initUI() {
 
         binding.ivDrawer.setOnClickListener(this)
-
+        viewModel.getCustomerDetail()
         viewModel.getBanner()
         viewModel.getCategories()
         viewModel.getProductCategories()
+        viewModel.getProfessionalTeamList()
 
 
     }
@@ -97,6 +120,30 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
 
 
     private fun initObserver() {
+
+        viewModel.resultProfileCustomerDetail.observe(this) {
+            it?.let { result ->
+                when (result.status) {
+                    Status.LOADING -> {
+                  //      showProgress(requireContext())
+                    }
+
+                    Status.SUCCESS -> {
+                        hideProgress()
+                        AppPrefs(requireContext()).setProfileCustomerData("PROFILE_DATA",it.data)
+                        val name = "${it.data?.data?.firstName} ${it.data?.data?.lastName}"
+                        val email = it.data?.data?.email.toString()
+                        profileUpdatedListener.onProfileUpdated(name,email, BASE_FILE +it.data?.data?.profilepic)
+                        Log.d("homeProfile","name->$name email->$email")
+                    }
+
+                    Status.ERROR -> {
+                        requireContext().showToast(it.message.toString())
+                        hideProgress()
+                    }
+                }
+            }
+        }
         viewModel.resultLocationAddress.observe(this) {
             it?.let { result ->
                 when (result.status) {
@@ -105,7 +152,7 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
                     }
 
                     Status.SUCCESS -> {
-                        MyApplication.hideProgress()
+                        hideProgress()
                         locationAddressList.clear()
                         it.data?.data?.let { it1 -> locationAddressList.addAll(it1) }
                         // setLocationBottomSheet()
@@ -113,7 +160,7 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
 
                     Status.ERROR -> {
                         requireContext().showToast(it.message.toString())
-                        MyApplication.hideProgress()
+                        hideProgress()
                     }
                 }
             }
@@ -207,18 +254,42 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
                     }
 
                     Status.SUCCESS -> {
-                        MyApplication.hideProgress()
+                        hideProgress()
                         productCategoriesList.clear()
-
                         it.data?.data?.let { it1 -> productCategoriesList.addAll(it1) }
                         setProductCategoriesAdapter()
-
                         binding.clMain.setVisible()
                     }
 
                     Status.ERROR -> {
                         requireContext().showToast(it.message.toString())
-                        MyApplication.hideProgress()
+                        hideProgress()
+                    }
+                }
+            }
+        }
+
+        viewModel.resultProfessionalTeam.observe(this) {
+            it?.let { result ->
+                when (result.status) {
+                    Status.LOADING -> {
+                        if (mainLoader == 0) {
+                            mainLoader = 1
+                            showProgress(requireContext())
+                        }
+
+                    }
+
+                    Status.SUCCESS -> {
+                        hideProgress()
+                        professionalTeamList.clear()
+                        it.data?.data?.let { it1 -> professionalTeamList.addAll(it1) }
+                        setProfessionalTeamAdapter()
+                    }
+
+                    Status.ERROR -> {
+                        requireContext().showToast(it.message.toString())
+                        hideProgress()
                     }
                 }
             }
@@ -226,7 +297,14 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
 
     }
 
+    private fun setProfessionalTeamAdapter() {
+        val professionalTeamAdapter=ProfessionalTeamAdapter(professionalTeamList)
+        binding.rvProfessionalTeam.adapter=professionalTeamAdapter
+
+    }
+
     private fun setProductCategoriesAdapter() {
+      //  productCategoriesList.reverse()
         val productCategoriesAdapter = ProductCategoriesAdapter(productCategoriesList)
         binding.rvProductCategories.adapter = productCategoriesAdapter
 
@@ -239,10 +317,12 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
         })
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun setCategoriesAdapter() {
+        Log.d("data","categoriesList${categoriesList}")
+        categoriesList.reverse()
         categoriesAdapter = CategoriesAdapter(categoriesList)
         binding.rvCategories.adapter = categoriesAdapter
-
         categoriesAdapter.setOnCategoriesCallbacks(object : CategoriesAdapter.CategoriesCallbacks {
             override fun rootCategories(item: CategoriesItem, position: Int) {
                 val action = HomeCustomerFragmentDirections.actionHomeCustomerFragmentToServiceFragment(item.categoryId,position)
@@ -270,8 +350,7 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
                 super.onPageSelected(position)
                 headerHandler.removeCallbacks(headerRunnable)
                 headerHandler.postDelayed(headerRunnable, 3000)
-
-                // Slide duration 3 seconds
+            // Slide duration 3 seconds
             }
         })
     }
@@ -305,17 +384,12 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
 
 
     private fun setLocationBottomSheet() {
-
         bottomSheet.setContentView(bottomSheetLayout.root)
         bottomSheet.behavior.maxWidth = Resources.getSystem().displayMetrics.widthPixels
         bottomSheet.setCancelable(true)
         bottomSheet.show()
         bottomSheetLayout.rvLocation.adapter = LocationAddressAdapter(locationAddressList)
-
         bottomSheet.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-
-
-
         bottomSheetLayout.ivCross.setOnClickListener {
             bottomSheet.dismiss()
         }
@@ -323,7 +397,6 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
 
         bottomSheetLayout.etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -338,15 +411,12 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
                 } else {
                     // bottomSheetLayout.rvLocation.visibility = View.GONE
                 }
-
             }
-
             override fun afterTextChanged(s: Editable) {
             }
         })
-
-
     }
-
-
+    interface OnProfileUpdatedListener {
+        fun onProfileUpdated(name: String, email: String,profileImage:String)
+    }
 }

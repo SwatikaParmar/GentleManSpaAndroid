@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_medium"
                 android:gravity="center"
-                android:text="Name"
+                android:text="@string/name"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_12sdp"
                 android:includeFontPadding="false"
@@ -64,6 +64,7 @@
                 android:textSize="@dimen/_10sdp"
                 android:text="example@gmail.com"
                 android:includeFontPadding="false"
+                android:visibility="gone"
                 android:fontFamily="@font/poppins_medium"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/nameTV" />

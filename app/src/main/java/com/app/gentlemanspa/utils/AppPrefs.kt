@@ -49,6 +49,19 @@ class AppPrefs(private val ctx: Context) {
         return gson.fromJson(getPrefs().getString(key,""),type)
     }
 
+    fun setProfileCustomerData(key: String?, value: GetProfessionalDetailResponse?) {
+        val gson = Gson()
+        val edit = getPrefs().edit()
+        edit.putString(key, gson.toJson(value))
+        edit.apply()
+    }
+
+    fun getProfileCustomerData(key: String?) : GetProfessionalDetailResponse?{
+        val gson = Gson()
+        val type = object  : TypeToken<GetProfessionalDetailResponse>(){}.type
+        return gson.fromJson(getPrefs().getString(key,""),type)
+    }
+
 
 
 }

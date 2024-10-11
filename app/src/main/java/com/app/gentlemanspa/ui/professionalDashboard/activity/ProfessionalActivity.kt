@@ -2,28 +2,37 @@ package com.app.gentlemanspa.ui.professionalDashboard.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.GravityCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.app.gentlemanspa.R
 import com.app.gentlemanspa.databinding.ActivityProfessionalBinding
+import com.app.gentlemanspa.network.ApiConstants.BASE_FILE
 import com.app.gentlemanspa.ui.auth.activity.AuthActivity
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.HomeCustomerFragment
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.home.HomeProfessionalFragment
 import com.app.gentlemanspa.utils.AppPrefs
 import com.app.gentlemanspa.utils.setGone
 import com.app.gentlemanspa.utils.setVisible
+import com.bumptech.glide.Glide
+import com.google.android.material.navigation.NavigationView
 
-class ProfessionalActivity : AppCompatActivity() {
+class ProfessionalActivity : AppCompatActivity(), HomeProfessionalFragment.OnProfileUpdatedListener {
     private lateinit var binding : ActivityProfessionalBinding
     private lateinit var navController: NavController
     private lateinit var navHost: NavHostFragment
+    private lateinit var navView: NavigationView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProfessionalBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        navView = binding.navView1
         initUI()
 
     }
@@ -54,7 +63,8 @@ class ProfessionalActivity : AppCompatActivity() {
                 }
 
                 R.id.profile -> {
-                    navController.navigate(R.id.profileProfessionalFragment)
+                 //   navController.navigate(R.id.profileProfessionalFragment)
+                    navController.navigate(R.id.editProfileProfessionalFragment)
                     true
                 }
 
@@ -167,6 +177,15 @@ class ProfessionalActivity : AppCompatActivity() {
         }
 
         builder.show()
+    }
+
+    override fun onProfileUpdated(name: String, email: String,profileImage:String) {
+        val headerView = navView.getHeaderView(0)
+        val tvNavName: TextView = headerView.findViewById(R.id.nameTV)
+        val ivNavProfileImage: ImageView = headerView.findViewById(R.id.profileNavIV)
+        tvNavName.text=name
+        Glide.with(this).load(profileImage).into(ivNavProfileImage)
+
     }
 
 

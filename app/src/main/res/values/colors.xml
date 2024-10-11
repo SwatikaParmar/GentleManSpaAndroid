@@ -22,4 +22,6 @@
     <color name="dark_brown">#83764C</color>
     <color name="btn_text_color">#FFD25F</color>
     <color name="light_green">#CCE9CD</color>
+    <color name="yellow_color_background">#FFE8D8BD</color>
+
 </resources>

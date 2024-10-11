@@ -22,7 +22,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/clPicture"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_170sdp"
+                android:layout_height="@dimen/_175sdp"
                 android:background="@color/light_app_color"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -71,7 +71,7 @@
                     android:layout_marginTop="@dimen/_5sdp"
                     android:gravity="center"
                     android:includeFontPadding="false"
-                    android:text="Name"
+                    android:text="@string/name"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_12ssp"
                     app:fontFamily="@font/poppins_semibold"
@@ -83,7 +83,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:includeFontPadding="false"
-                    android:text="9896989698"
+                    android:text="@string/_9896989698"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_12ssp"
                     app:fontFamily="@font/poppins"

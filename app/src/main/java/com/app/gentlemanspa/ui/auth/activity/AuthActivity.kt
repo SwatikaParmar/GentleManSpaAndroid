@@ -1,25 +1,22 @@
 package com.app.gentlemanspa.ui.auth.activity
 
 import android.content.Context
-import android.content.res.Configuration
 import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.app.gentlemanspa.R
 import com.app.gentlemanspa.databinding.ActivityAuthBinding
 import com.app.gentlemanspa.ui.auth.fragment.login.LoginFragment
-import java.util.Locale
 
+
+@Suppress("DEPRECATION")
 class AuthActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private lateinit var navHost: NavHostFragment
@@ -27,7 +24,6 @@ class AuthActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityAuthBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initUI()
@@ -50,6 +46,7 @@ class AuthActivity : AppCompatActivity() {
     }
 
 
+    @Deprecated("This method has been deprecated in favor of using the\n      {@link OnBackPressedDispatcher} via {@link #getOnBackPressedDispatcher()}.\n      The OnBackPressedDispatcher controls how back button events are dispatched\n      to one or more {@link OnBackPressedCallback} objects.")
     override fun onBackPressed() {
         val fragmentPosition = navHost.childFragmentManager.fragments[0]
         if (fragmentPosition is LoginFragment){
@@ -68,7 +65,7 @@ class AuthActivity : AppCompatActivity() {
                 val outRect = Rect()
                 v.getGlobalVisibleRect(outRect)
                 if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
-                    Log.d("focus", "touchevent")
+                    Log.d("focus", "touchEvent")
                     v.clearFocus()
                     val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(v.windowToken, 0)
@@ -83,15 +80,12 @@ class AuthActivity : AppCompatActivity() {
         val builder = AlertDialog.Builder(this@AuthActivity)
         builder.setTitle("Confirm")
         builder.setMessage("Are you sure want to close app?")
-
-        builder.setPositiveButton(android.R.string.yes) { dialog, which ->
+        builder.setPositiveButton(android.R.string.yes) { _, _ ->
             finishAffinity()
         }
-
-        builder.setNegativeButton(android.R.string.no) { dialog, which ->
+        builder.setNegativeButton(android.R.string.no) { dialog, _ ->
             dialog.dismiss()
         }
-
         builder.show()
     }
 }

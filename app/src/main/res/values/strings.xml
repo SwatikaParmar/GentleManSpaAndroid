@@ -2,4 +2,30 @@
     <string name="app_name">GentleManSpa</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="password">Password</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="email">Email</string>
+    <string name="phone_no">Phone No.</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="already_you_have_account">Already you have account?</string>
+    <string name="sign_in">Sign In</string>
+    <string name="create_your_new_account">Create\nyour new\naccount !</string>
+    <string name="please_enter_5_digit_code_sent_to_email">Please Enter 5 Digit Code Sent\nTo Email</string>
+    <string name="verify">Verify</string>
+    <string name="forgot_password">Forgot Password</string>
+    <string name="couple_massage">Couple Massage</string>
+    <string name="submit">Submit</string>
+    <string name="name">Name</string>
+    <string name="_9896989698">9896989698</string>
+    <string name="vip_clients">VIP Clients</string>
+    <string name="service_categories">Service Categories</string>
+    <string name="product_categories">Product Categories</string>
+    <string name="search_here">Search Here</string>
+    <string name="select_professional">Select Professional</string>
+    <string name="maximum_availablity">Maximum availablity</string>
+    <string name="any_professional">Any Professional</string>
+    <string name="no_data_found">No Data Found</string>
+    <string name="team">Team</string>
 </resources>

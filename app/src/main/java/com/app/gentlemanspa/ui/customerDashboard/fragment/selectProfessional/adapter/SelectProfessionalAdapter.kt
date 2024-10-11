@@ -1,5 +1,6 @@
 package com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -23,6 +24,7 @@ class SelectProfessionalAdapter(private var professionalList: ArrayList<Professi
         return professionalList.size
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
          val item = professionalList[position]

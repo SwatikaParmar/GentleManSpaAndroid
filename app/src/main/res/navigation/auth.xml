@@ -56,8 +56,24 @@
         tools:layout="@layout/fragment_otp">
         <argument
             android:name="OtpType"
-            app:argType="integer"
-            android:defaultValue="0"/>
+            android:defaultValue="0"
+            app:argType="integer" />
+
+
+        <argument
+            android:name="Otp"
+            app:argType="string" />
+        <argument
+            android:name="currentPhotoPath"
+            app:argType="string" />
+
+        <argument
+            android:name="signUpRequest"
+            app:argType="com.app.gentlemanspa.ui.auth.fragment.otp.model.SignUpRequest" />
+
+        <action
+            android:id="@+id/action_otpFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
     </fragment>
     <fragment
         android:id="@+id/setPasswordFragment"

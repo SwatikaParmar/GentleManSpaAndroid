@@ -14,8 +14,6 @@
         android:layout_height="match_parent"
         android:fillViewport="true">
 
-
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -26,7 +24,7 @@
             android:id="@+id/tvCreate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Create\nyour new\naccount !"
+            android:text="@string/create_your_new_account"
             android:fontFamily="@font/poppins_semibold"
             android:textSize="@dimen/_22ssp"
             android:includeFontPadding="false"
@@ -43,10 +41,11 @@
             android:layout_height="@dimen/_90sdp"
             android:layout_marginEnd="@dimen/_15sdp"
             android:scaleType="fitXY"
-            app:shapeAppearance="@style/circular50"
             android:src="@drawable/profile_placeholder"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/tvCreate"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:shapeAppearance="@style/circular50"
+            tools:ignore="ImageContrastCheck" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivUpload"
@@ -58,68 +57,82 @@
             app:layout_constraintBottom_toBottomOf="@+id/ivProfile"/>
 
 
-
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/etFirstName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_edit_text"
-            android:padding="@dimen/_8sdp"
-            android:hint="First Name"
-            android:singleLine="true"
-            android:imeOptions="actionNext"
-            android:inputType="text"
-            android:fontFamily="@font/poppins"
-            android:includeFontPadding="false"
-            android:elevation="@dimen/_2sdp"
-            android:layout_marginTop="@dimen/_20sdp"
             android:layout_marginHorizontal="@dimen/_15sdp"
-            app:layout_constraintTop_toBottomOf="@+id/tvCreate"/>
+            android:layout_marginTop="@dimen/_20sdp"
+            android:background="@drawable/bg_edit_text"
+            android:elevation="@dimen/_2sdp"
+            android:fontFamily="@font/poppins"
+            android:hint="@string/first_name"
+            android:imeOptions="actionNext"
+            android:includeFontPadding="false"
+            android:inputType="text"
+            android:minHeight="48dp"
+            android:padding="@dimen/_8sdp"
+            android:singleLine="true"
+            android:textSize="@dimen/_13sdp"
+            app:layout_constraintTop_toBottomOf="@+id/tvCreate"
+            tools:ignore="TextSizeCheck,VisualLintTextFieldSize"
+            tools:layout_editor_absoluteX="19dp" />
 
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/etLastName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_edit_text"
-            android:padding="@dimen/_8sdp"
-            android:hint="Last Name"
-            android:singleLine="true"
-            android:imeOptions="actionNext"
-            android:inputType="text"
-            android:fontFamily="@font/poppins"
-            android:includeFontPadding="false"
-            android:elevation="@dimen/_2sdp"
-            android:layout_marginTop="@dimen/_15sdp"
             android:layout_marginHorizontal="@dimen/_15sdp"
-            app:layout_constraintTop_toBottomOf="@+id/etFirstName"/>
+            android:layout_marginTop="@dimen/_15sdp"
+            android:background="@drawable/bg_edit_text"
+            android:elevation="@dimen/_2sdp"
+            android:fontFamily="@font/poppins"
+            android:hint="@string/last_name"
+            android:imeOptions="actionNext"
+            android:includeFontPadding="false"
+            android:inputType="text"
+            android:padding="@dimen/_8sdp"
+            android:singleLine="true"
+            android:textSize="@dimen/_13sdp"
+            app:layout_constraintTop_toBottomOf="@+id/etFirstName"
+            tools:ignore="TextSizeCheck,TouchTargetSizeCheck,VisualLintTextFieldSize"
+            tools:layout_editor_absoluteX="19dp" />
 
         <Spinner
             android:id="@+id/spGender"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:elevation="@dimen/_3sdp"
             android:layout_marginHorizontal="@dimen/_15sdp"
             android:layout_marginTop="@dimen/_15sdp"
             android:background="@drawable/bg_edit_text"
-            app:layout_constraintTop_toBottomOf="@+id/etLastName" />
+            android:elevation="@dimen/_3sdp"
+            android:paddingStart="@dimen/_3sdp"
+            android:textSize="@dimen/_13sdp"
+            app:layout_constraintTop_toBottomOf="@+id/etLastName"
+            tools:ignore="RtlSymmetry,TouchTargetSizeCheck"
+            tools:layout_editor_absoluteX="19dp" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/etEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_edit_text"
-            android:padding="@dimen/_8sdp"
-            android:hint="Email"
-            android:singleLine="true"
-            android:imeOptions="actionNext"
-            android:inputType="text"
-            android:fontFamily="@font/poppins"
-            android:includeFontPadding="false"
-            android:elevation="@dimen/_2sdp"
-            android:layout_marginTop="@dimen/_15sdp"
             android:layout_marginHorizontal="@dimen/_15sdp"
-            app:layout_constraintTop_toBottomOf="@+id/spGender"/>
+            android:layout_marginTop="@dimen/_15sdp"
+            android:background="@drawable/bg_edit_text"
+            android:elevation="@dimen/_2sdp"
+            android:fontFamily="@font/poppins"
+            android:hint="@string/email"
+            android:imeOptions="actionNext"
+            android:includeFontPadding="false"
+            android:inputType="text"
+            android:padding="@dimen/_8sdp"
+            android:singleLine="true"
+            android:textColorHint="#757575"
+            android:textSize="@dimen/_13sdp"
+            app:layout_constraintTop_toBottomOf="@+id/spGender"
+            tools:ignore="TouchTargetSizeCheck,VisualLintTextFieldSize,TextSizeCheck,TextContrastCheck"
+            tools:layout_editor_absoluteX="19dp" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/clPhone"
@@ -142,8 +155,10 @@
                 app:ccp_showFullName="false"
                 app:ccp_showArrow="false"
                 android:gravity="center"
+                android:textSize="@dimen/_13sdp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 />
 
             <View
@@ -160,16 +175,18 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="@dimen/_2sdp"
-                android:padding="@dimen/_8sdp"
                 android:background="@null"
-                android:hint="Phone No."
                 android:fontFamily="@font/poppins"
-                android:includeFontPadding="false"
+                android:hint="@string/phone_no"
                 android:imeOptions="actionNext"
+                android:includeFontPadding="false"
                 android:inputType="text"
+                android:padding="@dimen/_8sdp"
+                android:textSize="@dimen/_13sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/view"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="TextSizeCheck,TouchTargetSizeCheck,VisualLintTextFieldSize" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -185,33 +202,34 @@
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/etPassword"
-                android:layout_height="match_parent"
                 android:layout_width="0dp"
-                android:hint="Password"
-                android:padding="@dimen/_8sdp"
-                android:layout_marginStart="0dp"
-                android:background="@null"
-                android:includeFontPadding="false"
+                android:layout_height="match_parent"
                 android:layout_marginEnd="@dimen/_5sdp"
-                android:imeOptions="actionNext"
+                android:background="@null"
                 android:fontFamily="@font/poppins"
+                android:hint="@string/password"
+                android:imeOptions="actionNext"
+                android:includeFontPadding="false"
                 android:inputType="textPassword"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                android:padding="@dimen/_8sdp"
+                android:textSize="@dimen/_13sdp"
                 app:layout_constraintEnd_toStartOf="@+id/ivTogglePassword"
-                />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="TextSizeCheck,TouchTargetSizeCheck,VisualLintTextFieldSize" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/ivTogglePassword"
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="@dimen/_20sdp"
-                android:src="@drawable/hide_password"
-                android:onClick="@{onClick}"
-                app:tint="@color/icon_color"
                 android:layout_marginEnd="@dimen/_5sdp"
-                app:layout_constraintTop_toTopOf="parent"
+                android:onClick="@{onClick}"
+                android:src="@drawable/hide_password"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/icon_color"
+                tools:ignore="ImageContrastCheck" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -228,33 +246,34 @@
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/etConfirmPassword"
-                android:layout_height="match_parent"
                 android:layout_width="0dp"
-                android:hint="Confirm Password"
-                android:layout_marginStart="0dp"
-                android:padding="@dimen/_8sdp"
-                android:background="@null"
+                android:layout_height="match_parent"
                 android:layout_marginEnd="@dimen/_5sdp"
-                android:includeFontPadding="false"
-                android:imeOptions="actionDone"
+                android:background="@null"
                 android:fontFamily="@font/poppins"
+                android:hint="@string/confirm_password"
+                android:imeOptions="actionDone"
+                android:includeFontPadding="false"
                 android:inputType="textPassword"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                android:padding="@dimen/_8sdp"
+                android:textSize="@dimen/_13sdp"
                 app:layout_constraintEnd_toStartOf="@+id/ivToggleConfirmPassword"
-                />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="TextSizeCheck,TouchTargetSizeCheck,VisualLintTextFieldSize" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/ivToggleConfirmPassword"
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="@dimen/_20sdp"
-                android:src="@drawable/hide_password"
-                android:onClick="@{onClick}"
                 android:layout_marginEnd="@dimen/_5sdp"
-                app:tint="@color/icon_color"
-                app:layout_constraintTop_toTopOf="parent"
+                android:onClick="@{onClick}"
+                android:src="@drawable/hide_password"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/icon_color"
+                tools:ignore="ImageContrastCheck" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -262,17 +281,19 @@
             android:id="@+id/btnSignup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Sign Up"
-            android:onClick="@{onClick}"
-            android:padding="@dimen/_8sdp"
-            android:textSize="@dimen/_13ssp"
-            android:textAllCaps="false"
+            android:layout_marginHorizontal="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_20sdp"
             android:fontFamily="@font/poppins_medium"
             android:includeFontPadding="false"
+            android:onClick="@{onClick}"
+            android:padding="@dimen/_8sdp"
+            android:text="@string/sign_up"
+            android:textAllCaps="false"
+            android:textSize="@dimen/_13ssp"
             app:cornerRadius="@dimen/_20sdp"
-            android:layout_marginTop="@dimen/_20sdp"
-            android:layout_marginHorizontal="@dimen/_15sdp"
-            app:layout_constraintTop_toBottomOf="@+id/clConfirmPassword"/>
+            app:layout_constraintTop_toBottomOf="@+id/clConfirmPassword"
+            tools:ignore="TextContrastCheck,VisualLintButtonSize"
+            tools:layout_editor_absoluteX="19dp" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
@@ -288,7 +309,7 @@
                 android:id="@+id/tvAccount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Already you have account?"
+                android:text="@string/already_you_have_account"
                 android:textSize="@dimen/_12ssp"
                 android:textColor="@color/white"
                 android:fontFamily="@font/poppins"
@@ -302,20 +323,21 @@
                 android:id="@+id/tvSignUp"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="Sign In"
-                android:textColor="@color/app_color"
-                android:textSize="@dimen/_12ssp"
-                android:onClick="@{onClick}"
                 android:layout_marginStart="@dimen/_5sdp"
+                android:background="@drawable/bg_stroke_app_color"
                 android:fontFamily="@font/poppins_medium"
                 android:includeFontPadding="false"
+                android:onClick="@{onClick}"
                 android:paddingHorizontal="@dimen/_20sdp"
                 android:paddingVertical="@dimen/_3sdp"
-                android:background="@drawable/bg_stroke_app_color"
-                app:layout_constraintTop_toTopOf="parent"
+                android:text="@string/sign_in"
+                android:textColor="@color/app_color"
+                android:textSize="@dimen/_12ssp"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvAccount"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="TextContrastCheck" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

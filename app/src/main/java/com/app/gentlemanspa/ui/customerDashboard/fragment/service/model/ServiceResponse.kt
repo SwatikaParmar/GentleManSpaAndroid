@@ -33,7 +33,7 @@ data class ServiceData(
 	val searchQuery: String? = "",
 
 	@field:SerializedName("dataList")
-	val dataList: ArrayList<ServiceListItem>? = null,
+	val dataList: ArrayList<ServiceListItem>,
 
 	@field:SerializedName("totalPages")
 	val totalPages: Int? = 0,
@@ -69,6 +69,9 @@ data class ServiceListItem(
 	@field:SerializedName("serviceId")
 	val serviceId: Int? = 0,
 
+	@field:SerializedName("spaServiceId")
+	val spaServiceId: Int? = 0,
+
 	@field:SerializedName("spaDetailId")
 	val spaDetailId: Int? = 0,
 
@@ -77,6 +80,9 @@ data class ServiceListItem(
 
 	@field:SerializedName("categoryId")
 	val categoryId: Int? = 0,
+
+	@field:SerializedName("isAddedinCart")
+	val isAddedinCart: Boolean,
 
 	@field:SerializedName("basePrice")
 	val basePrice: Double? = 0.00,
@@ -90,3 +96,5 @@ data class ServiceListItem(
 	@field:SerializedName("status")
 	val status: Boolean? = false
 ) : Parcelable
+
+

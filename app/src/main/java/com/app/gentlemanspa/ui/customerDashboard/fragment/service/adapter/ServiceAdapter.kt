@@ -1,6 +1,7 @@
 package com.app.gentlemanspa.ui.customerDashboard.fragment.service.adapter
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -39,21 +40,33 @@ class ServiceAdapter(private var serviceList: ArrayList<ServiceListItem>) : Recy
              tvTime.text = "${item.durationInMinutes} mins"
              tvRupees.text = "$${decimalRoundToInt(item.listingPrice)}"
              tvLessRupees.text =  "$${decimalRoundToInt(item.basePrice)}"
-
-             if (item.status ==true){
-                 tvAddCart.text="Added"
-                 cbIcon.setVisible()
-                 clAddCart.background = ContextCompat.getDrawable(context,R.drawable.bg_black_button)
-             }else{
-                 tvAddCart.text="Add To Cart"
-                 cbIcon.setGone()
-                 clAddCart.background = ContextCompat.getDrawable(context,R.drawable.bg_app_color)
-             }
              Glide.with(holder.itemView.context).load(ApiConstants.BASE_FILE +item.serviceIconImage).placeholder(R.drawable.service_placeholder).error(R.drawable.service_placeholder).into(ivService)
+
+
+
+             /*    if (item.status ==true){
+                          tvAddCart.text="Added"
+                          cbIcon.setVisible()
+                          clAddCart.background = ContextCompat.getDrawable(context,R.drawable.bg_black_button)
+                      }else{
+                          tvAddCart.text="Add To Cart"
+                          cbIcon.setGone()
+                          clAddCart.background = ContextCompat.getDrawable(context,R.drawable.bg_app_color)
+                  }*/
+             Log.d("service","inside adapter isAddedinCart->${item.isAddedinCart} spaServiceId->${item.spaServiceId} spaDetailId->${item.spaDetailId} ")
+
+             if (item.isAddedinCart){
+                 ivAddService.setImageResource(R.drawable.ic_checked)
+             }else{
+                 ivAddService.setImageResource(R.drawable.ic_add)
+             }
 
 
              root.setOnClickListener {
                  serviceCallbacks.rootService(item)
+             }
+             ivAddService.setOnClickListener {
+                 serviceCallbacks.addService(item)
              }
          }
 
@@ -65,6 +78,9 @@ class ServiceAdapter(private var serviceList: ArrayList<ServiceListItem>) : Recy
 
     interface ServiceCallbacks{
         fun rootService(item: ServiceListItem)
+        fun addService(item: ServiceListItem)
     }
+
+
 
 }

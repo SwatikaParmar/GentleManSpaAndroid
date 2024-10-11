@@ -40,7 +40,7 @@ class SelectProfessionalFragment : Fragment(), View.OnClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         if (!this::binding.isInitialized) {
             binding = FragmentSelectProfessionalBinding.inflate(layoutInflater, container, false)
@@ -55,22 +55,21 @@ class SelectProfessionalFragment : Fragment(), View.OnClickListener {
     }
 
     private fun initUI() {
-
         binding.onClick = this
-
         viewModel.serviceId.set(serviceId)
         viewModel.spaDetailId.set(spaDetailId)
         viewModel.getProfessionalList()
     }
 
     private fun setSelectProfessionalAdapter() {
-        selectProfessionalAdapter =SelectProfessionalAdapter(professionalList)
+        selectProfessionalAdapter = SelectProfessionalAdapter(professionalList)
         binding.rvProfessional.adapter = selectProfessionalAdapter
 
-        selectProfessionalAdapter.setOnSelectProfessionalCallbacks(object :SelectProfessionalAdapter.SelectProfessionalCallbacks{
+        selectProfessionalAdapter.setOnSelectProfessionalCallbacks(object :
+            SelectProfessionalAdapter.SelectProfessionalCallbacks{
             override fun rootSelectProfessional() {
-                val action = SelectProfessionalFragmentDirections.actionSelectProfessionalFragmentToMakeAppointmentFragment()
-                findNavController().navigate(action)
+             /*   val action = SelectProfessionalFragmentDirections.actionSelectProfessionalFragmentToMakeAppointmentFragment()
+                findNavController().navigate(action)*/
             }
 
         })
@@ -80,6 +79,10 @@ class SelectProfessionalFragment : Fragment(), View.OnClickListener {
         when(v) {
             binding.ivArrowBack -> {
                 findNavController().popBackStack()
+            }
+            binding.clSelectProfessionalService->{
+                val action = SelectProfessionalFragmentDirections.actionSelectProfessionalFragmentToSelectProfessionalServiceFragment()
+                findNavController().navigate(action)
             }
         }
     }

@@ -107,7 +107,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
             }
 
             binding.tvForgetPassword -> {
-                findNavController().navigate(R.id.action_loginFragment_to_forgetPasswordFragment)
+               findNavController().navigate(R.id.action_loginFragment_to_forgetPasswordFragment)
             }
 
             binding.btnSignIn -> {

@@ -1,6 +1,7 @@
 package com.app.gentlemanspa.ui.customerDashboard.fragment.product.viewModel
 
 import android.app.Application
+import android.util.Log
 import androidx.databinding.Observable
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
@@ -9,6 +10,11 @@ import androidx.lifecycle.viewModelScope
 import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductCategoriesResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductsResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.product.model.AddProductInCartRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.product.model.AddProductInCartResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.AddServiceToCartRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.AddServiceToCartResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.GetCartItemsResponse
 import com.app.gentlemanspa.utils.CommonFunctions
 import com.app.gentlemanspa.utils.Resource
 import kotlinx.coroutines.flow.catch
@@ -21,8 +27,14 @@ class ProductViewModel(private var initialRepository: InitialRepository) : Andro
 ) {
 
     val  mainCategoryId = ObservableField<Int>()
+    val  productId = ObservableField<Int>()
+    val  countInCart = ObservableField<Int>()
+    val spaDetailId =ObservableField<Int>()
+    val searchQuery =ObservableField<String>()
     val resultProductCategories = MutableLiveData<Resource<ProductCategoriesResponse>>()
     val resultProductsData= MutableLiveData<Resource<ProductsResponse>>()
+    val resultGetCartItems = MutableLiveData<Resource<GetCartItemsResponse>>()
+    val resultAddProductInCart = MutableLiveData<Resource<AddProductInCartResponse>>()
 
 
 
@@ -55,7 +67,7 @@ class ProductViewModel(private var initialRepository: InitialRepository) : Andro
     fun getProductsList() {
         resultProductsData.value = Resource.loading(null)
         viewModelScope.launch {
-            initialRepository.getProductsList(1,1000,mainCategoryId.get())
+            initialRepository.getProductsList(1,1000,mainCategoryId.get(),searchQuery.get()!!,spaDetailId.get()!!)
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->
@@ -77,7 +89,56 @@ class ProductViewModel(private var initialRepository: InitialRepository) : Andro
                 }
         }
     }
+    fun getProductCartItem() {
+        Log.d("testIssue","inside getProductCartItem()")
+        resultGetCartItems.value = Resource.loading(null)
+        viewModelScope.launch {
+            initialRepository.getServiceCartItems()
+                .onStart { }
+                .onCompletion { }
+                .catch { exception ->
+                    if (!CommonFunctions.getError(exception)!!.contains("401"))
+                        resultGetCartItems.value =
+                            Resource.error(
+                                data = null,
+                                message = CommonFunctions.getError(exception)
+                            )
+                }
+                .collect {
+                    if (it?.statusCode == 200) {
+                        resultGetCartItems.value =
+                            Resource.success(message = it.messages, data = it)
+                    } else {
+                        resultGetCartItems.value =
+                            Resource.error(data = null, message = it?.messages)
+                    }
+                }
+        }
+    }
 
-
-
+    fun addProductInCart() {
+        resultAddProductInCart.value = Resource.loading(null)
+        viewModelScope.launch {
+            initialRepository.addProductInCart(AddProductInCartRequest(countInCart.get()!!, productId.get()!!))
+                .onStart { }
+                .onCompletion { }
+                .catch { exception ->
+                    if (!CommonFunctions.getError(exception)!!.contains("401"))
+                        resultAddProductInCart.value =
+                            Resource.error(
+                                data = null,
+                                message = CommonFunctions.getError(exception)
+                            )
+                }
+                .collect {
+                    if (it?.statusCode == 200) {
+                        resultAddProductInCart.value =
+                            Resource.success(message = it.messages, data = it)
+                    } else {
+                        resultAddProductInCart.value =
+                            Resource.error(data = null, message = it?.messages)
+                    }
+                }
+        }
+    }
 }

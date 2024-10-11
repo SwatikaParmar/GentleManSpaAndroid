@@ -2,6 +2,8 @@ package com.app.gentlemanspa.ui.customerDashboard.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -18,16 +20,20 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.home.HomeCustomerFragm
 import com.app.gentlemanspa.utils.AppPrefs
 import com.app.gentlemanspa.utils.setGone
 import com.app.gentlemanspa.utils.setVisible
+import com.bumptech.glide.Glide
+import com.google.android.material.navigation.NavigationView
 
-class CustomerActivity : AppCompatActivity() {
+class CustomerActivity : AppCompatActivity(),HomeCustomerFragment.OnProfileUpdatedListener {
     private lateinit var binding : ActivityCustomerBinding
     private lateinit var navController: NavController
     private lateinit var navHost: NavHostFragment
+    private lateinit var navView: NavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCustomerBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        navView = binding.navView1
         initUI()
 
     }
@@ -174,6 +180,14 @@ class CustomerActivity : AppCompatActivity() {
         }
 
         builder.show()
+    }
+
+    override fun onProfileUpdated(name: String, email: String, profileImage: String) {
+        val headerView = navView.getHeaderView(0)
+        val tvNavName: TextView = headerView.findViewById(R.id.nameTV)
+        val ivNavProfileImage: ImageView = headerView.findViewById(R.id.profileNavIV)
+        tvNavName.text=name
+        Glide.with(this).load(profileImage).into(ivNavProfileImage)
     }
 
 

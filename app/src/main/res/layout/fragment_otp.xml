@@ -28,10 +28,10 @@
 
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvNewAccount"
+            android:id="@+id/tvEnterCode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Please Enter 4 Digit Code Sent\nTo Email / Phone"
+            android:text="@string/please_enter_5_digit_code_sent_to_email"
             android:fontFamily="@font/poppins_medium"
             android:layout_marginHorizontal="@dimen/_15sdp"
             android:layout_marginTop="@dimen/_40sdp"
@@ -48,27 +48,28 @@
             style="@style/PinWidget.PinView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
             android:cursorVisible="true"
-            android:inputType="number"
+            android:fontFamily="@font/poppins_medium"
             android:imeOptions="actionDone"
+            android:inputType="number"
             android:padding="@dimen/_15sdp"
             android:textColor="@color/app_color"
             android:textSize="@dimen/_13ssp"
-           android:fontFamily="@font/poppins_medium"
             app:cursorColor="@color/white"
             app:cursorWidth="@dimen/_2sdp"
             app:hideLineWhenFilled="false"
-            app:itemCount="4"
+            app:itemCount="5"
             app:itemHeight="@dimen/_45sdp"
             app:itemRadius="@dimen/_5sdp"
             app:itemSpacing="@dimen/_10sdp"
             app:itemWidth="@dimen/_45sdp"
-            android:layout_marginTop="@dimen/_10sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvNewAccount"
+            app:layout_constraintTop_toBottomOf="@+id/tvEnterCode"
             app:lineColor="@color/grey"
-            app:viewType="rectangle" />
+            app:viewType="rectangle"
+            tools:ignore="SpeakableTextPresentCheck" />
 
 
 
@@ -76,7 +77,7 @@
             android:id="@+id/btnVerify"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Verify"
+            android:text="@string/verify"
             android:padding="@dimen/_8sdp"
             android:textSize="@dimen/_13ssp"
             android:onClick="@{onClick}"

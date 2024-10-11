@@ -33,7 +33,7 @@ class ProductProfessionalViewModel(private var initialRepository: InitialReposit
     fun getProductsList() {
         resultProductsData.value = Resource.loading(null)
         viewModelScope.launch {
-            initialRepository.getProductsList(1,1000,mainCategoryId.get())
+            initialRepository.getProductsList(1,1000,mainCategoryId.get(),"",21)
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->

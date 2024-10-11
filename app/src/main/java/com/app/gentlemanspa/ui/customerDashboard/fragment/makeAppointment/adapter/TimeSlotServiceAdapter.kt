@@ -1,5 +1,7 @@
 package com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.adapter
 
+import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -8,11 +10,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.app.gentlemanspa.R
 import com.app.gentlemanspa.base.MyApplication
 import com.app.gentlemanspa.databinding.ItemTimeSlotsServiceBinding
+import com.app.gentlemanspa.ui.customerDashboard.fragment.anyProfessional.adapter.AnyProfessionalAdapter.AnyProfessionalCallbacks
+import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.model.Slot
 
 
-class TimeSlotServiceAdapter: RecyclerView.Adapter<TimeSlotServiceAdapter.ViewHolder>()  {
-
-    private var positionChecked: Int=0
+class TimeSlotServiceAdapter(private var timeSlotList: ArrayList<Slot>): RecyclerView.Adapter<TimeSlotServiceAdapter.ViewHolder>()  {
+    private lateinit var selectSlotClick : SelectSlotCallback
+  //  private var positionChecked: Int=0
+    private var positionChecked: Int=-1
 
     class ViewHolder(val binding : ItemTimeSlotsServiceBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -22,24 +27,30 @@ class TimeSlotServiceAdapter: RecyclerView.Adapter<TimeSlotServiceAdapter.ViewHo
     }
 
     override fun getItemCount(): Int {
-        return 6
+        return timeSlotList.size
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    @SuppressLint("SetTextI18n")
+    override fun onBindViewHolder(holder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
+
+        val item=timeSlotList[position]
         holder.binding.apply {
+            tvTimeSlot.text=item.fromTime
+            Log.d("AvailableTimeResponse","inside adapter->$${item.fromTime} - ${item.toTime}")
+
             if (position ==positionChecked){
                 positionChecked =-1
-                cvTime.strokeColor = ContextCompat.getColor(MyApplication.context, R.color.app_color)
-                clTime.setBackgroundResource(R.color.app_color)
+                cvTime.strokeColor = ContextCompat.getColor(MyApplication.context, R.color.yellow_color_background)
+                clTime.setBackgroundResource(R.color.yellow_color_background)
                 val typeface = ResourcesCompat.getFont(MyApplication.context, R.font.poppins_medium)
-                tvTime.setTypeface(typeface)
+                tvTimeSlot.typeface = typeface
                 //  selectSlotClick.getAvailableDates(item,position)
 
             }else{
                 cvTime.strokeColor = ContextCompat.getColor(MyApplication.context, R.color.border_time_color)
                 clTime.setBackgroundResource(R.color.bg_time_color)
                 val typeface = ResourcesCompat.getFont(MyApplication.context, R.font.poppins)
-                tvTime.setTypeface(typeface)
+                tvTimeSlot.typeface = typeface
             }
 
             root.setOnClickListener {
@@ -48,20 +59,22 @@ class TimeSlotServiceAdapter: RecyclerView.Adapter<TimeSlotServiceAdapter.ViewHo
                     positionChecked = position
                     cvTime.strokeColor = ContextCompat.getColor(MyApplication.context, R.color.app_color)
                     val typeface = ResourcesCompat.getFont(MyApplication.context, R.font.poppins_medium)
-                    tvTime.typeface = typeface
+                    tvTimeSlot.typeface = typeface
                     clTime.setBackgroundResource(R.color.app_color)
                     notifyDataSetChanged()
                 }
-                // selectSlotClick.getAvailableDates(item,position)
+                 selectSlotClick.rootSelectSlot(item.slotId)
 
             }
         }
     }
 
-    fun setOnClickDoctorsCallback(click : DoctorsCallback){
+    fun setOnClickSlotCallback(onClick : SelectSlotCallback){
+        selectSlotClick = onClick
+
     }
 
-    interface DoctorsCallback{
-        fun rootDoctors()
+    interface SelectSlotCallback{
+        fun rootSelectSlot(slotId:Int)
     }
 }

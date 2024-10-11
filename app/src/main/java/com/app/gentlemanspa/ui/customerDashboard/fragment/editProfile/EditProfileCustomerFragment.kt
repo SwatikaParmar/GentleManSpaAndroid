@@ -21,20 +21,33 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.app.gentlemanspa.R
+import com.app.gentlemanspa.base.MyApplication
+import com.app.gentlemanspa.base.MyApplication.Companion.hideProgress
+import com.app.gentlemanspa.base.MyApplication.Companion.showProgress
 import com.app.gentlemanspa.databinding.BottomSheetSpecialityBinding
 import com.app.gentlemanspa.databinding.FragmentEditProfileCustomerBinding
 import com.app.gentlemanspa.databinding.ImagePickerBottomBinding
+import com.app.gentlemanspa.network.ApiConstants
+import com.app.gentlemanspa.network.InitialRepository
+import com.app.gentlemanspa.network.Status
 import com.app.gentlemanspa.ui.auth.fragment.register.adapter.GenderAdapter
 import com.app.gentlemanspa.ui.auth.fragment.register.model.GenderRequest
 import com.app.gentlemanspa.ui.customerDashboard.activity.CustomerActivity
+import com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.viewModel.UpdateCustomerViewModel
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.adapter.SpecialityAdapter
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.viewModel.UpdateProfessionalViewModel
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.profile.model.GetProfessionalDetailResponse
+import com.app.gentlemanspa.utils.AppPrefs
 import com.app.gentlemanspa.utils.CommonFunctions
+import com.app.gentlemanspa.utils.ViewModelFactory
 import com.app.gentlemanspa.utils.checkString
 import com.app.gentlemanspa.utils.checkValidString
 import com.app.gentlemanspa.utils.isValidEmail
 import com.app.gentlemanspa.utils.showToast
+import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import java.io.File
@@ -45,14 +58,21 @@ import java.util.Locale
 
 
 class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
+    private lateinit var binding : FragmentEditProfileCustomerBinding
     private var currentPhotoPath: String? = null
     private var profileImage: File?= null
+    private var genderItem: Int? = null
     private var onPermissionsGranted: (() -> Unit)? = null
-    private lateinit var binding : FragmentEditProfileCustomerBinding
+    private var profileCustomerData: GetProfessionalDetailResponse? = null
+    private val viewModel: UpdateCustomerViewModel by viewModels {
+        ViewModelFactory(
+            InitialRepository()
+        )
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = FragmentEditProfileCustomerBinding.inflate(layoutInflater, container, false)
         return binding.root
@@ -61,16 +81,100 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as CustomerActivity).bottomNavigation(false)
+        initObserver()
         initUI()
     }
+    private fun initObserver() {
 
+        viewModel.resultUpdateCustomer.observe(viewLifecycleOwner) {
+            it?.let { result ->
+                when (result.status) {
+                    Status.LOADING -> {
+                        showProgress(requireContext())
+                    }
+
+                    Status.SUCCESS -> {
+                        hideProgress()
+                        if (profileImage != null) {
+                            viewModel.profileId.set(
+                                CommonFunctions.getTextRequestBodyParams(
+                                    profileCustomerData?.data?.id
+                                )
+                            )
+                            viewModel.profilePic.set(
+                                CommonFunctions.prepareFilePart(
+                                    "profilePic",
+                                    profileImage!!
+                                )
+                            )
+                            viewModel.updateCustomerProfilePic()
+                         //   requireContext().showToast( it.data?.messages.toString())
+                        } else {
+                            requireContext().showToast(it.data?.messages.toString())
+                        }
+
+
+                    }
+
+                    Status.ERROR -> {
+                        requireContext().showToast(it.message.toString())
+                        MyApplication.hideProgress()
+                    }
+                }
+            }
+        }
+
+        viewModel.resultUpdateCustomerProfilePic.observe(viewLifecycleOwner) {
+            it?.let { result ->
+                when (result.status) {
+                    Status.LOADING -> {
+                        showProgress(requireContext())
+                    }
+
+                    Status.SUCCESS -> {
+                        hideProgress()
+                        requireContext().showToast(it.message.toString())
+
+                    }
+
+                    Status.ERROR -> {
+                        requireContext().showToast(it.message.toString())
+                        hideProgress()
+                    }
+                }
+            }
+        }
+    }
     private fun initUI() {
         binding.onClick = this
+        binding.countryCode.isEnabled = false
         setGenderSpinner()
         editTextSpace()
+        setProfileData()
     }
 
+    private fun setProfileData() {
+        profileCustomerData= AppPrefs(requireContext()).getProfileCustomerData("PROFILE_DATA")
+        binding.etFirstName.setText(profileCustomerData?.data?.firstName.toString())
+        binding.etLastName.setText(profileCustomerData?.data?.lastName)
+  //      binding.spGender.setText(profileCustomerData?.data?.professionalDetail?.speciality.)
+        binding.etEmail.setText(profileCustomerData?.data?.email)
+        binding.etPhone.setText(profileCustomerData?.data?.phoneNumber)
+        Glide.with(requireContext()).load(ApiConstants.BASE_FILE +profileCustomerData?.data?.profilepic).into(binding.ivProfile)
+        val specialityName = profileCustomerData?.data?.professionalDetail?.speciality?.joinToString(",")
 
+        binding.etSpeciality.setText(specialityName)
+        if (profileCustomerData?.data?.gender == "Male") {
+            genderItem = 1
+        } else if (profileCustomerData?.data?.gender == "Female") {
+            genderItem = 2
+        } else if (profileCustomerData?.data?.gender == "Other") {
+            genderItem = 3
+        }
+        if (genderItem != null) {
+            binding.spGender.setSelection(genderItem!!)
+        }
+    }
 
     private fun setGenderSpinner() {
         val genderList = ArrayList<GenderRequest>()
@@ -115,7 +219,7 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
                         }
                     }
 
-                   // genderItem =position
+                    genderItem =position
                 }
             }
     }
@@ -134,7 +238,13 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
             binding.btnUpdate -> {
 
                 if (isValidation()) {
-
+                    viewModel.firstName.set(binding.etFirstName.text.toString())
+                    viewModel.lastName.set(binding.etLastName.text.toString())
+                    viewModel.gender.set(binding.spGender.selectedItem.toString())
+                    viewModel.phoneNumber.set(binding.etPhone.text.toString())
+                    viewModel.email.set(binding.etEmail.text.toString())
+                    viewModel.id.set(profileCustomerData?.data?.id)
+                    viewModel.updateCustomerProfile()
                 }
 
 
@@ -157,27 +267,16 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
 
     private fun isValidation(): Boolean {
         when {
-
             checkString(binding.etFirstName) -> requireContext().showToast("Please enter first name")
-
             checkString(binding.etLastName) -> requireContext().showToast("Please enter last name")
-
             binding.spGender.selectedItem.toString() == "Select Gender" -> requireContext().showToast("Please select gender")
-
             checkString(binding.etEmail) -> requireContext().showToast("Please enter email")
-
             !isValidEmail(checkValidString(binding.etEmail)) -> requireContext().showToast("Please enter a valid email address")
-
             checkString(binding.etPhone) -> requireContext().showToast("Please enter phone number")
-
             checkValidString(binding.etPhone).length != 10 -> requireContext().showToast("Please enter a valid 10 digit phone number")
-
-            checkString(binding.etSpeciality) -> requireContext().showToast("Please enter VIP Clients")
-
-
+        //    checkString(binding.etSpeciality) -> requireContext().showToast("Please enter VIP Clients")
             else -> return true
         }
-
         return false
     }
 

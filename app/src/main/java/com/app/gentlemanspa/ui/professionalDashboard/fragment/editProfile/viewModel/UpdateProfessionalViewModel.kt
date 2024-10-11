@@ -7,7 +7,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.ui.auth.fragment.register.model.ProfileRegisterResponse
-import com.app.gentlemanspa.ui.auth.fragment.register.model.SignUpResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.model.ProfessionalDetail
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.model.SpecialityResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.model.UpdateProfileProfessionalRequest
@@ -30,8 +29,7 @@ class UpdateProfessionalViewModel (private var initialRepository: InitialReposit
     val gender = ObservableField<String>()
     val id = ObservableField<String>()
     val email = ObservableField<String>()
-
-    val pincode = ObservableField<String>()
+/*    val pincode = ObservableField<String>()
     val country = ObservableField<String>()
     val award = ObservableField<String>()
     val city = ObservableField<String>()
@@ -39,25 +37,20 @@ class UpdateProfessionalViewModel (private var initialRepository: InitialReposit
     val houseNoOrBuildingName = ObservableField<String>()
     val state = ObservableField<String>()
     val trainingLevel = ObservableField<String>()
-    val status = ObservableField<String>()
+    val status = ObservableField<String>()*/
     val specialityIds = ObservableField<String>()
-
+    val professionalDetailId = ObservableField<String>()
     val profilePic = ObservableField<MultipartBody.Part>()
     val profileId = ObservableField<RequestBody>()
-
-
-
     val resultProfileRegister = MutableLiveData<Resource<ProfileRegisterResponse>>()
     val resultSpeciality = MutableLiveData<Resource<SpecialityResponse>>()
-
     val resultUpdateProfessional = MutableLiveData<Resource<UpdateProfileProfessionalResponse>>()
-
-
 
     fun updateProfessional() {
         resultUpdateProfessional.value = Resource.loading(null)
         viewModelScope.launch {
-            initialRepository.updateProfessional(UpdateProfileProfessionalRequest(firstName.get(),lastName.get(),phoneNumber.get(),gender.get(),ProfessionalDetail(pincode.get(),country.get(),award.get(),city.get(),streetAddress.get(),houseNoOrBuildingName.get(),state.get(), trainingLevel.get(),status.get(), specialityIds.get()),id.get(),email.get()))
+            initialRepository.updateProfessional(UpdateProfileProfessionalRequest(firstName.get(),lastName.get(),"+91",phoneNumber.get(),email.get(),gender.get(),id.get(),ProfessionalDetail(
+                professionalDetailId.get()?.toInt(),specialityIds.get(),21)))
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->
@@ -67,8 +60,7 @@ class UpdateProfessionalViewModel (private var initialRepository: InitialReposit
                                 data = null,
                                 message = CommonFunctions.getError(exception)
                             )
-                }
-                .collect {
+                }.collect {
                     if (it?.statusCode == 200) {
                         resultUpdateProfessional.value =
                             Resource.success(message = it.messages, data = it)

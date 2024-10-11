@@ -14,7 +14,8 @@
             android:id="@+id/cbText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="dsfgds"
+            android:text="@string/last_name"
+            android:buttonTint="@color/btn_text_color"
             app:layout_constraintTop_toTopOf="parent" />
 
         <View

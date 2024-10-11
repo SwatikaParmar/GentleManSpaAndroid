@@ -84,6 +84,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <androidx.appcompat.widget.AppCompatEditText
+                            android:id="@+id/etSearchService"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_marginHorizontal="@dimen/_5sdp"
@@ -91,7 +92,7 @@
                             android:imeOptions="actionDone"
                             android:paddingVertical="@dimen/_6sdp"
                             android:singleLine="false"
-                            android:hint="Search Here"
+                            android:hint="@string/search_here"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@+id/ivSearch" />
 
@@ -158,6 +159,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/_47sdp"
             android:background="@color/white"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent">
 
             <androidx.appcompat.widget.AppCompatTextView

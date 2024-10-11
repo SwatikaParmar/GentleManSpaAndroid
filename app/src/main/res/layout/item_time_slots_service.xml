@@ -10,10 +10,11 @@
         android:id="@+id/cvTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:strokeWidth="@dimen/_1sdp"
-        app:strokeColor="@color/border_time_color"
+        app:cardCornerRadius="@dimen/_3sdp"
         app:cardUseCompatPadding="true"
-        app:cardCornerRadius="@dimen/_3sdp">
+        android:layout_marginVertical="@dimen/_7sdp"
+        app:strokeColor="@color/border_time_color"
+        app:strokeWidth="@dimen/_1sdp">
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -21,19 +22,18 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/bg_time_color"
-            android:paddingVertical="@dimen/_1sdp"
-            android:paddingHorizontal="@dimen/_3sdp">
+            android:paddingHorizontal="@dimen/_3sdp"
+            android:paddingVertical="@dimen/_1sdp">
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvTime"
+                android:id="@+id/tvTimeSlot"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="10:30 AM"
-                android:textSize="@dimen/_12ssp"
-                android:textColor="@color/black"
                 android:gravity="center"
-                />
-
+                android:text="10:30 AM"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_12ssp" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,7 @@
 package com.app.gentlemanspa.ui.customerDashboard.fragment.product.adapter
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -29,7 +30,7 @@ class ProductsAdapter(var productsList: ArrayList<ProductsListItem>) : RecyclerV
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        var count :Int =1
+        var countInCart :Int =0
 
         val item = productsList[position]
         holder.binding.apply {
@@ -38,32 +39,36 @@ class ProductsAdapter(var productsList: ArrayList<ProductsListItem>) : RecyclerV
             tvLessRupees.text = "$${item.basePrice}"
             Glide.with(holder.itemView.context).load(ApiConstants.BASE_FILE +item.image).error(R.drawable.no_product).placeholder(
                 R.drawable.no_product).into(ivService)
+            Log.d("countInCart","countInCart->${item.countInCart}")
+            countInCart=item.countInCart
+            tvCount.text = countInCart.toString()
 
-            ivMinus.setOnClickListener {
-
-                count --
-                if (count>=1){
-                    tvCount.text = count.toString()
-                }else{
-                    clAddCart.setVisible()
-                    clPlusMinus.setGone()
-
-                }
-
-            }
-
-            clAddCart.setOnClickListener {
-                count =1
+            if (item.countInCart>0){
                 clAddCart.setGone()
                 clPlusMinus.setVisible()
-                tvCount.text =count.toString()
+            }else{
+                clAddCart.setVisible()
+                clPlusMinus.setGone()
+            }
+            clAddCart.setOnClickListener {
+                countInCart=1
+                productsCallbacks.addOrUpdateProductInCart(item.productId,countInCart,item.stock)
 
             }
 
             ivPlus.setOnClickListener {
-                count ++
-                tvCount.text = count.toString()
+                countInCart++
+                productsCallbacks.addOrUpdateProductInCart(item.productId,countInCart,item.stock)
+
             }
+
+            ivMinus.setOnClickListener {
+                if (countInCart>=0){
+                    countInCart--
+                    productsCallbacks.addOrUpdateProductInCart(item.productId,countInCart,item.stock)
+                }
+            }
+
             root.setOnClickListener {
                 productsCallbacks.rootProducts(item)
             }
@@ -79,6 +84,8 @@ class ProductsAdapter(var productsList: ArrayList<ProductsListItem>) : RecyclerV
 
     interface ProductsCallbacks{
         fun rootProducts(item: ProductsListItem)
+        fun addOrUpdateProductInCart(productId:Int,countInCard:Int,stock:Int)
+
     }
 
 }

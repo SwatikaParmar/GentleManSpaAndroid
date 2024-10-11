@@ -31,9 +31,7 @@ object RetrofitClient {
 
     private fun getHttpClient(): OkHttpClient {
         val interceptor = HttpLoggingInterceptor()
-
         return OkHttpClient.Builder()
-
             //.cache(getCache())
             .build()
             .newBuilder()
@@ -48,57 +46,46 @@ object RetrofitClient {
 
     private fun getNetworkInterceptor(): Interceptor {
         return Interceptor { chain ->
-
             val request: Request
             val token = AppPrefs(context).getString("TOKEN")
-            Log.e("TAG", "getNetworkInterceptor: "+token.toString() )
+            Log.e("TAG", "getNetworkInterceptor: " + token.toString())
 
             request = if (!token.isNullOrEmpty()) {
-                chain.request().newBuilder().addHeader(ApiConstants.KEY_AUTHORIZATION, "Bearer $token").build()
-
+                chain.request().newBuilder()
+                    .addHeader(ApiConstants.KEY_AUTHORIZATION, "Bearer $token").build()
             } else {
                 chain.request().newBuilder()
                     .build()
             }
-
             chain.proceed(request)
-
 
         }
 
     }
 
 
-
-
-
-    private val  errorInterceptor = Interceptor { chain ->
+    private val errorInterceptor = Interceptor { chain ->
         val request: Request = chain.request()
         val response = chain.proceed(request)
         when (response.code) {
 
-            401-> {
+            401 -> {
                 Handler(Looper.getMainLooper()).post {
                     val intent = Intent("SessionExpired")
-                   // context.sendBroadcast(intent)
+                    // context.sendBroadcast(intent)
                 }
             }
 
 
             else -> {
-
                 Handler(Looper.getMainLooper()).post {
                     val intent = Intent("Message")
-                   // context.sendBroadcast(intent)
+                    // context.sendBroadcast(intent)
                 }
-
-
             }
-
         }
         response
     }
-
 
 
 }

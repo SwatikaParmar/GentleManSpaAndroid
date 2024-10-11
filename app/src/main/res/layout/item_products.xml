@@ -104,7 +104,6 @@
                 android:paddingHorizontal="@dimen/_7sdp"
                 android:background="@drawable/bg_app_color"
                 app:layout_constraintEnd_toEndOf="parent"
-
                 app:layout_constraintBottom_toBottomOf="parent">
 
                 <androidx.appcompat.widget.AppCompatTextView

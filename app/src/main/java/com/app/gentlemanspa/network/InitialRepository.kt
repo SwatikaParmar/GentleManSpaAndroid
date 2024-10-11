@@ -2,13 +2,21 @@ package com.app.gentlemanspa.network
 
 
 
+import android.util.Log
+import com.app.gentlemanspa.ui.auth.fragment.forget.model.ForgetPasswordRequest
+import com.app.gentlemanspa.ui.auth.fragment.forget.model.ForgetPasswordResponse
 import com.app.gentlemanspa.ui.auth.fragment.login.model.LoginRequest
 import com.app.gentlemanspa.ui.auth.fragment.login.model.LoginResponse
+import com.app.gentlemanspa.ui.auth.fragment.register.model.EmailOtpRequest
+import com.app.gentlemanspa.ui.auth.fragment.register.model.EmailOtpResponse
+import com.app.gentlemanspa.ui.auth.fragment.register.model.PhoneUniqueRequest
 import com.app.gentlemanspa.ui.auth.fragment.register.model.ProfileRegisterResponse
-import com.app.gentlemanspa.ui.auth.fragment.register.model.SignUpRequest
-import com.app.gentlemanspa.ui.auth.fragment.register.model.SignUpResponse
+import com.app.gentlemanspa.ui.auth.fragment.otp.model.SignUpRequest
+import com.app.gentlemanspa.ui.auth.fragment.otp.model.SignUpResponse
 import com.app.gentlemanspa.ui.auth.fragment.setPassword.model.ChangePasswordRequest
 import com.app.gentlemanspa.ui.auth.fragment.setPassword.model.ChangePasswordResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.model.UpdateProfileCustomerRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.model.UpdateProfileCustomerResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.BannerResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.LocationResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.model.SpecialityResponse
@@ -18,8 +26,15 @@ import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.model.
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.CategoriesResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductCategoriesResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductsResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.model.ServiceGetAvailableDatesResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.model.ServiceGetAvailableTimeSlotsResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.product.model.AddProductInCartRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.product.model.AddProductInCartResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.productDetail.model.ProductDetailResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.model.ProfessionalResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.AddServiceToCartRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.AddServiceToCartResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.GetCartItemsResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.ServiceResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.serviceDetail.model.ServiceDetailResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.AddProductRequest
@@ -38,19 +53,15 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.http.Query
 
 
 class InitialRepository {
-
-
     suspend fun registerAccount(body: SignUpRequest?): Flow<SignUpResponse?> {
         return flow {
             val result = Api.apiInterface?.registerAccount(body)
             emit(result)
         }.flowOn(Dispatchers.IO)
     }
-
 
     suspend fun profilePicRegister(
         profilePic: MultipartBody.Part?,
@@ -76,16 +87,38 @@ class InitialRepository {
         }.flowOn(Dispatchers.IO)
     }
 
+    suspend fun resetPassword(body: ForgetPasswordRequest?): Flow<ForgetPasswordResponse?> {
+        return flow {
+            val result = Api.apiInterface?.resetPassword(body)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+
+
     suspend fun getProfessionalDetail(): Flow<GetProfessionalDetailResponse?> {
         return flow {
             val result = Api.apiInterface?.getProfessionalDetail()
             emit(result)
         }.flowOn(Dispatchers.IO)
     }
-
     suspend fun updateProfessional(body: UpdateProfileProfessionalRequest?): Flow<UpdateProfileProfessionalResponse?> {
         return flow {
             val result = Api.apiInterface?.updateProfessional(body)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+
+    suspend fun getCustomerDetail(): Flow<GetProfessionalDetailResponse?> {
+        return flow {
+            val result = Api.apiInterface?.getCustomerDetail()
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+
+    suspend fun updateCustomerDetail(body: UpdateProfileCustomerRequest?): Flow<UpdateProfileCustomerResponse?> {
+        return flow {
+            Log.d("UpdateProfileBody","Body is->${body}")
+            val result = Api.apiInterface?.updateCustomerProfile(body)
             emit(result)
         }.flowOn(Dispatchers.IO)
     }
@@ -148,9 +181,9 @@ class InitialRepository {
     }
 
 
-    suspend fun getServiceList(pageNumber: Int?, pageSize: Int?,categoryId: Int?): Flow<ServiceResponse?> {
+    suspend fun getServiceList(pageNumber: Int?, pageSize: Int?,categoryId: Int?,searchQuery:String, spaDetailId:Int?): Flow<ServiceResponse?> {
         return flow {
-            val result =Api.apiInterface?.getServiceList(pageNumber,pageSize,categoryId)
+            val result =Api.apiInterface?.getServiceList(pageNumber,pageSize,categoryId,searchQuery,spaDetailId)
             emit(result)
         }.flowOn(Dispatchers.IO)
     }
@@ -162,10 +195,35 @@ class InitialRepository {
             emit(result)
         }.flowOn(Dispatchers.IO)
     }
+    suspend fun getServiceAvailableDates(spaServiceIds: Int?,professionalId: String?): Flow<ServiceGetAvailableDatesResponse?> {
+        Log.d("AvailableDatesResponse","inside InitialRepository spaServiceIds->${spaServiceIds} professionalId->$professionalId")
 
-    suspend fun getProfessionalList(serviceId: Int?,spaDetailId: Int?): Flow<ProfessionalResponse?> {
         return flow {
-            val result =Api.apiInterface?.getProfessionalList(serviceId,spaDetailId)
+            val result =Api.apiInterface?.getServiceAvailableDates(spaServiceIds,professionalId)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+    suspend fun getServiceAvailableTimeSlots(spaServiceIds: Int?,date:String,professionalId: String?): Flow<ServiceGetAvailableTimeSlotsResponse?> {
+        Log.d("AvailableTimeResponse","inside InitialRepository spaServiceIds->${spaServiceIds}date->${date} professionalId->$professionalId")
+
+        return flow {
+            val result =Api.apiInterface?.getServiceAvailableTimeSlots(spaServiceIds,date,professionalId)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+    suspend fun getProfessionalList(spaServiceId: Int?,spaDetailId: Int?): Flow<ProfessionalResponse?> {
+        Log.d("professionalList","inside InitialRepository spaServiceId->${spaServiceId} spaDetailId->$spaDetailId")
+
+        return flow {
+            val result =Api.apiInterface?.getProfessionalList(spaServiceId,spaDetailId)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+
+    suspend fun getProfessionalTeamList(): Flow<ProfessionalResponse?> {
+
+        return flow {
+            val result =Api.apiInterface?.getProfessionalTeamList()
             emit(result)
         }.flowOn(Dispatchers.IO)
     }
@@ -179,13 +237,31 @@ class InitialRepository {
     }
 
 
-    suspend fun getProductsList(pageNumber: Int?,pageSize: Int?,mainCategoryId: Int?): Flow<ProductsResponse?> {
+    suspend fun getProductsList(pageNumber: Int?,pageSize: Int?,mainCategoryId: Int?,searchQuery:String,spaDetailId:Int): Flow<ProductsResponse?> {
         return flow {
-            val result =Api.apiInterface?.getProductsList(pageNumber,pageSize,mainCategoryId)
+            val result =Api.apiInterface?.getProductsList(pageNumber,pageSize,mainCategoryId,searchQuery,spaDetailId)
             emit(result)
         }.flowOn(Dispatchers.IO)
     }
 
+    suspend fun getServiceCartItems(): Flow<GetCartItemsResponse?> {
+        return flow {
+            val result =Api.apiInterface?.getServiceCartItems()
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+    suspend fun addServiceToCart(body: AddServiceToCartRequest?): Flow<AddServiceToCartResponse?> {
+        return flow {
+            val result = Api.apiInterface?.addServiceToCart(body)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+    suspend fun addProductInCart(body: AddProductInCartRequest?): Flow<AddProductInCartResponse?> {
+        return flow {
+            val result = Api.apiInterface?.addProductInCart(body)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
     suspend fun getProductDetails(id: Int?): Flow<ProductDetailResponse?> {
         return flow {
             val result =Api.apiInterface?.getProductDetails(id)
@@ -222,48 +298,53 @@ class InitialRepository {
             emit(result)
         }.flowOn(Dispatchers.IO)
     }
-    /*
+
      suspend fun emailOtp(body: EmailOtpRequest?): Flow<EmailOtpResponse?> {
          return flow {
              val result = Api.apiInterface?.emailOtp(body)
              emit(result)
          }.flowOn(Dispatchers.IO)
      }
+    suspend fun phoneUnique(body: PhoneUniqueRequest?): Flow<EmailOtpResponse?> {
+        return flow {
+            val result = Api.apiInterface?.phoneUnique(body)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+
+    /*
 
 
 
+         suspend fun getSpeciality(): Flow<BrowserServicesResponse?> {
+             return flow {
+                 val result = Api.apiInterface?.getSpeciality()
+                 emit(result)
+             }.flowOn(Dispatchers.IO)
+         }
 
 
-
-     suspend fun getSpeciality(): Flow<BrowserServicesResponse?> {
-         return flow {
-             val result = Api.apiInterface?.getSpeciality()
-             emit(result)
-         }.flowOn(Dispatchers.IO)
-     }
-
-
-     suspend fun getServiceDetail(serviceTypeValue :Int?): Flow<ServiceDetailResponse?> {
-         return flow {
-             val result = Api.apiInterface?.getServiceDetail(serviceTypeValue)
-             emit(result)
-         }.flowOn(Dispatchers.IO)
-     }
+         suspend fun getServiceDetail(serviceTypeValue :Int?): Flow<ServiceDetailResponse?> {
+             return flow {
+                 val result = Api.apiInterface?.getServiceDetail(serviceTypeValue)
+                 emit(result)
+             }.flowOn(Dispatchers.IO)
+         }
 
 
-     suspend fun getTopDoctors(pageNumber: Int?, pageSize: Int?): Flow<TopDoctorsResponse?> {
-         return flow {
-             val result = Api.apiInterface?.getTopDoctors(pageNumber,pageSize)
-             emit(result)
-         }.flowOn(Dispatchers.IO)
-     }
+         suspend fun getTopDoctors(pageNumber: Int?, pageSize: Int?): Flow<TopDoctorsResponse?> {
+             return flow {
+                 val result = Api.apiInterface?.getTopDoctors(pageNumber,pageSize)
+                 emit(result)
+             }.flowOn(Dispatchers.IO)
+         }
 
-     suspend fun getSearchTopFindDoctors(pageNumber: Int?, pageSize: Int?,searchQuery: String?): Flow<TopDoctorsResponse?> {
-         return flow {
-             val result = Api.apiInterface?.getSearchTopFindDoctors(pageNumber,pageSize,searchQuery)
-             emit(result)
-         }.flowOn(Dispatchers.IO)
-     }*/
+         suspend fun getSearchTopFindDoctors(pageNumber: Int?, pageSize: Int?,searchQuery: String?): Flow<TopDoctorsResponse?> {
+             return flow {
+                 val result = Api.apiInterface?.getSearchTopFindDoctors(pageNumber,pageSize,searchQuery)
+                 emit(result)
+             }.flowOn(Dispatchers.IO)
+         }*/
 
  /*   suspend fun resetPassword(body: ResetPasswordRequest?): Flow<ResetPasswordResponse?> {
         return flow {
