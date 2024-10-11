@@ -1,0 +1,46 @@
+package com.app.gentlemanspa.utils
+
+import android.os.Build
+import androidx.annotation.RequiresApi
+import com.prolificinteractive.materialcalendarview.CalendarDay
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
+
+fun formatDuration(durationInMinutes: Int): String {
+    val hours = durationInMinutes / 60
+    val minutes = durationInMinutes % 60
+
+    val hoursPart = if (hours > 0) "$hours hour${if (hours > 1) "s" else ""}" else ""
+    val minutesPart = if (minutes > 0) "$minutes min${if (minutes > 1) "s" else ""}" else ""
+
+    return when {
+        hours > 0 && minutes > 0 -> "$hoursPart $minutesPart"
+        hours > 0 -> hoursPart
+        minutes > 0 -> minutesPart
+        else -> "0 mins"
+    }.trim()
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun formatDayDate(inputDate: String): String {
+    val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    val outputFormatter = DateTimeFormatter.ofPattern("EEE, dd-MM-yyyy")
+
+    val date = LocalDate.parse(inputDate, inputFormatter)
+    return date.format(outputFormatter)
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun formatCalendarDayToString(calendarDay: CalendarDay): String {
+    val localDate = LocalDate.of(calendarDay.year, calendarDay.month, calendarDay.day)
+    val formatter = DateTimeFormatter.ofPattern("EEE, d MMM yyyy", Locale.getDefault())
+    return localDate.format(formatter)
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun formatCalendarDayToYear(calendarDay: CalendarDay): String {
+    val localDate = LocalDate.of(calendarDay.year, calendarDay.month, calendarDay.day)
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.getDefault())
+    return localDate.format(formatter)
+}
