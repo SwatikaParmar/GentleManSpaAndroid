@@ -155,7 +155,7 @@
                     android:gravity="center"
                     android:minWidth="@dimen/_25sdp"
                     android:paddingHorizontal="@dimen/_5sdp"
-                   android:layout_margin="0.75dp"
+                    android:layout_margin="0.75dp"
                     android:background="@color/white"
                     android:fontFamily="@font/poppins_medium"
                     app:layout_constraintTop_toTopOf="parent"
@@ -177,6 +177,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

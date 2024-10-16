@@ -8,12 +8,15 @@ import com.app.gentlemanspa.ui.auth.fragment.login.viewModel.LoginViewModel
 import com.app.gentlemanspa.ui.auth.fragment.otp.viewModel.OtpViewModel
 import com.app.gentlemanspa.ui.auth.fragment.register.viewModel.RegisterViewModel
 import com.app.gentlemanspa.ui.auth.fragment.setPassword.viewModel.SetPasswordViewModel
+import com.app.gentlemanspa.ui.customerDashboard.fragment.address.viewModel.AddressViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.anyProfessional.viewModel.AnyProfessionalViewModel
+import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.viewModel.CartViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.viewModel.UpdateCustomerViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.viewModel.HomeCustomerViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.viewModel.MakeAppointmentViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.product.viewModel.ProductViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.productDetail.viewModel.ProductDetailViewModel
+import com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeam.viewModel.ProfessionalServicesViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.viewModel.ProfessionalViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessionalService.viewModel.SelectProfessionalServiceViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.service.viewModel.ServiceViewModel
@@ -45,6 +48,9 @@ class ViewModelFactory(
              modelClass.isAssignableFrom(LoginViewModel::class.java) -> {
                  return LoginViewModel(repository) as T
              }
+            modelClass.isAssignableFrom(AddressViewModel::class.java) -> {
+                return AddressViewModel(repository) as T
+            }
             modelClass.isAssignableFrom(ForgetPasswordViewModel::class.java) -> {
                 return ForgetPasswordViewModel(repository) as T
             }
@@ -56,9 +62,16 @@ class ViewModelFactory(
                 return HomeProfessionalViewModel(repository) as T
             }
 
+            modelClass.isAssignableFrom(ProfessionalServicesViewModel::class.java) -> {
+                return ProfessionalServicesViewModel(repository) as T
+            }
+
              modelClass.isAssignableFrom(ProfileProfessionalDetailViewModel::class.java) -> {
                  return ProfileProfessionalDetailViewModel(repository) as T
              }
+            modelClass.isAssignableFrom(CartViewModel::class.java) -> {
+                return CartViewModel(repository) as T
+            }
 
 
              modelClass.isAssignableFrom(UpdateProfessionalViewModel::class.java) -> {

@@ -83,4 +83,11 @@ dependencies {
 
     implementation ("com.daimajia.swipelayout:library:1.2.0@aar")
 
+    //GOOGLE MAPS GOOGLE PLAY SERVICES DEPENDENCY=====
+    implementation ("com.google.android.gms:play-services-maps:18.0.2")
+    implementation ("com.google.android.gms:play-services-location:19.0.1")
+
+
+
+
 }

@@ -61,7 +61,7 @@
                     android:id="@+id/clFirst"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/ivService"
@@ -144,7 +144,7 @@
 
 
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
+                 <!--   <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/clAddCart"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -181,8 +181,20 @@
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"/>
 
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>-->
 
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ivAddService"
+                        android:layout_width="@dimen/_28sdp"
+                        android:layout_height="@dimen/_26sdp"
+                        android:src="@drawable/ic_add"
+                        android:layout_marginEnd="@dimen/_5sdp"
+                        android:layout_marginBottom="@dimen/_10sdp"
+                        android:padding="@dimen/_2sdp"
+                        android:onClick="@{onClick}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tvRupees"/>
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tvDescription"
                         android:layout_width="match_parent"
@@ -193,7 +205,7 @@
                         android:textSize="@dimen/_11ssp"
                         android:layout_marginTop="@dimen/_8sdp"
                         android:layout_marginHorizontal="@dimen/_8sdp"
-                        app:layout_constraintTop_toBottomOf="@+id/clAddCart" />
+                        app:layout_constraintTop_toBottomOf="@+id/ivAddService" />
 
 
 

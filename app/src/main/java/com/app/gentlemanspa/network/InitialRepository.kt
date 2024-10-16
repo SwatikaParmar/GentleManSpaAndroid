@@ -15,6 +15,8 @@ import com.app.gentlemanspa.ui.auth.fragment.otp.model.SignUpRequest
 import com.app.gentlemanspa.ui.auth.fragment.otp.model.SignUpResponse
 import com.app.gentlemanspa.ui.auth.fragment.setPassword.model.ChangePasswordRequest
 import com.app.gentlemanspa.ui.auth.fragment.setPassword.model.ChangePasswordResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.CustomerAddressResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.DeleteAddressResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.model.UpdateProfileCustomerRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.model.UpdateProfileCustomerResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.BannerResponse
@@ -31,6 +33,7 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.model.
 import com.app.gentlemanspa.ui.customerDashboard.fragment.product.model.AddProductInCartRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.product.model.AddProductInCartResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.productDetail.model.ProductDetailResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeam.model.ProfessionalServicesResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.model.ProfessionalResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.AddServiceToCartRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.AddServiceToCartResponse
@@ -188,6 +191,13 @@ class InitialRepository {
         }.flowOn(Dispatchers.IO)
     }
 
+    suspend fun getProfessionalServiceList(professionalDetailId: Int?): Flow<ProfessionalServicesResponse?> {
+        return flow {
+            val result =Api.apiInterface?.getProfessionalServiceList(professionalDetailId)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+
 
     suspend fun getServiceDetail(serviceId: Int?,spaDetailId: Int?): Flow<ServiceDetailResponse?> {
         return flow {
@@ -247,6 +257,18 @@ class InitialRepository {
     suspend fun getServiceCartItems(): Flow<GetCartItemsResponse?> {
         return flow {
             val result =Api.apiInterface?.getServiceCartItems()
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+    suspend fun geCustomerAddressList(): Flow<CustomerAddressResponse?> {
+        return flow {
+            val result =Api.apiInterface?.geCustomerAddressList()
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+    suspend fun deleteCustomerAddress(customerAddressId:Int): Flow<DeleteAddressResponse?> {
+        return flow {
+            val result =Api.apiInterface?.deleteCustomerAddress(customerAddressId)
             emit(result)
         }.flowOn(Dispatchers.IO)
     }

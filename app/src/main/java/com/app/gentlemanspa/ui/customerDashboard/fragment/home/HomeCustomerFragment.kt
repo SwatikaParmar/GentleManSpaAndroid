@@ -89,7 +89,7 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         if (!this::binding.isInitialized) {
             binding = FragmentHomeCustomerBinding.inflate(layoutInflater, container, false)
@@ -106,7 +106,6 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
     }
 
     private fun initUI() {
-
         binding.ivDrawer.setOnClickListener(this)
         viewModel.getCustomerDetail()
         viewModel.getBanner()
@@ -300,6 +299,14 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
     private fun setProfessionalTeamAdapter() {
         val professionalTeamAdapter=ProfessionalTeamAdapter(professionalTeamList)
         binding.rvProfessionalTeam.adapter=professionalTeamAdapter
+        professionalTeamAdapter.setOnProfessionalTeamCallbacks(object:ProfessionalTeamAdapter.ProfessionalTeamCallbacks{
+            override fun rootProfessionalTeam(professionalTeamList:ProfessionalItem) {
+                val action=HomeCustomerFragmentDirections.actionHomeCustomerFragmentToProfessionalServiceFragment(professionalTeamList)
+                findNavController().navigate(action)
+
+            }
+
+        })
 
     }
 

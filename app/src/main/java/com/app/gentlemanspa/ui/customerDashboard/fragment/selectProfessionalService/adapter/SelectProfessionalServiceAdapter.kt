@@ -58,9 +58,6 @@ class SelectProfessionalServiceAdapter(private var serviceList: List<Service>) :
                  selectProfessionalCallbacks.rootSelectProfessionalService(item)
              }
          }
-
-
-
     }
 
     fun setOnSelectProfessionalServiceCallbacks(onClick : SelectProfessionalServiceCallbacks) {

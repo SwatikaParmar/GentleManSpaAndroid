@@ -12,6 +12,8 @@ import com.app.gentlemanspa.ui.auth.fragment.otp.model.SignUpRequest
 import com.app.gentlemanspa.ui.auth.fragment.otp.model.SignUpResponse
 import com.app.gentlemanspa.ui.auth.fragment.setPassword.model.ChangePasswordRequest
 import com.app.gentlemanspa.ui.auth.fragment.setPassword.model.ChangePasswordResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.CustomerAddressResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.DeleteAddressResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.model.UpdateProfileCustomerRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.model.UpdateProfileCustomerResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.BannerResponse
@@ -28,6 +30,7 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.model.
 import com.app.gentlemanspa.ui.customerDashboard.fragment.product.model.AddProductInCartRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.product.model.AddProductInCartResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.productDetail.model.ProductDetailResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeam.model.ProfessionalServicesResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.model.ProfessionalResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.AddServiceToCartRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.AddServiceToCartResponse
@@ -120,6 +123,14 @@ interface ApiInterface {
     @GET(ApiConstants.GET_CUSTOMER_SERVICE_CART_ITEMS)
     suspend fun getServiceCartItems(): GetCartItemsResponse
 
+    @GET(ApiConstants.GET_CUSTOMER_ADDRESS_LIST)
+    suspend fun geCustomerAddressList(): CustomerAddressResponse
+
+    @DELETE(ApiConstants.DELETE_CUSTOMER_ADDRESS)
+    suspend fun deleteCustomerAddress(
+        @Query("customerAddressId") customerAddressId: Int?,
+        ): DeleteAddressResponse
+
     @POST(ApiConstants.ADD_CUSTOMER_SERVICE_TO_CART)
     suspend fun addServiceToCart(
         @Body body: AddServiceToCartRequest?
@@ -148,6 +159,11 @@ interface ApiInterface {
         @Query("SearchQuery") searchQuery: String?,
         @Query("spaDetailId") spaDetailId: Int?
     ): ServiceResponse
+
+    @GET(ApiConstants.PROFESSIONAL_SERVICES_LIST)
+    suspend fun getProfessionalServiceList(
+        @Query("professionalDetailId") professionalDetailId: Int?
+    ): ProfessionalServicesResponse
 
 
     @GET(ApiConstants.SERVICE_DETAIL)

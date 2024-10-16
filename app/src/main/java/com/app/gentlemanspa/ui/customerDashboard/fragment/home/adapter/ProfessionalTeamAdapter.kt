@@ -28,7 +28,6 @@ class ProfessionalTeamAdapter (private var professionalTeamList: ArrayList<Profe
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
         val item = professionalTeamList[position]
         holder.binding.apply {
             tvProfessionalName.text =  "${item.firstName} ${item.lastName}"
@@ -36,7 +35,7 @@ class ProfessionalTeamAdapter (private var professionalTeamList: ArrayList<Profe
                 R.drawable.service_placeholder).error(R.drawable.service_placeholder).into(ivProfessional)
 
             root.setOnClickListener {
-              //  professionalTeamCallbacks.rootProfessionalTeam(item,position)
+                professionalTeamCallbacks.rootProfessionalTeam(item)
             }
         }
 
@@ -47,7 +46,7 @@ class ProfessionalTeamAdapter (private var professionalTeamList: ArrayList<Profe
     }
 
     interface ProfessionalTeamCallbacks {
-        fun rootProfessionalTeam(item: CategoriesItem, position: Int)
+        fun rootProfessionalTeam(professionalTeamList:ProfessionalItem)
     }
 
 }

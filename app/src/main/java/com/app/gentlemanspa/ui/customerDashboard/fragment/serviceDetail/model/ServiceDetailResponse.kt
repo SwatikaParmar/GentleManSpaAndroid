@@ -35,6 +35,9 @@ data class ServiceDetailData(
 	@field:SerializedName("durationInMinutes")
 	val durationInMinutes: Int? = 0,
 
+	@field:SerializedName("isAddedinCart")
+	val isAddedinCart: Boolean,
+
 	@field:SerializedName("description")
 	val description: String? ="",
 
@@ -52,6 +55,8 @@ data class ServiceDetailData(
 
 	@field:SerializedName("serviceId")
 	val serviceId: Int? = 0,
+	@field:SerializedName("spaServiceId")
+	val spaServiceId: Int? = 0,
 
 	@field:SerializedName("imageList")
 	val imageList: ArrayList<String>?,

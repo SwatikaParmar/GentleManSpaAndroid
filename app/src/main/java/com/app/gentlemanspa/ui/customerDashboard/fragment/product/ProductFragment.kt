@@ -14,7 +14,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.app.gentlemanspa.base.MyApplication
 import com.app.gentlemanspa.base.MyApplication.Companion.hideProgress
 import com.app.gentlemanspa.base.MyApplication.Companion.showProgress
 import com.app.gentlemanspa.databinding.FragmentProductBinding
@@ -32,7 +31,6 @@ import com.app.gentlemanspa.utils.formatPrice
 import com.app.gentlemanspa.utils.setGone
 import com.app.gentlemanspa.utils.setVisible
 import com.app.gentlemanspa.utils.showToast
-import retrofit2.http.Query
 
 
 class ProductFragment : Fragment(), View.OnClickListener  {
@@ -306,8 +304,8 @@ class ProductFragment : Fragment(), View.OnClickListener  {
     override fun onClick(v: View?) {
         when(v) {
             binding.btnContinue -> {
-                val action = ServiceFragmentDirections.actionServiceFragmentToSelectProfessionalFragment()
-                findNavController().navigate(action)
+               /* val action = ServiceFragmentDirections.actionServiceFragmentToSelectProfessionalFragment()
+                findNavController().navigate(action)*/
             }
 
             binding.ivArrowBack -> {

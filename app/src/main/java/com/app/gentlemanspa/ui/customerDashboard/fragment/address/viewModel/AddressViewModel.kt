@@ -1,17 +1,13 @@
-package com.app.gentlemanspa.ui.customerDashboard.fragment.serviceDetail.viewModel
+package com.app.gentlemanspa.ui.customerDashboard.fragment.address.viewModel
 
 import android.app.Application
-import android.database.Observable
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.app.gentlemanspa.network.InitialRepository
-import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.CategoriesResponse
-import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.AddServiceToCartRequest
-import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.AddServiceToCartResponse
-import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.ServiceResponse
-import com.app.gentlemanspa.ui.customerDashboard.fragment.serviceDetail.model.ServiceDetailResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.CustomerAddressResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.DeleteAddressResponse
 import com.app.gentlemanspa.utils.CommonFunctions
 import com.app.gentlemanspa.utils.Resource
 import kotlinx.coroutines.flow.catch
@@ -19,30 +15,29 @@ import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
-class ServiceDetailViewModel (private var initialRepository: InitialRepository) : AndroidViewModel(
+class AddressViewModel (private var initialRepository: InitialRepository) : AndroidViewModel(
     Application()
 ) {
 
-    val serviceId = ObservableField<Int>()
     val spaDetailId = ObservableField<Int>()
-    val serviceCountInCart =ObservableField<Int>()
-    val slotId =ObservableField<Int>()
-    val spaServiceId =ObservableField<Int>()
-    val resultServiceDetail = MutableLiveData<Resource<ServiceDetailResponse>>()
-    val resultServiceToCart = MutableLiveData<Resource<AddServiceToCartResponse>>()
+    val serviceCountInCart = ObservableField<Int>()
+    val slotId = ObservableField<Int>()
+    val spaServiceId = ObservableField<Int>()
+    val productId = ObservableField<Int>()
+    val countInCart = ObservableField<Int>()
+    val customerAddressId = ObservableField<Int>()
+    val resultCustomerAddress = MutableLiveData<Resource<CustomerAddressResponse>>()
+    val resultCustomerDeleteAddress = MutableLiveData<Resource<DeleteAddressResponse>>()
 
-
-
-
-    fun getServiceDetail() {
-        resultServiceDetail.value = Resource.loading(null)
+    fun geCustomerAddressList() {
+        resultCustomerAddress.value = Resource.loading(null)
         viewModelScope.launch {
-            initialRepository.getServiceDetail(serviceId.get(),spaDetailId.get())
+            initialRepository.geCustomerAddressList()
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->
                     if (!CommonFunctions.getError(exception)!!.contains("401"))
-                        resultServiceDetail.value =
+                        resultCustomerAddress.value =
                             Resource.error(
                                 data = null,
                                 message = CommonFunctions.getError(exception)
@@ -50,25 +45,25 @@ class ServiceDetailViewModel (private var initialRepository: InitialRepository) 
                 }
                 .collect {
                     if (it?.statusCode == 200) {
-                        resultServiceDetail.value =
+                        resultCustomerAddress.value =
                             Resource.success(message = it.messages, data = it)
                     } else {
-                        resultServiceDetail.value =
+                        resultCustomerAddress.value =
                             Resource.error(data = null, message = it?.messages)
                     }
                 }
         }
     }
 
-    fun addServiceToCart() {
-        resultServiceToCart.value = Resource.loading(null)
+    fun deleteCustomerAddress() {
+        resultCustomerDeleteAddress.value = Resource.loading(null)
         viewModelScope.launch {
-            initialRepository.addServiceToCart(AddServiceToCartRequest(serviceCountInCart.get()!!, slotId.get()!!,spaDetailId.get()!!,spaServiceId.get()!!))
+            initialRepository.deleteCustomerAddress(customerAddressId.get()!!)
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->
                     if (!CommonFunctions.getError(exception)!!.contains("401"))
-                        resultServiceToCart.value =
+                        resultCustomerAddress.value =
                             Resource.error(
                                 data = null,
                                 message = CommonFunctions.getError(exception)
@@ -76,14 +71,16 @@ class ServiceDetailViewModel (private var initialRepository: InitialRepository) 
                 }
                 .collect {
                     if (it?.statusCode == 200) {
-                        resultServiceToCart.value =
+                        resultCustomerDeleteAddress.value =
                             Resource.success(message = it.messages, data = it)
                     } else {
-                        resultServiceToCart.value =
+                        resultCustomerDeleteAddress.value =
                             Resource.error(data = null, message = it?.messages)
                     }
                 }
         }
     }
+
+
 
 }

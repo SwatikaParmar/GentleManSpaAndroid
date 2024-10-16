@@ -20,14 +20,14 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/light_white"
+            android:background="@color/white"
             android:padding="@dimen/_7sdp">
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/ivService"
                 android:layout_width="@dimen/_80sdp"
                 android:layout_height="@dimen/_80sdp"
-                android:src="@drawable/no_product"
+                android:src="@drawable/service_placeholder"
                 app:strokeColor="@color/white"
                 app:strokeWidth="@dimen/_1sdp"
                 android:scaleType="fitXY"
@@ -52,6 +52,20 @@
                 app:layout_constraintStart_toEndOf="@+id/ivService"
                 app:layout_constraintEnd_toEndOf="parent"/>
 
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvTime"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="30 mins"
+                android:textColor="@color/light_grey"
+                android:includeFontPadding="false"
+                android:fontFamily="@font/poppins_medium"
+                android:textSize="@dimen/_11ssp"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:layout_marginStart="@dimen/_8sdp"
+                app:layout_constraintTop_toBottomOf="@+id/tvServiceName"
+                app:layout_constraintStart_toEndOf="@+id/ivService"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvRupees"
@@ -64,7 +78,7 @@
                 android:includeFontPadding="false"
                 android:layout_marginTop="@dimen/_2sdp"
                 android:layout_marginStart="@dimen/_8sdp"
-                app:layout_constraintTop_toBottomOf="@+id/tvServiceName"
+                app:layout_constraintTop_toBottomOf="@+id/tvTime"
                 app:layout_constraintStart_toEndOf="@+id/ivService"
                 app:layout_constraintEnd_toStartOf="@+id/tvLessRupees"
                 />
@@ -80,7 +94,7 @@
                 android:includeFontPadding="false"
                 android:layout_marginTop="@dimen/_2sdp"
                 android:layout_marginStart="@dimen/_3sdp"
-                app:layout_constraintTop_toBottomOf="@+id/tvServiceName"
+                app:layout_constraintTop_toBottomOf="@+id/tvTime"
                 app:layout_constraintStart_toEndOf="@+id/tvRupees" />
 
             <View
@@ -93,90 +107,50 @@
                 app:layout_constraintBottom_toBottomOf="@id/tvLessRupees"
                 />
 
-
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/clAddCart"
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvSlotDateTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_3sdp"
-                android:paddingVertical="@dimen/_2sdp"
-                android:paddingHorizontal="@dimen/_7sdp"
-                android:background="@drawable/bg_app_color"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent">
+                android:text="Select date and time"
+                android:textColor="@color/black"
+                android:fontFamily="@font/poppins"
+                android:textSize="@dimen/_11ssp"
+                android:includeFontPadding="false"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:layout_marginStart="@dimen/_8sdp"
+                app:layout_constraintTop_toBottomOf="@+id/tvRupees"
+                app:layout_constraintStart_toEndOf="@+id/ivService"
+                />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tvAddCart"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Add To Cart"
-                    android:textAllCaps="false"
-                    android:textSize="@dimen/_10ssp"
-                    android:textColor="@color/black"
-                    app:cornerRadius="@dimen/_20sdp"
-                    android:fontFamily="@font/poppins_medium"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/clPlusMinus"
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvSelectDateTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:background="@drawable/bg_app_color"
+                android:text="@string/select_date_and_time"
+                android:textColor="@color/black"
+                android:fontFamily="@font/poppins"
+                android:textSize="@dimen/_11ssp"
+                android:background="@drawable/textview_background"
+                android:includeFontPadding="false"
+                android:paddingHorizontal="@dimen/_8sdp"
+                android:paddingVertical="@dimen/_3sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:layout_marginStart="@dimen/_3sdp"
+                app:layout_constraintTop_toBottomOf="@+id/tvSlotDateTime"
+                app:layout_constraintEnd_toStartOf="@+id/ivAddService" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivAddService"
+                android:layout_width="@dimen/_22sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:src="@drawable/ic_checked"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:padding="@dimen/_2sdp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivMinus"
-                    android:layout_width="@dimen/_20sdp"
-                    android:layout_height="@dimen/_20sdp"
-                    android:src="@drawable/minus"
-                    android:padding="@dimen/_3sdp"
-                    android:layout_marginHorizontal="@dimen/_3sdp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/tvCount"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tvCount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:text="0"
-                    android:textAllCaps="false"
-                    android:textSize="@dimen/_10ssp"
-                    android:textColor="@color/black"
-                    app:cornerRadius="@dimen/_20sdp"
-                    android:gravity="center"
-                    android:minWidth="@dimen/_25sdp"
-                    android:paddingHorizontal="@dimen/_5sdp"
-                   android:layout_margin="0.75dp"
-                    android:background="@color/white"
-                    android:fontFamily="@font/poppins_medium"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/ivMinus"
-                    app:layout_constraintEnd_toStartOf="@+id/ivPlus"
-                    />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivPlus"
-                    android:layout_width="@dimen/_20sdp"
-                    android:layout_height="@dimen/_20sdp"
-                    android:src="@drawable/plus"
-                    android:padding="@dimen/_3sdp"
-                    android:layout_marginHorizontal="@dimen/_3sdp"
-                    app:layout_constraintStart_toEndOf="@+id/tvCount"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                app:layout_constraintTop_toTopOf="@+id/tvSelectDateTime"
+                app:layout_constraintBottom_toBottomOf="@+id/tvSelectDateTime"
+               />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

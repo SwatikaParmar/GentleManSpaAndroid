@@ -54,7 +54,7 @@ class CustomerActivity : AppCompatActivity(),HomeCustomerFragment.OnProfileUpdat
                 }
 
                 R.id.cart -> {
-                    // navController.navigate(R.id.myAppointmentFragment)
+                     navController.navigate(R.id.cartFragment)
                     true
                 }
 

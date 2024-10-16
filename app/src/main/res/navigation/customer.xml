@@ -17,6 +17,10 @@
             android:id="@+id/action_homeCustomerFragment_to_productFragment"
             app:destination="@id/productFragment" />
 
+        <action
+            android:id="@+id/action_homeCustomerFragment_to_professionalServiceFragment"
+            app:destination="@id/professionalServiceFragment" />
+
     </fragment>
     <fragment
         android:id="@+id/serviceFragment"
@@ -159,5 +163,56 @@
         <argument
             android:name="spaServiceId"
             app:argType="integer"/>
+    </fragment>
+
+    <fragment android:id="@+id/professionalServiceFragment"
+              android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeam.ProfessionalServicesFragment"
+              android:label="ProfessionalTeamFragment"
+              tools:layout="@layout/fragment_professional_team">
+        <action
+            android:id="@+id/action_professionalServiceFragment_to_makeAppointmentFragment"
+            app:destination="@id/makeAppointmentFragment" />
+
+        <action
+            android:id="@+id/action_professionalServiceFragment_to_serviceDetailFragment"
+            app:destination="@id/serviceDetailFragment" />
+        <argument
+            android:name="professionalItem"
+            app:argType="com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.model.ProfessionalItem" />
+
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/cartFragment"
+        android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.cart.CartFragment"
+        android:label="CartFragment"
+        tools:layout="@layout/fragment_cart">
+
+        <action
+            android:id="@+id/action_cartFragment_AnyProfessionalFragment"
+            app:destination="@+id/anyProfessionalFragment"/>
+
+        <action
+            android:id="@+id/action_cartFragment_AddressFragment"
+            app:destination="@+id/addressFragment"/>
+
+    </fragment>
+
+    <fragment android:id="@+id/addressFragment"
+        android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.address.AddressFragment"
+        android:label="AddressFragment"
+        tools:layout="@layout/fragment_address">
+
+        <action
+            android:id="@+id/action_AddressFragment_To_MapFragment"
+            app:destination="@+id/mapFragment"/>
+
+    </fragment>
+    <fragment android:id="@+id/mapFragment"
+        android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.map.MapFragment"
+        android:label="MapFragment"
+        tools:layout="@layout/fragment_map">
+
     </fragment>
 </navigation>

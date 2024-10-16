@@ -117,21 +117,19 @@ class ServiceFragment : Fragment(), View.OnClickListener {
                 override fun rootService(item: ServiceListItem) {
                     val action = ServiceFragmentDirections.actionServiceFragmentToServiceDetailFragment(
                         item.serviceId!!,
-                        21
+                        item.spaDetailId!!
                     )
                     findNavController().navigate(action)
                 }
 
                 override fun addService(item: ServiceListItem) {
                     Log.d("service", "serviceId->${item.serviceId} spaServiceId->${item.spaServiceId} spaDetailId->${item.spaDetailId} ")
-
                     viewModel.spaServiceId.set(item.spaServiceId)
                     viewModel.slotId.set(0)
                     viewModel.spaDetailId.set(item.spaDetailId)
                     if (item.isAddedinCart) {
                         viewModel.serviceCountInCart.set(0)
                         viewModel.addServiceToCart()
-
                     } else {
                         viewModel.serviceCountInCart.set(1)
                         viewModel.addServiceToCart()
