@@ -52,8 +52,8 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="@dimen/_10sdp"
-            app:layout_constraintTop_toBottomOf="@+id/clHeader"
-            app:layout_constraintBottom_toTopOf="@+id/clPay">
+            app:layout_constraintBottom_toTopOf="@+id/clPay"
+            app:layout_constraintTop_toBottomOf="@+id/clHeader">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -373,64 +373,80 @@
             android:background="@color/white"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent">
-            <ImageView
-                android:id="@+id/ivAddressArrow"
-                android:layout_width="@dimen/_28sdp"
-                android:layout_height="@dimen/_25sdp"
-                android:contentDescription="@string/image_description"
-                android:src="@drawable/ic_arrow_right"
-                app:strokeColor="@color/white"
-                app:tint="@color/black"
-                android:onClick="@{onClick}"
-                android:padding="@dimen/_3sdp"
-                android:layout_marginTop="@dimen/_5sdp"
-                android:layout_marginEnd="@dimen/_10sdp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@+id/btnPay"
-                />
-            <com.google.android.material.checkbox.MaterialCheckBox
-                android:id="@+id/cbHomeDelivery"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:buttonTint="@color/app_color"
-                android:text="@string/home_delivery"
-                android:layout_marginStart="@dimen/_7sdp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
-            <com.google.android.material.checkbox.MaterialCheckBox
-                android:id="@+id/cbAtVenue"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clDelivery"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:buttonTint="@color/app_color"
-                android:text="@string/at_venue"
-                android:layout_marginStart="@dimen/_10sdp"
-                app:layout_constraintStart_toEndOf="@+id/cbHomeDelivery"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvDelivery"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Delivering to home"
-                android:textColor="@color/app_color"
-                android:textSize="@dimen/_11ssp"
-                app:fontFamily="@font/poppins"
-                android:layout_marginStart="@dimen/_10sdp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cbHomeDelivery"/>
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvDeliveryAddress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Delivering to home"
-                android:textColor="@color/black"
-                android:textSize="@dimen/_11ssp"
-                app:fontFamily="@font/poppins"
-                android:layout_marginStart="@dimen/_10sdp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvDelivery"/>
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/cbHomeDelivery"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_7sdp"
+                    android:text="@string/home_delivery"
+                    app:buttonTint="@color/app_color"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/cbAtVenue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:text="@string/at_venue"
+                    app:buttonTint="@color/app_color"
+                    app:layout_constraintStart_toEndOf="@+id/cbHomeDelivery"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/clAddressViews"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@+id/cbHomeDelivery">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvDelivery"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_10sdp"
+                        android:text="Delivering to home"
+                        android:textColor="@color/app_color"
+                        android:textSize="@dimen/_11ssp"
+                        app:fontFamily="@font/poppins"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvDeliveryAddress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_10sdp"
+                        android:text="Delivering to home"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_11ssp"
+                        app:fontFamily="@font/poppins"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tvDelivery" />
+
+                    <ImageView
+                        android:id="@+id/ivAddressArrow"
+                        android:layout_width="@dimen/_28sdp"
+                        android:layout_height="@dimen/_25sdp"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:layout_marginEnd="@dimen/_10sdp"
+                        android:contentDescription="@string/image_description"
+                        android:onClick="@{onClick}"
+                        android:padding="@dimen/_3sdp"
+                        android:src="@drawable/ic_arrow_right"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:strokeColor="@color/white"
+                        app:tint="@color/black" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnPay"
@@ -446,7 +462,7 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/_13ssp"
                 app:cornerRadius="@dimen/_20sdp"
-                app:layout_constraintTop_toBottomOf="@id/tvDeliveryAddress"  />
+                app:layout_constraintTop_toBottomOf="@id/clDelivery" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

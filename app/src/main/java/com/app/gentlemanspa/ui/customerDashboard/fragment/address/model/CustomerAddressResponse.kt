@@ -1,7 +1,7 @@
 package com.app.gentlemanspa.ui.customerDashboard.fragment.address.model
 
 data class CustomerAddressResponse(
-    val data: List<AddressItem>,
+    val data: ArrayList<AddressItem>,
     val isSuccess: Boolean,
     val messages: String,
     val statusCode: Int

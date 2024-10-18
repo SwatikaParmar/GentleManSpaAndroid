@@ -46,19 +46,16 @@ class AddressAdapter (var productsList: List<AddressItem>) : RecyclerView.Adapte
 
 
             ivAddressOptions.setOnClickListener {
-                addressCallbacks.addressOption()
+                addressCallbacks.addressOption(item)
 
             }
-
-            root.setOnClickListener {
-                addressCallbacks.rootAddress()
+            cvItem.setOnClickListener {
+                addressCallbacks.rootAddress(item.customerAddressId)
             }
 
             rlDelete.setOnClickListener {
                 addressCallbacks.deleteAddress(item.customerAddressId)
             }
-
-
         }
 
     }
@@ -68,8 +65,8 @@ class AddressAdapter (var productsList: List<AddressItem>) : RecyclerView.Adapte
     }
 
     interface AddressCallbacks{
-        fun rootAddress()
-        fun addressOption()
+        fun rootAddress(customerAddressId:Int)
+        fun addressOption(addressItem: AddressItem)
         fun deleteAddress(customerAddressId:Int)
 
     }

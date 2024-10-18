@@ -208,11 +208,55 @@
             android:id="@+id/action_AddressFragment_To_MapFragment"
             app:destination="@+id/mapFragment"/>
 
+        <action
+            android:id="@+id/action_AddressFragment_To_CartFragment"
+            app:destination="@+id/cartFragment"/>
+
     </fragment>
     <fragment android:id="@+id/mapFragment"
         android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.map.MapFragment"
         android:label="MapFragment"
         tools:layout="@layout/fragment_map">
+        <action
+            android:id="@+id/action_MapFragment_To_EditAddressFragment"
+            app:destination="@+id/editAddressFragment"/>
+
+        <argument
+            android:name="headerTitle"
+            app:argType="string"
+            app:nullable="true"/>
+
+        <argument
+            android:name="addressId"
+            app:argType="integer" />
+
+        <argument
+            android:name="AddressType"
+            app:argType="string" />
+
+    </fragment>
+
+    <fragment android:id="@+id/editAddressFragment"
+        android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.editAddress.EditAddressFragment"
+        android:label="EditAddressFragment"
+        tools:layout="@layout/fragment_edit_address">
+     <action android:id="@+id/action_AddressFragment_To_AddressFragment"
+         app:destination="@+id/addressFragment"/>
+        <argument
+            android:name="customerAddress"
+            app:argType="android.location.Address"
+            app:nullable="true" />
+        <argument
+            android:name="fromScreenAdd"
+            app:argType="string"
+            />
+        <argument
+            android:name="addressId"
+            app:argType="integer" />
+
+        <argument
+            android:name="addressType"
+            app:argType="string" />
 
     </fragment>
 </navigation>

@@ -16,7 +16,11 @@ import com.app.gentlemanspa.ui.auth.fragment.otp.model.SignUpResponse
 import com.app.gentlemanspa.ui.auth.fragment.setPassword.model.ChangePasswordRequest
 import com.app.gentlemanspa.ui.auth.fragment.setPassword.model.ChangePasswordResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.CustomerAddressResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.CustomerAddressStatusRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.CustomerAddressStatusResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.DeleteAddressResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.editAddress.model.AddCustomerAddressRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.editAddress.model.AddCustomerAddressResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.model.UpdateProfileCustomerRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.model.UpdateProfileCustomerResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.BannerResponse
@@ -263,6 +267,24 @@ class InitialRepository {
     suspend fun geCustomerAddressList(): Flow<CustomerAddressResponse?> {
         return flow {
             val result =Api.apiInterface?.geCustomerAddressList()
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+    suspend fun geCustomerAddressList(body:AddCustomerAddressRequest): Flow<AddCustomerAddressResponse?> {
+        return flow {
+            val result =Api.apiInterface?.addCustomerAddress(body)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+    suspend fun updateCustomerAddress(body:AddCustomerAddressRequest): Flow<AddCustomerAddressResponse?> {
+        return flow {
+            val result =Api.apiInterface?.updateCustomerAddress(body)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+    suspend fun setCustomerAddressStatus(body:CustomerAddressStatusRequest): Flow<CustomerAddressStatusResponse?> {
+        return flow {
+            val result =Api.apiInterface?.setCustomerAddressStatus(body)
             emit(result)
         }.flowOn(Dispatchers.IO)
     }

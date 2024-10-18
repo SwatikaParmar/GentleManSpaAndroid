@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.app.gentlemanspa.R
 import com.app.gentlemanspa.base.MyApplication.Companion.hideProgress
 import com.app.gentlemanspa.base.MyApplication.Companion.showProgress
 import com.app.gentlemanspa.databinding.FragmentAddressBinding
@@ -18,8 +17,6 @@ import com.app.gentlemanspa.ui.customerDashboard.activity.CustomerActivity
 import com.app.gentlemanspa.ui.customerDashboard.fragment.address.adapter.AddressAdapter
 import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.AddressItem
 import com.app.gentlemanspa.ui.customerDashboard.fragment.address.viewModel.AddressViewModel
-import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.CartFragmentDirections
-import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.viewModel.CartViewModel
 import com.app.gentlemanspa.utils.ViewModelFactory
 import com.app.gentlemanspa.utils.setGone
 import com.app.gentlemanspa.utils.setVisible
@@ -28,6 +25,7 @@ import com.app.gentlemanspa.utils.showToast
 
 class AddressFragment : Fragment(), View.OnClickListener {
     lateinit var binding: FragmentAddressBinding
+    private var addressItemsList: ArrayList<AddressItem> = ArrayList()
     private val viewModel: AddressViewModel by viewModels {
         ViewModelFactory(
             InitialRepository()
@@ -38,7 +36,6 @@ class AddressFragment : Fragment(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         initObserver()
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -62,7 +59,7 @@ class AddressFragment : Fragment(), View.OnClickListener {
         binding.onClick = this
     }
 
-    fun callGeCustomerAddressList() {
+    private fun callGeCustomerAddressList() {
         viewModel.geCustomerAddressList()
 
     }
@@ -77,7 +74,10 @@ class AddressFragment : Fragment(), View.OnClickListener {
 
                     Status.SUCCESS -> {
                         hideProgress()
-                        setDataOnAddressAdapter(it.data?.data!!)
+                        addressItemsList.clear()
+
+                        it.data?.data?.let { it1 -> addressItemsList.addAll(it1) }
+                        setDataOnAddressAdapter()
 
                     }
 
@@ -88,7 +88,28 @@ class AddressFragment : Fragment(), View.OnClickListener {
                 }
             }
         }
+        viewModel.resultCustomerAddressStatus.observe(this) {
+            it.let { result ->
+                when (result.status) {
+                    Status.LOADING -> {
+                        showProgress(requireContext())
+                    }
 
+                    Status.SUCCESS -> {
+                        hideProgress()
+                     //   requireContext().showToast(it.message.toString())
+                        val action=AddressFragmentDirections.actionAddressFragmentToCartFragment()
+                        findNavController().navigate(action)
+
+                    }
+
+                    Status.ERROR -> {
+                        requireContext().showToast(it.message.toString())
+                        hideProgress()
+                    }
+                }
+            }
+        }
         viewModel.resultCustomerDeleteAddress.observe(this) {
             it.let { result ->
                 when (result.status) {
@@ -113,22 +134,35 @@ class AddressFragment : Fragment(), View.OnClickListener {
 
     }
 
-    private fun setDataOnAddressAdapter(dataList: List<AddressItem>) {
-        val addressAdapter = AddressAdapter(dataList)
+    private fun setDataOnAddressAdapter() {
+        if (addressItemsList.size >= 3) {
+            binding.btnAddAddress.setGone()
+        } else {
+            binding.btnAddAddress.setVisible()
+        }
+        val addressAdapter = AddressAdapter(addressItemsList)
         binding.rvAddresses.adapter = addressAdapter
         addressAdapter.setOnClickAddress(object : AddressAdapter.AddressCallbacks {
-            override fun rootAddress() {
+            override fun rootAddress(customerAddressId:Int) {
+                Log.d("customerAddressId", "status customerAddressId->${customerAddressId}")
+                viewModel.customerAddressId.set(customerAddressId)
+                viewModel.primaryAddressStatus.set(true)
+                viewModel.setCustomerAddressStatus()
 
             }
 
-            override fun addressOption() {
+            override fun addressOption(addressItem: AddressItem) {
+                val action = AddressFragmentDirections.actionAddressFragmentToMapFragment(
+                    "Update Address",
+                    addressItem.customerAddressId, addressItem.addressType
+                )
+                findNavController().navigate(action)
             }
 
             override fun deleteAddress(customerAddressId: Int) {
                 Log.d("customerAddressId", "customerAddressId->${customerAddressId}")
                 viewModel.customerAddressId.set(customerAddressId)
                 viewModel.deleteCustomerAddress()
-                // requireContext().showToast("show delete")
             }
 
         })
@@ -138,9 +172,7 @@ class AddressFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View) {
         when (v) {
             binding.btnAddAddress -> {
-                val action = AddressFragmentDirections.actionAddressFragmentToMapFragment()
-                findNavController().navigate(action)
-
+                proceedToAddAddress()
             }
 
             binding.ivArrowBack -> {
@@ -149,6 +181,27 @@ class AddressFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    private fun proceedToAddAddress() {
+        val addressMap = mutableMapOf<String, String?>()
+        for (address in addressItemsList) {
+            addressMap[address.addressType] = address.customerAddressId.toString()
+        }
+        val addressType = when {
+            addressMap["Home"] == null -> "Home"
+            addressMap["Work"] == null -> "Work"
+            addressMap["Other"] == null -> "Other"
+            else -> null
+        }
+        addressType?.let {
+            val action = AddressFragmentDirections.actionAddressFragmentToMapFragment(
+                "Add Address",
+                0,
+                it
+            )
+            findNavController().navigate(action)
+        }
+
+    }
 }
 
 

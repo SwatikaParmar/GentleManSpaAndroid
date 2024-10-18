@@ -2,341 +2,188 @@ package com.app.gentlemanspa.ui.customerDashboard.fragment.map
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.ContentValues
-import android.content.ContentValues.TAG
-import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
 import android.os.Bundle
-import android.provider.Settings
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.app.gentlemanspa.R
 import com.app.gentlemanspa.databinding.FragmentMapBinding
-
+import com.app.gentlemanspa.ui.customerDashboard.fragment.address.AddressFragmentDirections
+import com.app.gentlemanspa.ui.customerDashboard.fragment.service.ServiceFragmentArgs
+import com.app.gentlemanspa.utils.showToast
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
 import java.io.IOException
 import java.util.Locale
 
 
-class MapFragment:Fragment() ,OnMapReadyCallback,LocationListener,GoogleMap.OnCameraMoveListener,GoogleMap.OnCameraMoveStartedListener,GoogleMap.OnCameraIdleListener {
-    private var addressScreen: String=""
-    private var customerAddressId: Int=0
-    private var addressType: String = ""
-    var binding : FragmentMapBinding? =null
+@Suppress("DEPRECATION")
+class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleMap.OnCameraIdleListener,
+    View.OnClickListener {
 
+    private lateinit var binding: FragmentMapBinding
     private lateinit var googleMap: GoogleMap
-
-    lateinit var markerCurrentLocation: Marker
-    lateinit var markerLastLocation: Location
-    private lateinit var locationCallback: LocationCallback
-    private lateinit var currentLocation: Location
-    val LOCATION_PERMISSION_REQUEST_CODE = 822
-    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var geocoder: Geocoder
-    var myAddressLocation: Address? =null
+    private var selectedLatLng: LatLng? = null
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private lateinit var currentLocation: Location
+    private val args: MapFragmentArgs by navArgs()
 
-    lateinit var locationManager : LocationManager
+    private var addressType: String = ""
+    private var headerTitle: String = ""
+    private var customerAddressId: Int=0
+    var customerAddress: Address? =null
 
 
     companion object {
-        fun newInstance() = MapFragment()
+        const val LOCATION_PERMISSION_REQUEST_CODE = 822
     }
 
-    private lateinit var viewModel: MapViewModel
-/*    override fun getRootView(): View? {
-        return binding?.root
-    }*/
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(MapViewModel::class.java)
-    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentMapBinding.inflate(inflater,container,false)
-        return binding?.root
+    ): View {
+        binding = FragmentMapBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-    /*    mHomeActivity?.bottomNavigation(false)
-        mHomeActivity?.bottomCart(false)
-        mHomeActivity?.toolbar(false)*/
-        onClick()
-
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+        geocoder = Geocoder(requireContext(), Locale.getDefault())
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
-
-/*        val token = sharedPrefs?.read(SharedPrefsHelper.KEY_ACCESS_TOKEN,"")
-        val hashMap =HashMap<String,String>()
-        hashMap[ApiConstants.KEY_AUTHORIZATION] ="Bearer $token"
-        Log.d(ContentValues.TAG, "BearerEditAddress: $token")
-        viewModel.headers =hashMap*/
-/*
-        if (requireArguments().containsKey("AddType")){
-            val addType =requireArguments().getInt("AddType")
-            customerAddressId =requireArguments().getInt("CustomerAddressId")
-            addressType =requireArguments().getString("AddressType").toString()
-            addressScreen = "BottomAddress"
-
-            if (addType ==1){
-                binding?.headerTitle?.text = "Add Address"
-            }else{
-                binding?.headerTitle?.text = "Edit Address"
-            }
-        }else{
-            val args = MapFragmentArgs.fromBundle(requireArguments())
-            binding?.headerTitle?.text = args.headerTitle
-            customerAddressId =args.addressId
-            addressType = args.addressType
-            addressScreen = "address"
-        }*/
-
-
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-
-        checkGps(requireContext())
-        checkLocationPermission()
-       /* if(Edit_Address.idForAddressStatus != null){
-            viewModel.setCustomerAddressStatus(Edit_Address.idForAddressStatus!!,true)
-            initObserver()
-        }*/
-
-
-
-        locationCallback = object : LocationCallback() {
-            override fun onLocationResult(p0: LocationResult) {
-                p0 ?: return
-                for (location in p0.locations) {
-                    currentLocation = location
-                }
-            }
+        getLocation()
+        initUI()
+    }
+    private fun initUI() {
+        addressType=args.AddressType
+        headerTitle= args.headerTitle.toString()
+        customerAddressId=args.addressId
+        if (headerTitle.isNotEmpty()){
+            binding.tvHeaderTitle.text=headerTitle
         }
+        binding.onClick = this
     }
 
-    private fun initObserver() {
-   /*     viewModel.responseSetCustomerAddressStatus.observe(viewLifecycleOwner, Observer {
-            if (it.status == 200) {
-                if (it.data?.isSuccess == true) {
-                    Edit_Address.idForAddressStatus =null
-                    Toast.makeText(requireContext(), "${it.data?.messages}", Toast.LENGTH_SHORT).show()
+    override fun onMapReady(map: GoogleMap) {
+        googleMap = map
+        googleMap.setOnMapClickListener(this)
+        googleMap.setOnCameraIdleListener(this) // Set camera idle listener
 
-                } else {
-                    Toast.makeText(requireContext(), "${it.data?.messages}", Toast.LENGTH_SHORT)
-                        .show()
-
-                }
-            } else {
-                Toast.makeText(requireContext(), "${it.errorMessage}", Toast.LENGTH_SHORT)
-                    .show()
-            }
-        })*/
-
-    }
-
-    private fun onClick() {
-     /*   binding?.ivBackButton?.setOnClickListener {
-            findNavController().popBackStack()
-        }*/
-
-        binding?.btnEnterAddress?.isEnabled =false
-        binding?.btnEnterAddress?.setOnClickListener {
-         /*   val action = MapFragmentDirections.actionMapFragmentToEditAddress(myAddressLocation!!,addressScreen,customerAddressId,addressType)
-            findNavController().navigate(action)*/
-        }
-    }
-
-
-    override fun onResume() {
-        super.onResume()
-        // checkGps(requireContext())
-        checkLocationPermission()
-    }
-
-
-
-    private fun checkGps(context: Context):Boolean {
-        val gpsStatus: Boolean
-        locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        gpsStatus =locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-        if(gpsStatus){
-            //Toast.makeText(requireContext(), "Gps Enabled!!", Toast.LENGTH_SHORT).show()
-        }else{
-            val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-            startActivity(intent)
-        }
-        return gpsStatus
-    }
-
-
-    private fun checkLocationPermission() {
-
-        if (ActivityCompat.checkSelfPermission(requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-        ) {
-            // when permission granted
-            getLocation()
-        } else {
-            // when permission denied
-
-            ActivityCompat.requestPermissions(requireActivity(),
-                arrayOf<String?>(Manifest.permission.ACCESS_FINE_LOCATION),
-                LOCATION_PERMISSION_REQUEST_CODE
-            )
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            googleMap.isMyLocationEnabled = true
             getLocation()
         }
     }
 
     private fun getLocation() {
-        if (ActivityCompat.checkSelfPermission(requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(requireActivity(),
-                arrayOf<String?>(Manifest.permission.ACCESS_FINE_LOCATION),
-                LOCATION_PERMISSION_REQUEST_CODE
-            )
-            return
-        }
-        fusedLocationProviderClient.lastLocation.addOnCompleteListener { task ->
-            // initialise location
-            val location = task.result
-            if (location != null) {
-                // initiate address list
-                try {
-                    geocoder = Geocoder(requireContext(), Locale.getDefault())
-                    val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
-                    val senderAddress = addresses?.get(0)?.getAddressLine(0)
-                    // currLat = location.latitude
-                    //  currLong = location.longitude
-                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude,
-                        location.longitude), 18.0F))
-                    val cameraPosition: CameraPosition = CameraPosition.Builder()
-                        .target(LatLng(location.latitude,
-                            location.longitude)) // Sets the center of the map to location user
-                        .zoom(18.0f) // Sets the zoom
-                        //  .bearing(90f) // Sets the orientation of the camera to east
-                    //    .tilt(20f) // Sets the tilt of the camera to 30 degrees
-                        .build() // Creates a CameraPosition from the builder
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationProviderClient.lastLocation.addOnSuccessListener { location: Location? ->
+                if (location != null) {
+                    currentLocation = location
+                    moveCameraToLocation(location) // Move camera to current location
+                } else {
+                    requireContext().showToast("Unable to find current location")
 
-                    googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
-
-
-
-                    googleMap.isMyLocationEnabled = true
-                    googleMap.isTrafficEnabled = false
-                    googleMap.isBuildingsEnabled = false
-
-                    googleMap.resetMinMaxZoomPreference()
-                    googleMap.uiSettings.isMyLocationButtonEnabled = true
-
-                } catch (e: IOException) {
-                    e.printStackTrace()
                 }
-            }else{
-                getLocation()
+            }.addOnFailureListener { exception ->
+               requireContext().showToast("exception $exception")
             }
+        } else {
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
         }
     }
 
-    override fun onMapReady(map: GoogleMap) {
-        googleMap = map
-
-        googleMap.setOnCameraMoveListener(this)
-        googleMap.setOnCameraMoveStartedListener(this)
-        googleMap.setOnCameraIdleListener(this)
-
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            googleMap.isMyLocationEnabled = true
-
-        }
-
+    private fun moveCameraToLocation(location: Location) {
+        val latLng = LatLng(location.latitude, location.longitude)
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13.0F))
 
     }
 
-    override fun onLocationChanged(location: Location) {
-        currentLocation =location
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(currentLocation.latitude,
-            currentLocation.longitude), 18.0F))
-
+    override fun onMapClick(latLng: LatLng) {
+        googleMap.clear()
+        selectedLatLng = latLng
+        fetchAddressFromLatLng(latLng.latitude, latLng.longitude)
     }
 
-    private fun setAddress(address: Address) {
-        if(address.getAddressLine(0) != null){
-            Log.d(TAG, "setAddressFromMap: ${address.countryCode}  ${address.countryName}")
-
-            if(address.countryName =="India"){
-                binding?.locationText?.text = address.getAddressLine(0)
-                myAddressLocation =address
-                binding?.btnEnterAddress?.isEnabled =true
-            }else{
-                binding?.btnEnterAddress?.isEnabled =false
-                binding?.locationText?.text = "Zigy Kart is not available at this location at the moment. please select a different location. "
+    @SuppressLint("SetTextI18n")
+    private fun fetchAddressFromLatLng(latitude: Double, longitude: Double) {
+        try {
+            val addresses = geocoder.getFromLocation(latitude, longitude, 1)
+            if (addresses!!.isNotEmpty()) {
+                val address: Address = addresses[0]
+                customerAddress=address
+                binding.locationText.text = address.getAddressLine(0)
+            } else {
+                binding.locationText.text = "No address found"
             }
-        }
-        if(address.getAddressLine(1) != null){
-            if(address.countryName =="India"){
-                myAddressLocation =address
-                binding?.locationText?.text =binding?.locationText?.text.toString() +address.getAddressLine(1)
-                binding?.btnEnterAddress?.isEnabled =true
-            }else{
-                binding?.btnEnterAddress?.isEnabled =false
-                binding?.locationText?.text = "Zigy Kart is not available at this location at the moment. please select a different location. "
-            }
-
+        } catch (e: IOException) {
+            e.printStackTrace()
+            requireContext().showToast("Unable to get address")
         }
     }
 
-    override fun onCameraMove() {
 
-    }
-
-    override fun onCameraMoveStarted(p0: Int) {
-
-    }
 
     override fun onCameraIdle() {
-        var addresses :List<Address>? =null
-        val geo =
-            Geocoder(requireContext(), Locale.getDefault())
-        try {
-            addresses =geo.getFromLocation(googleMap.cameraPosition.target.latitude,googleMap.cameraPosition.target.longitude,1)
-
-            setAddress(addresses!![0])
-        }catch (e: Exception) {
-            e.printStackTrace() // getFromLocation() may sometimes fail
+        val cameraPosition = googleMap.cameraPosition.target
+        val latitude = cameraPosition.latitude
+        val longitude = cameraPosition.longitude
+        fetchAddressFromLatLng(latitude, longitude)
+    }
+    @Deprecated("Deprecated in Java")
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            LOCATION_PERMISSION_REQUEST_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission granted, proceed to get the current location
+                    getLocation()
+                } else {
+                    // Permission denied, show a message to the user
+                    requireContext().showToast( "Location permission is required to show your current location.")
+                }
+            }
+            else -> {
+                // Handle other permission requests if necessary
+            }
         }
     }
 
 
+
+    override fun onClick(v: View) {
+        when(v){
+            binding.btnEnterAddress -> {
+                val action = MapFragmentDirections.actionMapFragmentToEditAddressFragment(customerAddress!!,"",customerAddressId,addressType)
+                findNavController().navigate(action)
+
+            }
+
+            binding.ivArrowBack -> {
+                findNavController().popBackStack()
+            }
+        }
+
+    }
 }
+
+

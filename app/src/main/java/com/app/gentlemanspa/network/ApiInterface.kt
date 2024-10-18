@@ -13,7 +13,11 @@ import com.app.gentlemanspa.ui.auth.fragment.otp.model.SignUpResponse
 import com.app.gentlemanspa.ui.auth.fragment.setPassword.model.ChangePasswordRequest
 import com.app.gentlemanspa.ui.auth.fragment.setPassword.model.ChangePasswordResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.CustomerAddressResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.CustomerAddressStatusRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.CustomerAddressStatusResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.DeleteAddressResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.editAddress.model.AddCustomerAddressRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.editAddress.model.AddCustomerAddressResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.model.UpdateProfileCustomerRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.model.UpdateProfileCustomerResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.BannerResponse
@@ -125,6 +129,21 @@ interface ApiInterface {
 
     @GET(ApiConstants.GET_CUSTOMER_ADDRESS_LIST)
     suspend fun geCustomerAddressList(): CustomerAddressResponse
+
+    @POST(ApiConstants.ADD_CUSTOMER_ADDRESS)
+    suspend fun addCustomerAddress(
+        @Body body: AddCustomerAddressRequest?
+    ): AddCustomerAddressResponse
+
+    @POST(ApiConstants.UPDATE_CUSTOMER_ADDRESS)
+    suspend fun updateCustomerAddress(
+        @Body body: AddCustomerAddressRequest?
+    ): AddCustomerAddressResponse
+
+    @POST(ApiConstants.SET_CUSTOMER_ADDRESS_STATUS)
+    suspend fun setCustomerAddressStatus(
+        @Body body: CustomerAddressStatusRequest?
+    ): CustomerAddressStatusResponse
 
     @DELETE(ApiConstants.DELETE_CUSTOMER_ADDRESS)
     suspend fun deleteCustomerAddress(

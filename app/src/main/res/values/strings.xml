@@ -41,4 +41,14 @@
     <string name="live_location">Live Location</string>
     <string name="enter_complete_address">Enter Complete Address</string>
     <string name="address">Address</string>
+    <string name="other">Other</string>
+    <string name="work">Work</string>
+    <string name="home">Home</string>
+    <string name="save_address_as">Save address as*</string>
+    <string name="edit_complete_address">Edit complete address</string>
+    <string name="receivers_name">Receivers name*</string>
+    <string name="receivers_phone_no">Receivers Phone No*</string>
+    <string name="enter_house_flat_block_no">Enter House / Flat / Block No.*</string>
+    <string name="street_address">Street Address*</string>
+    <string name="delete">Delete</string>
 </resources>

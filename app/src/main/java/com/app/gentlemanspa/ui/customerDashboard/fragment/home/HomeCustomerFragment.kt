@@ -112,8 +112,6 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
         viewModel.getCategories()
         viewModel.getProductCategories()
         viewModel.getProfessionalTeamList()
-
-
     }
 
 

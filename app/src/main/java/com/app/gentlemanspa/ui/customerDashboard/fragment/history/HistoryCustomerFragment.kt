@@ -19,7 +19,7 @@ class HistoryCustomerFragment : Fragment(), View.OnClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = FragmentHistoryCustomerBinding.inflate(layoutInflater, container, false)
         return binding.root
@@ -35,7 +35,6 @@ class HistoryCustomerFragment : Fragment(), View.OnClickListener {
         binding.tvUpcoming.isSelected = true
         setUpcomingAdapter()
         binding.onClick = this
-
     }
 
     private fun setPastAdapter() {

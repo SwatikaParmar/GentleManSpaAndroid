@@ -7,6 +7,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.CustomerAddressResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.CustomerAddressStatusRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.CustomerAddressStatusResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.DeleteAddressResponse
 import com.app.gentlemanspa.utils.CommonFunctions
 import com.app.gentlemanspa.utils.Resource
@@ -26,7 +28,9 @@ class AddressViewModel (private var initialRepository: InitialRepository) : Andr
     val productId = ObservableField<Int>()
     val countInCart = ObservableField<Int>()
     val customerAddressId = ObservableField<Int>()
+    val primaryAddressStatus = ObservableField<Boolean>()
     val resultCustomerAddress = MutableLiveData<Resource<CustomerAddressResponse>>()
+    val resultCustomerAddressStatus = MutableLiveData<Resource<CustomerAddressStatusResponse>>()
     val resultCustomerDeleteAddress = MutableLiveData<Resource<DeleteAddressResponse>>()
 
     fun geCustomerAddressList() {
@@ -55,6 +59,31 @@ class AddressViewModel (private var initialRepository: InitialRepository) : Andr
         }
     }
 
+    fun setCustomerAddressStatus() {
+        resultCustomerAddressStatus.value = Resource.loading(null)
+        viewModelScope.launch {
+            initialRepository.setCustomerAddressStatus(CustomerAddressStatusRequest( customerAddressId.get()!!,primaryAddressStatus.get()!!))
+                .onStart { }
+                .onCompletion { }
+                .catch { exception ->
+                    if (!CommonFunctions.getError(exception)!!.contains("401"))
+                        resultCustomerAddress.value =
+                            Resource.error(
+                                data = null,
+                                message = CommonFunctions.getError(exception)
+                            )
+                }
+                .collect {
+                    if (it?.statusCode == 200) {
+                        resultCustomerAddressStatus.value =
+                            Resource.success(message = it.messages, data = it)
+                    } else {
+                        resultCustomerAddressStatus.value =
+                            Resource.error(data = null, message = it?.messages)
+                    }
+                }
+        }
+    }
     fun deleteCustomerAddress() {
         resultCustomerDeleteAddress.value = Resource.loading(null)
         viewModelScope.launch {

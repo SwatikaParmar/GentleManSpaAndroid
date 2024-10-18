@@ -11,6 +11,7 @@ import com.app.gentlemanspa.ui.auth.fragment.setPassword.viewModel.SetPasswordVi
 import com.app.gentlemanspa.ui.customerDashboard.fragment.address.viewModel.AddressViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.anyProfessional.viewModel.AnyProfessionalViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.viewModel.CartViewModel
+import com.app.gentlemanspa.ui.customerDashboard.fragment.editAddress.viewModel.EditAddressViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.viewModel.UpdateCustomerViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.viewModel.HomeCustomerViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.viewModel.MakeAppointmentViewModel
@@ -72,9 +73,10 @@ class ViewModelFactory(
             modelClass.isAssignableFrom(CartViewModel::class.java) -> {
                 return CartViewModel(repository) as T
             }
-
-
-             modelClass.isAssignableFrom(UpdateProfessionalViewModel::class.java) -> {
+            modelClass.isAssignableFrom(EditAddressViewModel::class.java) -> {
+                return EditAddressViewModel(repository) as T
+            }
+            modelClass.isAssignableFrom(UpdateProfessionalViewModel::class.java) -> {
                  return UpdateProfessionalViewModel(repository) as T
              }
 
