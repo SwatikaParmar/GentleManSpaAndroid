@@ -7,6 +7,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.CustomerAddressResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.model.CustomerPlaceOrderRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.model.CustomerPlaceOrderResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.product.model.AddProductInCartRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.product.model.AddProductInCartResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.AddServiceToCartRequest
@@ -29,10 +31,14 @@ class CartViewModel(private var initialRepository: InitialRepository) : AndroidV
     val spaServiceId = ObservableField<Int>()
     val productId = ObservableField<Int>()
     val countInCart = ObservableField<Int>()
+    val customerAddressId = ObservableField<Int>()
+    val deliveryType = ObservableField<String>()
+    val paymentType = ObservableField<String>()
     val resultGetCartItems = MutableLiveData<Resource<GetCartItemsResponse>>()
     val resultServiceToCart = MutableLiveData<Resource<AddServiceToCartResponse>>()
     val resultAddProductInCart = MutableLiveData<Resource<AddProductInCartResponse>>()
     val resultCustomerAddress = MutableLiveData<Resource<CustomerAddressResponse>>()
+    val resultCustomerPlaceOrder = MutableLiveData<Resource<CustomerPlaceOrderResponse>>()
 
 
     fun getCartItem() {
@@ -136,4 +142,31 @@ class CartViewModel(private var initialRepository: InitialRepository) : AndroidV
                 }
         }
     }
+
+    fun customerPlaceOrder() {
+        resultCustomerPlaceOrder.value = Resource.loading(null)
+        viewModelScope.launch {
+            initialRepository.customerPlaceOrder(CustomerPlaceOrderRequest(customerAddressId.get()!!, deliveryType.get()!!,paymentType.get()!!))
+                .onStart { }
+                .onCompletion { }
+                .catch { exception ->
+                    if (!CommonFunctions.getError(exception)!!.contains("401"))
+                        resultCustomerAddress.value =
+                            Resource.error(
+                                data = null,
+                                message = CommonFunctions.getError(exception)
+                            )
+                }
+                .collect {
+                    if (it?.statusCode == 200) {
+                        resultCustomerPlaceOrder.value =
+                            Resource.success(message = it.messages, data = it)
+                    } else {
+                        resultCustomerPlaceOrder.value =
+                            Resource.error(data = null, message = it?.messages)
+                    }
+                }
+        }
+    }
+
 }

@@ -126,7 +126,7 @@ class CustomerActivity : AppCompatActivity(),HomeCustomerFragment.OnProfileUpdat
                     // navController.navigate(R.id.homeFragment)
                 }
 
-                R.id.myProfileCustomer -> {
+              /*  R.id.myProfileCustomer -> {
                     // navController.navigate(R.id.myConsultsFragment)
                 }
 
@@ -136,6 +136,9 @@ class CustomerActivity : AppCompatActivity(),HomeCustomerFragment.OnProfileUpdat
 
                 R.id.addressBookCustomer -> {
                     // navController.navigate(R.id.blogsFragment)
+                }*/
+                R.id.myOrders ->{
+                    navController.navigate(R.id.myOrdersFragment)
                 }
 
                 R.id.privacyPolicyCustomer -> {

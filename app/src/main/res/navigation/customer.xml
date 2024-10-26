@@ -9,7 +9,7 @@
         android:id="@+id/homeCustomerFragment"
         android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.home.HomeCustomerFragment"
         android:label="fragment_home_customer"
-        tools:layout="@layout/fragment_home_customer" >
+        tools:layout="@layout/fragment_home_customer">
         <action
             android:id="@+id/action_homeCustomerFragment_to_serviceFragment"
             app:destination="@id/serviceFragment" />
@@ -60,15 +60,21 @@
         android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.MakeAppointmentFragment"
         android:label="MakeAppointmentFragment"
         tools:layout="@layout/fragment_make_appointment">
+        <action android:id="@+id/action_makeAppointmentFragment_to_cartFragment"
+            app:destination="@+id/cartFragment"/>
 
-     <!--   <argument android:name="professionalName"
-            app:argType="string"/>
-        <argument android:name="professionalImage"
-            app:argType="string"/>
-        <argument android:name="specialist"
-            app:argType="string"/>-->
-        <argument android:name="spaServiceId"
-            app:argType="integer"/>
+        <argument
+            android:name="appointmentType"
+            app:argType="string" />
+        <argument
+            android:name="orderId"
+            app:argType="integer" />
+        <argument
+            android:name="serviceBookingId"
+            app:argType="integer" />
+        <argument
+            android:name="spaServiceId"
+            app:argType="integer" />
         <argument
             android:name="professionalItem"
             app:argType="com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.model.ProfessionalItem" />
@@ -88,7 +94,7 @@
         android:id="@+id/editProfileCustomerFragment"
         android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.EditProfileCustomerFragment"
         android:label="EditProfileCustomerFragment"
-        tools:layout="@layout/fragment_edit_profile_customer"/>
+        tools:layout="@layout/fragment_edit_profile_customer" />
     <fragment
         android:id="@+id/serviceDetailFragment"
         android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.serviceDetail.ServiceDetailFragment"
@@ -96,18 +102,23 @@
         tools:layout="@layout/fragment_service_detail">
         <argument
             android:name="serviceId"
-            app:argType="integer"
-            android:defaultValue="0"/>
+            android:defaultValue="0"
+            app:argType="integer" />
         <argument
             android:name="spaDetailId"
-            app:argType="integer"
-            android:defaultValue="0"/>
+            android:defaultValue="0"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/historyCustomerFragment"
         android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.history.HistoryCustomerFragment"
         android:label="HistoryCustomerFragment"
-        tools:layout="@layout/fragment_history_customer"/>
+        tools:layout="@layout/fragment_history_customer">
+        <action
+            android:id="@+id/action_historyCustomerFragment_To_makeAppointmentFragment"
+            app:destination="@+id/makeAppointmentFragment" />
+
+    </fragment>
     <fragment
         android:id="@+id/productDetailFragment"
         android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.productDetail.ProductDetailFragment"
@@ -125,6 +136,10 @@
         <action
             android:id="@+id/action_productFragment_to_productDetailFragment"
             app:destination="@id/productDetailFragment" />
+
+        <action
+            android:id="@+id/action_productFragment_to_cartFragment"
+            app:destination="@id/cartFragment" />
 
         <argument
             android:name="mainCategoryId"
@@ -158,17 +173,21 @@
             android:id="@+id/action_anyProfessionalFragment_to_makeAppointmentFragment"
             app:destination="@id/makeAppointmentFragment" />
         <argument
+            android:name="appointmentType"
+            app:argType="string" />
+        <argument
             android:name="spaDetailId"
-            app:argType="integer"/>
+            app:argType="integer" />
         <argument
             android:name="spaServiceId"
-            app:argType="integer"/>
+            app:argType="integer" />
     </fragment>
 
-    <fragment android:id="@+id/professionalServiceFragment"
-              android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeam.ProfessionalServicesFragment"
-              android:label="ProfessionalTeamFragment"
-              tools:layout="@layout/fragment_professional_team">
+    <fragment
+        android:id="@+id/professionalServiceFragment"
+        android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeam.ProfessionalServicesFragment"
+        android:label="ProfessionalTeamFragment"
+        tools:layout="@layout/fragment_professional_team">
         <action
             android:id="@+id/action_professionalServiceFragment_to_makeAppointmentFragment"
             app:destination="@id/makeAppointmentFragment" />
@@ -191,40 +210,46 @@
 
         <action
             android:id="@+id/action_cartFragment_AnyProfessionalFragment"
-            app:destination="@+id/anyProfessionalFragment"/>
+            app:destination="@+id/anyProfessionalFragment" />
 
         <action
             android:id="@+id/action_cartFragment_AddressFragment"
-            app:destination="@+id/addressFragment"/>
+            app:destination="@+id/addressFragment" />
+
+        <action
+            android:id="@+id/action_cartFragment_To_HomeFragment"
+            app:destination="@+id/homeCustomerFragment" />
 
     </fragment>
 
-    <fragment android:id="@+id/addressFragment"
+    <fragment
+        android:id="@+id/addressFragment"
         android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.address.AddressFragment"
         android:label="AddressFragment"
         tools:layout="@layout/fragment_address">
 
         <action
             android:id="@+id/action_AddressFragment_To_MapFragment"
-            app:destination="@+id/mapFragment"/>
+            app:destination="@+id/mapFragment" />
 
         <action
             android:id="@+id/action_AddressFragment_To_CartFragment"
-            app:destination="@+id/cartFragment"/>
+            app:destination="@+id/cartFragment" />
 
     </fragment>
-    <fragment android:id="@+id/mapFragment"
+    <fragment
+        android:id="@+id/mapFragment"
         android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.map.MapFragment"
         android:label="MapFragment"
         tools:layout="@layout/fragment_map">
         <action
             android:id="@+id/action_MapFragment_To_EditAddressFragment"
-            app:destination="@+id/editAddressFragment"/>
+            app:destination="@+id/editAddressFragment" />
 
         <argument
             android:name="headerTitle"
             app:argType="string"
-            app:nullable="true"/>
+            app:nullable="true" />
 
         <argument
             android:name="addressId"
@@ -236,20 +261,21 @@
 
     </fragment>
 
-    <fragment android:id="@+id/editAddressFragment"
+    <fragment
+        android:id="@+id/editAddressFragment"
         android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.editAddress.EditAddressFragment"
         android:label="EditAddressFragment"
         tools:layout="@layout/fragment_edit_address">
-     <action android:id="@+id/action_AddressFragment_To_AddressFragment"
-         app:destination="@+id/addressFragment"/>
+        <action
+            android:id="@+id/action_AddressFragment_To_AddressFragment"
+            app:destination="@+id/addressFragment" />
         <argument
             android:name="customerAddress"
             app:argType="android.location.Address"
             app:nullable="true" />
         <argument
             android:name="fromScreenAdd"
-            app:argType="string"
-            />
+            app:argType="string" />
         <argument
             android:name="addressId"
             app:argType="integer" />
@@ -259,4 +285,10 @@
             app:argType="string" />
 
     </fragment>
+
+    <fragment
+        android:id="@+id/myOrdersFragment"
+        android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.myOrders.MyOrdersFragment"
+        android:label="MyOrdersFragment"
+        tools:layout="@layout/fragment_my_orders" />
 </navigation>

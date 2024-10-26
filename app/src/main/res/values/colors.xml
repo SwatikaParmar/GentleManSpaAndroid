@@ -24,5 +24,6 @@
     <color name="btn_text_color">#FFD25F</color>
     <color name="light_green">#CCE9CD</color>
     <color name="yellow_color_background">#FFE8D8BD</color>
+    <color name="red_color">#FF0000</color>
 
 </resources>

@@ -19,10 +19,15 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.Customer
 import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.CustomerAddressStatusRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.CustomerAddressStatusResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.DeleteAddressResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.model.CustomerPlaceOrderRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.model.CustomerPlaceOrderResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.UpcomingServiceAppointmentResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editAddress.model.AddCustomerAddressRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editAddress.model.AddCustomerAddressResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.model.UpdateProfileCustomerRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.model.UpdateProfileCustomerResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.CancelUpcomingAppointmentRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.CancelUpcomingAppointmentResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.BannerResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.LocationResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.model.SpecialityResponse
@@ -34,6 +39,9 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductCate
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductsResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.model.ServiceGetAvailableDatesResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.model.ServiceGetAvailableTimeSlotsResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.model.ServiceRescheduleRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.model.ServiceRescheduleResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.myOrders.model.MyOrdersResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.product.model.AddProductInCartRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.product.model.AddProductInCartResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.productDetail.model.ProductDetailResponse
@@ -352,6 +360,41 @@ class InitialRepository {
     suspend fun phoneUnique(body: PhoneUniqueRequest?): Flow<EmailOtpResponse?> {
         return flow {
             val result = Api.apiInterface?.phoneUnique(body)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+
+
+    suspend fun getServiceAppointments(type:String, pageSize: Int?,pageNumber: Int?): Flow<UpcomingServiceAppointmentResponse?> {
+        return flow {
+            val result =Api.apiInterface?.getServiceAppointments(type,pageSize,pageNumber)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+
+    suspend fun cancelUpcomingAppointment(body:CancelUpcomingAppointmentRequest): Flow<CancelUpcomingAppointmentResponse?> {
+        return flow {
+            val result =Api.apiInterface?.cancelUpcomingAppointment(body)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+
+    suspend fun customerPlaceOrder(body:CustomerPlaceOrderRequest): Flow<CustomerPlaceOrderResponse?> {
+        return flow {
+            val result =Api.apiInterface?.customerPlaceOrder(body)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+    suspend fun getOrderedProducts(type:String, pageSize: Int?,pageNumber: Int?): Flow<MyOrdersResponse?> {
+        return flow {
+            val result =Api.apiInterface?.getOrderedProducts(type,pageSize,pageNumber)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+
+    suspend fun serviceReschedule(body:ServiceRescheduleRequest): Flow<ServiceRescheduleResponse?> {
+        return flow {
+            val result =Api.apiInterface?.serviceReschedule(body)
             emit(result)
         }.flowOn(Dispatchers.IO)
     }

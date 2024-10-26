@@ -62,6 +62,7 @@ class SelectProfessionalFragment : Fragment(), View.OnClickListener {
     }
 
     private fun setSelectProfessionalAdapter() {
+        professionalList.clear()// for testing purpose
         selectProfessionalAdapter = SelectProfessionalAdapter(professionalList)
         binding.rvProfessional.adapter = selectProfessionalAdapter
 

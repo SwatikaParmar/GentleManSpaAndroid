@@ -51,4 +51,8 @@
     <string name="enter_house_flat_block_no">Enter House / Flat / Block No.*</string>
     <string name="street_address">Street Address*</string>
     <string name="delete">Delete</string>
+    <string name="my_appointment">My Appointment</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="completed">Completed</string>
+    <string name="cancelled">Cancelled</string>
 </resources>

@@ -36,7 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:includeFontPadding="false"
-                android:text="My Appointment"
+                android:text="@string/my_appointment"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_13ssp"
                 app:fontFamily="@font/poppins_medium"
@@ -82,13 +82,13 @@
                             android:gravity="center"
                             android:maxLines="1"
                             android:padding="@dimen/_3sdp"
-                            android:text="UPCOMING"
+                            android:text="@string/upcoming"
                             android:textColor="@drawable/select_unselect_colortxt"
                             android:textSize="@dimen/_12sdp"
                             />
 
                         <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/tvConfirmed"
+                            android:id="@+id/tvCompleted"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -98,14 +98,14 @@
                             android:onClick="@{onClick}"
                             android:maxLines="1"
                             android:padding="@dimen/_3sdp"
-                            android:text="CONFIRMED"
+                            android:text="@string/completed"
                             android:textColor="@drawable/select_unselect_colortxt"
                             android:textSize="@dimen/_12sdp"
                             />
 
 
                         <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/tvPast"
+                            android:id="@+id/tvCancelled"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -115,7 +115,7 @@
                             android:onClick="@{onClick}"
                             android:maxLines="1"
                             android:padding="@dimen/_3sdp"
-                            android:text="PAST"
+                            android:text="@string/cancelled"
                             android:textColor="@drawable/select_unselect_colortxt"
                             android:textSize="@dimen/_12sdp"
                             />

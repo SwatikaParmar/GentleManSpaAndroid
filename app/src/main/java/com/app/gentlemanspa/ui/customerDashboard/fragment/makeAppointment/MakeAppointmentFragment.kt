@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.app.gentlemanspa.R
@@ -19,6 +20,8 @@ import com.app.gentlemanspa.databinding.FragmentMakeAppointmentBinding
 import com.app.gentlemanspa.network.ApiConstants
 import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.network.Status
+import com.app.gentlemanspa.ui.customViews.BookingSuccessAlertCallbackInt
+import com.app.gentlemanspa.ui.customViews.showAlertForBookingSuccess
 import com.app.gentlemanspa.ui.customerDashboard.activity.CustomerActivity
 import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.adapter.TimeSlotServiceAdapter
 import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.calanderUtils.CircularEventDecorator
@@ -33,9 +36,9 @@ import com.app.gentlemanspa.utils.setGone
 import com.app.gentlemanspa.utils.setVisible
 import com.app.gentlemanspa.utils.showToast
 import com.bumptech.glide.Glide
+import com.google.android.gms.common.internal.Objects
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import java.time.LocalDate
-
 
 
 class MakeAppointmentFragment : Fragment(), View.OnClickListener {
@@ -48,7 +51,10 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
     private lateinit var professionalItem: ProfessionalItem
     private var morningSlots: ArrayList<Slot> = ArrayList()
     private var eveningSlots: ArrayList<Slot> = ArrayList()
-    private var slotId=0
+    private var slotId = 0
+    private var bookingDate = ""
+    private var bookingTime = ""
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,8 +63,7 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
         if (!this::binding.isInitialized) {
@@ -90,7 +95,7 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
                             binding.clNoDataFound.setGone()
                             binding.clData.setVisible()
                             updateCalendar(it.data.data)
-                        }else{
+                        } else {
                             Log.d("AvailableDatesResponse", "response data is zero")
                             binding.clNoDataFound.setVisible()
                             binding.clData.setGone()
@@ -154,8 +159,26 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
 
                     Status.SUCCESS -> {
                         hideProgress()
-                        requireContext().showToast(it.message.toString())
-                        Log.d("bookAppointment", "response->${it.message}")
+                        var tittle = ""
+                        val description =
+                            "Your booking has been scheduled for $bookingDate at $bookingTime with ${professionalItem.firstName} ${professionalItem.lastName}"
+                        when (args.appointmentType) {
+                            "Update Service" -> {
+                                tittle = "Rescheduling Successful!"
+                                showSuccessPopup(tittle, description, true)
+                            }
+
+                            "Update Cart Service" -> {
+                                tittle = "Rescheduling Successful!"
+                                showSuccessPopup(tittle, description, false)
+                            }
+
+                            else -> {
+                                tittle = "Booking Successfully Scheduled!"
+                                showSuccessPopup(tittle, description, true)
+                            }
+
+                        }
 
 
                     }
@@ -168,21 +191,60 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
                 }
             }
         }
+
+        viewModel.resultServiceReschedule.observe(this) {
+            it.let { result ->
+                when (result.status) {
+                    Status.LOADING -> {
+                        showProgress(requireContext())
+                    }
+
+                    Status.SUCCESS -> {
+                        hideProgress()
+                        val tittle = "Rescheduling Successful!"
+                        val description =
+                            "Your booking has been scheduled for $bookingDate at $bookingTime with ${professionalItem.firstName} ${professionalItem.lastName}"
+                        showSuccessPopup(tittle, description, false)
+
+                    }
+
+                    Status.ERROR -> {
+                        hideProgress()
+                        requireContext().showToast(it.message.toString())
+                    }
+
+                }
+            }
+        }
+
+    }
+
+    private fun showSuccessPopup(tittle: String, description: String, cartButton: Boolean) {
+        requireContext().showAlertForBookingSuccess(
+            tittle,
+            description, cartButton,
+            object : BookingSuccessAlertCallbackInt {
+                override fun onGoToCartClicked(view: View) {
+                    val action = MakeAppointmentFragmentDirections.actionMakeAppointmentFragmentToCartFragment()
+                    //Finish Current Fragment
+                    val navOptions = NavOptions.Builder().setPopUpTo(R.id.makeAppointmentFragment, true).build()
+                    findNavController().navigate(action, navOptions)
+                }
+
+                override fun onDoneClicked(view: View) {
+                    findNavController().popBackStack()
+                }
+            })
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun updateCalendar(dates: List<String>) {
-
-
         val selectedDates = mutableListOf<CalendarDay>()
-
         for (dateString in dates) {
             val localDate = LocalDate.parse(dateString)
             selectedDates.add(
                 CalendarDay.from(
-                    localDate.year,
-                    localDate.monthValue,
-                    localDate.dayOfMonth
+                    localDate.year, localDate.monthValue, localDate.dayOfMonth
                 )
             )
         }
@@ -190,9 +252,7 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
         binding.calendarView.removeDecorators() // Clear any existing decorators
         binding.calendarView.addDecorator(
             CircularEventDecorator(
-                requireContext(),
-                R.drawable.calender_circular_background,
-                selectedDates
+                requireContext(), R.drawable.calender_circular_background, selectedDates
             )
         )
         binding.calendarView.addDecorator(DisableNonSelectableDecorator(selectedDates))
@@ -209,14 +269,14 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
 
         // Set the minimum date to today
         val today = CalendarDay.today()
-        binding.calendarView.state().edit()
-            .setMinimumDate(today) // Set the minimum date to today
+        binding.calendarView.state().edit().setMinimumDate(today) // Set the minimum date to today
             .commit()
     }
 
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun callServiceAvailableTimeSlotsApi(dateFormat: String) {
+        bookingDate = dateFormat
         binding.tvDate.text = formatDayDate(dateFormat)
         viewModel.spaServiceId.set(args.spaServiceId)
         viewModel.date.set(dateFormat)
@@ -243,12 +303,17 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
     @SuppressLint("SetTextI18n")
     private fun initUI() {
         viewModel.spaServiceId.set(args.spaServiceId)
+        if (args.appointmentType == "Reschedule" || args.appointmentType == "Update Service" || args.appointmentType == "Update Cart Service") {
+            binding.btnBookAppointment.text = "Reschedule an Appointment"
+        } else {
+            binding.btnBookAppointment.text = "Book an Appointment"
+
+        }
         viewModel.professionalId.set(professionalItem.professionalDetail?.professionalDetailId)
         viewModel.getServiceAvailableDates()
         binding.tvMorning.isSelected = true
         binding.tvEvening.isSelected = false
         binding.onClick = this
-
 
 
     }
@@ -260,7 +325,6 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
                 binding.tvMorning.isSelected = true
                 binding.tvEvening.isSelected = false
                 updateAdapterWithMorningSlots()
-
             }
 
             binding.tvEvening -> {
@@ -273,7 +337,7 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
                 findNavController().popBackStack()
             }
 
-            binding.btnBookAppointment->{
+            binding.btnBookAppointment -> {
                 proceedToAppointmentBooking()
             }
         }
@@ -281,15 +345,31 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
 
     private fun proceedToAppointmentBooking() {
         Log.d("bookAppointment", "inside proceedToAppointmentBooking slotId->${slotId}")
+        Log.d("bookAppointment", "spaServiceId->${args.spaServiceId} ")
+        Log.d(
+            "bookAppointment", "spaDetailId->${professionalItem.professionalDetail?.spaDetailId} "
+        )
+        Log.d("bookAppointment", "appointmentType->${args.appointmentType} ")
+        Log.d("bookAppointment", "serviceBookingId->${args.serviceBookingId} ")
+        Log.d("bookAppointment", "orderId->${args.orderId} ")
 
-        if (slotId == 0){
+        if (slotId == 0) {
             requireContext().showToast("Please Select Time Slot")
-        }else{
-            viewModel.serviceCountInCart.set(1)
-            viewModel.spaDetailId.set(professionalItem.professionalDetail?.spaDetailId)
-            viewModel.spaServiceId.set(args.spaServiceId)
-            viewModel.slotId.set(slotId)
-            viewModel.addServiceToCart()
+        } else {
+            if (args.appointmentType == "Reschedule") {
+                viewModel.orderId.set(args.orderId)
+                viewModel.slotId.set(slotId)
+                viewModel.serviceBookingId.set(args.serviceBookingId)
+                viewModel.serviceReschedule()
+
+            } else {
+                viewModel.serviceCountInCart.set(1)
+                viewModel.spaDetailId.set(professionalItem.professionalDetail?.spaDetailId)
+                viewModel.spaServiceId.set(args.spaServiceId)
+                viewModel.slotId.set(slotId)
+                viewModel.addServiceToCart()
+            }
+
         }
 
     }
@@ -304,14 +384,18 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
             val timeSlotServiceAdapter = TimeSlotServiceAdapter(morningSlots)
             binding.rvTimeSlots.adapter = timeSlotServiceAdapter
             timeSlotServiceAdapter.notifyDataSetChanged()
-            timeSlotServiceAdapter.setOnClickSlotCallback(object :TimeSlotServiceAdapter.SelectSlotCallback{
-                override fun rootSelectSlot(slotId: Int) {
-                    Log.d("bookAppointment", "inside updateAdapterWithMorningSlots slotId->${slotId}")
-                    this@MakeAppointmentFragment.slotId =slotId
+            timeSlotServiceAdapter.setOnClickSlotCallback(object :
+                TimeSlotServiceAdapter.SelectSlotCallback {
+                override fun rootSelectSlot(slotId: Int, slotTime: String) {
+                    Log.d(
+                        "bookAppointment", "inside updateAdapterWithMorningSlots slotId->${slotId}"
+                    )
+                    this@MakeAppointmentFragment.slotId = slotId
+                    bookingTime = slotTime
                 }
 
             })
-        }else {
+        } else {
             binding.rvTimeSlots.setGone()
             binding.tvNoSlotFound.setVisible()
         }
@@ -326,10 +410,14 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
             val timeSlotServiceAdapter = TimeSlotServiceAdapter(eveningSlots)
             binding.rvTimeSlots.adapter = timeSlotServiceAdapter
             timeSlotServiceAdapter.notifyDataSetChanged()
-            timeSlotServiceAdapter.setOnClickSlotCallback(object :TimeSlotServiceAdapter.SelectSlotCallback{
-                override fun rootSelectSlot(slotId: Int) {
-                    Log.d("bookAppointment", "inside updateAdapterWithEveningSlots slotId->${slotId}")
-                    this@MakeAppointmentFragment.slotId=slotId
+            timeSlotServiceAdapter.setOnClickSlotCallback(object :
+                TimeSlotServiceAdapter.SelectSlotCallback {
+                override fun rootSelectSlot(slotId: Int, slotTime: String) {
+                    Log.d(
+                        "bookAppointment", "inside updateAdapterWithEveningSlots slotId->${slotId}"
+                    )
+                    this@MakeAppointmentFragment.slotId = slotId
+                    bookingTime = slotTime
                 }
 
             })

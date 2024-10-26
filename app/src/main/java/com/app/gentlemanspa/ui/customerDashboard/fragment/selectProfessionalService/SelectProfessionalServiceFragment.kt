@@ -90,8 +90,13 @@ class SelectProfessionalServiceFragment : Fragment(), View.OnClickListener {
         selectProfessionalServiceAdapter.setOnSelectProfessionalServiceCallbacks(object : SelectProfessionalServiceAdapter.SelectProfessionalServiceCallbacks {
             override fun rootSelectProfessionalService(item:Service) {
                 Log.d("professionalList","inside setServiceAdapter  serviceId->${item.spaServiceId} spaDetailId->${item.spaDetailId}")
-
-                val action= SelectProfessionalServiceFragmentDirections.actionSelectProfessionalServiceFragmentToAnyProfessionalFragment(item.spaDetailId,item.spaServiceId)
+                Log.d("professionalName","professionalName${item.professionalName}")
+                val appointmentType = if (!item.professionalName.isNullOrEmpty()){
+                    "Update Service"
+                }else{
+                    "Book Service"
+                }
+                val action= SelectProfessionalServiceFragmentDirections.actionSelectProfessionalServiceFragmentToAnyProfessionalFragment(appointmentType,item.spaDetailId,item.spaServiceId)
                findNavController().navigate(action)
             }
 

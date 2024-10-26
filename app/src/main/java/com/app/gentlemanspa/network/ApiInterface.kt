@@ -16,10 +16,15 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.Customer
 import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.CustomerAddressStatusRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.CustomerAddressStatusResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.DeleteAddressResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.model.CustomerPlaceOrderRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.model.CustomerPlaceOrderResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.UpcomingServiceAppointmentResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editAddress.model.AddCustomerAddressRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editAddress.model.AddCustomerAddressResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.model.UpdateProfileCustomerRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.model.UpdateProfileCustomerResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.CancelUpcomingAppointmentRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.CancelUpcomingAppointmentResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.BannerResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.LocationResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.model.SpecialityResponse
@@ -31,6 +36,9 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductCate
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductsResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.model.ServiceGetAvailableDatesResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.model.ServiceGetAvailableTimeSlotsResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.model.ServiceRescheduleRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.model.ServiceRescheduleResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.myOrders.model.MyOrdersResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.product.model.AddProductInCartRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.product.model.AddProductInCartResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.productDetail.model.ProductDetailResponse
@@ -94,6 +102,7 @@ interface ApiInterface {
 
     @GET(ApiConstants.GET_PROFESSIONAL_DETAIL)
     suspend fun getProfessionalDetail(): GetProfessionalDetailResponse
+
     @POST(ApiConstants.UPDATE_PROFESSIONAL)
     suspend fun updateProfessional(@Body body: UpdateProfileProfessionalRequest?): UpdateProfileProfessionalResponse
 
@@ -148,16 +157,28 @@ interface ApiInterface {
     @DELETE(ApiConstants.DELETE_CUSTOMER_ADDRESS)
     suspend fun deleteCustomerAddress(
         @Query("customerAddressId") customerAddressId: Int?,
-        ): DeleteAddressResponse
+    ): DeleteAddressResponse
 
     @POST(ApiConstants.ADD_CUSTOMER_SERVICE_TO_CART)
     suspend fun addServiceToCart(
         @Body body: AddServiceToCartRequest?
     ): AddServiceToCartResponse
+
+    @POST(ApiConstants.CUSTOMER_PLACE_ORDER)
+    suspend fun customerPlaceOrder(
+        @Body body: CustomerPlaceOrderRequest?
+    ): CustomerPlaceOrderResponse
+
+    @POST(ApiConstants.RESCHEDULE_SERVICE)
+    suspend fun serviceReschedule(
+        @Body body: ServiceRescheduleRequest?
+    ): ServiceRescheduleResponse
+
     @POST(ApiConstants.ADD_PRODUCT_IN_CART)
     suspend fun addProductInCart(
         @Body body: AddProductInCartRequest?
     ): AddProductInCartResponse
+
     @GET(ApiConstants.BANNER)
     suspend fun getBanner(): BannerResponse
 
@@ -196,12 +217,14 @@ interface ApiInterface {
         @Query("SpaServiceIds") spaServiceIds: Int?,
         @Query("ProfessionalId") professionalId: String?
     ): ServiceGetAvailableDatesResponse
+
     @GET(ApiConstants.SERVICE_GET_AVAILABLE_TIME_SLOTS)
     suspend fun getServiceAvailableTimeSlots(
         @Query("SpaServiceIds") spaServiceIds: Int?,
         @Query("Date") date: String?,
         @Query("ProfessionalId") professionalId: String?
     ): ServiceGetAvailableTimeSlotsResponse
+
     @GET(ApiConstants.PROFESSIONAL_LIST)
     suspend fun getProfessionalList(
         @Query("spaServiceId") spaServiceId: Int?,
@@ -260,6 +283,25 @@ interface ApiInterface {
     suspend fun phoneUnique(
         @Body body: PhoneUniqueRequest?
     ): EmailOtpResponse
+
+    @GET(ApiConstants.GET_SERVICE_APPOINTMENTS)
+    suspend fun getServiceAppointments(
+        @Query("type") type: String?,
+        @Query("pageSize") pageSize: Int?,
+        @Query("pageNumber") pageNumber: Int?
+    ): UpcomingServiceAppointmentResponse
+
+    @POST(ApiConstants.CANCEL_UPCOMING_APPOINTMENTS)
+    suspend fun cancelUpcomingAppointment(
+       @Body request:CancelUpcomingAppointmentRequest
+    ): CancelUpcomingAppointmentResponse
+
+    @GET(ApiConstants.GET_ORDERED_PRODUCTS)
+    suspend fun getOrderedProducts(
+        @Query("type") type: String?,
+        @Query("pageSize") pageSize: Int?,
+        @Query("pageNumber") pageNumber: Int?
+    ): MyOrdersResponse
 
     /*
        @GET(ApiConstants.SPECIALITY)

@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.model.ServiceGetAvailableDatesResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.model.ServiceGetAvailableTimeSlotsResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.model.ServiceRescheduleRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.model.ServiceRescheduleResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.model.ProfessionalResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.AddServiceToCartRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.AddServiceToCartResponse
@@ -29,9 +31,12 @@ class MakeAppointmentViewModel(private var initialRepository: InitialRepository)
     val spaDetailId =ObservableField<Int>()
     val serviceCountInCart =ObservableField<Int>()
     val slotId =ObservableField<Int>()
+    val orderId =ObservableField<Int>()
+    val serviceBookingId =ObservableField<Int>()
     val resultServiceAvailableDates= MutableLiveData<Resource<ServiceGetAvailableDatesResponse>>()
     val resultServiceAvailableTimeSlots= MutableLiveData<Resource<ServiceGetAvailableTimeSlotsResponse>>()
     val resultAddServiceToCart = MutableLiveData<Resource<AddServiceToCartResponse>>()
+    val resultServiceReschedule= MutableLiveData<Resource<ServiceRescheduleResponse>>()
 
 
 
@@ -111,4 +116,31 @@ class MakeAppointmentViewModel(private var initialRepository: InitialRepository)
                 }
         }
     }
+
+    fun serviceReschedule() {
+        resultServiceReschedule.value = Resource.loading(null)
+        viewModelScope.launch {
+            initialRepository.serviceReschedule(ServiceRescheduleRequest(orderId.get()!!,serviceBookingId.get()!!,slotId.get()!!))
+                .onStart { }
+                .onCompletion { }
+                .catch { exception ->
+                    if (!CommonFunctions.getError(exception)!!.contains("401"))
+                        resultServiceReschedule.value =
+                            Resource.error(
+                                data = null,
+                                message = CommonFunctions.getError(exception)
+                            )
+                }
+                .collect {
+                    if (it?.statusCode == 200) {
+                        resultServiceReschedule.value =
+                            Resource.success(message = it.messages, data = it)
+                    } else {
+                        resultServiceReschedule.value =
+                            Resource.error(data = null, message = it?.messages)
+                    }
+                }
+        }
+    }
+
 }

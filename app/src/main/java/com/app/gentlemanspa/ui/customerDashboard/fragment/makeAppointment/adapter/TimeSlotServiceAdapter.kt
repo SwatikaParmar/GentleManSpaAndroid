@@ -63,7 +63,7 @@ class TimeSlotServiceAdapter(private var timeSlotList: ArrayList<Slot>): Recycle
                     clTime.setBackgroundResource(R.color.app_color)
                     notifyDataSetChanged()
                 }
-                 selectSlotClick.rootSelectSlot(item.slotId)
+                 selectSlotClick.rootSelectSlot(item.slotId,item.fromTime)
 
             }
         }
@@ -75,6 +75,6 @@ class TimeSlotServiceAdapter(private var timeSlotList: ArrayList<Slot>): Recycle
     }
 
     interface SelectSlotCallback{
-        fun rootSelectSlot(slotId:Int)
+        fun rootSelectSlot(slotId:Int,slotTime:String)
     }
 }

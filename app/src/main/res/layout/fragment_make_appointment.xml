@@ -322,7 +322,7 @@
                         android:id="@+id/btnBookAppointment"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="@dimen/_35sdp"
+                        android:layout_marginHorizontal="@dimen/_20sdp"
                         android:layout_marginTop="@dimen/_15sdp"
                         android:layout_marginBottom="@dimen/_15sdp"
                         android:fontFamily="@font/poppins"

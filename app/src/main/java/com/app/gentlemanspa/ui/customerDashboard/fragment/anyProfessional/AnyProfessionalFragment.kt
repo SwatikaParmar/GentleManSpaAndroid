@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.app.gentlemanspa.R
@@ -36,6 +37,7 @@ class AnyProfessionalFragment : Fragment(), View.OnClickListener {
     private lateinit var anyProfessionalAdapter: AnyProfessionalAdapter
     private var professionalList: ArrayList<ProfessionalItem> = ArrayList()
     private var mainLoader: Int=0
+    private var appointmentType=""
     private val args:AnyProfessionalFragmentArgs by navArgs()
 
 
@@ -92,6 +94,7 @@ class AnyProfessionalFragment : Fragment(), View.OnClickListener {
     private fun initUI() {
 
         binding.onClick = this
+        appointmentType=args.appointmentType
         viewModel.spaServiceId.set(args.spaServiceId)
         viewModel.spaDetailId.set(args.spaDetailId)
         viewModel.getProfessionalList()
@@ -104,11 +107,11 @@ class AnyProfessionalFragment : Fragment(), View.OnClickListener {
             AnyProfessionalAdapter.AnyProfessionalCallbacks{
             @SuppressLint("SuspiciousIndentation")
             override fun rootAnyProfessional(item:ProfessionalItem) {
-               /* val specialities= item.professionalDetail?.speciality?.map { it }
-                val specialityName = specialities?.joinToString(",")*/
-                    //  val action = AnyProfessionalFragmentDirections.actionAnyProfessionalFragmentToMakeAppointmentFragment("${item.firstName} ${item.lastName}", ApiConstants.BASE_FILE +item.profilepic,specialityName!!)
-             val action = AnyProfessionalFragmentDirections.actionAnyProfessionalFragmentToMakeAppointmentFragment(args.spaServiceId,item)
-                findNavController().navigate(action)
+
+           val action = AnyProfessionalFragmentDirections.actionAnyProfessionalFragmentToMakeAppointmentFragment(appointmentType,0,0,args.spaServiceId,item)
+                //Finish Current Fragment
+                val navOptions = NavOptions.Builder().setPopUpTo(R.id.anyProfessionalFragment, true).build()
+                findNavController().navigate(action,navOptions)
             }
 
 

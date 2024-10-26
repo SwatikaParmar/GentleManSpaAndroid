@@ -13,8 +13,10 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.anyProfessional.viewMo
 import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.viewModel.CartViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editAddress.viewModel.EditAddressViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.viewModel.UpdateCustomerViewModel
+import com.app.gentlemanspa.ui.customerDashboard.fragment.history.viewModel.HistoryViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.viewModel.HomeCustomerViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.viewModel.MakeAppointmentViewModel
+import com.app.gentlemanspa.ui.customerDashboard.fragment.myOrders.viewModel.MyOrdersViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.product.viewModel.ProductViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.productDetail.viewModel.ProductDetailViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeam.viewModel.ProfessionalServicesViewModel
@@ -134,6 +136,13 @@ class ViewModelFactory(
 
             modelClass.isAssignableFrom(ProductDetailProfessionalViewModel::class.java) -> {
                 return ProductDetailProfessionalViewModel(repository) as T
+            }
+            modelClass.isAssignableFrom(HistoryViewModel::class.java) -> {
+                return HistoryViewModel(repository) as T
+            }
+
+            modelClass.isAssignableFrom(MyOrdersViewModel::class.java) -> {
+                return MyOrdersViewModel(repository) as T
             }
 
            /*

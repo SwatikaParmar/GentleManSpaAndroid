@@ -304,8 +304,9 @@ class ProductFragment : Fragment(), View.OnClickListener  {
     override fun onClick(v: View?) {
         when(v) {
             binding.btnContinue -> {
-               /* val action = ServiceFragmentDirections.actionServiceFragmentToSelectProfessionalFragment()
-                findNavController().navigate(action)*/
+                //requireContext().showToast("Continue is clicked")
+                val action = ProductFragmentDirections.actionProductFragmentToCartFragment()
+                findNavController().navigate(action)
             }
 
             binding.ivArrowBack -> {
