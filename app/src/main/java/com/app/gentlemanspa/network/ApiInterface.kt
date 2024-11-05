@@ -54,7 +54,10 @@ import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.A
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.UpdateProductRequest
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.UpdateProductResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.UploadProductImageResponse
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.createSchedule.model.AddUpdateProfessionalScheduleRequest
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.createSchedule.model.AddUpdateProfessionalScheduleResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.product.model.DeleteProductResponse
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.model.SchedulesByProfessionalDetailIdResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.model.WeekDaysResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.selectCountry.model.country.CountryResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.selectCountry.model.states.StatesResponse
@@ -302,6 +305,14 @@ interface ApiInterface {
         @Query("pageSize") pageSize: Int?,
         @Query("pageNumber") pageNumber: Int?
     ): MyOrdersResponse
+
+    @GET(ApiConstants.GET_PROFESSIONALS_SCHEDULES_BY_PROFESSIONAL_DETAIL_ID)
+    suspend fun getSchedulesByProfessionalDetailId(
+        @Query("professionalDetailId")professionalDetailId:Int): SchedulesByProfessionalDetailIdResponse
+
+    @POST(ApiConstants.ADD_UPDATE_PROFESSIONAL_SCHEDULE)
+    suspend fun addUpdateProfessionalSchedule(
+    @Body request:AddUpdateProfessionalScheduleRequest ): AddUpdateProfessionalScheduleResponse
 
     /*
        @GET(ApiConstants.SPECIALITY)

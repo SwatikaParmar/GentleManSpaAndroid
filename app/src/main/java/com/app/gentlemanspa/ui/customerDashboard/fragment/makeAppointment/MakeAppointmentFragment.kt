@@ -20,8 +20,8 @@ import com.app.gentlemanspa.databinding.FragmentMakeAppointmentBinding
 import com.app.gentlemanspa.network.ApiConstants
 import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.network.Status
-import com.app.gentlemanspa.ui.customViews.BookingSuccessAlertCallbackInt
-import com.app.gentlemanspa.ui.customViews.showAlertForBookingSuccess
+import com.app.gentlemanspa.utils.BookingSuccessAlertCallbackInt
+import com.app.gentlemanspa.utils.showAlertForBookingSuccess
 import com.app.gentlemanspa.ui.customerDashboard.activity.CustomerActivity
 import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.adapter.TimeSlotServiceAdapter
 import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.calanderUtils.CircularEventDecorator
@@ -36,7 +36,6 @@ import com.app.gentlemanspa.utils.setGone
 import com.app.gentlemanspa.utils.setVisible
 import com.app.gentlemanspa.utils.showToast
 import com.bumptech.glide.Glide
-import com.google.android.gms.common.internal.Objects
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import java.time.LocalDate
 

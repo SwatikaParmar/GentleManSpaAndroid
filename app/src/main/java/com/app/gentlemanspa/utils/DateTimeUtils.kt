@@ -3,8 +3,10 @@ package com.app.gentlemanspa.utils
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.prolificinteractive.materialcalendarview.CalendarDay
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.Date
 import java.util.Locale
 
 fun formatDuration(durationInMinutes: Int): String {
@@ -43,4 +45,10 @@ fun formatCalendarDayToYear(calendarDay: CalendarDay): String {
     val localDate = LocalDate.of(calendarDay.year, calendarDay.month, calendarDay.day)
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.getDefault())
     return localDate.format(formatter)
+}
+
+
+ fun getCurrentTime(): String {
+    val dateFormat = SimpleDateFormat("hh:mm a", Locale.getDefault()) // Format like "10:30 AM"
+    return dateFormat.format(Date()) // Get the current date and time, and format it
 }

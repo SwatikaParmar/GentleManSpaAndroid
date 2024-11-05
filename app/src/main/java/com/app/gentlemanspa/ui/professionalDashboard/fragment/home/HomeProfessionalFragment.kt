@@ -21,6 +21,7 @@ import com.app.gentlemanspa.ui.professionalDashboard.fragment.home.adapter.Upcom
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.home.viewModel.HomeProfessionalViewModel
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.profile.viewModel.ProfileProfessionalDetailViewModel
 import com.app.gentlemanspa.utils.AppPrefs
+import com.app.gentlemanspa.utils.PROFESSIONAL_DETAIL_ID
 import com.app.gentlemanspa.utils.ViewModelFactory
 import com.app.gentlemanspa.utils.showToast
 import com.bumptech.glide.Glide
@@ -76,6 +77,8 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
                         //binding.tvPhone.text =it.data?.data?.phoneNumber
                         val name = "${it.data?.data?.firstName} ${it.data?.data?.lastName}"
                         val email = it.data?.data?.email.toString()
+                        if (!it.data?.data?.professionalDetail?.professionalDetailId.isNullOrEmpty()){
+                            AppPrefs(requireContext()).saveStringPref(PROFESSIONAL_DETAIL_ID,it.data?.data?.professionalDetail?.professionalDetailId) }
                         profileUpdatedListener.onProfileUpdated(name, email,BASE_FILE +it.data?.data?.profilepic)
                         Glide.with(requireContext()).load(BASE_FILE +it.data?.data?.profilepic).into(binding.ivProfile)
 

@@ -198,7 +198,9 @@ class AddProductFragment : Fragment(), View.OnClickListener {
         viewModel.resultUploadProductImage.observe(this) {
             it?.let { result ->
                 when (result.status) {
-                    Status.LOADING -> {}
+                    Status.LOADING -> {
+
+                    }
 
                     Status.SUCCESS -> {
                         hideProgress()

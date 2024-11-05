@@ -1,37 +1,74 @@
 package com.app.gentlemanspa.ui.professionalDashboard.fragment.createSchedule
 
+import android.annotation.SuppressLint
 import android.content.res.Resources
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TimePicker.OnTimeChangedListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.findViewTreeLifecycleOwner
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.app.gentlemanspa.R
+import com.app.gentlemanspa.base.MyApplication
+import com.app.gentlemanspa.base.MyApplication.Companion.hideProgress
+import com.app.gentlemanspa.base.MyApplication.Companion.showProgress
 import com.app.gentlemanspa.databinding.BottomTimePickerBinding
 import com.app.gentlemanspa.databinding.FragmentCreateScheduleBinding
+import com.app.gentlemanspa.network.InitialRepository
+import com.app.gentlemanspa.network.Status
 import com.app.gentlemanspa.ui.professionalDashboard.activity.ProfessionalActivity
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.createSchedule.viewModel.CreateScheduleViewModel
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.viewModel.ScheduleViewModel
+import com.app.gentlemanspa.utils.AppPrefs
+import com.app.gentlemanspa.utils.PROFESSIONAL_DETAIL_ID
+import com.app.gentlemanspa.utils.ViewModelFactory
+import com.app.gentlemanspa.utils.showToast
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 
 class CreateScheduleFragment : Fragment(), View.OnClickListener {
 
-
     private lateinit var binding: FragmentCreateScheduleBinding
+    private val args: CreateScheduleFragmentArgs by navArgs()
+    private val viewModel: CreateScheduleViewModel by viewModels {
+        ViewModelFactory(
+            InitialRepository()
+        )
+    }
+    var startSelectedTime: String = ""
+    var endSelectedTime: String = ""
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initObserver()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
-        binding = FragmentCreateScheduleBinding.inflate(layoutInflater,container,false)
+        binding = FragmentCreateScheduleBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setData()
         initUI()
+    }
+
+    private fun setData() {
+        Log.d("type", "type->${args.type}")
+        Log.d("type", "weekdaysId->${args.weekDaysItem.weekdaysId}")
+        binding.tvDayName.text = args.weekDaysItem.weekName
+        binding.btnCreate.text = args.type
     }
 
     private fun initUI() {
@@ -40,7 +77,7 @@ class CreateScheduleFragment : Fragment(), View.OnClickListener {
     }
 
 
-
+    @SuppressLint("DefaultLocale")
     private fun setStartTimePickerBottomSheet() {
         val bottomSheet = BottomSheetDialog(requireContext(), R.style.DialogTheme_transparent)
         val bottomSheetLayout = BottomTimePickerBinding.inflate(layoutInflater)
@@ -53,13 +90,11 @@ class CreateScheduleFragment : Fragment(), View.OnClickListener {
         // Set the TimePicker to 12-hour format
 
         bottomSheetLayout.timePicker.setIs24HourView(false)
-
         bottomSheet.setCancelable(false)
         bottomSheet.show()
 
         // Initialize period variable
         var period: String = ""
-
         bottomSheetLayout.timePicker.setOnTimeChangedListener { _, hourOfDay, minute ->
             // Determine AM/PM
             val isAM = hourOfDay < 12
@@ -67,7 +102,6 @@ class CreateScheduleFragment : Fragment(), View.OnClickListener {
             // Round minutes to the nearest 30-minute interval
             val roundedMinute = if (minute % 30 == 0) minute else if (minute < 30) 0 else 30
             bottomSheetLayout.timePicker.minute = roundedMinute
-
 
         }
 
@@ -79,12 +113,13 @@ class CreateScheduleFragment : Fragment(), View.OnClickListener {
 
             val isAM = hour < 12
             period = if (isAM) "AM" else "PM"
+            startSelectedTime = String.format("%02d:%02d %s", displayHour, minute, period)
 
             // Update text views with formatted time
             binding.tvStartHour.text = displayHour.toString().padStart(2, '0')
             binding.tvStartMin.text = minute.toString().padStart(2, '0')
             binding.tvStartAm.text = period
-
+            Log.d("SelectedTime", "startSelectedTime: $startSelectedTime")
             bottomSheet.dismiss()
         }
 
@@ -94,6 +129,7 @@ class CreateScheduleFragment : Fragment(), View.OnClickListener {
     }
 
 
+    @SuppressLint("DefaultLocale")
     private fun setEndTimePickerBottomSheet() {
         val bottomSheet = BottomSheetDialog(requireContext(), R.style.DialogTheme_transparent)
         val bottomSheetLayout = BottomTimePickerBinding.inflate(layoutInflater)
@@ -117,7 +153,6 @@ class CreateScheduleFragment : Fragment(), View.OnClickListener {
             // Determine AM/PM
             val isAM = hourOfDay < 12
             period = if (isAM) "AM" else "PM"
-
             // Round minutes to the nearest 30-minute interval
             val roundedMinute = if (minute % 30 == 0) minute else if (minute < 30) 0 else 30
             bottomSheetLayout.timePicker.minute = roundedMinute
@@ -134,24 +169,27 @@ class CreateScheduleFragment : Fragment(), View.OnClickListener {
 
             val isAM = hour < 12
             period = if (isAM) "AM" else "PM"
-
+            endSelectedTime = String.format("%02d:%02d %s", displayHour, minute, period)
 
             // Update text views with formatted time
             binding.tvEndHour.text = displayHour.toString().padStart(2, '0')
             binding.tvEndMin.text = minute.toString().padStart(2, '0')
             binding.tvEndAm.text = period
 
+            Log.d("SelectedTime", "endSelectedTime: $endSelectedTime")
+
             bottomSheet.dismiss()
         }
-
-
-
         bottomSheet.behavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
 
     override fun onClick(v: View?) {
-        when(v) {
+        when (v) {
+            binding.ivArrowBack -> {
+                findNavController().popBackStack()
+            }
+
             binding.clStartTimeValue -> {
                 setStartTimePickerBottomSheet()
             }
@@ -159,8 +197,59 @@ class CreateScheduleFragment : Fragment(), View.OnClickListener {
             binding.clEndTimeValue -> {
                 setEndTimePickerBottomSheet()
             }
+
+            binding.btnCreate -> {
+                Log.d("SelectedTime", "btn clicked")
+                if (startSelectedTime.isNotEmpty() && endSelectedTime.isNotEmpty()){
+                    proceedToSchedule()
+                }else{
+                    Log.d("SelectedTime", "inside else")
+                    requireContext().showToast("Please Select Time")
+                }
+            }
         }
     }
 
+    private fun proceedToSchedule() {
+        Log.d("SelectedTime", "inside proceedToSchedule")
+
+        if (binding.btnCreate.text.toString() == "Update") {
+            viewModel.professionalScheduleId.set(args.professionalScheduleId)
+        }else{
+            viewModel.professionalScheduleId.set(0)
+        }
+        viewModel.professionalDetailId.set(AppPrefs(requireContext()).getStringPref(PROFESSIONAL_DETAIL_ID)?.toInt())
+        viewModel.weekDaysId.set(args.weekDaysItem.weekdaysId)
+        viewModel.fromTime.set(startSelectedTime)
+        viewModel.toTime.set(endSelectedTime)
+        viewModel.addUpdateProfessionalSchedule()
+    }
+
+    private fun initObserver() {
+        viewModel.resultAddUpdateProfessionalSchedule.observe(this) {
+            it?.let { result ->
+                when (result.status) {
+                    Status.LOADING -> {
+                        showProgress(requireContext())
+                    }
+
+                    Status.SUCCESS -> {
+                        hideProgress()
+                        requireContext().showToast(it.message.toString())
+                        val action=CreateScheduleFragmentDirections.actionCreateScheduleFragmentToScheduleProfessionalFragment()
+                        findNavController().navigate(action)
+
+                    }
+
+                    Status.ERROR -> {
+                        requireContext().showToast(it.message.toString())
+                        hideProgress()
+                    }
+                }
+            }
+        }
+
+
+    }
 
 }

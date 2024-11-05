@@ -151,11 +151,12 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/clMember"
+                android:id="@+id/clMessages"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/_10sdp"
                 android:layout_marginTop="@dimen/_10sdp"
+                android:onClick="@{onClick}"
                 app:layout_constraintTop_toBottomOf="@+id/clProfile">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -181,28 +182,28 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tvMember"
+                    android:id="@+id/tvMessages"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/_5sdp"
                     android:includeFontPadding="false"
-                    android:text="Membership level"
+                    android:text="Messages"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_12ssp"
                     app:fontFamily="@font/poppins"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/ivArrowMember"
+                    app:layout_constraintEnd_toStartOf="@+id/ivMessages"
                     app:layout_constraintStart_toEndOf="@+id/clImageMember"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/ivArrowMember"
+                    android:id="@+id/ivMessages"
                     android:layout_width="@dimen/_10sdp"
                     android:layout_height="@dimen/_10sdp"
                     android:src="@drawable/arrow_forward"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/tvMember"
+                    app:layout_constraintStart_toEndOf="@+id/tvMessages"
                     app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -214,7 +215,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/_10sdp"
                 android:layout_marginTop="@dimen/_10sdp"
-                app:layout_constraintTop_toBottomOf="@+id/clMember">
+                android:onClick="@{onClick}"
+                app:layout_constraintTop_toBottomOf="@+id/clMessages">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/clImageEvent"

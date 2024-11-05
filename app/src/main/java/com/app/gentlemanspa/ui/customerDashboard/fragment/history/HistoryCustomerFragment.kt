@@ -14,8 +14,8 @@ import com.app.gentlemanspa.base.MyApplication.Companion.showProgress
 import com.app.gentlemanspa.databinding.FragmentHistoryCustomerBinding
 import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.network.Status
-import com.app.gentlemanspa.ui.customViews.AlertCallbackInt
-import com.app.gentlemanspa.ui.customViews.showWarningAlert
+import com.app.gentlemanspa.utils.AlertCallbackInt
+import com.app.gentlemanspa.utils.showWarningAlert
 import com.app.gentlemanspa.ui.customerDashboard.activity.CustomerActivity
 import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.UpcomingServiceAppointmentItem
 import com.app.gentlemanspa.ui.customerDashboard.fragment.history.adapter.CompletedCustomerAdapter

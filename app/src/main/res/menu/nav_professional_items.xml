@@ -14,26 +14,26 @@
 
 
         <item
-            android:id="@+id/myProfileProfessional"
-            android:title="My Profile"
-            android:icon="@drawable/my_profile_icon"
+            android:id="@+id/myService"
+            android:title="My Service"
+            android:icon="@drawable/ic_service"
             />
 
         <item
             android:id="@+id/product"
-            android:title="Product"
-            android:icon="@drawable/product"
+            android:title="Add Product"
+            android:icon="@drawable/ic_products"
             />
 
         <item
-            android:id="@+id/navPrivacyPolicyProfessional"
-            android:title="Privacy Policy"
-            android:icon="@drawable/privacy"/>
+            android:id="@+id/request"
+            android:title="Request"
+            android:icon="@drawable/ic_request"/>
 
         <item
-            android:id="@+id/aboutUsProfessional"
-            android:title="About Us"
-            android:icon="@drawable/about_us"
+            android:id="@+id/refer"
+            android:title="Refer"
+            android:icon="@drawable/ic_refer"
             />
 
         <item

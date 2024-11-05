@@ -20,7 +20,6 @@ class ProfileCustomerFragment : Fragment(), View.OnClickListener {
 
     private lateinit var binding : FragmentProfileCustomerBinding
     private var profileCustomerData: GetProfessionalDetailResponse? = null
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -52,6 +51,14 @@ class ProfileCustomerFragment : Fragment(), View.OnClickListener {
         when(v) {
             binding.clProfile ->{
                 val action = ProfileCustomerFragmentDirections.actionProfileCustomerFragmentToEditProfileCustomerFragment()
+                findNavController().navigate(action)
+            }
+            binding.clMessages->{
+                val action=ProfileCustomerFragmentDirections.actionProfileCustomerFragmentToMessagesFragment()
+                findNavController().navigate(action)
+            }
+            binding.clEvent ->{
+                val action=ProfileCustomerFragmentDirections.actionProfileCustomerFragmentToEvenFragment()
                 findNavController().navigate(action)
             }
         }

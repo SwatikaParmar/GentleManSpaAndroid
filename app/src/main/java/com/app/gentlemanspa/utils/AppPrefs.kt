@@ -8,6 +8,7 @@ import com.app.gentlemanspa.ui.professionalDashboard.fragment.profile.model.GetP
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
+const val PROFESSIONAL_DETAIL_ID="Professional_Detail_Id"
 class AppPrefs(private val ctx: Context) {
 
     private fun getPrefs(): SharedPreferences {
@@ -25,6 +26,14 @@ class AppPrefs(private val ctx: Context) {
         edit.putInt(key, value)
         edit.apply()
     }
+    fun setIntPref(key : String?,value: Int){
+        val edit = getPrefs().edit()
+        edit.putInt(key, value)
+        edit.apply()
+    }
+    fun getIntPref(key: String?) :Int?{
+        return getPrefs().getInt(key,0)
+    }
 
     fun setString(key : String?,value: String?){
         val edit = getPrefs().edit()
@@ -33,6 +42,15 @@ class AppPrefs(private val ctx: Context) {
     }
 
     fun getString(key: String?) :String?{
+        return getPrefs().getString(key,"")
+    }
+    fun saveStringPref(key : String?,value: String?){
+        val edit = getPrefs().edit()
+        edit.putString(key, value)
+        edit.apply()
+    }
+
+    fun getStringPref(key: String?) :String?{
         return getPrefs().getString(key,"")
     }
 

@@ -1,6 +1,7 @@
 package com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -8,20 +9,25 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.app.gentlemanspa.base.MyApplication
+import com.app.gentlemanspa.base.MyApplication.Companion.hideProgress
 import com.app.gentlemanspa.base.MyApplication.Companion.showProgress
 import com.app.gentlemanspa.databinding.FragmentScheduleProfessionalBinding
 import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.network.Status
 import com.app.gentlemanspa.ui.professionalDashboard.activity.ProfessionalActivity
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.adapter.ScheduleAdapter
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.model.SchedulesByProfessionalDetailData
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.model.WeekDaysItem
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.viewModel.ScheduleViewModel
+import com.app.gentlemanspa.utils.AppPrefs
+import com.app.gentlemanspa.utils.PROFESSIONAL_DETAIL_ID
 import com.app.gentlemanspa.utils.ViewModelFactory
 import com.app.gentlemanspa.utils.showToast
 
 
 class ScheduleProfessionalFragment : Fragment() {
     private var weekDaysList: ArrayList<WeekDaysItem> = ArrayList()
+    private var workingTimeSchedulesList: ArrayList<SchedulesByProfessionalDetailData> = ArrayList()
     private lateinit var binding: FragmentScheduleProfessionalBinding
 
     private val viewModel: ScheduleViewModel by viewModels { ViewModelFactory(
@@ -35,8 +41,7 @@ class ScheduleProfessionalFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
+    ): View {
         if (!this ::binding.isInitialized) {
             binding = FragmentScheduleProfessionalBinding.inflate(inflater, container, false)
         }
@@ -49,17 +54,20 @@ class ScheduleProfessionalFragment : Fragment() {
     }
 
     private fun initUI() {
+        Log.d("professionalDetailId","PROFESSIONAL_DETAIL_ID->${AppPrefs(requireContext()).getStringPref(PROFESSIONAL_DETAIL_ID)}")
         (activity as ProfessionalActivity).bottomNavigation(true)
         viewModel.getWeekDays()
+        viewModel.professionalDetailId.set(AppPrefs(requireContext()).getStringPref(PROFESSIONAL_DETAIL_ID)?.toInt())
+        viewModel.getSchedulesByProfessionalDetailId()
     }
 
     private fun setScheduleAdapter() {
-        val scheduleAdapter = ScheduleAdapter(weekDaysList)
+        val scheduleAdapter = ScheduleAdapter(weekDaysList,workingTimeSchedulesList)
         binding.rvSchedule.adapter = scheduleAdapter
 
         scheduleAdapter.setOnClickScheduleCallbacks(object : ScheduleAdapter.ScheduleCallbacks{
-            override fun rootSchedule(item: WeekDaysItem) {
-                val action = ScheduleProfessionalFragmentDirections.actionScheduleProfessionalFragmentToCreateScheduleFragment()
+            override fun rootSchedule(item: WeekDaysItem,type:String,professionalScheduleId:Int) {
+                val action = ScheduleProfessionalFragmentDirections.actionScheduleProfessionalFragmentToCreateScheduleFragment(item,type,professionalScheduleId)
                 findNavController().navigate(action)
             }
 
@@ -89,5 +97,28 @@ class ScheduleProfessionalFragment : Fragment() {
                 }
             }
         }
+        viewModel.resultSchedulesByProfessionalDetailId.observe(this) {
+            it?.let { result ->
+                when (result.status) {
+                    Status.LOADING -> {
+                     //   showProgress(requireContext())
+                    }
+
+                    Status.SUCCESS -> {
+                       hideProgress()
+                        workingTimeSchedulesList.clear()
+                        it.data?.data?.let { it1 -> workingTimeSchedulesList.addAll(it1) }
+                        setScheduleAdapter()
+                    }
+
+                    Status.ERROR -> {
+                        hideProgress()
+                        requireContext().showToast(it.message.toString())
+                    }
+                }
+            }
+        }
+
+
     }
 }

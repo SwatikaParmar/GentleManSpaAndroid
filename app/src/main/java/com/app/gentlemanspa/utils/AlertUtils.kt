@@ -1,12 +1,10 @@
-package com.app.gentlemanspa.ui.customViews
+package com.app.gentlemanspa.utils
 
 import android.annotation.SuppressLint
 import android.app.Dialog
-import android.content.ClipDescription
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.icu.text.CaseMap.Title
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -15,8 +13,6 @@ import android.view.WindowManager
 import com.app.gentlemanspa.databinding.ItemAlertBookingSuccess
 import com.app.gentlemanspa.databinding.ItemAlertPlaceOrder
 import com.app.gentlemanspa.databinding.ItemWarningAlert
-import com.app.gentlemanspa.utils.setGone
-import com.app.gentlemanspa.utils.setVisible
 
 @SuppressLint("SetTextI18n")
 fun Context.showWarningAlert(alertCallbackInt: AlertCallbackInt) {

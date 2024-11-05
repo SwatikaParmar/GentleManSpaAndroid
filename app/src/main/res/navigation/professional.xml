@@ -46,7 +46,21 @@
         android:id="@+id/createScheduleFragment"
         android:name="com.app.gentlemanspa.ui.professionalDashboard.fragment.createSchedule.CreateScheduleFragment"
         android:label="CreateScheduleFragment"
-        tools:layout="@layout/fragment_create_schedule"/>
+        tools:layout="@layout/fragment_create_schedule">
+        <action
+            android:id="@+id/action_createScheduleFragment_to_scheduleProfessionalFragment"
+            app:destination="@id/scheduleProfessionalFragment" />
+
+        <argument
+            android:name="weekDaysItem"
+            app:argType="com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.model.WeekDaysItem" />
+        <argument
+            android:name="type"
+            app:argType="string" />
+        <argument
+            android:name="professionalScheduleId"
+            app:argType="integer" />
+    </fragment>
     <fragment
         android:id="@+id/addProductFragment"
         android:name="com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.AddProductFragment"
@@ -84,6 +98,10 @@
             android:name="productId"
             app:argType="integer" />
     </fragment>
-
+    <fragment
+        android:id="@+id/requestToManagementFragment"
+        android:name="com.app.gentlemanspa.ui.professionalDashboard.fragment.requestToManagement.RequestToManagementFragment"
+        android:label="RequestToManagementFragment"
+        tools:layout="@layout/fragment_request_to_management"/>
 
 </navigation>

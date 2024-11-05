@@ -88,7 +88,7 @@ class ProfessionalActivity : AppCompatActivity(), HomeProfessionalFragment.OnPro
                     // navController.navigate(R.id.homeFragment)
                 }
 
-                R.id.myProfileProfessional -> {
+                R.id.myService -> {
                     // navController.navigate(R.id.myConsultsFragment)
                 }
 
@@ -96,11 +96,11 @@ class ProfessionalActivity : AppCompatActivity(), HomeProfessionalFragment.OnPro
                      navController.navigate(R.id.productProfessionalFragment)
                 }
 
-                R.id.navPrivacyPolicyProfessional -> {
-                    //  navController.navigate(R.id.medicalRecordsFragment)
+                R.id.request -> {
+                      navController.navigate(R.id.requestToManagementFragment)
                 }
 
-                R.id.aboutUsProfessional -> {
+                R.id.refer -> {
                     // navController.navigate(R.id.blogsFragment)
                 }
 

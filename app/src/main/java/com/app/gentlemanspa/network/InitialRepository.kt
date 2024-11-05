@@ -57,7 +57,10 @@ import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.A
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.UpdateProductRequest
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.UpdateProductResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.UploadProductImageResponse
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.createSchedule.model.AddUpdateProfessionalScheduleRequest
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.createSchedule.model.AddUpdateProfessionalScheduleResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.product.model.DeleteProductResponse
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.model.SchedulesByProfessionalDetailIdResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.model.WeekDaysResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.selectCountry.model.country.CountryResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.selectCountry.model.states.StatesResponse
@@ -395,6 +398,20 @@ class InitialRepository {
     suspend fun serviceReschedule(body:ServiceRescheduleRequest): Flow<ServiceRescheduleResponse?> {
         return flow {
             val result =Api.apiInterface?.serviceReschedule(body)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+
+    suspend fun getSchedulesByProfessionalDetailId(professionalDetailId:Int): Flow<SchedulesByProfessionalDetailIdResponse?> {
+        return flow {
+            val result =Api.apiInterface?.getSchedulesByProfessionalDetailId(professionalDetailId)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+
+    suspend fun addUpdateProfessionalSchedule(request: AddUpdateProfessionalScheduleRequest): Flow<AddUpdateProfessionalScheduleResponse?> {
+        return flow {
+            val result =Api.apiInterface?.addUpdateProfessionalSchedule(request)
             emit(result)
         }.flowOn(Dispatchers.IO)
     }
