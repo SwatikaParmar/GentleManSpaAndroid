@@ -312,6 +312,8 @@ class RegisterFragment : Fragment(), View.OnClickListener {
 
                     Status.ERROR -> {
                         hideProgress()
+                        Log.d("apiEmail", "error->${it.message}")
+
                         if (it.message != null) {
                             requireContext().showToast(it.message.toString())
                         }

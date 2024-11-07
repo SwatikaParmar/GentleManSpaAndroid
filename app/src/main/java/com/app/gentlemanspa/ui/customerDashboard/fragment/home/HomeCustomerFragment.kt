@@ -291,10 +291,10 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
                 }
             }
         }
-
     }
 
     private fun setProfessionalTeamAdapter() {
+        Log.d("professionalTeam","professionalTeamList${professionalTeamList}")
         val professionalTeamAdapter=ProfessionalTeamAdapter(professionalTeamList)
         binding.rvProfessionalTeam.adapter=professionalTeamAdapter
         professionalTeamAdapter.setOnProfessionalTeamCallbacks(object:ProfessionalTeamAdapter.ProfessionalTeamCallbacks{

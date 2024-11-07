@@ -1,6 +1,7 @@
 package com.app.gentlemanspa.ui.customerDashboard.fragment.home.viewModel
 
 import android.app.Application
+import android.util.Log
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
@@ -193,6 +194,8 @@ class HomeCustomerViewModel (private var initialRepository: InitialRepository) :
     }
 
     fun getProfessionalTeamList() {
+        Log.d("professionalTeam","inside getProfessionalTeamList()")
+
         resultProfessionalTeam.value = Resource.loading(null)
         viewModelScope.launch {
             initialRepository.getProfessionalTeamList()

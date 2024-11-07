@@ -59,7 +59,8 @@ class LoginFragment : Fragment(), View.OnClickListener {
                     }
 
                     Status.SUCCESS -> {
-                          hideProgress()
+                        requireContext().showToast(it.message.toString())
+                        hideProgress()
                         if (it.data?.data?.role =="Customer" && it.data.data.passwordChanged ==null ){
                             val action = LoginFragmentDirections.actionLoginFragmentToSetPasswordFragment(it.data.data.email,binding.etActivationCode.text.toString())
                             findNavController().navigate(action)

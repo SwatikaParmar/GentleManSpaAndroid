@@ -1,6 +1,7 @@
 package com.app.gentlemanspa.ui.auth.fragment.register.viewModel
 
 import android.app.Application
+import android.util.Log
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
@@ -15,6 +16,9 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import org.json.JSONObject
+import retrofit2.HttpException
+import java.io.IOException
 
 class RegisterViewModel(private var initialRepository: InitialRepository) : AndroidViewModel(
     Application()
@@ -35,12 +39,26 @@ class RegisterViewModel(private var initialRepository: InitialRepository) : Andr
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->
-                    if (!CommonFunctions.getError(exception)!!.contains("401"))
+                    if (exception is HttpException) {
+                        try {
+                            val errorBody = exception.response()?.errorBody()?.string()
+                            if (!errorBody.isNullOrEmpty()) {
+                                val jsonError = JSONObject(errorBody)
+                                val errorMessage = jsonError.optString("messages", "Unknown HTTP error")
+                                resultEmailOtp.value = Resource.error(data = null, message = errorMessage)
+                            } else {
+                                resultEmailOtp.value = Resource.error(data = null, message = "Unknown HTTP error")
+                            }
+                        } catch (e: Exception) {
+                            resultEmailOtp.value = Resource.error(data = null, message = e.message)
+                        }
+                    }else{
                         resultEmailOtp.value =
                             Resource.error(
                                 data = null,
                                 message = CommonFunctions.getError(exception)
                             )
+                    }
                 }
                 .collect {
                     if (it?.statusCode == 200) {
