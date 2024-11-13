@@ -107,6 +107,7 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
 
     private fun initUI() {
         binding.ivDrawer.setOnClickListener(this)
+        binding.onClick=this
         viewModel.getCustomerDetail()
         viewModel.getBanner()
         viewModel.getCategories()
@@ -383,6 +384,11 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
         when (v) {
             binding.ivDrawer -> {
                 (activity as CustomerActivity).isDrawer(true)
+            }
+            binding.ivNotification->{
+                val action=HomeCustomerFragmentDirections.actionHomeCustomerFragmentToNotificationFragment()
+                findNavController().navigate(action)
+
             }
         }
     }

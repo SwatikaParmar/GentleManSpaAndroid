@@ -24,7 +24,6 @@ class ScheduleAdapter(private var weekDaysList: ArrayList<WeekDaysItem>,private 
 
     override fun getItemCount(): Int {
         return weekDaysList.size
-     //   return minOf(weekDaysList.size, workingTimeSchedulesList.size)
 
     }
 
@@ -32,17 +31,24 @@ class ScheduleAdapter(private var weekDaysList: ArrayList<WeekDaysItem>,private 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         val item = weekDaysList[position]
-        val itemWorkingTimeList:SchedulesByProfessionalDetailData= if (position < workingTimeSchedulesList.size) {
+        Log.d("Schedule","workingTimeSchedulesList size->${workingTimeSchedulesList.size}")
+
+       /* val itemWorkingTimeList:SchedulesByProfessionalDetailData= if (position < workingTimeSchedulesList.size) {
             workingTimeSchedulesList[position]
         }else{
             SchedulesByProfessionalDetailData("","","",0,0,"",0)
-        }
+        }*/
+
+        // Find the index of the corresponding schedule for this week day
+        val itemWorkingTimeList = workingTimeSchedulesList.firstOrNull {
+            it.weekdaysId == item.weekdaysId
+        } ?: SchedulesByProfessionalDetailData("","","",0,0,"",0)  // Default empty schedule if no match found
+
         holder.binding.apply {
             tvWeek.text = item.weekName
-
             Log.d("type","professionalScheduleId->${itemWorkingTimeList.professionalScheduleId}")
             if (itemWorkingTimeList.fromTime.isNotEmpty() && itemWorkingTimeList.toTime.isNotEmpty()){
-               clWorking.setVisible()
+                clWorking.setVisible()
                 tvWorkingTime.text = "${itemWorkingTimeList.fromTime}-${itemWorkingTimeList.toTime}"
             }else{
                 clWorking.setInvisible()

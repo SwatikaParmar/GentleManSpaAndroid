@@ -1,6 +1,11 @@
 package com.app.gentlemanspa.ui.professionalDashboard.fragment.product
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +21,8 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductsLis
 import com.app.gentlemanspa.ui.professionalDashboard.activity.ProfessionalActivity
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.product.adapter.ProductProfessionalAdapter
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.product.viewModel.ProductProfessionalViewModel
+import com.app.gentlemanspa.utils.AppPrefs
+import com.app.gentlemanspa.utils.PROFESSIONAL_DETAIL_ID
 import com.app.gentlemanspa.utils.ViewModelFactory
 import com.app.gentlemanspa.utils.showToast
 
@@ -24,6 +31,8 @@ class ProductProfessionalFragment : Fragment(), View.OnClickListener {
     private lateinit var productProfessionalAdapter: ProductProfessionalAdapter
     private lateinit var binding: FragmentProductProfessionalBinding
     private var productsList: ArrayList<ProductsListItem> = ArrayList()
+    private var searchRunnable: Runnable? = null
+    private val handler = Handler(Looper.getMainLooper())
     private val viewModel: ProductProfessionalViewModel by viewModels {
         ViewModelFactory(
             InitialRepository()
@@ -51,8 +60,50 @@ class ProductProfessionalFragment : Fragment(), View.OnClickListener {
 
     private fun initUI() {
         (activity as ProfessionalActivity).bottomNavigation(false)
-        viewModel.getProductsList()
         binding.onClick = this
+        searchProductByName("")
+        addProductFilter()
+    }
+
+    private fun addProductFilter() {
+        binding.etSearchProduct.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // Remove any previously scheduled searches
+                searchRunnable?.let { handler.removeCallbacks(it) }
+                // Schedule a new search after 2 seconds
+                searchRunnable = Runnable {
+                    searchProductByName(s.toString())
+                }
+                handler.postDelayed(searchRunnable!!, 2000)
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
+    }
+
+    fun searchProductByName(searchQuery: String) {
+        callProductListApi(searchQuery)
+
+    }
+
+    private fun callProductListApi(searchQuery: String) {
+        Log.d(
+            "professionalDetailId", "ProfessionalDetailID->${
+                AppPrefs(requireContext()).getStringPref(
+                    PROFESSIONAL_DETAIL_ID
+                )
+            }"
+        )
+
+        viewModel.professionalDetailId.set(
+            AppPrefs(requireContext()).getStringPref(
+                PROFESSIONAL_DETAIL_ID
+            ).toString().toInt()
+        )
+        viewModel.spaDetailId.set(21)
+        viewModel.searchQuery.set(searchQuery)
+        viewModel.getProductsList()
     }
 
     private fun initObserver() {
@@ -107,18 +158,26 @@ class ProductProfessionalFragment : Fragment(), View.OnClickListener {
         productProfessionalAdapter = ProductProfessionalAdapter(productsList)
         binding.rvProduct.adapter = productProfessionalAdapter
 
-        productProfessionalAdapter.setOnClickProductProfessional(object : ProductProfessionalAdapter.ProductProfessionalCallbacks {
+        productProfessionalAdapter.setOnClickProductProfessional(object :
+            ProductProfessionalAdapter.ProductProfessionalCallbacks {
             override fun rootProductProfessional(item: ProductsListItem) {
-                val action = ProductProfessionalFragmentDirections.actionProductProfessionalFragmentToProductDetailProfessionalFragment(item.productId)
+                val action =
+                    ProductProfessionalFragmentDirections.actionProductProfessionalFragmentToProductDetailProfessionalFragment(
+                        item.productId
+                    )
                 findNavController().navigate(action)
             }
 
             override fun deleteProductItem(item: ProductsListItem, position: Int) {
-                deleteProductItemDialog(item ,position)
+                deleteProductItemDialog(item, position)
             }
 
             override fun updateProductItem(item: ProductsListItem) {
-                val action = ProductProfessionalFragmentDirections.actionProductProfessionalFragmentToAddProductFragment(item,1)
+                val action =
+                    ProductProfessionalFragmentDirections.actionProductProfessionalFragmentToAddProductFragment(
+                        item,
+                        1
+                    )
                 findNavController().navigate(action)
             }
 
@@ -126,15 +185,21 @@ class ProductProfessionalFragment : Fragment(), View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-        when(v) {
+        when (v) {
+            binding.ivDrawer -> {
+                (activity as ProfessionalActivity).isDrawer(true)
+            }
+
             binding.clAddProduct -> {
-                val action = ProductProfessionalFragmentDirections.actionProductProfessionalFragmentToAddProductFragment(null,0)
+                val action =
+                    ProductProfessionalFragmentDirections.actionProductProfessionalFragmentToAddProductFragment(
+                        null,
+                        0
+                    )
                 findNavController().navigate(action)
             }
 
-            binding.ivArrowBack -> {
-                findNavController().popBackStack()
-            }
+
         }
 
     }

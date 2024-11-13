@@ -6,8 +6,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.app.gentlemanspa.network.InitialRepository
-import com.app.gentlemanspa.ui.auth.fragment.forget.model.ForgetPasswordRequest
-import com.app.gentlemanspa.ui.auth.fragment.forget.model.ForgetPasswordResponse
 import com.app.gentlemanspa.ui.auth.fragment.register.model.EmailOtpRequest
 import com.app.gentlemanspa.ui.auth.fragment.register.model.EmailOtpResponse
 import com.app.gentlemanspa.ui.auth.fragment.setPassword.model.ChangePasswordRequest
@@ -23,17 +21,17 @@ class ForgetPasswordViewModel(private var initialRepository: InitialRepository) 
     Application()
 ) {
     val email = ObservableField<String>()
-    val resultEmailOtp = MutableLiveData<Resource<EmailOtpResponse>>()
+    val resultSendEmailOtp = MutableLiveData<Resource<EmailOtpResponse>>()
 
     fun resetEmailOtp() {
-        resultEmailOtp.value = Resource.loading(null)
+        resultSendEmailOtp.value = Resource.loading(null)
         viewModelScope.launch {
             initialRepository.emailOtp(EmailOtpRequest(email.get()!!, false))
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->
                     if (!CommonFunctions.getError(exception)!!.contains("401"))
-                        resultEmailOtp.value =
+                        resultSendEmailOtp.value =
                             Resource.error(
                                 data = null,
                                 message = CommonFunctions.getError(exception)
@@ -41,11 +39,11 @@ class ForgetPasswordViewModel(private var initialRepository: InitialRepository) 
                 }
                 .collect {
                     if (it?.statusCode == 200) {
-                        resultEmailOtp.value =
+                        resultSendEmailOtp.value =
                             Resource.success(message = it.messages, data = it)
                     } else {
                         if (it != null) {
-                            resultEmailOtp.value =
+                            resultSendEmailOtp.value =
                                 Resource.error(data = null, message = it.messages)
                         }
                     }

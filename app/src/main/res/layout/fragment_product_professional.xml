@@ -22,12 +22,13 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/ivArrowBack"
+                android:id="@+id/ivDrawer"
                 android:layout_width="@dimen/_20sdp"
                 android:layout_height="@dimen/_20sdp"
                 android:padding="@dimen/_3sdp"
-                android:src="@drawable/arrow_back"
+                android:src="@drawable/drawer"
                 android:onClick="@{onClick}"
+                android:tint="@color/white"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:tint="@color/white" />
@@ -84,13 +85,14 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <androidx.appcompat.widget.AppCompatEditText
+                            android:id="@+id/etSearchProduct"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_marginHorizontal="@dimen/_5sdp"
                             android:background="@null"
                             android:imeOptions="actionDone"
                             android:paddingVertical="@dimen/_6sdp"
-                            android:singleLine="false"
+                            android:singleLine="true"
                             android:hint="Search Here"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@+id/ivSearch" />

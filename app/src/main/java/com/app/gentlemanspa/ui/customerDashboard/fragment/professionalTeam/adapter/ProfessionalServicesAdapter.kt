@@ -14,9 +14,7 @@ import com.app.gentlemanspa.utils.CommonFunctions.decimalRoundToInt
 import com.bumptech.glide.Glide
 
 class ProfessionalServicesAdapter(private var professionalServiceList: ArrayList<ServicesData>) : RecyclerView.Adapter<ProfessionalServicesAdapter.ViewHolder>() {
-
     private lateinit var professionalServiceCallbacks: ProfessionalServiceCallbacks
-
     class ViewHolder(val binding: ItemServiceBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -37,7 +35,6 @@ class ProfessionalServicesAdapter(private var professionalServiceList: ArrayList
             tvTime.text = "${item.durationInMinutes} mins"
            // tvRupees.text = "$${decimalRoundToInt(item.listingPrice)}"
             tvRupees.text = "$${item.listingPrice}"
-          //  tvLessRupees.text = "$${decimalRoundToInt(item.basePrice)}"
             tvLessRupees.text = "$${item.basePrice}"
             Glide.with(holder.itemView.context).load(ApiConstants.BASE_FILE + item.serviceIconImage)
                 .placeholder(
@@ -45,18 +42,10 @@ class ProfessionalServicesAdapter(private var professionalServiceList: ArrayList
                 ).error(R.drawable.service_placeholder).into(ivService)
 
 
-               /* if (item.status == true){
-                         tvAddCart.text="Added"
-                         cbIcon.setVisible()
-                         clAddCart.background = ContextCompat.getDrawable(context,R.drawable.bg_black_button)
-                     }else{
-                         tvAddCart.text="Add To Cart"
-                         cbIcon.setGone()
-                         clAddCart.background = ContextCompat.getDrawable(context,R.drawable.bg_app_color)
-                 }*/
-
             if (item.isAddedinCart) {
                 ivAddService.setImageResource(R.drawable.ic_checked)
+                professionalServiceCallbacks.setData(item.spaServiceId)
+
             } else {
                 ivAddService.setImageResource(R.drawable.ic_add)
             }
@@ -79,6 +68,7 @@ class ProfessionalServicesAdapter(private var professionalServiceList: ArrayList
     interface ProfessionalServiceCallbacks {
         fun rootService(item: ServicesData)
         fun addService(item: ServicesData)
+        fun setData(spaServiceId: Int)
     }
 }
 

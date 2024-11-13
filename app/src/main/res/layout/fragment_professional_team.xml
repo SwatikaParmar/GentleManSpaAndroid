@@ -71,7 +71,7 @@
                     android:src="@drawable/professional_placeholder"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:shapeAppearance="@style/CornerCut10" />
+                    app:shapeAppearance="@style/circular50" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="0dp"

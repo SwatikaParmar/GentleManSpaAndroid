@@ -98,20 +98,42 @@
             app:layout_constraintTop_toBottomOf="@+id/etFirstName"
             tools:ignore="TextSizeCheck,TouchTargetSizeCheck,VisualLintTextFieldSize"
             tools:layout_editor_absoluteX="19dp" />
-
-        <Spinner
-            android:id="@+id/spGender"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@id/clSpinnerGender"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/_15sdp"
             android:layout_marginTop="@dimen/_15sdp"
             android:background="@drawable/bg_edit_text"
-            android:elevation="@dimen/_3sdp"
-            android:paddingStart="@dimen/_3sdp"
-            android:textSize="@dimen/_13sdp"
-            app:layout_constraintTop_toBottomOf="@+id/etLastName"
-            tools:ignore="RtlSymmetry,TouchTargetSizeCheck"
-            tools:layout_editor_absoluteX="19dp" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/etLastName">
+            <Spinner
+                android:id="@+id/spGender"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_edit_text"
+                android:elevation="@dimen/_3sdp"
+                android:paddingStart="@dimen/_3sdp"
+                android:textSize="@dimen/_13sdp"
+                tools:ignore="RtlSymmetry,TouchTargetSizeCheck"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                 />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivDropDown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_3sdp"
+            android:layout_marginEnd="@dimen/_18sdp"
+            android:src="@drawable/ic_arrow_down"
+            app:layout_constraintTop_toTopOf="@+id/clSpinnerGender"
+            app:layout_constraintBottom_toBottomOf="@+id/clSpinnerGender"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/etEmail"
@@ -130,7 +152,7 @@
             android:singleLine="true"
             android:textColorHint="#757575"
             android:textSize="@dimen/_13sdp"
-            app:layout_constraintTop_toBottomOf="@+id/spGender"
+            app:layout_constraintTop_toBottomOf="@+id/clSpinnerGender"
             tools:ignore="TouchTargetSizeCheck,VisualLintTextFieldSize,TextSizeCheck,TextContrastCheck"
             tools:layout_editor_absoluteX="19dp" />
 

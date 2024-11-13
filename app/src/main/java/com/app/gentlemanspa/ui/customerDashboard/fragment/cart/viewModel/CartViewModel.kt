@@ -20,6 +20,8 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import org.json.JSONObject
+import retrofit2.HttpException
 
 class CartViewModel(private var initialRepository: InitialRepository) : AndroidViewModel(
     Application()
@@ -150,13 +152,29 @@ class CartViewModel(private var initialRepository: InitialRepository) : AndroidV
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->
-                    if (!CommonFunctions.getError(exception)!!.contains("401"))
-                        resultCustomerAddress.value =
+
+                    if (exception is HttpException) {
+                        try {
+                            val errorBody = exception.response()?.errorBody()?.string()
+                            if (!errorBody.isNullOrEmpty()) {
+                                val jsonError = JSONObject(errorBody)
+                                val errorMessage = jsonError.optString("messages", "Unknown HTTP error")
+                                resultCustomerPlaceOrder.value = Resource.error(data = null, message = errorMessage)
+                            } else {
+                                resultCustomerPlaceOrder.value = Resource.error(data = null, message = "Unknown HTTP error")
+                            }
+                        } catch (e: Exception) {
+                            resultCustomerPlaceOrder.value = Resource.error(data = null, message = e.message)
+                        }
+                    }else{
+                        resultCustomerPlaceOrder.value =
                             Resource.error(
                                 data = null,
                                 message = CommonFunctions.getError(exception)
                             )
+                    }
                 }
+
                 .collect {
                     if (it?.statusCode == 200) {
                         resultCustomerPlaceOrder.value =

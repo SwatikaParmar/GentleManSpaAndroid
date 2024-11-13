@@ -41,12 +41,10 @@ class LoginFragment : Fragment(), View.OnClickListener {
         // Inflate the layout for this fragment
         binding = FragmentLoginBinding.inflate(layoutInflater, container, false)
         return binding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initUI()
     }
 
@@ -57,14 +55,13 @@ class LoginFragment : Fragment(), View.OnClickListener {
                     Status.LOADING -> {
                       showProgress(requireContext())
                     }
-
                     Status.SUCCESS -> {
                         requireContext().showToast(it.message.toString())
                         hideProgress()
                         if (it.data?.data?.role =="Customer" && it.data.data.passwordChanged ==null ){
                             val action = LoginFragmentDirections.actionLoginFragmentToSetPasswordFragment(it.data.data.email,binding.etActivationCode.text.toString())
                             findNavController().navigate(action)
-                        }else if (it.data?.data?.role =="Customer" && it.data.data.passwordChanged ==true ){
+                        }else if (it.data?.data?.role =="Customer" && it.data.data.passwordChanged == true){
                             AppPrefs(requireContext()).setString("TOKEN",it.data?.data?.token)
                             AppPrefs(requireContext()).setString("ROLE",it.data?.data?.role)
                             requireActivity().showToast(it.data.messages.toString())
@@ -81,7 +78,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
                     }
 
                     Status.ERROR -> {
-                        requireContext().showToast(it.message.toString())
+                       // requireContext().showToast(it.message.toString())
                         hideProgress()
                     }
                 }
@@ -106,11 +103,11 @@ class LoginFragment : Fragment(), View.OnClickListener {
             binding.tvSignUp -> {
                 findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
             }
-
             binding.tvForgetPassword -> {
-               findNavController().navigate(R.id.action_loginFragment_to_forgetPasswordFragment)
+             //   findNavController().navigate(R.id.action_loginFragment_to_forgetPasswordFragment)
+                val action =LoginFragmentDirections.actionLoginFragmentToForgetPasswordFragment()
+                findNavController().navigate(action)
             }
-
             binding.btnSignIn -> {
                 if (isValidation()) {
                     if (binding.etEmail.text.toString().isNotEmpty() && binding.etPassword.text.toString().isNotEmpty() && binding.etPassword.text.toString().isNotEmpty()){
@@ -125,7 +122,6 @@ class LoginFragment : Fragment(), View.OnClickListener {
                         viewModel.rememberMe.set(true)
                         viewModel.activationCode.set("")
                         viewModel.loginAccount()
-
                     }else {
                         viewModel.emailOrPhoneNumber.set("")
                         viewModel.password.set("")
@@ -133,11 +129,8 @@ class LoginFragment : Fragment(), View.OnClickListener {
                         viewModel.activationCode.set(binding.etActivationCode.text.toString())
                         viewModel.loginAccount()
                     }
-
                 }
             }
-
-
             binding.ivTogglePassword -> {
                 isPasswordVisible = !isPasswordVisible
                 togglePasswordVisibility(
@@ -154,26 +147,13 @@ class LoginFragment : Fragment(), View.OnClickListener {
 
     private fun isValidation(): Boolean {
         when {
-
-            (checkString(binding.etEmail)&&  checkString(binding.etActivationCode) )-> requireContext().showToast(
-                "Please enter email or Activation Code" )
-
+            (checkString(binding.etEmail)&&  checkString(binding.etActivationCode) )-> requireContext().showToast("Please enter email or Activation Code" )
             (checkString(binding.etPassword) && (binding.etEmail.text.toString().isNotEmpty())) -> requireContext().showToast("Please enter password")
-
-           /* ((binding.etEmail.text.toString().isNotEmpty()) && (binding.etPassword.text.toString().isNotEmpty()) && (binding.etActivationCode.text.toString().isNotEmpty())) ->{
+            /* ((binding.etEmail.text.toString().isNotEmpty()) && (binding.etPassword.text.toString().isNotEmpty()) && (binding.etActivationCode.text.toString().isNotEmpty())) ->{
                 requireContext().showToast("Please login email and password or activation code")
             }*/
-
-
             else -> return true
         }
-
         return false
     }
-
-
-
-
-
-
 }

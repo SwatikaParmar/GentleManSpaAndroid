@@ -19,6 +19,8 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import org.json.JSONObject
+import retrofit2.HttpException
 
 class UpdateProfessionalViewModel (private var initialRepository: InitialRepository) : AndroidViewModel(
     Application()
@@ -54,12 +56,26 @@ class UpdateProfessionalViewModel (private var initialRepository: InitialReposit
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->
-                    if (!CommonFunctions.getError(exception)!!.contains("401"))
+                    if (exception is HttpException) {
+                        try {
+                            val errorBody = exception.response()?.errorBody()?.string()
+                            if (!errorBody.isNullOrEmpty()) {
+                                val jsonError = JSONObject(errorBody)
+                                val errorMessage = jsonError.optString("messages", "Unknown HTTP error")
+                                resultUpdateProfessional.value = Resource.error(data = null, message = errorMessage)
+                            } else {
+                                resultUpdateProfessional.value = Resource.error(data = null, message = "Unknown HTTP error")
+                            }
+                        } catch (e: Exception) {
+                            resultUpdateProfessional.value = Resource.error(data = null, message = e.message)
+                        }
+                    }else{
                         resultUpdateProfessional.value =
                             Resource.error(
                                 data = null,
                                 message = CommonFunctions.getError(exception)
                             )
+                    }
                 }.collect {
                     if (it?.statusCode == 200) {
                         resultUpdateProfessional.value =

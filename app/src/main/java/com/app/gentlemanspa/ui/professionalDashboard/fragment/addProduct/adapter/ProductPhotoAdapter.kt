@@ -1,10 +1,13 @@
 package com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.app.gentlemanspa.R
 import com.app.gentlemanspa.base.MyApplication.Companion.context
+import com.app.gentlemanspa.base.MyApplication.Companion.showProgress
 import com.app.gentlemanspa.databinding.ItemProductPhotoBinding
 import com.app.gentlemanspa.databinding.ItemProductProfessionalBinding
 import com.app.gentlemanspa.databinding.ItemStaticProductBinding
@@ -13,6 +16,7 @@ import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.A
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.product.adapter.ProductProfessionalAdapter.ViewHolder
 import com.app.gentlemanspa.utils.setGone
 import com.app.gentlemanspa.utils.setVisible
+import com.app.gentlemanspa.utils.showToast
 import com.bumptech.glide.Glide
 import java.io.File
 
@@ -20,8 +24,6 @@ class ProductPhotoAdapter(private var productPhoto: ArrayList<AddPhotoRequest>) 
 
     private lateinit var uploadProductCallback: UploadProductCallback
     class ViewHolder(val binding : ItemProductPhotoBinding) : RecyclerView.ViewHolder(binding.root)
-
-
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
@@ -33,7 +35,12 @@ class ProductPhotoAdapter(private var productPhoto: ArrayList<AddPhotoRequest>) 
                 clRemove.setGone()
 
                 root.setOnClickListener {
-                    uploadProductCallback.rootUploadProduct()
+                    if (productPhoto.size >= 6){
+                        context.showToast("You have exceeded selection limit")
+                    }else{
+                        uploadProductCallback.rootUploadProduct()
+
+                    }
                 }
             }
         }else{

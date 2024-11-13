@@ -85,11 +85,11 @@ class ProfessionalActivity : AppCompatActivity(), HomeProfessionalFragment.OnPro
 
             when (id) {
                 R.id.homeProfessional -> {
-                    // navController.navigate(R.id.homeFragment)
+                     navController.navigate(R.id.homeProfessionalFragment)
                 }
 
                 R.id.myService -> {
-                    // navController.navigate(R.id.myConsultsFragment)
+                     navController.navigate(R.id.myService)
                 }
 
                 R.id.product -> {

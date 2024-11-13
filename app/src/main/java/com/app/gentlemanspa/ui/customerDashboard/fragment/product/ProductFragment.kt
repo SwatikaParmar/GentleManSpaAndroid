@@ -33,14 +33,14 @@ import com.app.gentlemanspa.utils.setVisible
 import com.app.gentlemanspa.utils.showToast
 
 
-class ProductFragment : Fragment(), View.OnClickListener  {
+class ProductFragment : Fragment(), View.OnClickListener {
     private var productsList: ArrayList<ProductsListItem> = ArrayList()
     private lateinit var binding: FragmentProductBinding
     private var productCategoriesList: ArrayList<ProductCategoriesItem> = ArrayList()
-    private var mainCategory : Int =0
-    private var selectPosition : Int =0
+    private var mainCategory: Int = 0
+    private var selectPosition: Int = 0
     private val spaDetailId = 21
-    private val args : ProductFragmentArgs by navArgs()
+    private val args: ProductFragmentArgs by navArgs()
     private val handler = Handler(Looper.getMainLooper())
     private var searchRunnable: Runnable? = null
 
@@ -89,21 +89,24 @@ class ProductFragment : Fragment(), View.OnClickListener  {
                 }
                 handler.postDelayed(searchRunnable!!, 2000)
             }
+
             override fun afterTextChanged(s: Editable?) {}
         })
 
     }
-    fun searchServiceByName(searchQuery:String){
+
+    fun searchServiceByName(searchQuery: String) {
         callProductListApi(searchQuery)
 
     }
 
-    private fun callProductListApi(searchQuery: String){
+    private fun callProductListApi(searchQuery: String) {
         viewModel.mainCategoryId.set(mainCategory)
         viewModel.spaDetailId.set(spaDetailId)
         viewModel.searchQuery.set(searchQuery)
         viewModel.getProductsList()
     }
+
     private fun callGetCartItemsApi() {
         viewModel.getProductCartItem()
     }
@@ -113,6 +116,7 @@ class ProductFragment : Fragment(), View.OnClickListener  {
         handler.removeCallbacksAndMessages(null) // Remove all callbacks
 
     }
+
     @SuppressLint("SetTextI18n")
     private fun initObserver() {
 
@@ -120,12 +124,12 @@ class ProductFragment : Fragment(), View.OnClickListener  {
             it?.let { result ->
                 when (result.status) {
                     Status.LOADING -> {
-                       showProgress(requireContext())
+                        showProgress(requireContext())
                     }
 
                     Status.SUCCESS -> {
                         hideProgress()
-                        Log.d("testIssue","inside resultProductsData Success")
+                        Log.d("testIssue", "inside resultProductsData Success")
                         productsList.clear()
                         it.data?.data?.dataList?.let { it1 -> productsList.addAll(it1) }
                         setProductsAdapter()
@@ -133,7 +137,7 @@ class ProductFragment : Fragment(), View.OnClickListener  {
                     }
 
                     Status.ERROR -> {
-                        Log.d("testIssue","inside resultProductsData Failure")
+                        Log.d("testIssue", "inside resultProductsData Failure")
                         requireContext().showToast(it.message.toString())
                         hideProgress()
                     }
@@ -145,7 +149,7 @@ class ProductFragment : Fragment(), View.OnClickListener  {
             it?.let { result ->
                 when (result.status) {
                     Status.LOADING -> {
-                      //  MyApplication.showProgress(requireContext())
+                        //  MyApplication.showProgress(requireContext())
 
 
                     }
@@ -179,19 +183,23 @@ class ProductFragment : Fragment(), View.OnClickListener  {
 
                     Status.SUCCESS -> {
                         hideProgress()
-               //         requireContext().showToast(it.message.toString())
-                        Log.d("testIssue","inside resultAddProductInCart SUCCESS")
+                        //         requireContext().showToast(it.message.toString())
+                        Log.d("testIssue", "inside resultAddProductInCart SUCCESS")
 
-                        if (it.data?.data?.cartProducts?.totalItem!! > 0){
+                        if (it.data?.data?.cartProducts?.totalItem!! > 0) {
                             binding.clBooking.setVisible()
-                            val priceFormat= formatPrice(it.data.data.cartProducts.totalSellingPrice.toDouble())
-                            binding.tvRupees.text ="$$priceFormat"
-                            if (it.data.data.cartProducts.totalItem > 1){
-                                binding.tvSelectServices.text = "${it.data.data.cartProducts.totalItem} Products added"
-                            }else{
-                                binding.tvSelectServices.text = "${it.data.data.cartProducts.totalItem} Product added"
-                            }
-                        }else{
+                            val priceFormat =
+                                formatPrice(it.data.data.cartProducts.totalSellingPrice.toDouble())
+                            binding.tvRupees.text = "$$priceFormat"
+                            /*  if (it.data.data.cartProducts.totalItem > 1){
+                                  binding.tvSelectServices.text = "${it.data.data.cartProducts.totalItem} Products added"
+                              }else{
+                                  binding.tvSelectServices.text = "${it.data.data.cartProducts.totalItem} Product added"
+                              }*/
+                            binding.tvSelectServices.text =
+                                "${it.data.data.cartProducts.products.size} Products added"
+
+                        } else {
                             binding.clBooking.setGone()
                         }
 
@@ -219,10 +227,13 @@ class ProductFragment : Fragment(), View.OnClickListener  {
                     }
 
                     Status.SUCCESS -> {
-                        Log.d("testIssue","inside resultAddProductInCart SUCCESS")
-                        Log.d("testIssue","inside resultAddProductInCart Message->${it.message.toString()}")
+                        Log.d("testIssue", "inside resultAddProductInCart SUCCESS")
+                        Log.d(
+                            "testIssue",
+                            "inside resultAddProductInCart Message->${it.message.toString()}"
+                        )
                         hideProgress()
-                    //    requireContext().showToast(it.message.toString())
+                        //    requireContext().showToast(it.message.toString())
                         callProductListApi("")
                         callGetCartItemsApi()
 
@@ -230,9 +241,9 @@ class ProductFragment : Fragment(), View.OnClickListener  {
                     }
 
                     Status.ERROR -> {
-                        Log.d("testIssue","inside resultAddProductInCart ERROR")
+                        Log.d("testIssue", "inside resultAddProductInCart ERROR")
                         hideProgress()
-                //        requireContext().showToast(it.message.toString())
+                        //        requireContext().showToast(it.message.toString())
                         callProductListApi("")
                         callGetCartItemsApi()
                     }
@@ -244,13 +255,15 @@ class ProductFragment : Fragment(), View.OnClickListener  {
     }
 
     private fun setCategoriesProductAdapter() {
-        Log.d("dataProducts","selectPosition->$selectPosition")
-       // productCategoriesList.reverse()
-        val categoriesProductsAdapter = CategoriesProductsAdapter(productCategoriesList,selectPosition)
+        Log.d("dataProducts", "selectPosition->$selectPosition")
+        // productCategoriesList.reverse()
+        val categoriesProductsAdapter =
+            CategoriesProductsAdapter(productCategoriesList, selectPosition)
         binding.rvProductCategories.adapter = categoriesProductsAdapter
-       // binding.rvProduct.scrollToPosition(selectPosition)
+        // binding.rvProduct.scrollToPosition(selectPosition)
 
-        categoriesProductsAdapter.setOnCategoriesProduct(object :CategoriesProductsAdapter.CategoriesProductCallbacks{
+        categoriesProductsAdapter.setOnCategoriesProduct(object :
+            CategoriesProductsAdapter.CategoriesProductCallbacks {
             override fun rootCategoriesProduct(item: ProductCategoriesItem, position: Int?) {
                 val recyclerViewWidth = binding.rvProductCategories.width
                 val layoutManager = binding.rvProductCategories.layoutManager
@@ -258,21 +271,21 @@ class ProductFragment : Fragment(), View.OnClickListener  {
                 val offset = (itemWidth * position!!) - (recyclerViewWidth / 2) + (itemWidth / 2)
                 binding.rvProductCategories.smoothScrollBy(offset, 0)
                 mainCategory = item.mainCategoryId
-             /*   viewModel.mainCategoryId.set(mainCategory)
-                viewModel.getProductsList()*/
+                /*   viewModel.mainCategoryId.set(mainCategory)
+                   viewModel.getProductsList()*/
                 callProductListApi("")
             }
 
         })
 
-        if (selectPosition != -1){
+        if (selectPosition != -1) {
             binding.rvProductCategories.scrollToPosition(selectPosition)
         }
     }
 
 
     private fun setProductsAdapter() {
-        Log.d("testIssue","inside setProductsAdapter ")
+        Log.d("testIssue", "inside setProductsAdapter ")
 
         val productsAdapter = ProductsAdapter(productsList)
         binding.rvProduct.adapter = productsAdapter
@@ -286,11 +299,14 @@ class ProductFragment : Fragment(), View.OnClickListener  {
                 findNavController().navigate(action)
             }
 
-            override fun addOrUpdateProductInCart(productId:Int, countInCard:Int,stock:Int) {
-                Log.d("productId","productId->${productId}  countInCart->$countInCard  stock->$stock")
-                if (countInCard>stock){
-                  requireContext().showToast("Can't add more than $stock items")
-                }else{
+            override fun addOrUpdateProductInCart(productId: Int, countInCard: Int, stock: Int) {
+                Log.d(
+                    "productId",
+                    "productId->${productId}  countInCart->$countInCard  stock->$stock"
+                )
+                if (countInCard > stock) {
+                    requireContext().showToast("Can't add more than $stock items")
+                } else {
                     viewModel.productId.set(productId)
                     viewModel.countInCart.set(countInCard)
                     viewModel.addProductInCart()
@@ -299,10 +315,10 @@ class ProductFragment : Fragment(), View.OnClickListener  {
         })
 
 
-
     }
+
     override fun onClick(v: View?) {
-        when(v) {
+        when (v) {
             binding.btnContinue -> {
                 //requireContext().showToast("Continue is clicked")
                 val action = ProductFragmentDirections.actionProductFragmentToCartFragment()

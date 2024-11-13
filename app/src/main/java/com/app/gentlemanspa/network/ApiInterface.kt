@@ -56,6 +56,7 @@ import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.U
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.UploadProductImageResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.createSchedule.model.AddUpdateProfessionalScheduleRequest
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.createSchedule.model.AddUpdateProfessionalScheduleResponse
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.myService.model.ProfessionalServiceResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.product.model.DeleteProductResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.model.SchedulesByProfessionalDetailIdResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.model.WeekDaysResponse
@@ -202,6 +203,12 @@ interface ApiInterface {
         @Query("SearchQuery") searchQuery: String?,
         @Query("spaDetailId") spaDetailId: Int?
     ): ServiceResponse
+    @GET(ApiConstants.PROFESSIONAL_SERVICE_LIST)
+    suspend fun getProfessionalServiceList(
+        @Query("pageNumber") pageNumber: Int?,
+        @Query("pageSize") pageSize: Int?,
+        @Query("professionalDetailId") professionalDetailId: Int?,
+    ): ProfessionalServiceResponse
 
     @GET(ApiConstants.PROFESSIONAL_SERVICES_LIST)
     suspend fun getProfessionalServiceList(
@@ -247,6 +254,15 @@ interface ApiInterface {
         @Query("PageNumber") pageNumber: Int?,
         @Query("PageSize") pageSize: Int?,
         @Query("MainCategoryId") mainCategoryId: Int?,
+        @Query("SearchQuery") searchQuery: String?,
+        @Query("SpaDetailId") spaDetailId: Int?
+    ): ProductsResponse
+
+    @GET(ApiConstants.PRODUCT_LIST)
+    suspend fun getProfessionalProductsList(
+        @Query("PageNumber") pageNumber: Int?,
+        @Query("PageSize") pageSize: Int?,
+        @Query("ProfessionalDetailId") professionalDetailId: Int?,
         @Query("SearchQuery") searchQuery: String?,
         @Query("SpaDetailId") spaDetailId: Int?
     ): ProductsResponse

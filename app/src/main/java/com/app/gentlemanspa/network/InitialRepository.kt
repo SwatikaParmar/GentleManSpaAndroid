@@ -59,6 +59,7 @@ import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.U
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.UploadProductImageResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.createSchedule.model.AddUpdateProfessionalScheduleRequest
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.createSchedule.model.AddUpdateProfessionalScheduleResponse
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.myService.model.ProfessionalServiceResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.product.model.DeleteProductResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.model.SchedulesByProfessionalDetailIdResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.model.WeekDaysResponse
@@ -206,6 +207,14 @@ class InitialRepository {
         }.flowOn(Dispatchers.IO)
     }
 
+
+    suspend fun getProfessionalServiceList(pageNumber: Int?, pageSize: Int?,professionalDetailId: Int?): Flow<ProfessionalServiceResponse?> {
+        return flow {
+            val result =Api.apiInterface?.getProfessionalServiceList(pageNumber,pageSize,professionalDetailId)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+
     suspend fun getProfessionalServiceList(professionalDetailId: Int?): Flow<ProfessionalServicesResponse?> {
         return flow {
             val result =Api.apiInterface?.getProfessionalServiceList(professionalDetailId)
@@ -268,7 +277,12 @@ class InitialRepository {
             emit(result)
         }.flowOn(Dispatchers.IO)
     }
-
+    suspend fun getProfessionalProductsList(pageNumber: Int?,pageSize: Int?,professionalDetailId: Int?,searchQuery:String,spaDetailId:Int): Flow<ProductsResponse?> {
+        return flow {
+            val result =Api.apiInterface?.getProfessionalProductsList(pageNumber,pageSize,professionalDetailId,searchQuery,spaDetailId)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
     suspend fun getServiceCartItems(): Flow<GetCartItemsResponse?> {
         return flow {
             val result =Api.apiInterface?.getServiceCartItems()

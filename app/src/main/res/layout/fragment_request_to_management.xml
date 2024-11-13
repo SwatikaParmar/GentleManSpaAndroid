@@ -27,6 +27,8 @@
                 android:layout_height="@dimen/_16sdp"
                 android:src="@drawable/drawer"
                 android:onClick="@{onClick}"
+                android:tint="@color/white"
+                android:layout_marginStart="@dimen/_10sdp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -59,10 +61,22 @@
                 android:id="@+id/spinner"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_35sdp"
+                android:paddingStart="@dimen/_3sdp"
+                android:background="@drawable/spinner_background"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivDropDown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_3sdp"
+            android:layout_marginEnd="@dimen/_18sdp"
+            android:src="@drawable/ic_arrow_down"
+            app:layout_constraintTop_toTopOf="@+id/clSpinner"
+            app:layout_constraintBottom_toBottomOf="@+id/clSpinner"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/etTittle"
             android:layout_width="match_parent"
@@ -86,7 +100,8 @@
             android:background="@drawable/bg_edittext_request"
             android:padding="@dimen/_8sdp"
             android:hint="@string/description"
-            android:minLines="6"
+            android:minLines="7"
+            android:maxLines="7"
             android:gravity="start"
             android:elevation="@dimen/_2sdp"
             android:layout_marginTop="@dimen/_20sdp"
@@ -108,9 +123,10 @@
             android:textAllCaps="false"
             android:textSize="@dimen/_12ssp"
             app:cornerRadius="@dimen/_20sdp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="@dimen/_25sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/etDescription"
             tools:ignore="TextContrastCheck" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

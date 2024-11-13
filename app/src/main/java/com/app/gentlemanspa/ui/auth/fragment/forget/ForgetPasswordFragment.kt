@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.app.gentlemanspa.R
 import com.app.gentlemanspa.base.MyApplication
+import com.app.gentlemanspa.base.MyApplication.Companion.showProgress
 import com.app.gentlemanspa.databinding.FragmentForgetPasswordBinding
 import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.network.Status
@@ -30,30 +31,33 @@ class ForgetPasswordFragment : Fragment(), View.OnClickListener {
     private lateinit var binding: FragmentForgetPasswordBinding
     private val viewModel: ForgetPasswordViewModel by viewModels { ViewModelFactory(InitialRepository()) }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initObserver()
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
+    ): View {
         binding = FragmentForgetPasswordBinding.inflate(layoutInflater,container,false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initObserver()
         initUI()
     }
 
     private fun initUI() {
         binding.onClick = this
+
     }
     private fun initObserver() {
-        viewModel.resultEmailOtp.observe(viewLifecycleOwner) {
+        viewModel.resultSendEmailOtp.observe(this) {
             it?.let { result ->
                 when (result.status) {
                     Status.LOADING -> {
-                        MyApplication.showProgress(requireContext())
+                        showProgress(requireContext())
                     }
 
                     Status.SUCCESS -> {
@@ -62,8 +66,7 @@ class ForgetPasswordFragment : Fragment(), View.OnClickListener {
                             Log.d("forgetPassword","OTP ->${it.data.data.otp}")
                             requireContext().showToast(it.data.messages)
                             val signUpRequest= SignUpRequest("","",binding.etPassword.text.toString().trim(),"","","",binding.etEmail.text.toString().trim(),"")
-                            val action = ForgetPasswordFragmentDirections.actionForgetPasswordFragmentToOtpFragment( it.data.data.otp.toString(),"",
-                                signUpRequest,1)
+                            val action = ForgetPasswordFragmentDirections.actionForgetPasswordFragmentToOtpFragment( it.data.data.otp.toString(),"", signUpRequest,1)
                             findNavController().navigate(action)
                         }else{
                             requireContext().showToast(it.data.messages.toString())
@@ -103,6 +106,7 @@ class ForgetPasswordFragment : Fragment(), View.OnClickListener {
                     viewModel.resetEmailOtp()
 
                 }
+
             }
 
         }

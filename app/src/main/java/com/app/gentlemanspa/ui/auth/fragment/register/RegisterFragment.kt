@@ -217,7 +217,6 @@ class RegisterFragment : Fragment(), View.OnClickListener {
             //openCamera()
             onPermissionsGranted?.invoke()
         } else {
-
             if (cameraPermission) {
                 goToAppSettings(requireContext())
             } else {

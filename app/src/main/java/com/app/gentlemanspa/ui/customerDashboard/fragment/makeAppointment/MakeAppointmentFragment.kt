@@ -130,7 +130,8 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
                                 val hour = timeParts[0].toInt()
                                 val period = fromTimeParts[1]
 
-                                if (period == "AM" || (period == "PM" && hour < 12)) {
+                              //  if (period == "AM" || (period == "PM" && hour < 12)) {
+                                if (period == "AM") {
                                     morningSlots.add(slot)
                                     updateAdapterWithMorningSlots()
                                 } else {
@@ -176,10 +177,7 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
                                 tittle = "Booking Successfully Scheduled!"
                                 showSuccessPopup(tittle, description, true)
                             }
-
                         }
-
-
                     }
 
                     Status.ERROR -> {
@@ -239,14 +237,21 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun updateCalendar(dates: List<String>) {
         val selectedDates = mutableListOf<CalendarDay>()
+        val currentDate = LocalDate.now()
+        // remove past dates
         for (dateString in dates) {
             val localDate = LocalDate.parse(dateString)
-            selectedDates.add(
-                CalendarDay.from(
-                    localDate.year, localDate.monthValue, localDate.dayOfMonth
+            // Check if the date is today or in the future
+            if (!localDate.isBefore(currentDate)) {
+                selectedDates.add(
+                    CalendarDay.from(
+                        localDate.year, localDate.monthValue, localDate.dayOfMonth
+                    )
                 )
-            )
+            }
         }
+        Log.d("dateBook", "dateBook at zero->$${selectedDates[0]}")
+
         callServiceAvailableTimeSlotsApi(formatCalendarDayToYear(selectedDates[0]))
         binding.calendarView.removeDecorators() // Clear any existing decorators
         binding.calendarView.addDecorator(

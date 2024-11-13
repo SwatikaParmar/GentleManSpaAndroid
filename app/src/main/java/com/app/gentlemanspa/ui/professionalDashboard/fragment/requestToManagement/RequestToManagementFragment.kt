@@ -39,6 +39,7 @@ class RequestToManagementFragment : Fragment(), View.OnClickListener {
     }
 
     private fun initUI() {
+        (activity as ProfessionalActivity).bottomNavigation(false)
         binding.onClick=this
         val items = listOf("Maintenance", "Business", "Personal")
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, items)
@@ -47,7 +48,7 @@ class RequestToManagementFragment : Fragment(), View.OnClickListener {
         binding.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
             //    val selectedItem = parent.getItemAtPosition(position) as SpinnerItem
-                requireContext().showToast( "Selected: $position")
+               // requireContext().showToast( "Selected: $position")
                 // Do something with the selected item
             }
 

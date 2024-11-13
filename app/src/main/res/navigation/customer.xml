@@ -21,6 +21,10 @@
             android:id="@+id/action_homeCustomerFragment_to_professionalServiceFragment"
             app:destination="@id/professionalServiceFragment" />
 
+        <action
+            android:id="@+id/action_homeCustomerFragment_to_notificationFragment"
+            app:destination="@id/notificationFragment" />
+
     </fragment>
     <fragment
         android:id="@+id/serviceFragment"
@@ -321,5 +325,11 @@
         android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.event.EventFragment"
         android:label="EventFragment"
         tools:layout="@layout/fragment_event" />
+
+    <fragment
+        android:id="@+id/notificationFragment"
+        android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.notification.NotificationFragment"
+        android:label="NotificationFragment"
+        tools:layout="@layout/fragment_notification" />
 
 </navigation>

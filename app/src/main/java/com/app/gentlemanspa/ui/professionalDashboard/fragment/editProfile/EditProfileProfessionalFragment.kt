@@ -11,6 +11,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -52,6 +53,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.internal.notify
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -69,7 +71,9 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
     private var genderItem: Int? = null
     private var currentPhotoPath: String? = null
     private var onPermissionsGranted: (() -> Unit)? = null
-    private var specialityId: List<String>? = listOf()
+  //  private var specialityId: List<String>? = listOf()
+    private var specialityId: MutableList<String>? = mutableListOf()
+
     private lateinit var binding: FragmentEditProfileProfessionalBinding
     private val viewModel: UpdateProfessionalViewModel by viewModels {
         ViewModelFactory(
@@ -124,6 +128,7 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
                                 )
                             )
                             viewModel.profilePicRegister()
+                           // viewModel.getSpeciality()
                             profileMessages = it.data?.messages.toString()
                         } else {
                             requireContext().showToast(it.data?.messages.toString())
@@ -216,10 +221,11 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
                binding.etState.setText(profileData?.data?.professionalDetail?.state)
                binding.etCity.setText(profileData?.data?.professionalDetail?.city)
                binding.etPinCode.setText(profileData?.data?.professionalDetail?.pincode)*/
+        Log.d("profileUrl","profilepic:${profileData?.data?.profilepic}")
         Glide.with(requireContext()).load(ApiConstants.BASE_FILE + profileData?.data?.profilepic)
             .into(binding.ivProfile)
 
-        specialityId = profileData?.data?.professionalDetail?.specialityIds?.split(",")
+        specialityId = profileData?.data?.professionalDetail?.specialityIds?.split(",") as MutableList<String>?
         val specialityName = profileData?.data?.professionalDetail?.speciality?.joinToString(",")
 
         binding.etSpeciality.setText(specialityName)
@@ -331,6 +337,7 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
             binding.spGender.selectedItem.toString() == "Select Gender" -> requireContext().showToast(
                 "Please select gender"
             )
+
             checkString(binding.etEmail) -> requireContext().showToast("Please enter email")
             !isValidEmail(checkValidString(binding.etEmail)) -> requireContext().showToast("Please enter a valid email address")
             checkString(binding.etPhone) -> requireContext().showToast("Please enter phone number")
@@ -355,9 +362,12 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
                 // Handle the camera result
                 // val imageUri = result.data?.data
                 profileImage = File(currentPhotoPath)
+                Log.d("profileUrl","Camera profileImage:${profileImage}")
 
-                binding.ivProfile.setImageURI(Uri.fromFile(profileImage))
-                // Use the imageUri
+               // binding.ivProfile.setImageURI(Uri.fromFile(profileImage))
+                Glide.with(this)
+                    .load(profileImage)
+                    .into(binding.ivProfile)
             }
         }
 
@@ -367,8 +377,10 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
                 // Handle the gallery result
                 val imageUri = result.data?.data
                 profileImage = File(imageUri?.path)
-                binding.ivProfile.setImageURI(imageUri)
-                // Use the imageUri
+              //  binding.ivProfile.setImageURI(imageUri)
+                Glide.with(this)
+                    .load(profileImage)
+                    .into(binding.ivProfile)
             }
         }
 
@@ -509,7 +521,7 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
     }
 
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
     private fun setSpecialityBottom() {
         val bottomSheet = BottomSheetDialog(requireContext(), R.style.DialogTheme_transparent)
         val bottomSheetLayout = BottomSheetSpecialityBinding.inflate(layoutInflater)
@@ -528,43 +540,27 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
 
         bottomSheetLayout.btnSubmit.setOnClickListener {
             val selectedItems = specialityAdapter.getSelectedItems()
+            Log.d("selectedItems","selectedItems size->${selectedItems.size}")
             if (selectedItems.size > 0) {
                 val selectedSpecialities = selectedItems.map { it.speciality }
-                val selectedSpecialitiesId = selectedItems.map { it.specialityId }
+                val selectedSpecialitiesId = selectedItems.map { it.specialityId.toString() }
                 val specialityName = selectedSpecialities.joinToString(",")
                 binding.etSpeciality.setText(specialityName)
                 commaSeparatedSpecialitiesId = selectedSpecialitiesId.joinToString(",")
+                // Convert specialityId to a mutable list if it's not already
+                specialityId = specialityId?.toMutableList() ?: mutableListOf()
+                specialityId?.clear()
+                specialityId?.addAll(selectedSpecialitiesId)
                 bottomSheet.dismiss()
             } else {
                 Toast.makeText(
                     requireContext(),
-                    "Please at least one speciality checked",
+                    "Please select speciality",
                     Toast.LENGTH_LONG
                 ).show()
             }
-
         }
-
-
     }
-
-    /*
-        val productId = it.data.data.productId
-        val listOfImages = ArrayList<MultipartBody.Part>()
-        for (i in 0 until productsPhoto.size) {
-            listOfImages.add(
-                prepareFilePart(
-                    "ProductImage",
-                    productsPhoto[i].productPhotos
-                )
-            )
-        }
-
-        viewModel.getProductsPhoto(
-        getTextRequestBodyParams(productId.toString())!!,
-        listOfImages
-        )*/
-
 
     private fun prepareFilePart(partName: String, file: File): MultipartBody.Part {
         val requestFile = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), file)

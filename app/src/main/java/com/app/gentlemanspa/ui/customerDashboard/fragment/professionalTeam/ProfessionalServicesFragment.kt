@@ -219,7 +219,7 @@ class ProfessionalServicesFragment : Fragment(), View.OnClickListener {
             }
 
             override fun addService(item: ServicesData) {
-                Log.d("service", "serviceId->${item.serviceId} spaServiceId->${item.spaServiceId}")
+                Log.d("btnContinue", "inside addService serviceId->${item.serviceId} spaServiceId->${item.spaServiceId}")
                 spaServiceId=item.spaServiceId
                 viewModel.spaServiceId.set(item.spaServiceId)
                 viewModel.slotId.set(0)
@@ -233,6 +233,11 @@ class ProfessionalServicesFragment : Fragment(), View.OnClickListener {
                 }
             }
 
+            override fun setData(spaServiceId: Int) {
+                Log.d("btnContinue","inside setData spaServiceId->${spaServiceId}")
+                this@ProfessionalServicesFragment.spaServiceId =spaServiceId
+            }
+
         } )
     }
 
@@ -242,6 +247,7 @@ class ProfessionalServicesFragment : Fragment(), View.OnClickListener {
                 findNavController().popBackStack()
             }
             binding.btnContinue ->{
+                Log.d("btnContinue","inside btnContinue spaServiceId->${spaServiceId}")
                 if (spaServiceId == 0){
                     requireContext().showToast("Invalid SpaServiceId")
                 }else{

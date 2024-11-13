@@ -103,5 +103,9 @@
         android:name="com.app.gentlemanspa.ui.professionalDashboard.fragment.requestToManagement.RequestToManagementFragment"
         android:label="RequestToManagementFragment"
         tools:layout="@layout/fragment_request_to_management"/>
-
+    <fragment
+        android:id="@+id/myService"
+        android:name="com.app.gentlemanspa.ui.professionalDashboard.fragment.myService.MyServiceFragment"
+        android:label="MyService"
+        tools:layout="@layout/fragment_my_service"/>
 </navigation>

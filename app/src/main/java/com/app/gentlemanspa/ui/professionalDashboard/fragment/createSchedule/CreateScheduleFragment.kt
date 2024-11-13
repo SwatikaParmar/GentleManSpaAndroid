@@ -2,12 +2,14 @@ package com.app.gentlemanspa.ui.professionalDashboard.fragment.createSchedule
 
 import android.annotation.SuppressLint
 import android.content.res.Resources
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TimePicker.OnTimeChangedListener
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.findViewTreeLifecycleOwner
@@ -30,6 +32,11 @@ import com.app.gentlemanspa.utils.ViewModelFactory
 import com.app.gentlemanspa.utils.showToast
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import java.text.SimpleDateFormat
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import java.util.Calendar
+import java.util.Locale
 
 
 class CreateScheduleFragment : Fragment(), View.OnClickListener {
@@ -43,6 +50,7 @@ class CreateScheduleFragment : Fragment(), View.OnClickListener {
     }
     var startSelectedTime: String = ""
     var endSelectedTime: String = ""
+    private var startSelectedTimeMillis: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,8 +58,7 @@ class CreateScheduleFragment : Fragment(), View.OnClickListener {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentCreateScheduleBinding.inflate(layoutInflater, container, false)
@@ -107,13 +114,21 @@ class CreateScheduleFragment : Fragment(), View.OnClickListener {
 
         bottomSheetLayout.tvDone.setOnClickListener {
             val hour = bottomSheetLayout.timePicker.hour
-            val minute = bottomSheetLayout.timePicker.minute
+            var minute = bottomSheetLayout.timePicker.minute
             // Adjust hour for 12-hour format
             val displayHour = if (hour % 12 == 0) 12 else hour % 12
+            minute = if (minute < 30) 0 else 30
 
             val isAM = hour < 12
             period = if (isAM) "AM" else "PM"
             startSelectedTime = String.format("%02d:%02d %s", displayHour, minute, period)
+         // Store the start time in milliseconds
+            val calendarStart = Calendar.getInstance()
+            calendarStart.set(Calendar.HOUR_OF_DAY, hour)
+            calendarStart.set(Calendar.MINUTE, minute)
+            calendarStart.set(Calendar.SECOND, 0)
+            calendarStart.set(Calendar.MILLISECOND, 0)
+            startSelectedTimeMillis = calendarStart.timeInMillis // Store as milliseconds
 
             // Update text views with formatted time
             binding.tvStartHour.text = displayHour.toString().padStart(2, '0')
@@ -162,28 +177,39 @@ class CreateScheduleFragment : Fragment(), View.OnClickListener {
 
         bottomSheetLayout.tvDone.setOnClickListener {
             val hour = bottomSheetLayout.timePicker.hour
-            val minute = bottomSheetLayout.timePicker.minute
+            var minute = bottomSheetLayout.timePicker.minute
 
             // Adjust hour for 12-hour format
             val displayHour = if (hour % 12 == 0) 12 else hour % 12
+            minute = if (minute < 30) 0 else 30
 
             val isAM = hour < 12
             period = if (isAM) "AM" else "PM"
             endSelectedTime = String.format("%02d:%02d %s", displayHour, minute, period)
+            // Convert end time to milliseconds
+            val calendarEnd = Calendar.getInstance()
+            calendarEnd.set(Calendar.HOUR_OF_DAY, hour)
+            calendarEnd.set(Calendar.MINUTE, minute)
+            calendarEnd.set(Calendar.SECOND, 0)
+            calendarEnd.set(Calendar.MILLISECOND, 0)
+            val endSelectedTimeMillis = calendarEnd.timeInMillis
 
-            // Update text views with formatted time
-            binding.tvEndHour.text = displayHour.toString().padStart(2, '0')
-            binding.tvEndMin.text = minute.toString().padStart(2, '0')
-            binding.tvEndAm.text = period
+            // Compare the end time with the start time
+            if (endSelectedTimeMillis <= startSelectedTimeMillis) {
+                requireContext().showToast("End time must be greater than start time")
+            } else {
+                binding.tvEndHour.text = displayHour.toString().padStart(2, '0')
+                binding.tvEndMin.text = minute.toString().padStart(2, '0')
+                binding.tvEndAm.text = period
+                Log.d("SelectedTime", "endSelectedTime: $endSelectedTime")
 
-            Log.d("SelectedTime", "endSelectedTime: $endSelectedTime")
-
-            bottomSheet.dismiss()
+                bottomSheet.dismiss()
+            }
+            bottomSheet.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
-        bottomSheet.behavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
-
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onClick(v: View?) {
         when (v) {
             binding.ivArrowBack -> {
@@ -200,9 +226,14 @@ class CreateScheduleFragment : Fragment(), View.OnClickListener {
 
             binding.btnCreate -> {
                 Log.d("SelectedTime", "btn clicked")
-                if (startSelectedTime.isNotEmpty() && endSelectedTime.isNotEmpty()){
-                    proceedToSchedule()
-                }else{
+                Log.d("SelectedTime", "startSelectedTime->${startSelectedTime} endSelectedTime->${endSelectedTime}")
+                if (startSelectedTime.isNotEmpty() && endSelectedTime.isNotEmpty()) {
+                    if (isStartTimeBeforeEndTime(startSelectedTime, endSelectedTime)) {
+                        proceedToSchedule()
+                    }else{
+                        requireContext().showToast("Start time must be before end time")
+                    }
+                } else {
                     Log.d("SelectedTime", "inside else")
                     requireContext().showToast("Please Select Time")
                 }
@@ -215,16 +246,32 @@ class CreateScheduleFragment : Fragment(), View.OnClickListener {
 
         if (binding.btnCreate.text.toString() == "Update") {
             viewModel.professionalScheduleId.set(args.professionalScheduleId)
-        }else{
+        } else {
             viewModel.professionalScheduleId.set(0)
         }
-        viewModel.professionalDetailId.set(AppPrefs(requireContext()).getStringPref(PROFESSIONAL_DETAIL_ID)?.toInt())
+        viewModel.professionalDetailId.set(
+            AppPrefs(requireContext()).getStringPref(
+                PROFESSIONAL_DETAIL_ID
+            )?.toInt()
+        )
         viewModel.weekDaysId.set(args.weekDaysItem.weekdaysId)
         viewModel.fromTime.set(startSelectedTime)
         viewModel.toTime.set(endSelectedTime)
         viewModel.addUpdateProfessionalSchedule()
     }
-
+    private fun isStartTimeBeforeEndTime(startTime: String, endTime: String): Boolean {
+        val startTime24Hour = convertTo24HourFormat(startTime)
+        val endTime24Hour = convertTo24HourFormat(endTime)
+        val startLocalTime = LocalTime.parse(startTime24Hour, DateTimeFormatter.ofPattern("HH:mm"))
+        val endLocalTime = LocalTime.parse(endTime24Hour, DateTimeFormatter.ofPattern("HH:mm"))
+        return startLocalTime.isBefore(endLocalTime)
+    }
+    private fun convertTo24HourFormat(time: String): String {
+        val format12Hour = SimpleDateFormat("hh:mm a", Locale.getDefault()) // 12-hour format
+        val format24Hour = SimpleDateFormat("HH:mm", Locale.getDefault()) // 24-hour format
+        val parsedDate = format12Hour.parse(time) // Parse the 12-hour format time
+        return format24Hour.format(parsedDate!!) // Convert to 24-hour format
+    }
     private fun initObserver() {
         viewModel.resultAddUpdateProfessionalSchedule.observe(this) {
             it?.let { result ->
@@ -236,7 +283,8 @@ class CreateScheduleFragment : Fragment(), View.OnClickListener {
                     Status.SUCCESS -> {
                         hideProgress()
                         requireContext().showToast(it.message.toString())
-                        val action=CreateScheduleFragmentDirections.actionCreateScheduleFragmentToScheduleProfessionalFragment()
+                        val action =
+                            CreateScheduleFragmentDirections.actionCreateScheduleFragmentToScheduleProfessionalFragment()
                         findNavController().navigate(action)
 
                     }

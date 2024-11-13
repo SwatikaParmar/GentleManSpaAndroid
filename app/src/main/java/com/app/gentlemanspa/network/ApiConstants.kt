@@ -51,14 +51,12 @@ object ApiConstants {
     const val SERVICE_GET_AVAILABLE_TIME_SLOTS = "Service/GetAvailableTimeSlots"
     const val ADD_PRODUCT_IN_CART = "Product/AddOrUpdateProductInCart"
     const val CUSTOMER_PLACE_ORDER = "Customer/PlaceOrder"
-
     const val GET_SERVICE_APPOINTMENTS = "Order/GetServiceAppointments"
     const val CANCEL_UPCOMING_APPOINTMENTS = "Order/CancelOrder"
     const val RESCHEDULE_SERVICE = "Order/RescheduleService"
     const val GET_ORDERED_PRODUCTS = "Order/GetOrderedProducts"
 
-
-
+    const val PROFESSIONAL_SERVICE_LIST ="Service/GetProfessionalServices"
     const val GET_PROFESSIONALS_SCHEDULES_BY_PROFESSIONAL_DETAIL_ID = "Professional/GetProfessionalSchedulesByProfessionalDetailId"
     const val ADD_UPDATE_PROFESSIONAL_SCHEDULE = "Professional/AddUpdateProfessionalSchedule"
 

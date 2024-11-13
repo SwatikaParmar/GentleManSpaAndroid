@@ -23,6 +23,9 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.adapter.CartServi
 import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.viewModel.CartViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.Product
 import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.Service
+import com.app.gentlemanspa.utils.AppPrefs
+import com.app.gentlemanspa.utils.DELIVERY_ADDRESS
+import com.app.gentlemanspa.utils.PROFESSIONAL_DETAIL_ID
 import com.app.gentlemanspa.utils.ViewModelFactory
 import com.app.gentlemanspa.utils.setGone
 import com.app.gentlemanspa.utils.setVisible
@@ -62,28 +65,44 @@ class CartFragment : Fragment(), View.OnClickListener {
         callGetCartItemsApi()
         viewModel.geCustomerAddressList()
         binding.onClick = this
-        binding.cbAtVenue.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) {
-                Log.d("checkBox", "inside isChecked")
-                binding.cbHomeDelivery.isChecked = false
-                binding.clAddressViews.setGone()
-            } else {
-                Log.d("checkBox", "inside else of isChecked")
-                binding.clAddressViews.setVisible()
-                binding.cbHomeDelivery.isChecked = true
-            }
-        }
+        setAddress()
+    }
 
+    private fun setAddress() {
+        deliverAddress()
         binding.cbHomeDelivery.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
-                Log.d("checkBox", "inside cbHomeDelivery  isChecked")
-                binding.cbAtVenue.isChecked = false
-                binding.clAddressViews.setVisible()
-            } else {
-                Log.d("checkBox", "inside cbHomeDelivery else of isChecked")
-                binding.clAddressViews.setGone()
-                binding.cbAtVenue.isChecked = true
+                AppPrefs(requireContext()).saveStringPref(DELIVERY_ADDRESS, "Home Delivery")
+                deliverAddress()
+            }
 
+        }
+        binding.cbAtVenue.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                AppPrefs(requireContext()).saveStringPref(DELIVERY_ADDRESS, "At Venue")
+                deliverAddress()
+            }
+        }
+    }
+
+    private fun deliverAddress() {
+        if (AppPrefs(requireContext()).getStringPref(DELIVERY_ADDRESS).toString().isNotEmpty()) {
+            when (AppPrefs(requireContext()).getStringPref(DELIVERY_ADDRESS)) {
+                "At Venue" -> {
+                    Log.d("deliveryAddress", "At Venue")
+                    binding.cbAtVenue.isChecked = true
+                    binding.cbHomeDelivery.isChecked = false
+                    binding.clAddressViews.setGone()
+                }
+                "Home Delivery" -> {
+                    Log.d("deliveryAddress", "Home Delivery")
+                    binding.cbHomeDelivery.isChecked = true
+                    binding.cbAtVenue.isChecked = false
+                    binding.clAddressViews.setVisible()
+                }
+                else -> {
+                    Log.d("deliveryAddress", "else")
+                }
             }
         }
     }
@@ -106,14 +125,14 @@ class CartFragment : Fragment(), View.OnClickListener {
                     Status.SUCCESS -> {
                         Log.d("testIssue", "inside resultGetCartItems SUCCESS")
                         hideProgress()
-                        if (it.data?.data?.cartServices!!.services.isNotEmpty() || it.data.data.cartProducts.products.isNotEmpty()){
+                        if (it.data?.data?.cartServices!!.services.isNotEmpty() || it.data.data.cartProducts.products.isNotEmpty()) {
                             binding.clNoDataFound.setGone()
                             binding.clPay.setVisible()
                             binding.clData.setVisible()
                             if (it.data.data.cartServices.services.isNotEmpty()) {
                                 binding.clServices.setVisible()
                                 binding.cvServicesTotal.setVisible()
-                              //  binding.clPay.setVisible()
+                                //  binding.clPay.setVisible()
                                 setCartServicesAdapter(it.data.data.cartServices.services)
                                 binding.tvTotalPrice.text = "$${it.data.data.cartServices.totalMrp}"
                                 binding.tvTotalDiscountPrice.text =
@@ -121,18 +140,20 @@ class CartFragment : Fragment(), View.OnClickListener {
                                 binding.tvGrandTotalPrice.text =
                                     "$${it.data.data.cartServices.totalSellingPrice}"
                                 binding.btnPay.text = "Pay $${it.data.data.spaTotalSellingPrice}.00"
+                                Log.d("testIssue", "spaTotalSellingPrice: ${{it.data.data.spaTotalSellingPrice}}")
+
 
                             } else {
                                 binding.cvServicesTotal.setGone()
                                 binding.clServices.setGone()
-                             //   binding.clPay.setGone()
+                                //   binding.clPay.setGone()
 
                             }
 
                             if (it.data.data.cartProducts.products.isNotEmpty()) {
                                 binding.clProducts.setVisible()
                                 binding.cvProductsTotal.setVisible()
-                                binding.clDelivery.setVisible()
+                                //     binding.clDelivery.setVisible()
                                 setCartProductsAdapter(it.data.data.cartProducts.products)
                                 binding.tvProductTotalPrice.text =
                                     "$${it.data.data.cartProducts.totalMrp}"
@@ -140,13 +161,16 @@ class CartFragment : Fragment(), View.OnClickListener {
                                     "-$${it.data.data.cartProducts.totalDiscount}"
                                 binding.tvProductGrandTotalPrice.text =
                                     "$${it.data.data.cartProducts.totalSellingPrice}"
-                                binding.cbHomeDelivery.isChecked = true
+                                //  binding.cbHomeDelivery.isChecked = true
+                                binding.btnPay.text = "Pay $${it.data.data.spaTotalSellingPrice}.00"
+                                deliverAddress()
                             } else {
                                 binding.clProducts.setGone()
-                                binding.clDelivery.setGone()
+                                // binding.clDelivery.setGone()
                                 binding.cvProductsTotal.setGone()
+                                deliverAddress()
                             }
-                        }else{
+                        } else {
                             binding.clPay.setGone()
                             binding.clData.setGone()
                             binding.clNoDataFound.setVisible()
@@ -168,6 +192,7 @@ class CartFragment : Fragment(), View.OnClickListener {
                 when (result.status) {
                     Status.LOADING -> {
                     }
+
                     Status.SUCCESS -> {
                         hideProgress()
                         Log.d("testIssue", "inside resultServiceToCart SUCCESS")
@@ -192,7 +217,10 @@ class CartFragment : Fragment(), View.OnClickListener {
 
                     Status.SUCCESS -> {
                         Log.d("testIssue", "inside resultAddProductInCart SUCCESS")
-                        Log.d("testIssue", "inside resultAddProductInCart Message->${it.message.toString()}")
+                        Log.d(
+                            "testIssue",
+                            "inside resultAddProductInCart Message->${it.message.toString()}"
+                        )
                         hideProgress()
                         //    requireContext().showToast(it.message.toString())
                         callGetCartItemsApi()
@@ -262,22 +290,19 @@ class CartFragment : Fragment(), View.OnClickListener {
                             "inside resultCustomerPlaceOrder Message->${it.message.toString()}"
                         )
                         hideProgress()
-                        requireContext().showAlertForPlaceOrder(it.message.toString(),object :
+                        requireContext().showAlertForPlaceOrder(it.message.toString(), object :
                             AlertWithoutCancelCallbackInt {
                             override fun onOkayClicked(view: View) {
-                                val action=CartFragmentDirections.actionCartFragmentToHomeFragment()
-                                 findNavController().navigate(action)
+                                val action =
+                                    CartFragmentDirections.actionCartFragmentToHomeFragment()
+                                findNavController().navigate(action)
                             }
-
-
-
                         })
                         requireContext().showToast(it.message.toString())
-
-
                     }
 
                     Status.ERROR -> {
+                        requireContext().showToast(it.message.toString())
                         Log.d("resultCustomerPlaceOrder", "inside resultAddProductInCart ERROR")
                         hideProgress()
                     }
@@ -297,6 +322,7 @@ class CartFragment : Fragment(), View.OnClickListener {
             CartServicesAdapter.CartServicesCallbacks {
             override fun rootService(item: Service) {
             }
+
             override fun addOrRemoveService(item: Service) {
                 viewModel.spaServiceId.set(item.spaServiceId)
                 viewModel.slotId.set(0)
@@ -304,8 +330,10 @@ class CartFragment : Fragment(), View.OnClickListener {
                 viewModel.serviceCountInCart.set(0)
                 viewModel.addServiceToCart()
             }
+
             override fun addSlot(item: Service) {
-                val action = CartFragmentDirections.actionCartFragmentAnyProfessionalFragment("Update Cart Service",
+                val action = CartFragmentDirections.actionCartFragmentAnyProfessionalFragment(
+                    "Update Cart Service",
                     item.spaDetailId,
                     item.spaServiceId
                 )
@@ -352,7 +380,8 @@ class CartFragment : Fragment(), View.OnClickListener {
             binding.ivArrowBack -> {
                 findNavController().popBackStack()
             }
-            binding.btnPay->{
+
+            binding.btnPay -> {
                 proceedToPlaceOrder()
             }
         }

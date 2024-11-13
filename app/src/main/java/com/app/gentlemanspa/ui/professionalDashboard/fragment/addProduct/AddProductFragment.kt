@@ -105,6 +105,7 @@ class AddProductFragment : Fragment(), View.OnClickListener {
 
     private fun initUI() {
         (activity as ProfessionalActivity).bottomNavigation(false)
+        editTextSpace()
 
         if (addType == 0) {
             binding.tvTitle.text = "Add Product"
@@ -130,6 +131,12 @@ class AddProductFragment : Fragment(), View.OnClickListener {
 
         binding.etBasePrice.filters = arrayOf(DecimalDigitsInputFilter(2))
         binding.etListingPrice.filters = arrayOf(DecimalDigitsInputFilter(2))
+    }
+
+    private fun editTextSpace() {
+        CommonFunctions.startSpaceEditText(binding.etProductName)
+        CommonFunctions.startSpaceEditText(binding.etDescription)
+
     }
 
     private fun initObserver() {
@@ -523,7 +530,7 @@ class AddProductFragment : Fragment(), View.OnClickListener {
     private fun isValidation(): Boolean {
         when {
             (addType == 0 && productsPhoto.size == 0) -> {
-                requireContext().showToast("Please upload atleast one image")
+                requireContext().showToast("Please upload at least one image")
             }
             binding.etProductName.text.toString().trim().isEmpty() -> {
                 requireContext().showToast("Enter product name")
@@ -541,8 +548,14 @@ class AddProductFragment : Fragment(), View.OnClickListener {
                 requireContext().showToast("Enter listing price")
             }
 
-            binding.etListingPrice.text.toString().toInt() > binding.etBasePrice.text.toString()
+           /* binding.etListingPrice.text.toString().toInt() > binding.etBasePrice.text.toString()
                 .toInt() -> {
+                requireContext().showToast(
+                    "Please do not enter Base Price more than Listing Price"
+                )
+            }*/
+            binding.etListingPrice.text.toString().toDouble() > binding.etBasePrice.text.toString()
+                .toDouble()-> {
                 requireContext().showToast(
                     "Please do not enter Base Price more than Listing Price"
                 )

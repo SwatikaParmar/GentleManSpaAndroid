@@ -270,6 +270,7 @@
                                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                                 app:spanCount="4"
                                 tools:itemCount="5"
+                                android:minHeight="@dimen/_50sdp"
                                 tools:listitem="@layout/item_time_slots_service" />
 
                             <androidx.appcompat.widget.AppCompatTextView

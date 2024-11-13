@@ -11,6 +11,8 @@ import com.app.gentlemanspa.ui.auth.fragment.forget.model.ForgetPasswordResponse
 import com.app.gentlemanspa.ui.auth.fragment.register.model.ProfileRegisterResponse
 import com.app.gentlemanspa.ui.auth.fragment.otp.model.SignUpRequest
 import com.app.gentlemanspa.ui.auth.fragment.otp.model.SignUpResponse
+import com.app.gentlemanspa.ui.auth.fragment.register.model.EmailOtpRequest
+import com.app.gentlemanspa.ui.auth.fragment.register.model.EmailOtpResponse
 import com.app.gentlemanspa.utils.CommonFunctions
 import com.app.gentlemanspa.utils.Resource
 import kotlinx.coroutines.flow.catch
@@ -28,6 +30,7 @@ class OtpViewModel(private var initialRepository: InitialRepository):AndroidView
     val resultForgetPassword = MutableLiveData<Resource<ForgetPasswordResponse>>()
     val resultRegisterAccount = MutableLiveData<Resource<SignUpResponse>>()
     val resultProfileRegister = MutableLiveData<Resource<ProfileRegisterResponse>>()
+    val resultResendEmailOtp = MutableLiveData<Resource<EmailOtpResponse>>()
 
     fun registerAccount(signUpRequest:SignUpRequest) {
         resultRegisterAccount.value = Resource.loading(null)
@@ -104,6 +107,33 @@ class OtpViewModel(private var initialRepository: InitialRepository):AndroidView
                     } else {
                         resultForgetPassword.value =
                             Resource.error(data = null, message = it?.messages)
+                    }
+                }
+        }
+    }
+    fun resendEmailOtp() {
+        resultResendEmailOtp.value = Resource.loading(null)
+        viewModelScope.launch {
+            initialRepository.emailOtp(EmailOtpRequest(email.get()!!, false))
+                .onStart { }
+                .onCompletion { }
+                .catch { exception ->
+                    if (!CommonFunctions.getError(exception)!!.contains("401"))
+                        resultResendEmailOtp.value =
+                            Resource.error(
+                                data = null,
+                                message = CommonFunctions.getError(exception)
+                            )
+                }
+                .collect {
+                    if (it?.statusCode == 200) {
+                        resultResendEmailOtp.value =
+                            Resource.success(message = it.messages, data = it)
+                    } else {
+                        if (it != null) {
+                            resultResendEmailOtp.value =
+                                Resource.error(data = null, message = it.messages)
+                        }
                     }
                 }
         }

@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.app.gentlemanspa.R
@@ -141,22 +142,43 @@ class OtpFragment : Fragment(), View.OnClickListener {
 
                     Status.ERROR -> {
                         requireContext().showToast(it.message.toString())
-                        MyApplication.hideProgress()
+                        hideProgress()
+                    }
+                }
+            }
+        }
+        viewModel.resultResendEmailOtp.observe(viewLifecycleOwner) {
+            it?.let { result ->
+                when (result.status) {
+                    Status.LOADING -> {
+                        showProgress(requireContext())
+                    }
+
+                    Status.SUCCESS -> {
+                        hideProgress()
+                        requireContext().showToast(it.data?.messages.toString())
+
+                    }
+
+                    Status.ERROR -> {
+                        requireContext().showToast(it.message.toString())
+                        hideProgress()
                     }
                 }
             }
         }
 
+
     }
 
     @SuppressLint("SetTextI18n")
     private fun initUI() {
+        binding.onClick = this
         arguments?.let {
             signUpRequest = it.getParcelable("signUpRequest")
         }
         Log.d("signUpRequest", "signUpRequest->${signUpRequest!!.email}")
         binding.tvEnterCode.text = "${getString(R.string.please_enter_5_digit_code_sent_to_email)} ${signUpRequest!!.email}"
-        binding.onClick = this
     }
 
 
@@ -180,9 +202,12 @@ class OtpFragment : Fragment(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         when (v) {
+            binding.ivArrowBack  ->{
+                findNavController().popBackStack()
+            }
+
             binding.btnVerify -> {
                 Log.d("signUpRequest", "Otp->${args.Otp}")
-
                 if (args.OtpType == 1) {
                     resetPassword()
                 } else {
@@ -190,7 +215,16 @@ class OtpFragment : Fragment(), View.OnClickListener {
                 }
 
             }
+            binding.tvResendCode->{
+                 proceedToResendCode()
+            }
         }
+    }
+
+    private fun proceedToResendCode() {
+        Log.d("proceedToResendCode", "proceedToResendCode email->${signUpRequest!!.email}")
+        viewModel.email.set(signUpRequest!!.email)
+        viewModel.resendEmailOtp()
     }
 
     private

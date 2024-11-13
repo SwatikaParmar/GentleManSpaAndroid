@@ -59,7 +59,6 @@
             android:defaultValue="0"
             app:argType="integer" />
 
-
         <argument
             android:name="Otp"
             app:argType="string" />
@@ -74,6 +73,9 @@
         <action
             android:id="@+id/action_otpFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_otpFragment_to_forgetPasswordFragment"
+            app:destination="@id/forgetPasswordFragment" />
     </fragment>
     <fragment
         android:id="@+id/setPasswordFragment"

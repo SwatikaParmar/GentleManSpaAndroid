@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.app.gentlemanspa.R
 import com.app.gentlemanspa.base.MyApplication
@@ -46,7 +47,7 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = FragmentProductDetailBinding.inflate(layoutInflater, container, false)
         return binding.root
@@ -88,9 +89,7 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
                             .into(binding.ivProduct)
 
 
-
                         binding.tvDescription.text = data?.description
-
                         binding.clFirst.setVisible()
 
                     }
@@ -106,8 +105,10 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         when (v) {
+            binding.ivArrowBack->{
+                findNavController().popBackStack()
+            }
             binding.ivMinus -> {
-
                 count--
                 if (count >= 1) {
                     binding.tvCount.text = count.toString()

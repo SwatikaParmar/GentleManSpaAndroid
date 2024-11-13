@@ -173,8 +173,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMapClickListener
     override fun onClick(v: View) {
         when(v){
             binding.btnEnterAddress -> {
-                val action = MapFragmentDirections.actionMapFragmentToEditAddressFragment(customerAddress!!,"",customerAddressId,addressType)
-                findNavController().navigate(action)
+                if (customerAddress!=null){
+                    val action = MapFragmentDirections.actionMapFragmentToEditAddressFragment(customerAddress!!,"",customerAddressId,addressType)
+                    findNavController().navigate(action)
+                }else{
+                    requireContext().showToast("Please Select Address")
+                }
+
 
             }
 

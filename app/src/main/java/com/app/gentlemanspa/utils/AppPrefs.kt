@@ -9,6 +9,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 const val PROFESSIONAL_DETAIL_ID="Professional_Detail_Id"
+const val DELIVERY_ADDRESS="Delivery_Address"
 class AppPrefs(private val ctx: Context) {
 
     private fun getPrefs(): SharedPreferences {

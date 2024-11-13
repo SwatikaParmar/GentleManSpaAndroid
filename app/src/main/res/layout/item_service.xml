@@ -108,46 +108,6 @@
                 />
 
 
-
-          <!--  <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/clAddCart"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_3sdp"
-                android:paddingVertical="@dimen/_2sdp"
-                android:paddingHorizontal="@dimen/_7sdp"
-                android:background="@drawable/bg_app_color"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvRupees">
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tvAddCart"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Add To Cart"
-                    android:textAllCaps="false"
-                    android:textSize="@dimen/_10ssp"
-                    android:textColor="@color/white"
-                    app:cornerRadius="@dimen/_20sdp"
-                    android:fontFamily="@font/poppins_medium"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/cbIcon"
-                    android:layout_width="@dimen/_15sdp"
-                    android:layout_height="@dimen/_15sdp"
-                    android:src="@drawable/checkbox_white"
-                    android:visibility="gone"
-                    android:layout_marginStart="@dimen/_3sdp"
-                    app:layout_constraintStart_toEndOf="@+id/tvAddCart"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
--->
-
-
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/ivAddService"
                 android:layout_width="@dimen/_22sdp"
