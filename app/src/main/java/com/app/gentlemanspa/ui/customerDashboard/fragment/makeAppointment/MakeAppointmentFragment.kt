@@ -267,6 +267,7 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
             if (!selectedDates.contains(date)) {
                 binding.calendarView.clearSelection() // Prevent selection of non-available dates
             } else {
+                setEmptyListToMorningEveningAdapter()
                 callServiceAvailableTimeSlotsApi(formatCalendarDayToYear(date))
             }
         }
@@ -277,6 +278,19 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
             .commit()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    private fun setEmptyListToMorningEveningAdapter(){
+        morningSlots.clear()
+        eveningSlots.clear()
+        val timeSlotServiceAdapterForMorningSlots = TimeSlotServiceAdapter(morningSlots)
+        binding.rvTimeSlots.adapter = timeSlotServiceAdapterForMorningSlots
+        timeSlotServiceAdapterForMorningSlots.notifyDataSetChanged()
+        val timeSlotServiceAdapterForEveningSlots = TimeSlotServiceAdapter(eveningSlots)
+        binding.rvTimeSlots.adapter = timeSlotServiceAdapterForEveningSlots
+        timeSlotServiceAdapterForEveningSlots.notifyDataSetChanged()
+
+
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun callServiceAvailableTimeSlotsApi(dateFormat: String) {
@@ -326,12 +340,14 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v) {
             binding.tvMorning -> {
+                slotId=0
                 binding.tvMorning.isSelected = true
                 binding.tvEvening.isSelected = false
                 updateAdapterWithMorningSlots()
             }
 
             binding.tvEvening -> {
+                slotId=0
                 binding.tvMorning.isSelected = false
                 binding.tvEvening.isSelected = true
                 updateAdapterWithEveningSlots()

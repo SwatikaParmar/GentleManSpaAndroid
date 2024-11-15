@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.app.gentlemanspa.base.MyApplication
 import com.app.gentlemanspa.base.MyApplication.Companion.hideProgress
 import com.app.gentlemanspa.base.MyApplication.Companion.showProgress
 import com.app.gentlemanspa.databinding.FragmentProductBinding
@@ -43,6 +44,7 @@ class ProductFragment : Fragment(), View.OnClickListener {
     private val args: ProductFragmentArgs by navArgs()
     private val handler = Handler(Looper.getMainLooper())
     private var searchRunnable: Runnable? = null
+    private var mainLoader: Int = 0
 
     private val viewModel: ProductViewModel by viewModels {
         ViewModelFactory(
@@ -124,7 +126,11 @@ class ProductFragment : Fragment(), View.OnClickListener {
             it?.let { result ->
                 when (result.status) {
                     Status.LOADING -> {
-                        showProgress(requireContext())
+                        //showProgress(requireContext())
+                        if (mainLoader == 0) {
+                            mainLoader = 1
+                            MyApplication.showProgress(requireContext())
+                        }
                     }
 
                     Status.SUCCESS -> {

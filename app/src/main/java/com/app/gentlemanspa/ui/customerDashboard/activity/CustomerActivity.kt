@@ -4,18 +4,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.app.gentlemanspa.R
 import com.app.gentlemanspa.databinding.ActivityCustomerBinding
 import com.app.gentlemanspa.ui.auth.activity.AuthActivity
-import com.app.gentlemanspa.ui.auth.fragment.login.LoginFragment
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.HomeCustomerFragment
 import com.app.gentlemanspa.utils.AppPrefs
 import com.app.gentlemanspa.utils.setGone
@@ -72,8 +68,6 @@ class CustomerActivity : AppCompatActivity(),HomeCustomerFragment.OnProfileUpdat
             }
         }
     }
-
-
     fun isDrawer(isBoolean: Boolean) {
         if (isBoolean) {
             binding.drawerLayout.openDrawer(GravityCompat.START)
@@ -152,10 +146,7 @@ class CustomerActivity : AppCompatActivity(),HomeCustomerFragment.OnProfileUpdat
                 R.id.logOutCustomer -> {
                    showLogOut()
                 }
-
-
             }
-
             binding.drawerLayout.closeDrawer(GravityCompat.START)
             true
         }

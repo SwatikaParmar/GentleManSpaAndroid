@@ -27,15 +27,15 @@ class CartProductsAdapter (var productsList: List<Product>) : RecyclerView.Adapt
         return productsList.size
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "DefaultLocale")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         var countInCart :Int =0
 
         val item = productsList[position]
         holder.binding.apply {
             tvServiceName.text = item.name
-            tvRupees.text = "$${item.listingPrice}"
-            tvLessRupees.text = "$${item.basePrice}"
+            tvRupees.text = String.format("%.2f",item.listingPrice.toDouble())
+            tvLessRupees.text =  String.format("%.2f",item.basePrice.toDouble())
             Glide.with(holder.itemView.context).load(ApiConstants.BASE_FILE +item.productImage).error(R.drawable.no_product).placeholder(
                 R.drawable.no_product).into(ivService)
             Log.d("countInCart","countInCart->${item.countInCart}")

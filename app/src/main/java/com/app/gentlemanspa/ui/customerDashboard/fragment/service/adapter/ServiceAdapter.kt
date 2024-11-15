@@ -31,15 +31,15 @@ class ServiceAdapter(private var serviceList: ArrayList<ServiceListItem>) : Recy
         return serviceList.size
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "DefaultLocale")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
          val item = serviceList[position]
          holder.binding.apply {
              tvServiceName.text = item.name
              tvTime.text = "${item.durationInMinutes} mins"
-             tvRupees.text = "$${decimalRoundToInt(item.listingPrice)}"
-             tvLessRupees.text =  "$${decimalRoundToInt(item.basePrice)}"
+             tvRupees.text = "$${String.format("%.2f", item.listingPrice!!.toDouble())}"
+             tvLessRupees.text =  "$${String.format("%.2f",item.basePrice!!.toDouble())}"
              Glide.with(holder.itemView.context).load(ApiConstants.BASE_FILE +item.serviceIconImage).placeholder(R.drawable.service_placeholder).error(R.drawable.service_placeholder).into(ivService)
 
 

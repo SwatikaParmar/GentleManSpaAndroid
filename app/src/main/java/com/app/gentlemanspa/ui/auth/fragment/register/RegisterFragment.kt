@@ -64,11 +64,14 @@ class RegisterFragment : Fragment(), View.OnClickListener {
     private var onPermissionsGranted: (() -> Unit)? = null
     private var emailOtp=""
     private val viewModel: RegisterViewModel by viewModels { ViewModelFactory(InitialRepository()) }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initObserver()
 
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
         binding = FragmentRegisterBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
@@ -76,7 +79,6 @@ class RegisterFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initObserver()
         initUI()
     }
 
@@ -127,7 +129,9 @@ class RegisterFragment : Fragment(), View.OnClickListener {
             binding.ivUpload -> {
                 setImagePickerBottomSheet()
             }
-
+            binding.tvSignUp->{
+                findNavController().popBackStack()
+            }
         }
     }
 
@@ -193,7 +197,6 @@ class RegisterFragment : Fragment(), View.OnClickListener {
 
     private fun checkAndRequestPermissionsForCamera(onPermissionsGranted: () -> Unit) {
         val permissions = arrayOf(Manifest.permission.CAMERA)
-
         if (permissions.all {
                 ContextCompat.checkSelfPermission(
                     requireContext(), it
@@ -246,10 +249,10 @@ class RegisterFragment : Fragment(), View.OnClickListener {
                 ) == PackageManager.PERMISSION_GRANTED
             }) {
             // Permissions are already granted, proceed with the action
-            //onPermissionsGranted()
+            // onPermissionsGranted()
             // openCamera()
-            openGallery()
-        } else {
+             openGallery()
+        }else{
             // Request permissions
             this.onPermissionsGranted = onPermissionsGranted
             requestPermissions(permissions, REQUEST_CODE_GALLERY_PERMISSIONS)
@@ -287,7 +290,7 @@ class RegisterFragment : Fragment(), View.OnClickListener {
     }
 
     private fun initObserver() {
-        viewModel.resultEmailOtp.observe(viewLifecycleOwner) {
+        viewModel.resultEmailOtp.observe(this) {
             it.let { result ->
                 when (result.status) {
                     Status.LOADING -> {
@@ -320,7 +323,7 @@ class RegisterFragment : Fragment(), View.OnClickListener {
                 }
             }
         }
-        viewModel.resultPhoneUnique.observe(viewLifecycleOwner) {
+        viewModel.resultPhoneUnique.observe(this) {
             it.let { result ->
                 when (result.status) {
                     Status.LOADING -> {

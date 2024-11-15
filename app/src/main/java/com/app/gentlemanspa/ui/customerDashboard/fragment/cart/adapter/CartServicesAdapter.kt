@@ -32,15 +32,15 @@ class CartServicesAdapter (private var serviceList: List<Service>) : RecyclerVie
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "DefaultLocale")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         val item = serviceList[position]
         holder.binding.apply {
             tvServiceName.text = item.name
             tvTime.text = "${item.durationInMinutes} mins"
-            tvRupees.text = item.listingPrice.toString()
-            tvLessRupees.text = item.basePrice.toString()
+            tvRupees.text = String.format("%.2f", item.listingPrice.toDouble())
+            tvLessRupees.text = String.format("%.2f",item.basePrice.toDouble())
             Log.d("slotDate","slotDate->${item.slotDate}")
             if (item.slotDate !=null){
                 tvSlotDateTime.setVisible()

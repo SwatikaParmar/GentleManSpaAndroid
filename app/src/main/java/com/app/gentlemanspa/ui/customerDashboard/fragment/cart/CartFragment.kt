@@ -74,6 +74,13 @@ class CartFragment : Fragment(), View.OnClickListener {
             if (isChecked) {
                 AppPrefs(requireContext()).saveStringPref(DELIVERY_ADDRESS, "Home Delivery")
                 deliverAddress()
+            } else {
+                if (!binding.cbAtVenue.isChecked) {
+                    binding.cbHomeDelivery.isChecked = true
+                } else {
+                    binding.cbHomeDelivery.isChecked = false
+
+                }
             }
 
         }
@@ -81,10 +88,16 @@ class CartFragment : Fragment(), View.OnClickListener {
             if (isChecked) {
                 AppPrefs(requireContext()).saveStringPref(DELIVERY_ADDRESS, "At Venue")
                 deliverAddress()
+            } else {
+                if (!binding.cbHomeDelivery.isChecked) {
+                    binding.cbAtVenue.isChecked = true
+                }else{
+                    binding.cbAtVenue.isChecked = false
+
+                }
             }
         }
     }
-
     private fun deliverAddress() {
         if (AppPrefs(requireContext()).getStringPref(DELIVERY_ADDRESS).toString().isNotEmpty()) {
             when (AppPrefs(requireContext()).getStringPref(DELIVERY_ADDRESS)) {
@@ -111,7 +124,7 @@ class CartFragment : Fragment(), View.OnClickListener {
         viewModel.getCartItem()
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "DefaultLocale")
     private fun initObserver() {
         viewModel.resultGetCartItems.observe(this) {
             it.let { result ->
@@ -134,12 +147,12 @@ class CartFragment : Fragment(), View.OnClickListener {
                                 binding.cvServicesTotal.setVisible()
                                 //  binding.clPay.setVisible()
                                 setCartServicesAdapter(it.data.data.cartServices.services)
-                                binding.tvTotalPrice.text = "$${it.data.data.cartServices.totalMrp}"
+                                binding.tvTotalPrice.text = "$${String.format("%.2f",it.data.data.cartServices.totalMrp.toDouble())}"
                                 binding.tvTotalDiscountPrice.text =
-                                    "-$${it.data.data.cartServices.totalDiscount}"
-                                binding.tvGrandTotalPrice.text =
-                                    "$${it.data.data.cartServices.totalSellingPrice}"
-                                binding.btnPay.text = "Pay $${it.data.data.spaTotalSellingPrice}.00"
+                                    "-$${String.format("%.2f",it.data.data.cartServices.totalDiscount.toDouble())}"
+                                binding.tvGrandTotalPrice.text = "$${String.format("%.2f",it.data.data.cartServices.totalSellingPrice.toDouble())}"
+                               // binding.btnPay.text = "Pay $${it.data.data.spaTotalSellingPrice}.00"
+                                binding.btnPay.text = "Pay $${String.format("%.2f",it.data.data.spaTotalSellingPrice.toDouble())}"
                                 Log.d("testIssue", "spaTotalSellingPrice: ${{it.data.data.spaTotalSellingPrice}}")
 
 
@@ -156,13 +169,13 @@ class CartFragment : Fragment(), View.OnClickListener {
                                 //     binding.clDelivery.setVisible()
                                 setCartProductsAdapter(it.data.data.cartProducts.products)
                                 binding.tvProductTotalPrice.text =
-                                    "$${it.data.data.cartProducts.totalMrp}"
+                                    "$${String.format("%.2f",it.data.data.cartProducts.totalMrp.toDouble())}"
                                 binding.tvProductTotalDiscountPrice.text =
-                                    "-$${it.data.data.cartProducts.totalDiscount}"
+                                    "-$${String.format("%.2f",it.data.data.cartProducts.totalDiscount.toDouble())}"
                                 binding.tvProductGrandTotalPrice.text =
-                                    "$${it.data.data.cartProducts.totalSellingPrice}"
+                                    "$${String.format("%.2f",it.data.data.cartProducts.totalSellingPrice.toDouble())}"
                                 //  binding.cbHomeDelivery.isChecked = true
-                                binding.btnPay.text = "Pay $${it.data.data.spaTotalSellingPrice}.00"
+                                binding.btnPay.text = "Pay $${String.format("%.2f",it.data.data.spaTotalSellingPrice.toDouble())}"
                                 deliverAddress()
                             } else {
                                 binding.clProducts.setGone()

@@ -16,7 +16,6 @@ import com.bumptech.glide.Glide
 class ProductsAdapter(var productsList: ArrayList<ProductsListItem>) : RecyclerView.Adapter<ProductsAdapter.ViewHolder>() {
 
     private lateinit var productsCallbacks: ProductsCallbacks
-
     class ViewHolder(val binding : ItemProductsBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -28,15 +27,14 @@ class ProductsAdapter(var productsList: ArrayList<ProductsListItem>) : RecyclerV
         return productsList.size
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "DefaultLocale")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         var countInCart :Int =0
-
         val item = productsList[position]
         holder.binding.apply {
             tvServiceName.text = item.name
-            tvRupees.text = "$${item.listingPrice}"
-            tvLessRupees.text = "$${item.basePrice}"
+            tvRupees.text = "$${String.format("%.2f",item.listingPrice!!.toDouble())}"
+            tvLessRupees.text = "$${String.format("%.2f",item.basePrice!!.toDouble())}"
             Glide.with(holder.itemView.context).load(ApiConstants.BASE_FILE +item.image).error(R.drawable.no_product).placeholder(
                 R.drawable.no_product).into(ivService)
             Log.d("countInCart","countInCart->${item.countInCart}")
@@ -53,13 +51,11 @@ class ProductsAdapter(var productsList: ArrayList<ProductsListItem>) : RecyclerV
             clAddCart.setOnClickListener {
                 countInCart=1
                 productsCallbacks.addOrUpdateProductInCart(item.productId,countInCart,item.stock)
-
             }
 
             ivPlus.setOnClickListener {
                 countInCart++
                 productsCallbacks.addOrUpdateProductInCart(item.productId,countInCart,item.stock)
-
             }
 
             ivMinus.setOnClickListener {
@@ -73,9 +69,7 @@ class ProductsAdapter(var productsList: ArrayList<ProductsListItem>) : RecyclerV
                 productsCallbacks.rootProducts(item)
             }
 
-
         }
-
     }
 
     fun setOnClickProducts(onClick : ProductsCallbacks){

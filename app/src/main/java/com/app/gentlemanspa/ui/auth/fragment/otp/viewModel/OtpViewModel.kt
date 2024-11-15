@@ -27,6 +27,7 @@ class OtpViewModel(private var initialRepository: InitialRepository):AndroidView
     val profileId = ObservableField<RequestBody>()
     val newPassword  = ObservableField<String>()
     val email  = ObservableField<String>()
+    val isVerify  = ObservableField<Boolean>()
     val resultForgetPassword = MutableLiveData<Resource<ForgetPasswordResponse>>()
     val resultRegisterAccount = MutableLiveData<Resource<SignUpResponse>>()
     val resultProfileRegister = MutableLiveData<Resource<ProfileRegisterResponse>>()
@@ -114,7 +115,7 @@ class OtpViewModel(private var initialRepository: InitialRepository):AndroidView
     fun resendEmailOtp() {
         resultResendEmailOtp.value = Resource.loading(null)
         viewModelScope.launch {
-            initialRepository.emailOtp(EmailOtpRequest(email.get()!!, false))
+            initialRepository.emailOtp(EmailOtpRequest(email.get()!!, isVerify.get()!!))
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->
