@@ -92,6 +92,7 @@
                             android:imeOptions="actionDone"
                             android:paddingVertical="@dimen/_6sdp"
                             android:singleLine="true"
+                            android:textSize="@dimen/_12sdp"
                             android:hint="@string/search_here"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@+id/ivSearch" />
@@ -116,6 +117,7 @@
                             android:layout_height="@dimen/_18sdp"
                             android:layout_marginHorizontal="@dimen/_7sdp"
                             android:src="@drawable/filter"
+                            android:tint="@color/app_color"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"

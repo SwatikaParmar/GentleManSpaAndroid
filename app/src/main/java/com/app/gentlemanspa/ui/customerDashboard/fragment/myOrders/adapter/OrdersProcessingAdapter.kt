@@ -12,6 +12,7 @@ import com.app.gentlemanspa.databinding.ItemOrdersProcessingBinding
 import com.app.gentlemanspa.network.ApiConstants
 import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.UpcomingServiceAppointmentItem
 import com.app.gentlemanspa.ui.customerDashboard.fragment.myOrders.model.MyOrdersDataItem
+import com.app.gentlemanspa.utils.convertDateFormat
 import com.app.gentlemanspa.utils.formatDayDate
 import com.bumptech.glide.Glide
 
@@ -43,7 +44,7 @@ class OrdersProcessingAdapter(private val dataList: ArrayList<MyOrdersDataItem>)
             // tvAssignedValue.text= item.professionalName
             Log.d("professionalName", "name:${item.professionalName}")
             tvBookingId.text = "BOOKING ID: ${item.orderId}"
-            tvDate.text = "ORDER DATE: ${item.orderDate}"
+            tvDate.text = "ORDER DATE: ${convertDateFormat(item.orderDate)}"
             tvOrderStatus.text = item.orderStatus
             Glide.with(holder.itemView.context).load(ApiConstants.BASE_FILE + item.productImage)
                 .error(

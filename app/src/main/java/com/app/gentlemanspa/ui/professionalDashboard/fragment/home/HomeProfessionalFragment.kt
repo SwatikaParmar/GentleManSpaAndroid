@@ -2,6 +2,7 @@ package com.app.gentlemanspa.ui.professionalDashboard.fragment.home
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,8 @@ import com.app.gentlemanspa.network.ApiConstants.BASE_FILE
 import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.network.Status
 import com.app.gentlemanspa.ui.customerDashboard.activity.CustomerActivity
+import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.RegisterUserInFirebaseRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.UserState
 import com.app.gentlemanspa.ui.professionalDashboard.activity.ProfessionalActivity
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.home.adapter.ConfirmedAppointmentAdapter
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.home.adapter.PastAppointmentAdapter
@@ -21,12 +24,19 @@ import com.app.gentlemanspa.ui.professionalDashboard.fragment.home.adapter.Upcom
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.home.viewModel.HomeProfessionalViewModel
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.profile.viewModel.ProfileProfessionalDetailViewModel
 import com.app.gentlemanspa.utils.AppPrefs
+import com.app.gentlemanspa.utils.FCM_TOKEN
 import com.app.gentlemanspa.utils.PROFESSIONAL_DETAIL_ID
+import com.app.gentlemanspa.utils.PROFESSIONAL_USER_ID
+import com.app.gentlemanspa.utils.USER_ID
 import com.app.gentlemanspa.utils.ViewModelFactory
+import com.app.gentlemanspa.utils.getCustomerCurrentDate
+import com.app.gentlemanspa.utils.getCustomerCurrentTime
 import com.app.gentlemanspa.utils.showToast
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 
 
 class HomeProfessionalFragment : Fragment(), View.OnClickListener {
@@ -61,7 +71,41 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initUI()
+        registerProfessionalInFirebase()
+
     }
+
+    private fun registerProfessionalInFirebase() {
+        Log.e("FirebaseRegister", "${AppPrefs(requireContext()).getStringPref(PROFESSIONAL_USER_ID)}")
+
+        val profileProfessionalData= AppPrefs(requireContext()).getProfileProfessionalData("PROFILE_DATA")
+        if (profileProfessionalData?.data?.firstName.toString().isNotEmpty() && profileProfessionalData?.data?.email.toString().isNotEmpty() && profileProfessionalData?.data?.gender.toString().isNotEmpty()) {
+            val userState = UserState(getCustomerCurrentDate(), "online", getCustomerCurrentTime())
+            val user = RegisterUserInFirebaseRequest(
+                uid = "${AppPrefs(requireContext()).getStringPref(PROFESSIONAL_USER_ID)}",
+                email = profileProfessionalData?.data?.email.toString(),
+                fcm_token = "${AppPrefs(requireContext()).getStringPref(FCM_TOKEN)}",
+                gender = profileProfessionalData?.data?.gender.toString(),
+                image = "${profileProfessionalData?.data?.profilepic}",
+                name = "${profileProfessionalData?.data?.firstName} ${profileProfessionalData?.data?.lastName}",
+                userState = userState
+            )
+            registerProfessional(user)
+        } else {
+            Log.e("FirebaseRegister", "Please fill all fields")
+        }
+    }
+    private fun registerProfessional(user: RegisterUserInFirebaseRequest) {
+        val database: DatabaseReference = FirebaseDatabase.getInstance().reference
+        database.child("Users").child(user.uid).setValue(user)
+            .addOnSuccessListener {
+                Log.d("FirebaseRegister", "Professional registered successfully!")
+            }
+            .addOnFailureListener { exception ->
+                Log.e("FirebaseRegister", "Error registering user: ${exception.message}")
+            }
+    }
+
     private fun initObserver() {
         viewModel.resultProfileProfessionalDetailAccount.observe(this) {
             it?.let { result ->

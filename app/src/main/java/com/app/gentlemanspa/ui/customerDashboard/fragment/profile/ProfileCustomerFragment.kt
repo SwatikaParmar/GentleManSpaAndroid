@@ -1,6 +1,7 @@
 package com.app.gentlemanspa.ui.customerDashboard.fragment.profile
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -61,7 +62,19 @@ class ProfileCustomerFragment : Fragment(), View.OnClickListener {
                 val action=ProfileCustomerFragmentDirections.actionProfileCustomerFragmentToEvenFragment()
                 findNavController().navigate(action)
             }
+            binding.clRefer->{
+              refer()
+            }
         }
+    }
+
+    private fun refer() {
+        val url = "https://www.testUrl.com"
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"  // Set MIME type for text content
+            putExtra(Intent.EXTRA_TEXT, url)  // Add the URL as the text to share
+        }
+        startActivity(Intent.createChooser(shareIntent, "Share URL via"))
     }
 
 

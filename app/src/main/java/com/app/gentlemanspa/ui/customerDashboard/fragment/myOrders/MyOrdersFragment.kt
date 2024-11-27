@@ -93,8 +93,8 @@ class MyOrdersFragment : Fragment(), View.OnClickListener {
     }
     override fun onClick(v: View) {
         when(v){
-            binding.ivArrowBack ->{
-                findNavController().popBackStack()
+            binding.ivDrawer ->{
+                (activity as CustomerActivity).isDrawer(true)
             }
             binding.tvProcessing->{
                 setOrdersSelection(binding.tvProcessing)

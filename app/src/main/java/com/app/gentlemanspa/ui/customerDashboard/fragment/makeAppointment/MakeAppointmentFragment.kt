@@ -250,9 +250,17 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
                 )
             }
         }
-        Log.d("dateBook", "dateBook at zero->$${selectedDates[0]}")
+        if (selectedDates.size>0){
+            Log.d("selectedDates", "selectedDates at zero->$${selectedDates[0]}")
+            callServiceAvailableTimeSlotsApi(formatCalendarDayToYear(selectedDates[0]))
+            binding.clNoDataFound.setGone()
+            binding.clData.setVisible()
+        }else{
+            Log.d("selectedDates", "response data is zero")
+            binding.clNoDataFound.setVisible()
+            binding.clData.setGone()
+        }
 
-        callServiceAvailableTimeSlotsApi(formatCalendarDayToYear(selectedDates[0]))
         binding.calendarView.removeDecorators() // Clear any existing decorators
         binding.calendarView.addDecorator(
             CircularEventDecorator(

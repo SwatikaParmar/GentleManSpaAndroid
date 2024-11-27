@@ -52,3 +52,31 @@ fun formatCalendarDayToYear(calendarDay: CalendarDay): String {
     val dateFormat = SimpleDateFormat("hh:mm a", Locale.getDefault()) // Format like "10:30 AM"
     return dateFormat.format(Date()) // Get the current date and time, and format it
 }
+
+fun getCustomerCurrentDate(): String {
+    val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    return dateFormat.format(Date())
+}
+fun getCustomerCurrentTime(): String {
+    val timeFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
+    return timeFormat.format(Date())
+}
+
+fun convertDateFormat(inputDate: String): String {
+    // Define the input and output date formats
+    val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    val outputFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+
+    return try {
+        // Parse the input date string to a Date object
+        val date = inputFormat.parse(inputDate)
+
+        // If parsing is successful, format it into the desired format
+        date?.let {
+            outputFormat.format(it)
+        } ?: inputDate // In case parsing fails, return the original string
+    } catch (e: Exception) {
+        e.printStackTrace()
+        inputDate // In case of error, return the original string
+    }
+}

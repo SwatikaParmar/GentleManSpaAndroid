@@ -31,7 +31,6 @@ class CustomerActivity : AppCompatActivity(),HomeCustomerFragment.OnProfileUpdat
         setContentView(binding.root)
         navView = binding.navView1
         initUI()
-
     }
 
     private fun initUI() {
@@ -73,7 +72,6 @@ class CustomerActivity : AppCompatActivity(),HomeCustomerFragment.OnProfileUpdat
             binding.drawerLayout.openDrawer(GravityCompat.START)
         }
     }
-
     fun bottomNavigation(isBoolean: Boolean) {
         if (isBoolean){
             binding.bottomNavigationView.setVisible()
@@ -83,7 +81,6 @@ class CustomerActivity : AppCompatActivity(),HomeCustomerFragment.OnProfileUpdat
             binding.viewBottom.setGone()
         }
     }
-
     override fun onBackPressed() {
         val fragmentPosition = navHost.childFragmentManager.fragments[0]
         if (fragmentPosition is HomeCustomerFragment){
@@ -91,14 +88,11 @@ class CustomerActivity : AppCompatActivity(),HomeCustomerFragment.OnProfileUpdat
         }else{
             super.onBackPressed()
         }
-
     }
-
     private fun closeApp() {
         val builder = AlertDialog.Builder(this@CustomerActivity)
         builder.setTitle("Confirm")
         builder.setMessage("Are you sure want to close app?")
-
         builder.setPositiveButton(android.R.string.yes) { dialog, which ->
             finishAffinity()
         }
@@ -109,28 +103,14 @@ class CustomerActivity : AppCompatActivity(),HomeCustomerFragment.OnProfileUpdat
 
         builder.show()
     }
-
-
     private fun setNavDrawer() {
         binding.navView1.setNavigationItemSelectedListener {
             val id = it.itemId
 
             when (id) {
                 R.id.homeCustomer -> {
-                    // navController.navigate(R.id.homeFragment)
+                     navController.navigate(R.id.homeCustomerFragment)
                 }
-
-              /*  R.id.myProfileCustomer -> {
-                    // navController.navigate(R.id.myConsultsFragment)
-                }
-
-                R.id.myBookingCustomer -> {
-                    //  navController.navigate(R.id.medicalRecordsFragment)
-                }
-
-                R.id.addressBookCustomer -> {
-                    // navController.navigate(R.id.blogsFragment)
-                }*/
                 R.id.myOrders ->{
                     navController.navigate(R.id.myOrdersFragment)
                 }
@@ -151,31 +131,25 @@ class CustomerActivity : AppCompatActivity(),HomeCustomerFragment.OnProfileUpdat
             true
         }
     }
-
     private fun showLogOut() {
         val builder = AlertDialog.Builder(this@CustomerActivity)
         builder.setTitle("Alert")
         builder.setMessage("Are you sure you want to Logout?")
-
         builder.setPositiveButton(android.R.string.yes) { dialog, which ->
-
             AppPrefs(this).setString("TOKEN","")
             AppPrefs(this).setString("ROLE","")
             val intent = Intent(this, AuthActivity::class.java)
             intent.putExtra("LOG_OUT","logout")
             startActivity(intent)
             finish()
-
             dialog.dismiss()
         }
 
         builder.setNegativeButton(android.R.string.no) { dialog, which ->
             dialog.dismiss()
         }
-
         builder.show()
     }
-
     override fun onProfileUpdated(name: String, email: String, profileImage: String) {
         val headerView = navView.getHeaderView(0)
         val tvNavName: TextView = headerView.findViewById(R.id.nameTV)
@@ -183,6 +157,5 @@ class CustomerActivity : AppCompatActivity(),HomeCustomerFragment.OnProfileUpdat
         tvNavName.text=name
         Glide.with(this).load(profileImage).into(ivNavProfileImage)
     }
-
 
 }

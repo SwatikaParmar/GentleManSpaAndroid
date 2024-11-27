@@ -11,7 +11,6 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.mod
 import com.bumptech.glide.Glide
 
 class AnyProfessionalAdapter(private var professionalList: ArrayList<ProfessionalItem>) : RecyclerView.Adapter<AnyProfessionalAdapter.ViewHolder>() {
-
     private lateinit var anyProfessionalCallbacks :AnyProfessionalCallbacks
     class ViewHolder(val binding : ItemSelectProfessionalBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -26,24 +25,18 @@ class AnyProfessionalAdapter(private var professionalList: ArrayList<Professiona
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
         val item = professionalList[position]
         holder.binding.apply {
             tvServiceName.text = "${item.firstName} ${item.lastName}"
             val specialities= item.professionalDetail?.speciality?.map { it }
             val specialityName = specialities?.joinToString(",")
             tvSpecialist.text = specialityName
-
             Glide.with(holder.itemView.context).load(ApiConstants.BASE_FILE +item.profilepic).placeholder(
                 R.drawable.professional_placeholder).error(R.drawable.professional_placeholder).into(ivService)
-
             root.setOnClickListener {
                 anyProfessionalCallbacks.rootAnyProfessional(item)
             }
         }
-
-
-
     }
 
     fun setOnSelectProfessionalCallbacks(onClick :AnyProfessionalCallbacks) {

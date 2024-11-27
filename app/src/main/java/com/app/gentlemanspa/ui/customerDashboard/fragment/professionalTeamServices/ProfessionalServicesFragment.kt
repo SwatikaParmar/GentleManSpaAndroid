@@ -1,4 +1,4 @@
-package com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeam
+package com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeamServices
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -11,7 +11,6 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.app.gentlemanspa.R
-import com.app.gentlemanspa.base.MyApplication
 import com.app.gentlemanspa.base.MyApplication.Companion.hideProgress
 import com.app.gentlemanspa.base.MyApplication.Companion.showProgress
 import com.app.gentlemanspa.databinding.FragmentProfessionalTeamBinding
@@ -19,9 +18,9 @@ import com.app.gentlemanspa.network.ApiConstants
 import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.network.Status
 import com.app.gentlemanspa.ui.customerDashboard.activity.CustomerActivity
-import com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeam.adapter.ProfessionalServicesAdapter
-import com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeam.model.ServicesData
-import com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeam.viewModel.ProfessionalServicesViewModel
+import com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeamServices.adapter.ProfessionalServicesAdapter
+import com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeamServices.model.ServicesData
+import com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeamServices.viewModel.ProfessionalServicesViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.model.ProfessionalItem
 import com.app.gentlemanspa.utils.ViewModelFactory
 import com.app.gentlemanspa.utils.formatDuration
@@ -30,7 +29,6 @@ import com.app.gentlemanspa.utils.setGone
 import com.app.gentlemanspa.utils.setVisible
 import com.app.gentlemanspa.utils.showToast
 import com.bumptech.glide.Glide
-import okhttp3.internal.addHeaderLenient
 
 class ProfessionalServicesFragment : Fragment(), View.OnClickListener {
     lateinit var binding:FragmentProfessionalTeamBinding

@@ -37,17 +37,25 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.BannerItem
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.CategoriesItem
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.LocationItem
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductCategoriesItem
+import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.RegisterUserInFirebaseRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.UserState
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.viewModel.HomeCustomerViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.model.ProfessionalItem
 import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.model.ProfessionalResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.home.HomeProfessionalFragment.OnProfileUpdatedListener
 import com.app.gentlemanspa.utils.AppPrefs
+import com.app.gentlemanspa.utils.FCM_TOKEN
+import com.app.gentlemanspa.utils.USER_ID
 import com.app.gentlemanspa.utils.ViewModelFactory
+import com.app.gentlemanspa.utils.getCustomerCurrentDate
+import com.app.gentlemanspa.utils.getCustomerCurrentTime
 import com.app.gentlemanspa.utils.setVisible
 import com.app.gentlemanspa.utils.showToast
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 
 
 class HomeCustomerFragment : Fragment(), View.OnClickListener {
@@ -102,7 +110,39 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
         (activity as CustomerActivity).bottomNavigation(true)
         initUI()
+        registerUserInFirebase()
 
+    }
+
+    private fun registerUserInFirebase() {
+        Log.e("FirebaseRegister", "${AppPrefs(requireContext()).getStringPref(USER_ID)}")
+
+        val profileCustomerData= AppPrefs(requireContext()).getProfileCustomerData("PROFILE_DATA")
+        if (profileCustomerData?.data?.firstName.toString().isNotEmpty() && profileCustomerData?.data?.email.toString().isNotEmpty() && profileCustomerData?.data?.gender.toString().isNotEmpty()) {
+            val userState = UserState(getCustomerCurrentDate(), "online", getCustomerCurrentTime())
+            val user = RegisterUserInFirebaseRequest(
+                uid = "${AppPrefs(requireContext()).getStringPref(USER_ID)}",
+                email = profileCustomerData?.data?.email.toString(),
+                fcm_token = "${AppPrefs(requireContext()).getStringPref(FCM_TOKEN)}",
+                gender = profileCustomerData?.data?.gender.toString(),
+                image = "${profileCustomerData?.data?.profilepic}",
+                name = "${profileCustomerData?.data?.firstName} ${profileCustomerData?.data?.lastName}",
+                userState = userState
+            )
+            registerUser(user)
+        } else {
+            Log.e("FirebaseRegister", "Please fill all fields")
+        }
+    }
+    private fun registerUser(user: RegisterUserInFirebaseRequest) {
+        val database: DatabaseReference = FirebaseDatabase.getInstance().reference
+        database.child("Users").child(user.uid).setValue(user)
+            .addOnSuccessListener {
+                Log.d("FirebaseRegister", "User registered successfully!")
+            }
+            .addOnFailureListener { exception ->
+                Log.e("FirebaseRegister", "Error registering user: ${exception.message}")
+            }
     }
 
     private fun initUI() {
@@ -129,7 +169,8 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
                     Status.SUCCESS -> {
                         hideProgress()
                         AppPrefs(requireContext()).setProfileCustomerData("PROFILE_DATA",it.data)
-                        val name = "${it.data?.data?.firstName} ${it.data?.data?.lastName}"
+                      //  val name = "${it.data?.data?.firstName} ${it.data?.data?.lastName}"
+                        val name = "${it.data?.data?.firstName}"
                         val email = it.data?.data?.email.toString()
                         profileUpdatedListener.onProfileUpdated(name,email, BASE_FILE +it.data?.data?.profilepic)
                         Log.d("homeProfile","name->$name email->$email")

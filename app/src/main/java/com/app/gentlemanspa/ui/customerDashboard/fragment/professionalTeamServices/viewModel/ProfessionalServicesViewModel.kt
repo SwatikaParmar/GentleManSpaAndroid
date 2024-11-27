@@ -1,4 +1,4 @@
-package com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeam.viewModel
+package com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeamServices.viewModel
 
 import android.app.Application
 import androidx.databinding.ObservableField
@@ -6,7 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.app.gentlemanspa.network.InitialRepository
-import com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeam.model.ProfessionalServicesResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeamServices.model.ProfessionalServicesResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.AddServiceToCartRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.AddServiceToCartResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.GetCartItemsResponse

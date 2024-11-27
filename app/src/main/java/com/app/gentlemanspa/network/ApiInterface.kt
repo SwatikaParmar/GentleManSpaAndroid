@@ -42,7 +42,7 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.myOrders.model.MyOrder
 import com.app.gentlemanspa.ui.customerDashboard.fragment.product.model.AddProductInCartRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.product.model.AddProductInCartResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.productDetail.model.ProductDetailResponse
-import com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeam.model.ProfessionalServicesResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeamServices.model.ProfessionalServicesResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.model.ProfessionalResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.AddServiceToCartRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.AddServiceToCartResponse

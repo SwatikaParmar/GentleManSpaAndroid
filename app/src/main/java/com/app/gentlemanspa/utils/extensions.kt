@@ -1,6 +1,11 @@
 package com.app.gentlemanspa.utils
 
+import android.app.NotificationManager
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
+import android.provider.Settings
 import android.util.Patterns
 import android.view.View
 import android.widget.EditText
@@ -39,4 +44,26 @@ fun View.setVisible() {
 }
 fun View.setInvisible() {
     visibility = View.INVISIBLE
+}
+
+fun areNotificationsEnabled(context: Context): Boolean {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.areNotificationsEnabled()
+    } else {
+        // Notifications are always enabled for versions before Oreo
+        true
+    }
+}
+fun openNotificationSettings(context: Context) {
+    val intent = Intent()
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        intent.action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
+        intent.putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+    } else {
+        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+        val uri = Uri.fromParts("package", context.packageName, null)
+        intent.data = uri
+    }
+    context.startActivity(intent)
 }

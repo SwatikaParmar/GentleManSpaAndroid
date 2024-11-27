@@ -39,8 +39,10 @@ class CartServicesAdapter (private var serviceList: List<Service>) : RecyclerVie
         holder.binding.apply {
             tvServiceName.text = item.name
             tvTime.text = "${item.durationInMinutes} mins"
-            tvRupees.text = String.format("%.2f", item.listingPrice.toDouble())
-            tvLessRupees.text = String.format("%.2f",item.basePrice.toDouble())
+           /* tvRupees.text = String.format("%.2f", item.listingPrice.toDouble())
+            tvLessRupees.text = String.format("%.2f",item.basePrice.toDouble())*/
+            tvRupees.text = "$${item.listingPrice}"
+            tvLessRupees.text = "$${item.basePrice}"
             Log.d("slotDate","slotDate->${item.slotDate}")
             if (item.slotDate !=null){
                 tvSlotDateTime.setVisible()

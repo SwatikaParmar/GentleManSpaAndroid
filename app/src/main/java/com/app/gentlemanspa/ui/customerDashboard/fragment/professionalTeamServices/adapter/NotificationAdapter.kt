@@ -1,4 +1,4 @@
-package com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeam.adapter
+package com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeamServices.adapter
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater

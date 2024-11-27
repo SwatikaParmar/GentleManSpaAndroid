@@ -25,10 +25,10 @@
     <string name="vip_clients">VIP Clients</string>
     <string name="service_categories">Service Categories</string>
     <string name="product_categories">Product Categories</string>
-    <string name="search_here">Search Here</string>
+    <string name="search_here">Search here</string>
     <string name="select_professional">Select Professional</string>
-    <string name="maximum_availablity">Maximum availablity</string>
-    <string name="any_professional">Any Professional</string>
+    <string name="maximum_availability">Maximum availability</string>
+    <string name="any_professional">Any professional</string>
     <string name="no_data_found">No Data Found</string>
     <string name="team">Team</string>
     <string name="select_service">Select Service</string>

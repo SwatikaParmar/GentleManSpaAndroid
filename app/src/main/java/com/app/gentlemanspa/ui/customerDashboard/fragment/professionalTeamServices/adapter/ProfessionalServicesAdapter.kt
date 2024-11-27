@@ -1,16 +1,13 @@
-package com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeam.adapter
+package com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeamServices.adapter
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.app.gentlemanspa.R
 import com.app.gentlemanspa.databinding.ItemServiceBinding
 import com.app.gentlemanspa.network.ApiConstants
-import com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeam.model.ServicesData
-import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.ServiceListItem
-import com.app.gentlemanspa.utils.CommonFunctions.decimalRoundToInt
+import com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeamServices.model.ServicesData
 import com.bumptech.glide.Glide
 
 class ProfessionalServicesAdapter(private var professionalServiceList: ArrayList<ServicesData>) : RecyclerView.Adapter<ProfessionalServicesAdapter.ViewHolder>() {

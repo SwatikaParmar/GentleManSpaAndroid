@@ -56,7 +56,9 @@
                     android:layout_width="@dimen/_80sdp"
                     android:layout_height="@dimen/_80sdp"
                     android:layout_marginTop="@dimen/_15sdp"
-                    android:scaleType="fitXY"
+                    android:scaleType="centerCrop"
+                    app:strokeWidth="@dimen/_1sdp"
+                    app:strokeColor="@color/black"
                     android:src="@drawable/profile_placeholder"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -274,6 +276,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/_10sdp"
                 android:layout_marginTop="@dimen/_10sdp"
+                android:onClick="@{onClick}"
                 app:layout_constraintTop_toBottomOf="@+id/clEvent">
 
                 <androidx.constraintlayout.widget.ConstraintLayout

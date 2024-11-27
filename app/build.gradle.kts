@@ -6,6 +6,8 @@ plugins {
     id("kotlin-kapt")
     id("kotlin-parcelize")
     id("androidx.navigation.safeargs.kotlin")
+ //   id("com.android.application")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -56,6 +58,8 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.firebase.messaging.ktx)
+    implementation(libs.firebase.firestore.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -83,11 +87,16 @@ dependencies {
 
     implementation (libs.material.calendarview)
 
-    implementation ("com.daimajia.swipelayout:library:1.2.0@aar")
+    implementation (libs.swipelayout.library)
 
     //GOOGLE MAPS GOOGLE PLAY SERVICES DEPENDENCY=====
-    implementation ("com.google.android.gms:play-services-maps:18.0.2")
-    implementation ("com.google.android.gms:play-services-location:19.0.1")
+    implementation (libs.play.services.maps)
+    implementation (libs.play.services.location)
+
+    // Import the Firebase BoM
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation ("com.google.firebase:firebase-database-ktx")
 
 
 

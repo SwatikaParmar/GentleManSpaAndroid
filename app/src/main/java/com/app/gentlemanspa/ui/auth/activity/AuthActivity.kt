@@ -14,13 +14,14 @@ import androidx.navigation.fragment.NavHostFragment
 import com.app.gentlemanspa.R
 import com.app.gentlemanspa.databinding.ActivityAuthBinding
 import com.app.gentlemanspa.ui.auth.fragment.login.LoginFragment
+import com.google.firebase.messaging.FirebaseMessaging
 
 
 @Suppress("DEPRECATION")
 class AuthActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private lateinit var navHost: NavHostFragment
-    private lateinit var binding : ActivityAuthBinding
+    private lateinit var binding: ActivityAuthBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,9 +38,9 @@ class AuthActivity : AppCompatActivity() {
         val graph = navInflater.inflate(R.navigation.auth)
         val logout = intent.getStringExtra("LOG_OUT").toString()
 
-        if (logout=="logout") {
+        if (logout == "logout") {
             graph.setStartDestination(R.id.loginFragment)
-        }else{
+        } else {
             graph.setStartDestination(R.id.splashFragment)
         }
         navController.graph = graph
@@ -49,9 +50,9 @@ class AuthActivity : AppCompatActivity() {
     @Deprecated("This method has been deprecated in favor of using the\n      {@link OnBackPressedDispatcher} via {@link #getOnBackPressedDispatcher()}.\n      The OnBackPressedDispatcher controls how back button events are dispatched\n      to one or more {@link OnBackPressedCallback} objects.")
     override fun onBackPressed() {
         val fragmentPosition = navHost.childFragmentManager.fragments[0]
-        if (fragmentPosition is LoginFragment){
+        if (fragmentPosition is LoginFragment) {
             closeApp()
-        }else{
+        } else {
             super.onBackPressed()
         }
 

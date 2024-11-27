@@ -19,7 +19,7 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.viewMo
 import com.app.gentlemanspa.ui.customerDashboard.fragment.myOrders.viewModel.MyOrdersViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.product.viewModel.ProductViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.productDetail.viewModel.ProductDetailViewModel
-import com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeam.viewModel.ProfessionalServicesViewModel
+import com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeamServices.viewModel.ProfessionalServicesViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.viewModel.ProfessionalViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessionalService.viewModel.SelectProfessionalServiceViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.service.viewModel.ServiceViewModel

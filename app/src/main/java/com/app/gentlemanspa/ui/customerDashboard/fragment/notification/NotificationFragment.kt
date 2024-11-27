@@ -5,13 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.navigation.fragment.findNavController
-import com.app.gentlemanspa.R
 import com.app.gentlemanspa.databinding.FragmentNotificationBinding
 import com.app.gentlemanspa.ui.customerDashboard.activity.CustomerActivity
-import com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeam.adapter.NotificationAdapter
-import com.app.gentlemanspa.ui.professionalDashboard.activity.ProfessionalActivity
+import com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeamServices.adapter.NotificationAdapter
 
 class NotificationFragment : Fragment(), View.OnClickListener {
 lateinit var binding:FragmentNotificationBinding

@@ -196,7 +196,7 @@
 
     <fragment
         android:id="@+id/professionalServiceFragment"
-        android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeam.ProfessionalServicesFragment"
+        android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeamServices.ProfessionalServicesFragment"
         android:label="ProfessionalTeamFragment"
         tools:layout="@layout/fragment_professional_team">
         <action

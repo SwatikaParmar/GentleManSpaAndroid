@@ -34,8 +34,11 @@ class CartProductsAdapter (var productsList: List<Product>) : RecyclerView.Adapt
         val item = productsList[position]
         holder.binding.apply {
             tvServiceName.text = item.name
-            tvRupees.text = String.format("%.2f",item.listingPrice.toDouble())
-            tvLessRupees.text =  String.format("%.2f",item.basePrice.toDouble())
+           // tvRupees.text = String.format("%.2f",item.listingPrice.toDouble())
+           // tvLessRupees.text =  String.format("%.2f",item.basePrice.toDouble())
+
+            tvRupees.text ="$${item.listingPrice}"
+            tvLessRupees.text ="$${item.basePrice}"
             Glide.with(holder.itemView.context).load(ApiConstants.BASE_FILE +item.productImage).error(R.drawable.no_product).placeholder(
                 R.drawable.no_product).into(ivService)
             Log.d("countInCart","countInCart->${item.countInCart}")

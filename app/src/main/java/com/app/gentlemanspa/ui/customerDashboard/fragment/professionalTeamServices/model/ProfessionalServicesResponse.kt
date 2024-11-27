@@ -1,4 +1,4 @@
-package com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeam.model
+package com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeamServices.model
 
 data class ProfessionalServicesResponse(
     val data: List<ServicesData>,

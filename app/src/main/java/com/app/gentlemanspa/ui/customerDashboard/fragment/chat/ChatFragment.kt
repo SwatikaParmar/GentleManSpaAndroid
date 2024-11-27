@@ -18,6 +18,7 @@ class ChatFragment : Fragment(), View.OnClickListener {
     private val chatMessages = mutableListOf<ChatMessage>()
     private lateinit var chatAdapter: ChatAdapter
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

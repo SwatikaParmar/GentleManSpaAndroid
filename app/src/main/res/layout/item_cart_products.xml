@@ -19,7 +19,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/light_white"
+            android:background="@color/white"
             android:padding="@dimen/_7sdp">
 
             <com.google.android.material.imageview.ShapeableImageView
@@ -58,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:text="$60"
                 android:textColor="@color/light_grey"
-                android:fontFamily="@font/poppins_medium"
+                android:fontFamily="@font/poppins_semibold"
                 android:textSize="@dimen/_13ssp"
                 android:includeFontPadding="false"
                 android:layout_marginTop="@dimen/_2sdp"
@@ -73,7 +73,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="$70"
-                android:textColor="@color/app_color"
+                android:textColor="@color/light_grey_text_color"
                 android:fontFamily="@font/poppins"
                 android:textSize="@dimen/_13ssp"
                 android:includeFontPadding="false"
