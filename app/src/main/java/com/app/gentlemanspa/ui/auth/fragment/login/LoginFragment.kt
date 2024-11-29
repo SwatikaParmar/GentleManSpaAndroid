@@ -80,7 +80,6 @@ class LoginFragment : Fragment(), View.OnClickListener {
                             requireActivity().finishAffinity()
                         }
                     }
-
                     Status.ERROR -> {
                        // requireContext().showToast(it.message.toString())
                         hideProgress()
