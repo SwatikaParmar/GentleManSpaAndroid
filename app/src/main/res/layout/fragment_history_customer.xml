@@ -128,14 +128,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_marginTop="@dimen/_3sdp"
-                        android:layout_marginStart="@dimen/_7sdp"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        app:layout_constraintTop_toBottomOf="@+id/llAppointment"
                         android:orientation="vertical"
-                        tools:itemCount="6"
-                        tools:listitem="@layout/item_past_customer"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        />
+                        app:layout_constraintTop_toBottomOf="@+id/llAppointment"
+                        app:layout_constraintVertical_bias="1.0"
+                        tools:itemCount="6"
+                        tools:layout_editor_absoluteX="-188dp"
+                        tools:listitem="@layout/item_past_customer" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

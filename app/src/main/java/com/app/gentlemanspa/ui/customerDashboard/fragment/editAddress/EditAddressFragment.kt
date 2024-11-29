@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.app.gentlemanspa.R
@@ -197,8 +198,12 @@ class EditAddressFragment : Fragment(), View.OnClickListener {
                     Status.SUCCESS -> {
                         hideProgress()
                         requireContext().showToast(it.message.toString())
-                        val action=EditAddressFragmentDirections.actionAddressFragmentToAddressFragment()
-                        findNavController().navigate(action)
+                        val action=EditAddressFragmentDirections.actionEditAddressFragmentToAddressFragment()
+                        //Finish Current Fragment and previous fragment
+                        val navOptions = NavOptions.Builder().setPopUpTo(R.id.editAddressFragment, true)
+                            .setPopUpTo(R.id.addressFragment, true).build()
+                        findNavController().navigate(action,navOptions)
+
 
                     }
 
@@ -219,8 +224,12 @@ class EditAddressFragment : Fragment(), View.OnClickListener {
                     Status.SUCCESS -> {
                         hideProgress()
                         requireContext().showToast(it.message.toString())
-                        val action=EditAddressFragmentDirections.actionAddressFragmentToAddressFragment()
-                        findNavController().navigate(action)
+                        val action=EditAddressFragmentDirections.actionEditAddressFragmentToAddressFragment()
+                        //Finish Current Fragment and previous fragment
+                        val navOptions = NavOptions.Builder().setPopUpTo(R.id.editAddressFragment, true)
+                            .setPopUpTo(R.id.addressFragment, true).build()
+                        findNavController().navigate(action,navOptions)
+
 
                     }
 
@@ -360,6 +369,9 @@ class EditAddressFragment : Fragment(), View.OnClickListener {
 
 
     private fun switchCase(){
+        Log.d("addressDetail","adminArea->${customerAddress?.adminArea.toString()}")
+        Log.d("addressDetail","locality->${customerAddress?.locality.toString()}")
+        Log.d("addressDetail","street->${street}")
         if (binding.btnAddOrUpdateAddress.text.toString() == "Add"){
             viewModel.addCustomerAddress(0,
                 binding.etReceiverName.text.toString(),

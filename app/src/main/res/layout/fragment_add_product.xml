@@ -106,9 +106,6 @@
                     tools:itemCount="5"
                     tools:listitem="@layout/item_product_photo" />
 
-
-
-
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/etProductName"
                     android:layout_width="match_parent"
@@ -127,13 +124,18 @@
                     android:padding="@dimen/_8sdp"
                     android:singleLine="true"
                     app:layout_constraintTop_toBottomOf="@+id/rvProductsPhoto" />
-
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clProductCategory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:background="@drawable/spinner_background"
+                app:layout_constraintTop_toBottomOf="@+id/etProductName">
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvProductCategory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/_15sdp"
-                    android:layout_marginTop="@dimen/_20sdp"
                     android:background="@drawable/bg_edit_text"
                     android:elevation="@dimen/_2sdp"
                     android:fontFamily="@font/poppins"
@@ -146,9 +148,24 @@
                     android:inputType="text"
                     android:padding="@dimen/_8sdp"
                     android:singleLine="true"
-                    app:layout_constraintTop_toBottomOf="@+id/etProductName" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivDropDown"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/_3sdp"
+                    android:layout_marginEnd="@dimen/_5sdp"
+                    android:src="@drawable/ic_arrow_down"
+                    app:layout_constraintTop_toTopOf="@+id/clProductCategory"
+                    app:layout_constraintBottom_toBottomOf="@+id/clProductCategory"
+                    app:layout_constraintEnd_toEndOf="@+id/clProductCategory"
+                    />
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/etBasePrice"
                     android:layout_width="match_parent"
@@ -166,7 +183,7 @@
                     android:inputType="numberDecimal"
                     android:padding="@dimen/_8sdp"
                     android:singleLine="true"
-                    app:layout_constraintTop_toBottomOf="@+id/tvProductCategory" />
+                    app:layout_constraintTop_toBottomOf="@+id/clProductCategory" />
 
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/etListingPrice"

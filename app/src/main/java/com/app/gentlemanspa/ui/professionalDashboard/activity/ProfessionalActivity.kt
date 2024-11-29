@@ -19,6 +19,7 @@ import com.app.gentlemanspa.ui.professionalDashboard.fragment.home.HomeProfessio
 import com.app.gentlemanspa.utils.AppPrefs
 import com.app.gentlemanspa.utils.setGone
 import com.app.gentlemanspa.utils.setVisible
+import com.app.gentlemanspa.utils.share
 import com.bumptech.glide.Glide
 import com.google.android.material.navigation.NavigationView
 
@@ -102,6 +103,8 @@ class ProfessionalActivity : AppCompatActivity(), HomeProfessionalFragment.OnPro
 
                 R.id.refer -> {
                     // navController.navigate(R.id.blogsFragment)
+                    val url = "https://www.testUrl.com"
+                    share(this,url)
                 }
 
 

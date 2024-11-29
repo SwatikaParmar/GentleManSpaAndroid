@@ -14,6 +14,8 @@ import com.app.gentlemanspa.network.ApiConstants
 import com.app.gentlemanspa.ui.customerDashboard.activity.CustomerActivity
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.profile.model.GetProfessionalDetailResponse
 import com.app.gentlemanspa.utils.AppPrefs
+import com.app.gentlemanspa.utils.PROFILE_CUSTOMER_DATA
+import com.app.gentlemanspa.utils.share
 import com.bumptech.glide.Glide
 
 
@@ -41,7 +43,7 @@ class ProfileCustomerFragment : Fragment(), View.OnClickListener {
     @SuppressLint("SetTextI18n")
     private fun initUI() {
         binding.onClick = this
-        profileCustomerData= AppPrefs(requireContext()).getProfileCustomerData("PROFILE_DATA")
+        profileCustomerData= AppPrefs(requireContext()).getProfileCustomerData(PROFILE_CUSTOMER_DATA)
         binding.tvName.text="${profileCustomerData?.data?.firstName} ${profileCustomerData?.data?.lastName}"
         binding.tvPhone.text=profileCustomerData?.data?.phoneNumber
         Glide.with(requireContext()).load(ApiConstants.BASE_FILE +profileCustomerData?.data?.profilepic).into(binding.ivProfile)
@@ -63,19 +65,13 @@ class ProfileCustomerFragment : Fragment(), View.OnClickListener {
                 findNavController().navigate(action)
             }
             binding.clRefer->{
-              refer()
+                val url = "https://www.testUrl.com"
+                share(requireContext(),url)
             }
         }
     }
 
-    private fun refer() {
-        val url = "https://www.testUrl.com"
-        val shareIntent = Intent(Intent.ACTION_SEND).apply {
-            type = "text/plain"  // Set MIME type for text content
-            putExtra(Intent.EXTRA_TEXT, url)  // Add the URL as the text to share
-        }
-        startActivity(Intent.createChooser(shareIntent, "Share URL via"))
-    }
+
 
 
 }

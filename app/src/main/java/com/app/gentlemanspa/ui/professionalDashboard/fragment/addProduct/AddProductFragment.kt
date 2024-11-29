@@ -12,6 +12,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -528,8 +529,9 @@ class AddProductFragment : Fragment(), View.OnClickListener {
     }
 
     private fun isValidation(): Boolean {
+        Log.d("Validation","productsPhoto size-> ${productsPhoto.size}")
         when {
-            (addType == 0 && productsPhoto.size == 0) -> {
+            (addType == 0 && productsPhoto.size <=1) -> {
                 requireContext().showToast("Please upload at least one image")
             }
             binding.etProductName.text.toString().trim().isEmpty() -> {

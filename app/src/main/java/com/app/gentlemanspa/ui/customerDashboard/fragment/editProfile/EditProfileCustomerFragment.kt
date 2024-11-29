@@ -42,6 +42,7 @@ import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.viewMo
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.profile.model.GetProfessionalDetailResponse
 import com.app.gentlemanspa.utils.AppPrefs
 import com.app.gentlemanspa.utils.CommonFunctions
+import com.app.gentlemanspa.utils.PROFILE_CUSTOMER_DATA
 import com.app.gentlemanspa.utils.ViewModelFactory
 import com.app.gentlemanspa.utils.checkString
 import com.app.gentlemanspa.utils.checkValidString
@@ -154,7 +155,7 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
     }
 
     private fun setProfileData() {
-        profileCustomerData= AppPrefs(requireContext()).getProfileCustomerData("PROFILE_DATA")
+        profileCustomerData= AppPrefs(requireContext()).getProfileCustomerData(PROFILE_CUSTOMER_DATA)
         binding.etFirstName.setText(profileCustomerData?.data?.firstName.toString())
         binding.etLastName.setText(profileCustomerData?.data?.lastName)
   //      binding.spGender.setText(profileCustomerData?.data?.professionalDetail?.speciality.)

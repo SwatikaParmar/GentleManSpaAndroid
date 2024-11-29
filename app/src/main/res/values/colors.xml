@@ -26,6 +26,7 @@
     <color name="yellow_color_background">#FFE8D8BD</color>
     <color name="red_color">#FF0000</color>
     <color name="light_grey_text_color">#A6434343</color>
+    <color name="light_app_text_color">#FFE9B1</color>
 
 
 </resources>

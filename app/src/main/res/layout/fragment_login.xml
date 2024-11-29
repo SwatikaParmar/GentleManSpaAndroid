@@ -18,11 +18,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/black_bg">
-
-
-
-
-
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/ivLogin"
                 android:layout_width="@dimen/_150sdp"
@@ -58,7 +53,6 @@
                 android:textSize="@dimen/_12ssp"
                 android:includeFontPadding="false"
                 android:textColor="@color/white"
-                android:textStyle="italic"
                 app:layout_constraintTop_toBottomOf="@id/tvWelcome"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
@@ -69,7 +63,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_edit_text"
                 android:padding="@dimen/_8sdp"
-                android:hint="Email/Phone"
+                android:hint="@string/email_or_phone_no"
                 android:singleLine="true"
                 android:elevation="@dimen/_2sdp"
                 android:layout_marginTop="@dimen/_20sdp"

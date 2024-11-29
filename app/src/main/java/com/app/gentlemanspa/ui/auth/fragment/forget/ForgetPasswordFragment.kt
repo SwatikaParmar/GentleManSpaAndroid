@@ -83,6 +83,9 @@ class ForgetPasswordFragment : Fragment(), View.OnClickListener {
     }
     override fun onClick(v: View?) {
         when(v) {
+            binding.ivBack->{
+                findNavController().popBackStack()
+            }
             binding.ivTogglePassword -> {
                 isPasswordVisible = !isPasswordVisible
                 CommonFunctions.togglePasswordVisibility(

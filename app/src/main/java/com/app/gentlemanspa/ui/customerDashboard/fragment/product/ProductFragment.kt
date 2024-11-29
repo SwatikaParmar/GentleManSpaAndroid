@@ -92,23 +92,21 @@ class ProductFragment : Fragment(), View.OnClickListener {
                 handler.postDelayed(searchRunnable!!, 2000)
             }
 
-            override fun afterTextChanged(s: Editable?) {}
-        })
+            override fun afterTextChanged(s: Editable?) {
 
+            }
+        })
     }
 
     fun searchServiceByName(searchQuery: String) {
         callProductListApi(searchQuery)
-
     }
-
     private fun callProductListApi(searchQuery: String) {
         viewModel.mainCategoryId.set(mainCategory)
         viewModel.spaDetailId.set(spaDetailId)
         viewModel.searchQuery.set(searchQuery)
         viewModel.getProductsList()
     }
-
     private fun callGetCartItemsApi() {
         viewModel.getProductCartItem()
     }
@@ -116,12 +114,10 @@ class ProductFragment : Fragment(), View.OnClickListener {
     override fun onDestroyView() {
         super.onDestroyView()
         handler.removeCallbacksAndMessages(null) // Remove all callbacks
-
     }
 
     @SuppressLint("SetTextI18n")
     private fun initObserver() {
-
         viewModel.resultProductsData.observe(this) {
             it?.let { result ->
                 when (result.status) {
@@ -146,11 +142,15 @@ class ProductFragment : Fragment(), View.OnClickListener {
                         Log.d("testIssue", "inside resultProductsData Failure")
                         requireContext().showToast(it.message.toString())
                         hideProgress()
+                        //clear list on error and update adapter
+                        productsList.clear()
+                        setProductsAdapter()
+
+
                     }
                 }
             }
         }
-
         viewModel.resultProductCategories.observe(this) {
             it?.let { result ->
                 when (result.status) {
@@ -176,7 +176,6 @@ class ProductFragment : Fragment(), View.OnClickListener {
                 }
             }
         }
-
         viewModel.resultGetCartItems.observe(this) {
             it.let { result ->
                 when (result.status) {
@@ -197,13 +196,12 @@ class ProductFragment : Fragment(), View.OnClickListener {
                             val priceFormat =
                                 formatPrice(it.data.data.cartProducts.totalSellingPrice.toDouble())
                             binding.tvRupees.text = "$$priceFormat"
-                            /*  if (it.data.data.cartProducts.totalItem > 1){
-                                  binding.tvSelectServices.text = "${it.data.data.cartProducts.totalItem} Products added"
+
+                            if (it.data.data.cartProducts.products.size > 1){
+                                  binding.tvSelectServices.text = "${it.data.data.cartProducts.products.size} Products added"
                               }else{
-                                  binding.tvSelectServices.text = "${it.data.data.cartProducts.totalItem} Product added"
-                              }*/
-                            binding.tvSelectServices.text =
-                                "${it.data.data.cartProducts.products.size} Products added"
+                                  binding.tvSelectServices.text = "${it.data.data.cartProducts.products.size} Product added"
+                              }
 
                         } else {
                             binding.clBooking.setGone()
@@ -259,7 +257,6 @@ class ProductFragment : Fragment(), View.OnClickListener {
 
         }
     }
-
     private fun setCategoriesProductAdapter() {
         Log.d("dataProducts", "selectPosition->$selectPosition")
         // productCategoriesList.reverse()
@@ -288,8 +285,6 @@ class ProductFragment : Fragment(), View.OnClickListener {
             binding.rvProductCategories.scrollToPosition(selectPosition)
         }
     }
-
-
     private fun setProductsAdapter() {
         Log.d("testIssue", "inside setProductsAdapter ")
 
@@ -322,7 +317,6 @@ class ProductFragment : Fragment(), View.OnClickListener {
 
 
     }
-
     override fun onClick(v: View?) {
         when (v) {
             binding.btnContinue -> {

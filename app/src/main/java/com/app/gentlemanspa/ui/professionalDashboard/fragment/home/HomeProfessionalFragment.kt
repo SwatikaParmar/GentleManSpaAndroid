@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.app.gentlemanspa.R
 import com.app.gentlemanspa.base.MyApplication
 import com.app.gentlemanspa.databinding.FragmentHomeProfessionalBinding
@@ -26,6 +27,7 @@ import com.app.gentlemanspa.ui.professionalDashboard.fragment.profile.viewModel.
 import com.app.gentlemanspa.utils.AppPrefs
 import com.app.gentlemanspa.utils.FCM_TOKEN
 import com.app.gentlemanspa.utils.PROFESSIONAL_DETAIL_ID
+import com.app.gentlemanspa.utils.PROFESSIONAL_PROFILE_DATA
 import com.app.gentlemanspa.utils.PROFESSIONAL_USER_ID
 import com.app.gentlemanspa.utils.USER_ID
 import com.app.gentlemanspa.utils.ViewModelFactory
@@ -71,14 +73,14 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initUI()
-        registerProfessionalInFirebase()
+      //  registerProfessionalInFirebase()
 
     }
 
     private fun registerProfessionalInFirebase() {
         Log.e("FirebaseRegister", "${AppPrefs(requireContext()).getStringPref(PROFESSIONAL_USER_ID)}")
 
-        val profileProfessionalData= AppPrefs(requireContext()).getProfileProfessionalData("PROFILE_DATA")
+        val profileProfessionalData= AppPrefs(requireContext()).getProfileProfessionalData(PROFESSIONAL_PROFILE_DATA)
         if (profileProfessionalData?.data?.firstName.toString().isNotEmpty() && profileProfessionalData?.data?.email.toString().isNotEmpty() && profileProfessionalData?.data?.gender.toString().isNotEmpty()) {
             val userState = UserState(getCustomerCurrentDate(), "online", getCustomerCurrentTime())
             val user = RegisterUserInFirebaseRequest(
@@ -116,15 +118,17 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
 
                     Status.SUCCESS -> {
                         MyApplication.hideProgress()
-                        AppPrefs(requireContext()).setProfileProfessionalData("PROFILE_DATA",it.data)
-                      //  binding.tvName.text ="${it.data?.data?.firstName} ${it.data?.data?.lastName}"
+                        AppPrefs(requireContext()).setProfileProfessionalData(PROFESSIONAL_PROFILE_DATA,it.data)
+                        registerProfessionalInFirebase()
+
+                        //  binding.tvName.text ="${it.data?.data?.firstName} ${it.data?.data?.lastName}"
                         //binding.tvPhone.text =it.data?.data?.phoneNumber
                         val name = "${it.data?.data?.firstName} ${it.data?.data?.lastName}"
                         val email = it.data?.data?.email.toString()
                         if (!it.data?.data?.professionalDetail?.professionalDetailId.isNullOrEmpty()){
                             AppPrefs(requireContext()).saveStringPref(PROFESSIONAL_DETAIL_ID,it.data?.data?.professionalDetail?.professionalDetailId) }
                         profileUpdatedListener.onProfileUpdated(name, email,BASE_FILE +it.data?.data?.profilepic)
-                        Glide.with(requireContext()).load(BASE_FILE +it.data?.data?.profilepic).into(binding.ivProfile)
+                     //   Glide.with(requireContext()).load(BASE_FILE +it.data?.data?.profilepic).into(binding.ivProfile)
 
                     }
 
@@ -137,8 +141,8 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
         }
     }
     private fun initUI() {
-        binding.ivDrawer.setOnClickListener(this)
         (activity as ProfessionalActivity).bottomNavigation(true)
+        binding.onClick=this
         viewModel.getProfessionalDetail()
         binding.tlAppointment.removeAllTabs()
         binding.tlAppointment.addTab(binding.tlAppointment.newTab().setText("UPCOMING"))
@@ -183,6 +187,10 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
         when (v) {
             binding.ivDrawer -> {
                 (activity as ProfessionalActivity).isDrawer(true)
+            }
+            binding.ivMessages->{
+                val action =HomeProfessionalFragmentDirections.actionHomeFragmentToProfessionalMessagesFragment()
+                findNavController().navigate(action)
             }
         }
 

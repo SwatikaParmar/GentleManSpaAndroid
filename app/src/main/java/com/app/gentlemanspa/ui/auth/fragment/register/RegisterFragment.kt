@@ -75,20 +75,15 @@ class RegisterFragment : Fragment(), View.OnClickListener {
         binding = FragmentRegisterBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initUI()
     }
-
-
     private fun initUI() {
         setGenderSpinner()
         editTextSpace()
         binding.onClick = this
     }
-
     private fun editTextSpace() {
         CommonFunctions.startSpaceEditText(binding.etFirstName)
         CommonFunctions.startSpaceEditText(binding.etLastName)
@@ -97,9 +92,11 @@ class RegisterFragment : Fragment(), View.OnClickListener {
         CommonFunctions.startSpaceEditText(binding.etPassword)
         CommonFunctions.startSpaceEditText(binding.etConfirmPassword)
     }
-
     override fun onClick(v: View?) {
         when (v) {
+            binding.ivBack->{
+                findNavController().popBackStack()
+            }
             binding.btnSignup -> {
                 if (isValidation()) {
                     viewModel.dialCode.set(binding.countryCode.defaultCountryCode)
@@ -134,7 +131,6 @@ class RegisterFragment : Fragment(), View.OnClickListener {
             }
         }
     }
-
     private var cameraLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
@@ -145,7 +141,6 @@ class RegisterFragment : Fragment(), View.OnClickListener {
                 // Use the imageUri
             }
         }
-
     private var galleryLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
@@ -157,7 +152,6 @@ class RegisterFragment : Fragment(), View.OnClickListener {
                 // Use the imageUri
             }
         }
-
 
     @SuppressLint("QueryPermissionsNeeded")
     private fun openCamera() {
@@ -194,7 +188,6 @@ class RegisterFragment : Fragment(), View.OnClickListener {
         galleryLauncher.launch(intent)
     }
 
-
     private fun checkAndRequestPermissionsForCamera(onPermissionsGranted: () -> Unit) {
         val permissions = arrayOf(Manifest.permission.CAMERA)
         if (permissions.all {
@@ -208,7 +201,6 @@ class RegisterFragment : Fragment(), View.OnClickListener {
             requestPermissions(permissions, REQUEST_CODE_CAMERA_PERMISSIONS)
         }
     }
-
 
     @Deprecated("Deprecated in Java")
     override fun onRequestPermissionsResult(

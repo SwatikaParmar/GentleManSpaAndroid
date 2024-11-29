@@ -67,3 +67,11 @@ fun openNotificationSettings(context: Context) {
     }
     context.startActivity(intent)
 }
+
+ fun share(context: Context,url:String) {
+    val shareIntent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"  // Set MIME type for text content
+        putExtra(Intent.EXTRA_TEXT, url)  // Add the URL as the text to share
+    }
+   context.startActivity(Intent.createChooser(shareIntent, "Share URL via"))
+}

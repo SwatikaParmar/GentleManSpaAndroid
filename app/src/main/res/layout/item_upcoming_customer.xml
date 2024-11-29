@@ -10,8 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="@dimen/_8sdp"
-        app:cardUseCompatPadding="true"
         app:cardElevation="@dimen/_2sdp"
+        app:cardUseCompatPadding="true"
         app:strokeColor="@android:color/transparent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -58,13 +58,13 @@
                     android:id="@+id/tvRemindMe"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:layout_marginEnd="@dimen/_2sdp"
                     android:fontFamily="@font/poppins"
                     android:includeFontPadding="false"
                     android:text="Remind Me"
-                    android:layout_marginTop="@dimen/_8sdp"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_10ssp"
-                    android:layout_marginEnd="@dimen/_2sdp"
                     android:visibility="gone"
                     app:layout_constraintEnd_toStartOf="@+id/btnSwitch"
                     app:layout_constraintStart_toEndOf="@+id/tvBookingId"
@@ -75,11 +75,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/_1sdp"
                     android:layout_centerInParent="true"
-                    app:thumbTint="@color/app_color"
                     android:visibility="gone"
-                    app:layout_constraintTop_toTopOf="@+id/tvRemindMe"
                     app:layout_constraintBottom_toBottomOf="@+id/tvRemindMe"
-                    app:layout_constraintEnd_toEndOf="parent"/>
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tvRemindMe"
+                    app:thumbTint="@color/app_color" />
 
                 <View
                     android:layout_width="match_parent"
@@ -130,35 +130,35 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
+
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tvTime"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_8sdp"
+                        android:layout_marginTop="@dimen/_2sdp"
+                        android:fontFamily="@font/poppins_medium"
+                        android:includeFontPadding="false"
                         android:text="30 mins"
                         android:textColor="@color/light_grey"
-                        android:includeFontPadding="false"
-                        android:fontFamily="@font/poppins_medium"
                         android:textSize="@dimen/_11ssp"
-                        android:layout_marginTop="@dimen/_2sdp"
-                        android:layout_marginStart="@dimen/_8sdp"
-                        app:layout_constraintTop_toBottomOf="@+id/tvServiceName"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"/>
+                        app:layout_constraintTop_toBottomOf="@+id/tvServiceName" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tvRupees"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_8sdp"
+                        android:layout_marginTop="@dimen/_2sdp"
+                        android:fontFamily="@font/poppins_medium"
+                        android:includeFontPadding="false"
                         android:text="$60"
                         android:textColor="@color/light_grey"
-                        android:fontFamily="@font/poppins_medium"
                         android:textSize="@dimen/_13ssp"
-                        android:includeFontPadding="false"
-                        android:layout_marginTop="@dimen/_2sdp"
-                        android:layout_marginStart="@dimen/_8sdp"
-                        app:layout_constraintTop_toBottomOf="@+id/tvTime"
                         app:layout_constraintStart_toStartOf="parent"
-                        />
+                        app:layout_constraintTop_toBottomOf="@+id/tvTime" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tvAssigned"
@@ -191,51 +191,69 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/tvAssigned"
                         app:layout_constraintTop_toTopOf="@+id/tvAssigned" />
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toBottomOf="@+id/tvAssigned"
+    app:layout_constraintStart_toStartOf="@+id/tvAssigned">
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnMessage"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_32sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_marginEnd="@dimen/_5sdp"
+        android:backgroundTint="@color/white"
+        android:fontFamily="@font/poppins"
+        android:padding="0dp"
+        android:text="Message"
+        android:textAllCaps="false"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_10ssp"
+        app:cornerRadius="@dimen/_20sdp"
+        app:layout_constraintEnd_toStartOf="@+id/btnReschedule"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:strokeColor="@color/dark_brown"
+        app:strokeWidth="@dimen/_1sdp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnReschedule"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_32sdp"
+        android:layout_marginStart="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:backgroundTint="@color/dark_brown"
+        android:fontFamily="@font/poppins"
+        android:padding="0dp"
+        android:text="Reschedule"
+        android:textAllCaps="false"
+        android:textColor="@color/btn_text_color"
+        android:textSize="@dimen/_10ssp"
+        app:cornerRadius="@dimen/_20sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        app:layout_constraintEnd_toStartOf="@+id/ivCancel"
+        app:layout_constraintStart_toEndOf="@+id/btnMessage"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/ivCancel"
+        android:layout_width="@dimen/_22sdp"
+        android:layout_height="@dimen/_22sdp"
+        android:src="@drawable/ic_cancel"
+        app:strokeColor="#FF3B30"
+        app:strokeWidth="@dimen/_1sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:contentDescription="@string/image_description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnCancel"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/_32sdp"
-                android:text="Cancel"
-                app:strokeColor="@color/dark_brown"
-                app:strokeWidth="@dimen/_1sdp"
-                app:cornerRadius="@dimen/_20sdp"
-                android:backgroundTint="@color/white"
-                android:textColor="@color/black"
-                android:padding="0dp"
-                android:textSize="@dimen/_12ssp"
-                android:textAllCaps="false"
-                android:layout_marginEnd="@dimen/_5sdp"
-                android:fontFamily="@font/poppins"
-                android:layout_marginTop="@dimen/_5sdp"
-                app:layout_constraintTop_toBottomOf="@+id/clProfessional"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/btnReschedule"
-                />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnReschedule"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/_32sdp"
-                android:layout_marginTop="@dimen/_5sdp"
-                android:fontFamily="@font/poppins"
-                android:text="Reschedule"
-                app:cornerRadius="@dimen/_20sdp"
-                android:padding="0dp"
-                android:textAllCaps="false"
-                android:layout_marginStart="@dimen/_5sdp"
-                android:textColor="@color/btn_text_color"
-                android:textSize="@dimen/_12ssp"
-                android:backgroundTint="@color/dark_brown"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/btnCancel"
-                app:layout_constraintTop_toBottomOf="@+id/clProfessional" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </com.google.android.material.card.MaterialCardView>

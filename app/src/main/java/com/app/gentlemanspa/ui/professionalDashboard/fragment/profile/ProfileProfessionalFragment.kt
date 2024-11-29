@@ -22,6 +22,7 @@ import com.app.gentlemanspa.ui.customerDashboard.activity.CustomerActivity
 import com.app.gentlemanspa.ui.professionalDashboard.activity.ProfessionalActivity
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.profile.viewModel.ProfileProfessionalDetailViewModel
 import com.app.gentlemanspa.utils.AppPrefs
+import com.app.gentlemanspa.utils.PROFESSIONAL_PROFILE_DATA
 import com.app.gentlemanspa.utils.ViewModelFactory
 import com.app.gentlemanspa.utils.showToast
 import com.bumptech.glide.Glide
@@ -66,7 +67,7 @@ class ProfileProfessionalFragment : Fragment(), View.OnClickListener {
 
                     Status.SUCCESS -> {
                         MyApplication.hideProgress()
-                        AppPrefs(requireContext()).setProfileProfessionalData("PROFILE_DATA",it.data)
+                        AppPrefs(requireContext()).setProfileProfessionalData(PROFESSIONAL_PROFILE_DATA,it.data)
                         binding.tvName.text ="${it.data?.data?.firstName} ${it.data?.data?.lastName}"
                         binding.tvPhone.text =it.data?.data?.phoneNumber
                         Glide.with(requireContext()).load(BASE_FILE+it.data?.data?.profilepic).into(binding.ivProfile)

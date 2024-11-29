@@ -43,7 +43,7 @@ class UpcomingCustomerAdapter(private val dataList:ArrayList<UpcomingServiceAppo
             Glide.with(holder.itemView.context).load(ApiConstants.BASE_FILE +item.image).error(
                 R.drawable.no_product).into(ivProfessional)
 
-            btnCancel.setOnClickListener{
+            ivCancel.setOnClickListener{
                 upcomingCallbacks.upcomingCancel(item)
             }
             btnReschedule.setOnClickListener{

@@ -14,7 +14,7 @@
     <string name="sign_up">Sign Up</string>
     <string name="already_you_have_account">Already you have account?</string>
     <string name="sign_in">Sign In</string>
-    <string name="create_your_new_account">Create\nyour new\naccount !</string>
+    <string name="create_your_new_account">Create\nYour New\nAccount !</string>
     <string name="please_enter_5_digit_code_sent_to_email">Please Enter 5 Digit Code Sent\nTo Email</string>
     <string name="verify">Verify</string>
     <string name="forgot_password">Forgot Password</string>
@@ -60,4 +60,17 @@
     <string name="tittle">Tittle</string>
     <string name="request_to_management">Request to Management</string>
     <string name="select_specialities">Select Specialities</string>
+    <string name="email_or_phone_no">Email or Phone no</string>
+    <string name="last_seen">Last Seen</string>
+    <string name="sender_messages_here">Sender Messages here</string>
+    <string name="time">time</string>
+    <string name="write_a_message">write a message</string>
+    <string name="receiver_messages_here">Receiver Messages here</string>
+    <string name="report">Report</string>
+    <string name="please_unblock_first_to_chat_with_this_user">Please unblock first to chat with this user ?</string>
+    <string name="unblock">UnBlock</string>
+    <string name="block">block</string>
+    <string name="cancel">Cancel</string>
+    <string name="this_user_have_blocked_you">This user have blocked you !</string>
+    <string name="block_user">Block User</string>
 </resources>

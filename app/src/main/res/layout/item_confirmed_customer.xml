@@ -19,7 +19,6 @@
             android:layout_height="match_parent"
             android:background="@color/white"
             android:padding="@dimen/_8sdp">
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/clBooking"
                 android:layout_width="match_parent"
@@ -78,7 +77,6 @@
                     app:layout_constraintTop_toBottomOf="@+id/tvDate" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/clProfessional"
                 android:layout_width="match_parent"
@@ -181,11 +179,25 @@
                         app:layout_constraintStart_toEndOf="@+id/tvAssigned"
                         app:layout_constraintTop_toTopOf="@+id/tvAssigned" />
 
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvMessage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_round_message"
+                        android:fontFamily="@font/poppins_semibold"
+                        android:includeFontPadding="false"
+                        android:paddingHorizontal="@dimen/_10sdp"
+                        android:paddingVertical="@dimen/_3sdp"
+                        android:text="Message"
+                        android:textColor="@color/grey_text_color"
+                        android:textSize="@dimen/_10ssp"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tvAssignedValue"
+                        />
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 

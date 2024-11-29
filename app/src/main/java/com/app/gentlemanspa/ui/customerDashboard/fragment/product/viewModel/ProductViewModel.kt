@@ -21,6 +21,8 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import org.json.JSONObject
+import retrofit2.HttpException
 
 class ProductViewModel(private var initialRepository: InitialRepository) : AndroidViewModel(
     Application()
@@ -45,12 +47,27 @@ class ProductViewModel(private var initialRepository: InitialRepository) : Andro
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->
-                    if (!CommonFunctions.getError(exception)!!.contains("401"))
+                    if (exception is HttpException) {
+                        try {
+                            val errorBody = exception.response()?.errorBody()?.string()
+                            if (!errorBody.isNullOrEmpty()) {
+                                val jsonError = JSONObject(errorBody)
+                                val errorMessage = jsonError.optString("messages", "Unknown HTTP error")
+                                resultProductCategories.value = Resource.error(data = null, message = errorMessage)
+                            } else {
+                                resultProductCategories.value = Resource.error(data = null, message = "Unknown HTTP error")
+                            }
+                        } catch (e: Exception) {
+                            resultProductCategories.value = Resource.error(data = null, message = e.message)
+                        }
+                    }else{
                         resultProductCategories.value =
                             Resource.error(
                                 data = null,
                                 message = CommonFunctions.getError(exception)
                             )
+                    }
+
                 }
                 .collect {
                     if (it?.statusCode == 200) {
@@ -71,12 +88,26 @@ class ProductViewModel(private var initialRepository: InitialRepository) : Andro
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->
-                    if (!CommonFunctions.getError(exception)!!.contains("401"))
+                    if (exception is HttpException) {
+                        try {
+                            val errorBody = exception.response()?.errorBody()?.string()
+                            if (!errorBody.isNullOrEmpty()) {
+                                val jsonError = JSONObject(errorBody)
+                                val errorMessage = jsonError.optString("messages", "Unknown HTTP error")
+                                resultProductsData.value = Resource.error(data = null, message = errorMessage)
+                            } else {
+                                resultProductsData.value = Resource.error(data = null, message = "Unknown HTTP error")
+                            }
+                        } catch (e: Exception) {
+                            resultProductsData.value = Resource.error(data = null, message = e.message)
+                        }
+                    }else{
                         resultProductsData.value =
                             Resource.error(
                                 data = null,
                                 message = CommonFunctions.getError(exception)
                             )
+                    }
                 }
                 .collect {
                     if (it?.statusCode == 200) {

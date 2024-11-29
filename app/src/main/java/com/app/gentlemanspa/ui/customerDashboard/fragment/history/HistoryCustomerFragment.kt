@@ -32,20 +32,17 @@ class HistoryCustomerFragment : Fragment(), View.OnClickListener {
 
     private lateinit var binding: FragmentHistoryCustomerBinding
     private var appointmentType = ""
-    val spaDetailId=21
+    val spaDetailId = 21
     private val serviceAppointmentList: ArrayList<UpcomingServiceAppointmentItem> = ArrayList()
     private val viewModel: HistoryViewModel by viewModels {
         ViewModelFactory(
             InitialRepository()
         )
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initObserver()
     }
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -60,7 +57,7 @@ class HistoryCustomerFragment : Fragment(), View.OnClickListener {
         initUI()
     }
 
-    private fun initUI() {
+    private fun initUI(){
         setAppointmentSelection(binding.tvUpcoming)
         callGetServiceAppointmentsApi("Upcoming")
         //  binding.tvUpcoming.isSelected = true
@@ -83,6 +80,13 @@ class HistoryCustomerFragment : Fragment(), View.OnClickListener {
     private fun setCompletedAdapter() {
         val completedCustomerAdapter = CompletedCustomerAdapter(serviceAppointmentList)
         binding.rvAppointment.adapter = completedCustomerAdapter
+        completedCustomerAdapter.setOnClickCompleteCustomer(object :
+            CompletedCustomerAdapter.CompleteCustomerCallbacks {
+            override fun onCompleteCustomerMessageClicked() {
+
+            }
+
+        })
     }
 
     private fun setUpcomingAdapter() {
@@ -96,11 +100,31 @@ class HistoryCustomerFragment : Fragment(), View.OnClickListener {
 
             @SuppressLint("SuspiciousIndentation")
             override fun upcomingReschedule(item: UpcomingServiceAppointmentItem) {
-                val professionalDetail = ProfessionalDetail("", "", arrayListOf(""), "", "", "", "", "", ""
-                ,spaDetailId,"","",item.professionalDetailId.toString())
+                val professionalDetail = ProfessionalDetail(
+                    "",
+                    "",
+                    arrayListOf(""),
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    spaDetailId,
+                    "",
+                    "",
+                    item.professionalDetailId.toString()
+                )
                 val professionalItem = item.toProfessionalItem(professionalDetail)
-                val action =HistoryCustomerFragmentDirections.actionHistoryCustomerFragmentToMakeAppointmentFragment("Reschedule",item.orderId,item.serviceBookingId,item.spaServiceId,professionalItem)
-                  findNavController().navigate(action)
+                val action =
+                    HistoryCustomerFragmentDirections.actionHistoryCustomerFragmentToMakeAppointmentFragment(
+                        "Reschedule",
+                        item.orderId,
+                        item.serviceBookingId,
+                        item.spaServiceId,
+                        professionalItem
+                    )
+                findNavController().navigate(action)
             }
         })
     }

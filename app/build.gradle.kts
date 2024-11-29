@@ -60,6 +60,7 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.firebase.messaging.ktx)
     implementation(libs.firebase.firestore.ktx)
+    implementation(libs.firebase.storage.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -96,7 +97,11 @@ dependencies {
     // Import the Firebase BoM
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
-    implementation ("com.google.firebase:firebase-database-ktx")
+    // Firebase UI for Realtime Database
+    implementation (libs.firebase.ui.database)
+
+    // Firebase Database
+   implementation ("com.google.firebase:firebase-database-ktx")
 
 
 

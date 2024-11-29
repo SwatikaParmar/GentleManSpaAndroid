@@ -12,8 +12,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -41,10 +39,9 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.RegisterUse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.UserState
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.viewModel.HomeCustomerViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.model.ProfessionalItem
-import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.model.ProfessionalResponse
-import com.app.gentlemanspa.ui.professionalDashboard.fragment.home.HomeProfessionalFragment.OnProfileUpdatedListener
 import com.app.gentlemanspa.utils.AppPrefs
 import com.app.gentlemanspa.utils.FCM_TOKEN
+import com.app.gentlemanspa.utils.PROFILE_CUSTOMER_DATA
 import com.app.gentlemanspa.utils.USER_ID
 import com.app.gentlemanspa.utils.ViewModelFactory
 import com.app.gentlemanspa.utils.getCustomerCurrentDate
@@ -110,14 +107,14 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
         (activity as CustomerActivity).bottomNavigation(true)
         initUI()
-        registerUserInFirebase()
+        //registerUserInFirebase()
 
     }
 
     private fun registerUserInFirebase() {
         Log.e("FirebaseRegister", "${AppPrefs(requireContext()).getStringPref(USER_ID)}")
 
-        val profileCustomerData= AppPrefs(requireContext()).getProfileCustomerData("PROFILE_DATA")
+        val profileCustomerData= AppPrefs(requireContext()).getProfileCustomerData(PROFILE_CUSTOMER_DATA)
         if (profileCustomerData?.data?.firstName.toString().isNotEmpty() && profileCustomerData?.data?.email.toString().isNotEmpty() && profileCustomerData?.data?.gender.toString().isNotEmpty()) {
             val userState = UserState(getCustomerCurrentDate(), "online", getCustomerCurrentTime())
             val user = RegisterUserInFirebaseRequest(
@@ -168,7 +165,8 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
 
                     Status.SUCCESS -> {
                         hideProgress()
-                        AppPrefs(requireContext()).setProfileCustomerData("PROFILE_DATA",it.data)
+                        AppPrefs(requireContext()).setProfileCustomerData(PROFILE_CUSTOMER_DATA,it.data)
+                        registerUserInFirebase()
                       //  val name = "${it.data?.data?.firstName} ${it.data?.data?.lastName}"
                         val name = "${it.data?.data?.firstName}"
                         val email = it.data?.data?.email.toString()
@@ -418,7 +416,6 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
     override fun onPause() {
         headerHandler.removeCallbacks(headerRunnable)
         super.onPause()
-
     }
 
     override fun onClick(v: View?) {

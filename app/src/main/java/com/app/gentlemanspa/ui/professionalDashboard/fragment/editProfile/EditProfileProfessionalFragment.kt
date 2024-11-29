@@ -41,6 +41,7 @@ import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.viewMo
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.profile.model.GetProfessionalDetailResponse
 import com.app.gentlemanspa.utils.AppPrefs
 import com.app.gentlemanspa.utils.CommonFunctions
+import com.app.gentlemanspa.utils.PROFESSIONAL_PROFILE_DATA
 import com.app.gentlemanspa.utils.ViewModelFactory
 import com.app.gentlemanspa.utils.checkString
 import com.app.gentlemanspa.utils.checkValidString
@@ -207,7 +208,7 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
 
 
     private fun initUI() {
-        profileData = AppPrefs(requireContext()).getProfileProfessionalData("PROFILE_DATA")
+        profileData = AppPrefs(requireContext()).getProfileProfessionalData(PROFESSIONAL_PROFILE_DATA)
         binding.etFirstName.setText(profileData?.data?.firstName)
         binding.etLastName.setText(profileData?.data?.lastName)
         binding.etPhone.setText(profileData?.data?.phoneNumber)

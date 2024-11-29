@@ -117,6 +117,12 @@ class CartFragment : Fragment(), View.OnClickListener {
                     Log.d("deliveryAddress", "else")
                 }
             }
+        }else{
+            Log.d("deliveryAddress", "deliveryAddress is empty")
+            binding.cbHomeDelivery.isChecked = true
+            binding.cbAtVenue.isChecked = false
+            binding.clAddressViews.setVisible()
+
         }
     }
 

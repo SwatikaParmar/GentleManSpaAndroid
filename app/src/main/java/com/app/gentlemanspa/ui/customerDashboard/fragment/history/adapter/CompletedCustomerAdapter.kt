@@ -10,10 +10,13 @@ import com.app.gentlemanspa.R
 import com.app.gentlemanspa.databinding.ItemConfirmedCustomerBinding
 import com.app.gentlemanspa.network.ApiConstants
 import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.UpcomingServiceAppointmentItem
+import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductsListItem
+import com.app.gentlemanspa.ui.customerDashboard.fragment.product.adapter.ProductsAdapter.ProductsCallbacks
 import com.app.gentlemanspa.utils.formatDayDate
 import com.bumptech.glide.Glide
 
 class CompletedCustomerAdapter(private val dataList:ArrayList<UpcomingServiceAppointmentItem>) : RecyclerView.Adapter<CompletedCustomerAdapter.ViewHolder>()  {
+    private lateinit var completeCustomerCallbacks: CompleteCustomerCallbacks
 
     class ViewHolder(val binding : ItemConfirmedCustomerBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -41,8 +44,18 @@ class CompletedCustomerAdapter(private val dataList:ArrayList<UpcomingServiceApp
                 R.drawable.no_product).into(ivProfessional)
             root.setOnClickListener {
             }
+            tvMessage.setOnClickListener{
+                completeCustomerCallbacks.onCompleteCustomerMessageClicked()
+            }
         }
     }
+    fun setOnClickCompleteCustomer(onClick : CompleteCustomerCallbacks){
+        completeCustomerCallbacks = onClick
+    }
 
+    interface CompleteCustomerCallbacks{
+        fun onCompleteCustomerMessageClicked()
+
+    }
 
 }
