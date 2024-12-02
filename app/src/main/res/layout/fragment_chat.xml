@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/black_bg"
-        tools:context=".ui.customerDashboard.fragment.chat.ChatFragment">
+        tools:context=".ui.chat.fragment.chat.ChatFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/clHeader"

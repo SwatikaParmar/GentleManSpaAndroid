@@ -1,6 +1,7 @@
 package com.app.gentlemanspa.ui.professionalDashboard.fragment.home
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -15,6 +16,7 @@ import com.app.gentlemanspa.databinding.FragmentHomeProfessionalBinding
 import com.app.gentlemanspa.network.ApiConstants.BASE_FILE
 import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.network.Status
+import com.app.gentlemanspa.ui.chat.activity.ChatActivity
 import com.app.gentlemanspa.ui.customerDashboard.activity.CustomerActivity
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.RegisterUserInFirebaseRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.UserState
@@ -189,8 +191,13 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
                 (activity as ProfessionalActivity).isDrawer(true)
             }
             binding.ivMessages->{
-                val action =HomeProfessionalFragmentDirections.actionHomeFragmentToProfessionalMessagesFragment()
-                findNavController().navigate(action)
+                /*val action =HomeProfessionalFragmentDirections.actionHomeFragmentToProfessionalMessagesFragment()
+                findNavController().navigate(action)*/
+                val intent=Intent(requireContext(), ChatActivity::class.java)
+                intent.putExtra("userId","${AppPrefs(requireContext()).getStringPref(
+                    PROFESSIONAL_USER_ID)}")
+                startActivity(intent)
+
             }
         }
 

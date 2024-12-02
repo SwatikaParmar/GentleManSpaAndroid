@@ -1,4 +1,4 @@
-package com.app.gentlemanspa.ui.customerDashboard.fragment.messages.model
+package com.app.gentlemanspa.ui.chat.fragment.messages.model
 
 /*
 data class MessagesModel(

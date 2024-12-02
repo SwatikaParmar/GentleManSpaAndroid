@@ -1,4 +1,4 @@
-package com.app.gentlemanspa.ui.customerDashboard.fragment.messages.adapter
+package com.app.gentlemanspa.ui.chat.fragment.messages.adapter
 
 import android.annotation.SuppressLint
 import android.content.ContentValues
@@ -14,11 +14,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.app.gentlemanspa.R
 import com.app.gentlemanspa.databinding.ItemMessagesBinding
 import com.app.gentlemanspa.network.ApiConstants
-import com.app.gentlemanspa.ui.customerDashboard.fragment.messages.model.MessageModel
+import com.app.gentlemanspa.ui.chat.fragment.messages.model.MessageModel
 import com.bumptech.glide.Glide
 import com.google.firebase.database.FirebaseDatabase
 
-class MessagesAdapter(userId :String) : ListAdapter<MessageModel, MessagesAdapter.MyViewHolder>(COMPARATOR) {
+class MessagesAdapter(userId :String) : ListAdapter<MessageModel, MessagesAdapter.MyViewHolder>(
+    COMPARATOR
+) {
         var onItemClickListener : onItemClickInterface? =null
         val contactsRef = FirebaseDatabase.getInstance().reference.child("Contacts").child(userId)
         var mItem :ArrayList<MessageModel> = ArrayList()

@@ -1,4 +1,4 @@
-package com.app.gentlemanspa.ui.customerDashboard.fragment.chat.adapter
+package com.app.gentlemanspa.ui.chat.fragment.chat.adapter
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
@@ -28,13 +28,13 @@ import com.trubbled.ui.main.chat.model.MyChatModel
 
 class ChatAdapter (val context:Context,private val UserMessageList: MutableList<MyChatModel?>) : RecyclerView.Adapter<ChatAdapter.MessageViewHolder>(){
         private var userRef: DatabaseReference? = null
-        var onItemClickListener : ChatAdapter.OnItemClickListener? =null
+        var onItemClickListener : OnItemClickListener? =null
 
         interface OnItemClickListener{
             fun deleteForEveryone(position: Int, userMessageList: MutableList<MyChatModel?>)
         }
 
-        fun setOnMyItemClickListener(mItemClickListener: ChatAdapter.OnItemClickListener){
+        fun setOnMyItemClickListener(mItemClickListener: OnItemClickListener){
             this.onItemClickListener =mItemClickListener
         }
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {

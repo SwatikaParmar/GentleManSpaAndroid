@@ -1,4 +1,4 @@
-package com.app.gentlemanspa.ui.customerDashboard.fragment.chat.model
+package com.app.gentlemanspa.ui.chat.fragment.chat.model
 
 enum class MessageType {
     SENT, RECEIVED

@@ -1,4 +1,4 @@
-package com.app.gentlemanspa.ui.customerDashboard.fragment.messages
+package com.app.gentlemanspa.ui.chat.fragment.messages
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
@@ -13,16 +13,15 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.app.gentlemanspa.databinding.FragmentMessagesBinding
 import com.app.gentlemanspa.databinding.ItemMessagesBinding
 import com.app.gentlemanspa.network.ApiConstants
-import com.app.gentlemanspa.ui.customerDashboard.activity.CustomerActivity
-import com.app.gentlemanspa.ui.customerDashboard.fragment.messages.model.MessageModel
-import com.app.gentlemanspa.utils.AppPrefs
+import com.app.gentlemanspa.ui.chat.activity.ChatActivity
+import com.app.gentlemanspa.ui.chat.fragment.messages.model.MessageModel
 import com.app.gentlemanspa.utils.CommonUtils
-import com.app.gentlemanspa.utils.USER_ID
 import com.bumptech.glide.Glide
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
@@ -40,6 +39,7 @@ class MessageFragment : Fragment(), View.OnClickListener {
     private var currentUserId: String? = null
     private var contactsRef: DatabaseReference? = null
     private  var userRef: DatabaseReference? = null
+    private val args: MessageFragmentArgs by navArgs()
     var dialogBuilder: AlertDialog.Builder? = null
     var myDialog: AlertDialog? = null
     var adapter : FirebaseRecyclerAdapter<MessageModel?, ContactsViewHolder?>? = null
@@ -72,7 +72,8 @@ class MessageFragment : Fragment(), View.OnClickListener {
         if (!this::binding.isInitialized){
             binding=FragmentMessagesBinding.inflate(layoutInflater,container,false)
         }
-        currentUserId = "${AppPrefs(requireContext()).getStringPref(USER_ID)}"
+       // currentUserId = "${AppPrefs(requireContext()).getStringPref(USER_ID)}"
+        currentUserId = args.userId
 
         Log.d(TAG, "onCreateView currentUseridChat: ${currentUserId}")
 
@@ -100,7 +101,6 @@ class MessageFragment : Fragment(), View.OnClickListener {
     }
 
     private fun initUI() {
-        (activity as CustomerActivity).bottomNavigation(false)
         binding.onClick=this
 
     }
@@ -237,6 +237,7 @@ class MessageFragment : Fragment(), View.OnClickListener {
                             holder.itemView.setOnClickListener {
                                 uid =getRef(position).key.toString()
                                 val action =  MessageFragmentDirections.actionMessagesFragmentToChatFragment(
+                                    args.userId,
                                     uid,
                                     "FromMessages")
                                findNavController().navigate(action)
@@ -355,7 +356,7 @@ class ContactsViewHolder(itemView: ItemMessagesBinding) :
     override fun onClick(v: View?) {
         when(v){
             binding.ivArrowBack->{
-                findNavController().popBackStack()
+                (activity as ChatActivity).finish()
             }
         }
     }

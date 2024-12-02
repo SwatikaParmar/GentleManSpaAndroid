@@ -1,4 +1,4 @@
-package com.app.gentlemanspa.ui.customerDashboard.fragment.chat
+package com.app.gentlemanspa.ui.chat.fragment.chat
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
@@ -32,8 +32,9 @@ import com.app.gentlemanspa.base.MyApplication
 import com.app.gentlemanspa.base.MyApplication.Companion
 import com.app.gentlemanspa.databinding.FragmentChatBinding
 import com.app.gentlemanspa.network.ApiConstants
-import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.adapter.ChatAdapter
-import com.app.gentlemanspa.ui.customerDashboard.fragment.messages.MessageFragment
+import com.app.gentlemanspa.ui.chat.fragment.chat.adapter.ChatAdapter
+import com.app.gentlemanspa.ui.chat.fragment.messages.MessageFragment
+import com.app.gentlemanspa.ui.chat.fragment.messages.MessageFragmentArgs
 import com.app.gentlemanspa.utils.AppPrefs
 import com.app.gentlemanspa.utils.CommonUtils
 import com.app.gentlemanspa.utils.PROFILE_CUSTOMER_DATA
@@ -46,7 +47,6 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.R
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.trubbled.ui.main.chat.model.MyChatModel
@@ -68,6 +68,8 @@ import java.util.Locale
 
 class ChatFragment : Fragment(), View.OnClickListener {
     lateinit var binding: FragmentChatBinding
+    private val args: ChatFragmentArgs by navArgs()
+
     var dialogBuilder: AlertDialog.Builder? = null
     var alertDialog1: AlertDialog? = null
     var alertDialog: AlertDialog? = null
@@ -186,16 +188,15 @@ class ChatFragment : Fragment(), View.OnClickListener {
             messageRecieverId = uId
             MessageFragment.fromMessageNotificationUserId = ""
         } else {
-            val dataFromArgs = ChatFragmentArgs.fromBundle(requireArguments())
+           /* val dataFromArgs = ChatFragmentArgs.fromBundle(requireArguments())
+            Log.d(TAG, "dataFromArgsonuid-->${dataFromArgs}")
+
             if (dataFromArgs.from.equals("FromUserProfile")) {
-                messageRecieverId = dataFromArgs.userId
+                messageRecieverId = dataFromArgs.messageReceiverId
             } else {
-                messageRecieverId = dataFromArgs.userId
-            }
-            Log.d(
-                TAG,
-                "onViewCreatedByNavigationArgsUserId: ${messageRecieverId}   from${dataFromArgs.from}"
-            )
+                messageRecieverId = dataFromArgs.messageReceiverId
+            }*/
+            messageRecieverId= args.messageReceiverId
         }
 
         binding.tvName.text = nameIs
