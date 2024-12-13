@@ -95,8 +95,8 @@
             android:id="@+id/action_profileCustomerFragment_to_editProfileCustomerFragment"
             app:destination="@id/editProfileCustomerFragment" />
 
-        <action android:id="@+id/action_profileCustomerFragment_to_messagesFragment"
-            app:destination="@+id/messagesFragment"/>
+        <action android:id="@+id/action_profileCustomerFragment_to_customerMessagesFragment"
+            app:destination="@+id/customerMessageFragment"/>
 
         <action android:id="@+id/action_profileCustomerFragment_to_evenFragment"
             app:destination="@+id/eventFragment"/>
@@ -128,6 +128,10 @@
         <action
             android:id="@+id/action_historyCustomerFragment_To_makeAppointmentFragment"
             app:destination="@+id/makeAppointmentFragment" />
+
+        <action
+            android:id="@+id/action_historyCustomerFragment_to_customerChatFragment"
+            app:destination="@+id/customerChatFragment" />
 
     </fragment>
     <fragment
@@ -314,12 +318,33 @@
         android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.notification.NotificationFragment"
         android:label="NotificationFragment"
         tools:layout="@layout/fragment_notification" />
-    <activity
-        android:id="@+id/customerActivity"
-        tools:layout="@layout/activity_customer"
-        android:label="MainActivity"
-        android:name="com.app.gentlemanspa.ui.customerDashboard.activity.CustomerActivity">
+    <fragment
+        android:id="@+id/customerMessageFragment"
+        android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.chat.messages.CustomerMessageFragment"
+        android:label="CustomerMessageFragment"
+        tools:layout="@layout/fragment_customer_message" >
+        <action
+            android:id="@+id/action_customerMessageFragment_to_customerChatFragment"
+            app:destination="@+id/customerChatFragment" />
+        <argument
+            android:name="userId"
+            app:argType="string" />
 
+    </fragment>
+    <fragment
+        android:id="@+id/customerChatFragment"
+        android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.CustomerChatFragment"
+        android:label="CustomerChatFragment"
+        tools:layout="@layout/fragment_customer_chat">
+        <argument
+            android:name="userId"
+            app:argType="string" />
+        <argument
+            android:name="messageReceiverId"
+            app:argType="string" />
+        <argument
+            android:name="from"
+            app:argType="string" />
+    </fragment>
 
-    </activity>
 </navigation>

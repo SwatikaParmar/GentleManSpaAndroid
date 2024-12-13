@@ -7,7 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
+import com.app.gentlemanspa.R
 import com.app.gentlemanspa.base.MyApplication.Companion.hideProgress
 import com.app.gentlemanspa.base.MyApplication.Companion.showProgress
 import com.app.gentlemanspa.databinding.FragmentAddressBinding
@@ -98,8 +101,10 @@ class AddressFragment : Fragment(), View.OnClickListener {
                     Status.SUCCESS -> {
                         hideProgress()
                      //   requireContext().showToast(it.message.toString())
-                        val action=AddressFragmentDirections.actionAddressFragmentToCartFragment()
-                        findNavController().navigate(action)
+                      /*val action=AddressFragmentDirections.actionAddressFragmentToCartFragment()
+                        val navOptions= NavOptions.Builder().setPopUpTo(R.id.addressFragment,true).build()
+                        findNavController().navigate(action,navOptions)*/
+                        findNavController().popBackStack()
 
                     }
 

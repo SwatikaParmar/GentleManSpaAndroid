@@ -6,6 +6,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.app.gentlemanspa.network.InitialRepository
+import com.app.gentlemanspa.ui.customerDashboard.fragment.product.model.AddProductInCartRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.product.model.AddProductInCartResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.productDetail.model.ProductDetailResponse
 import com.app.gentlemanspa.utils.CommonFunctions
 import com.app.gentlemanspa.utils.Resource
@@ -19,8 +21,10 @@ class ProductDetailViewModel (private var initialRepository: InitialRepository) 
 ) {
 
     val id = ObservableField<Int>()
-
+    val productId = ObservableField<Int>()
+    val countInCart = ObservableField<Int>()
     val resultProductDetail= MutableLiveData<Resource<ProductDetailResponse>>()
+    val resultAddProductInCart = MutableLiveData<Resource<AddProductInCartResponse>>()
 
 
     fun getProductDetails() {
@@ -49,6 +53,31 @@ class ProductDetailViewModel (private var initialRepository: InitialRepository) 
         }
     }
 
+    fun addProductInCart() {
+        resultAddProductInCart.value = Resource.loading(null)
+        viewModelScope.launch {
+            initialRepository.addProductInCart(AddProductInCartRequest(countInCart.get()!!, productId.get()!!))
+                .onStart { }
+                .onCompletion { }
+                .catch { exception ->
+                    if (!CommonFunctions.getError(exception)!!.contains("401"))
+                        resultAddProductInCart.value =
+                            Resource.error(
+                                data = null,
+                                message = CommonFunctions.getError(exception)
+                            )
+                }
+                .collect {
+                    if (it?.statusCode == 200) {
+                        resultAddProductInCart.value =
+                            Resource.success(message = it.messages, data = it)
+                    } else {
+                        resultAddProductInCart.value =
+                            Resource.error(data = null, message = it?.messages)
+                    }
+                }
+        }
+    }
 
 
 }

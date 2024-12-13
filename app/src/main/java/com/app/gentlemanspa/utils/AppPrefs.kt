@@ -9,12 +9,13 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 const val PROFESSIONAL_DETAIL_ID="Professional_Detail_Id"
-const val USER_ID="User_Id"
+const val CUSTOMER_USER_ID="User_Id"
 const val PROFESSIONAL_USER_ID="Professional_User_Id"
 const val PROFILE_CUSTOMER_DATA="Profile_Customer_Data"
 const val PROFESSIONAL_PROFILE_DATA="Professional_Profile_Data"
 const val DELIVERY_ADDRESS="Delivery_Address"
 const val FCM_TOKEN="FCM_Token"
+const val ROLE="Role"
 
 class AppPrefs(private val ctx: Context) {
 

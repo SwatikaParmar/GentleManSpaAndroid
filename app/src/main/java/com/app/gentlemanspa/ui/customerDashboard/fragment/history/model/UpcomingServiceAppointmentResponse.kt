@@ -28,10 +28,15 @@ data class UpcomingServiceAppointmentItem(
     val professionalDetailId: Int,
     val professionalImage: String,
     val professionalName: String,
+    val professionalUserId: String,
     val serviceBookingId: Int,
     val serviceName: String,
     val slotDate: String,
     val slotId: Int,
     val spaServiceId: Int,
-    val toTime: String
+    val toTime: String,
+    val userFirstName: String,
+    val userLastName: String,
+    val userImage: String,
+    val userId: String,
 )

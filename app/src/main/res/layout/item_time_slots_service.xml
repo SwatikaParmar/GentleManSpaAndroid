@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="@dimen/_3sdp"
         app:cardUseCompatPadding="true"
-        android:layout_marginVertical="@dimen/_7sdp"
+        android:layout_marginVertical="@dimen/_3sdp"
         app:strokeColor="@color/border_time_color"
         app:strokeWidth="@dimen/_1sdp">
 

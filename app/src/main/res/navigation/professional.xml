@@ -10,6 +10,9 @@
         android:name="com.app.gentlemanspa.ui.professionalDashboard.fragment.home.HomeProfessionalFragment"
         android:label="fragment_home_professional"
         tools:layout="@layout/fragment_home_professional" >
+        <action
+            android:id="@+id/action_homeProfessionalFragment_to_professionalMessageFragment"
+            app:destination="@id/professionalMessageFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileProfessionalFragment"
@@ -109,6 +112,33 @@
         android:name="com.app.gentlemanspa.ui.professionalDashboard.fragment.myService.MyServiceFragment"
         android:label="MyService"
         tools:layout="@layout/fragment_my_service"/>
+    <fragment
+        android:id="@+id/professionalMessageFragment"
+        android:name="com.app.gentlemanspa.ui.professionalDashboard.fragment.chat.messages.ProfessionalMessageFragment"
+        android:label="ProfessionalMessageFragment"
+        tools:layout="@layout/fragment_professional_messages" >
+        <action
+            android:id="@+id/action_professionalMessageFragment_to_professionalChatFragment"
+            app:destination="@+id/professionalChatFragment" />
+        <argument
+            android:name="userId"
+            app:argType="string" />
 
+    </fragment>
+    <fragment
+        android:id="@+id/professionalChatFragment"
+        android:name="com.app.gentlemanspa.ui.professionalDashboard.fragment.chat.chat.ProfessionalChatFragment"
+        android:label="ProfessionalChatFragment"
+        tools:layout="@layout/fragment_chat">
+        <argument
+            android:name="userId"
+            app:argType="string" />
+        <argument
+            android:name="messageReceiverId"
+            app:argType="string" />
+        <argument
+            android:name="from"
+            app:argType="string" />
+    </fragment>
 
 </navigation>

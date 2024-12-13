@@ -2,21 +2,24 @@ package com.app.gentlemanspa.ui.professionalDashboard.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.GravityCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.app.gentlemanspa.R
 import com.app.gentlemanspa.databinding.ActivityProfessionalBinding
-import com.app.gentlemanspa.network.ApiConstants.BASE_FILE
 import com.app.gentlemanspa.ui.auth.activity.AuthActivity
+import com.app.gentlemanspa.utils.updateUserStatus
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.HomeCustomerFragment
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.home.HomeProfessionalFragment
 import com.app.gentlemanspa.utils.AppPrefs
+import com.app.gentlemanspa.utils.CUSTOMER_USER_ID
+import com.app.gentlemanspa.utils.PROFESSIONAL_USER_ID
+import com.app.gentlemanspa.utils.ROLE
 import com.app.gentlemanspa.utils.setGone
 import com.app.gentlemanspa.utils.setVisible
 import com.app.gentlemanspa.utils.share
@@ -28,6 +31,8 @@ class ProfessionalActivity : AppCompatActivity(), HomeProfessionalFragment.OnPro
     private lateinit var navController: NavController
     private lateinit var navHost: NavHostFragment
     private lateinit var navView: NavigationView
+    private var userIdIs: String = ""
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +44,12 @@ class ProfessionalActivity : AppCompatActivity(), HomeProfessionalFragment.OnPro
     }
 
     private fun initUI() {
+        userIdIs=if (AppPrefs(this).getStringPref(ROLE).toString()=="Customer"){
+            "${AppPrefs(this).getStringPref(CUSTOMER_USER_ID)}"
+        }else{
+            "${AppPrefs(this).getStringPref(PROFESSIONAL_USER_ID)}"
+
+        }
         navHost = supportFragmentManager.findFragmentById(R.id.professionalContainer) as NavHostFragment
         navController = navHost.navController
         setBottomNavigation()
@@ -191,5 +202,18 @@ class ProfessionalActivity : AppCompatActivity(), HomeProfessionalFragment.OnPro
 
     }
 
+    override fun onStart() {
+        super.onStart()
+        updateUserStatus(userIdIs,"online")
+    }
+    override fun onStop() {
+        super.onStop()
+        updateUserStatus(userIdIs,"offline")
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        updateUserStatus(userIdIs,"offline")
+    }
 }

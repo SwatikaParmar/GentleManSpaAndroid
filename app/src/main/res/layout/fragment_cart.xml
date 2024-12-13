@@ -441,7 +441,7 @@
                                     app:layout_constraintTop_toBottomOf="@+id/cbHomeDelivery">
 
                                     <androidx.appcompat.widget.AppCompatTextView
-                                        android:id="@+id/tvDelivery"
+                                        android:id="@+id/tvDeliveryPlaceName"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginStart="@dimen/_10sdp"
@@ -457,14 +457,14 @@
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
                                         android:layout_marginStart="@dimen/_10sdp"
-                                        android:text="Delivering to home"
+                                        android:text=""
                                         android:textColor="@color/black"
                                         android:textSize="@dimen/_11ssp"
                                         app:fontFamily="@font/poppins"
                                         android:layout_marginEnd="@dimen/_4sdp"
                                         app:layout_constraintStart_toStartOf="parent"
                                         app:layout_constraintEnd_toStartOf="@+id/ivAddressArrow"
-                                        app:layout_constraintTop_toBottomOf="@+id/tvDelivery" />
+                                        app:layout_constraintTop_toBottomOf="@+id/tvDeliveryPlaceName" />
 
                                     <ImageView
                                         android:id="@+id/ivAddressArrow"

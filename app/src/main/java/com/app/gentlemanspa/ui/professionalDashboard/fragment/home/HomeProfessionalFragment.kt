@@ -1,7 +1,6 @@
 package com.app.gentlemanspa.ui.professionalDashboard.fragment.home
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -10,14 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.app.gentlemanspa.R
 import com.app.gentlemanspa.base.MyApplication
 import com.app.gentlemanspa.databinding.FragmentHomeProfessionalBinding
 import com.app.gentlemanspa.network.ApiConstants.BASE_FILE
 import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.network.Status
-import com.app.gentlemanspa.ui.chat.activity.ChatActivity
-import com.app.gentlemanspa.ui.customerDashboard.activity.CustomerActivity
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.RegisterUserInFirebaseRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.UserState
 import com.app.gentlemanspa.ui.professionalDashboard.activity.ProfessionalActivity
@@ -25,13 +21,11 @@ import com.app.gentlemanspa.ui.professionalDashboard.fragment.home.adapter.Confi
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.home.adapter.PastAppointmentAdapter
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.home.adapter.UpcomingAppointmentAdapter
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.home.viewModel.HomeProfessionalViewModel
-import com.app.gentlemanspa.ui.professionalDashboard.fragment.profile.viewModel.ProfileProfessionalDetailViewModel
 import com.app.gentlemanspa.utils.AppPrefs
 import com.app.gentlemanspa.utils.FCM_TOKEN
 import com.app.gentlemanspa.utils.PROFESSIONAL_DETAIL_ID
 import com.app.gentlemanspa.utils.PROFESSIONAL_PROFILE_DATA
 import com.app.gentlemanspa.utils.PROFESSIONAL_USER_ID
-import com.app.gentlemanspa.utils.USER_ID
 import com.app.gentlemanspa.utils.ViewModelFactory
 import com.app.gentlemanspa.utils.getCustomerCurrentDate
 import com.app.gentlemanspa.utils.getCustomerCurrentTime
@@ -52,6 +46,8 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
     ) }
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        Log.d("lifeCycle","Fragment onAttach")
+
         if (context is OnProfileUpdatedListener) {
             profileUpdatedListener = context
         } else {
@@ -60,12 +56,16 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("lifeCycle","Fragment onCreate")
+
         initObserver()
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        Log.d("lifeCycle","Fragment onCreateView")
+
         // Inflate the layout for this fragment
         binding = FragmentHomeProfessionalBinding.inflate(layoutInflater, container, false)
         return binding.root
@@ -191,12 +191,11 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
                 (activity as ProfessionalActivity).isDrawer(true)
             }
             binding.ivMessages->{
-                /*val action =HomeProfessionalFragmentDirections.actionHomeFragmentToProfessionalMessagesFragment()
-                findNavController().navigate(action)*/
-                val intent=Intent(requireContext(), ChatActivity::class.java)
-                intent.putExtra("userId","${AppPrefs(requireContext()).getStringPref(
-                    PROFESSIONAL_USER_ID)}")
-                startActivity(intent)
+                val professionalUserId="${AppPrefs(requireContext()).getStringPref(
+                    PROFESSIONAL_USER_ID)}"
+                val action =HomeProfessionalFragmentDirections.actionHomeProfessionalFragmentToProfessionalMessageFragment(professionalUserId)
+                findNavController().navigate(action)
+
 
             }
         }
@@ -207,4 +206,5 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
     interface OnProfileUpdatedListener {
         fun onProfileUpdated(name: String, email: String,profileImage:String)
     }
+
 }

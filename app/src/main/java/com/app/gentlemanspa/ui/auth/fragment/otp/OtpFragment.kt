@@ -43,6 +43,7 @@ class OtpFragment : Fragment(), View.OnClickListener {
     private val args: OtpFragmentArgs by navArgs()
     private var messagesRegister: String? = ""
     private var profileImage: File? = null
+    var otp=""
     private val viewModel: OtpViewModel by viewModels { ViewModelFactory(InitialRepository()) }
 
     override fun onCreateView(
@@ -57,7 +58,12 @@ class OtpFragment : Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initObserver()
+        getData()
         initUI()
+    }
+
+    private fun getData() {
+        otp=args.Otp
     }
 
     private fun initObserver() {
@@ -157,6 +163,10 @@ class OtpFragment : Fragment(), View.OnClickListener {
                     Status.SUCCESS -> {
                         hideProgress()
                         requireContext().showToast(it.data?.messages.toString())
+                        if (it.data?.data?.otp.toString().isNotEmpty()){
+                            otp=it.data?.data?.otp.toString()
+                        }
+
 
                     }
 
@@ -207,7 +217,7 @@ class OtpFragment : Fragment(), View.OnClickListener {
             }
 
             binding.btnVerify -> {
-                Log.d("signUpRequest", "Otp->${args.Otp}")
+                Log.d("signUpRequest", "Otp->${otp}")
                 if (args.OtpType == 1) {
                     resetPassword()
                 } else {
@@ -255,7 +265,7 @@ class OtpFragment : Fragment(), View.OnClickListener {
         if (binding.pvOtp.text!!.isEmpty()) {
             requireActivity().showToast("Please Enter OTP")
         } else {
-            if (binding.pvOtp.text.toString() == args.Otp) {
+            if (binding.pvOtp.text.toString() == otp) {
                 if (signUpRequest != null) {
                     viewModel.registerAccount(signUpRequest!!)
                 }

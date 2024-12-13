@@ -40,9 +40,9 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.UserState
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.viewModel.HomeCustomerViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.model.ProfessionalItem
 import com.app.gentlemanspa.utils.AppPrefs
+import com.app.gentlemanspa.utils.CUSTOMER_USER_ID
 import com.app.gentlemanspa.utils.FCM_TOKEN
 import com.app.gentlemanspa.utils.PROFILE_CUSTOMER_DATA
-import com.app.gentlemanspa.utils.USER_ID
 import com.app.gentlemanspa.utils.ViewModelFactory
 import com.app.gentlemanspa.utils.getCustomerCurrentDate
 import com.app.gentlemanspa.utils.getCustomerCurrentTime
@@ -78,6 +78,7 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+
         if (context is OnProfileUpdatedListener) {
             profileUpdatedListener = context
         } else {
@@ -86,6 +87,7 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         bottomSheet = BottomSheetDialog(requireContext(), R.style.DialogTheme_transparent)
         bottomSheetLayout = BottomSheetLocationBinding.inflate(layoutInflater)
         initObserver()
@@ -95,6 +97,7 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         // Inflate the layout for this fragment
         if (!this::binding.isInitialized) {
             binding = FragmentHomeCustomerBinding.inflate(layoutInflater, container, false)
@@ -112,13 +115,13 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
     }
 
     private fun registerUserInFirebase() {
-        Log.e("FirebaseRegister", "${AppPrefs(requireContext()).getStringPref(USER_ID)}")
+        Log.e("FirebaseRegister", "${AppPrefs(requireContext()).getStringPref(CUSTOMER_USER_ID)}")
 
         val profileCustomerData= AppPrefs(requireContext()).getProfileCustomerData(PROFILE_CUSTOMER_DATA)
         if (profileCustomerData?.data?.firstName.toString().isNotEmpty() && profileCustomerData?.data?.email.toString().isNotEmpty() && profileCustomerData?.data?.gender.toString().isNotEmpty()) {
             val userState = UserState(getCustomerCurrentDate(), "online", getCustomerCurrentTime())
             val user = RegisterUserInFirebaseRequest(
-                uid = "${AppPrefs(requireContext()).getStringPref(USER_ID)}",
+                uid = "${AppPrefs(requireContext()).getStringPref(CUSTOMER_USER_ID)}",
                 email = profileCustomerData?.data?.email.toString(),
                 fcm_token = "${AppPrefs(requireContext()).getStringPref(FCM_TOKEN)}",
                 gender = profileCustomerData?.data?.gender.toString(),
@@ -468,4 +471,8 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
     interface OnProfileUpdatedListener {
         fun onProfileUpdated(name: String, email: String,profileImage:String)
     }
+
+
+
+
 }

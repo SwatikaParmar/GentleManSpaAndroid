@@ -48,11 +48,10 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
     }
     private val args: MakeAppointmentFragmentArgs by navArgs()
     private lateinit var professionalItem: ProfessionalItem
-    private var morningSlots: ArrayList<Slot> = ArrayList()
-    private var eveningSlots: ArrayList<Slot> = ArrayList()
     private var slotId = 0
     private var bookingDate = ""
     private var bookingTime = ""
+    lateinit var timeSlotServiceAdapter: TimeSlotServiceAdapter
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,7 +63,6 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
         if (!this::binding.isInitialized) {
             binding = FragmentMakeAppointmentBinding.inflate(layoutInflater, container, false)
         }
@@ -86,7 +84,6 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
                     Status.LOADING -> {
                         showProgress(requireContext())
                     }
-
                     Status.SUCCESS -> {
                         hideProgress()
                         Log.d("AvailableDatesResponse", "response->${it.data?.data}")
@@ -99,14 +96,11 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
                             binding.clNoDataFound.setVisible()
                             binding.clData.setGone()
                         }
-
                     }
-
                     Status.ERROR -> {
                         hideProgress()
                         requireContext().showToast(it.message.toString())
                     }
-
                 }
             }
         }
@@ -120,23 +114,37 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
 
                     Status.SUCCESS -> {
                         Log.d("AvailableTimeResponse", "response->${it.data?.data}")
-                        morningSlots.clear()
-                        eveningSlots.clear()
-                        val timeSlots = it.data?.data?.firstOrNull()
-                        if (timeSlots != null && timeSlots.slots.isNotEmpty()) {
-                            for (slot in timeSlots.slots) {
-                                val fromTimeParts = slot.fromTime.split(" ")
-                                val timeParts = fromTimeParts[0].split(":")
-                                val hour = timeParts[0].toInt()
-                                val period = fromTimeParts[1]
+                        slotId = 0
+                        if (binding.tvMorning.isSelected) {
+                            val morningSlots =
+                                filterMorningSlots(it.data?.data?.firstOrNull()?.slots!!)
+                            Log.d(
+                                "AvailableTimeResponse",
+                                "morningSlots size-> ${morningSlots.size}"
+                            )
+                            if (morningSlots.isNotEmpty()) {
+                                binding.rvTimeSlots.setVisible()
+                                binding.tvNoSlotFound.setGone()
+                                timeSlotServiceAdapter.updateTimeSlotList(morningSlots)
+                            } else {
+                                binding.rvTimeSlots.setGone()
+                                binding.tvNoSlotFound.setVisible()
 
-                              //  if (period == "AM" || (period == "PM" && hour < 12)) {
-                                if (period == "AM") {
-                                    morningSlots.add(slot)
-                                    updateAdapterWithMorningSlots()
-                                } else {
-                                    eveningSlots.add(slot)
-                                }
+                            }
+                        } else {
+                            val eveningSlots =
+                                filterEveningSlots(it.data?.data?.firstOrNull()?.slots!!)
+                            Log.d(
+                                "AvailableTimeResponse",
+                                "eveningSlots size-> ${eveningSlots.size}"
+                            )
+                            if (eveningSlots.isNotEmpty()) {
+                                binding.rvTimeSlots.setVisible()
+                                binding.tvNoSlotFound.setGone()
+                                timeSlotServiceAdapter.updateTimeSlotList(eveningSlots)
+                            } else {
+                                binding.rvTimeSlots.setGone()
+                                binding.tvNoSlotFound.setVisible()
                             }
                         }
                     }
@@ -222,9 +230,11 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
             description, cartButton,
             object : BookingSuccessAlertCallbackInt {
                 override fun onGoToCartClicked(view: View) {
-                    val action = MakeAppointmentFragmentDirections.actionMakeAppointmentFragmentToCartFragment()
+                    val action =
+                        MakeAppointmentFragmentDirections.actionMakeAppointmentFragmentToCartFragment()
                     //Finish Current Fragment
-                    val navOptions = NavOptions.Builder().setPopUpTo(R.id.makeAppointmentFragment, true).build()
+                    val navOptions =
+                        NavOptions.Builder().setPopUpTo(R.id.makeAppointmentFragment, true).build()
                     findNavController().navigate(action, navOptions)
                 }
 
@@ -233,7 +243,6 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
                 }
             })
     }
-
     @RequiresApi(Build.VERSION_CODES.O)
     private fun updateCalendar(dates: List<String>) {
         val selectedDates = mutableListOf<CalendarDay>()
@@ -250,12 +259,12 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
                 )
             }
         }
-        if (selectedDates.size>0){
+        if (selectedDates.size > 0) {
             Log.d("selectedDates", "selectedDates at zero->$${selectedDates[0]}")
             callServiceAvailableTimeSlotsApi(formatCalendarDayToYear(selectedDates[0]))
             binding.clNoDataFound.setGone()
             binding.clData.setVisible()
-        }else{
+        } else {
             Log.d("selectedDates", "response data is zero")
             binding.clNoDataFound.setVisible()
             binding.clData.setGone()
@@ -287,15 +296,20 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun setEmptyListToMorningEveningAdapter(){
-        morningSlots.clear()
-        eveningSlots.clear()
-        val timeSlotServiceAdapterForMorningSlots = TimeSlotServiceAdapter(morningSlots)
-        binding.rvTimeSlots.adapter = timeSlotServiceAdapterForMorningSlots
-        timeSlotServiceAdapterForMorningSlots.notifyDataSetChanged()
-        val timeSlotServiceAdapterForEveningSlots = TimeSlotServiceAdapter(eveningSlots)
-        binding.rvTimeSlots.adapter = timeSlotServiceAdapterForEveningSlots
-        timeSlotServiceAdapterForEveningSlots.notifyDataSetChanged()
+    private fun setEmptyListToMorningEveningAdapter() {
+        timeSlotServiceAdapter = TimeSlotServiceAdapter(ArrayList())
+        binding.rvTimeSlots.adapter = timeSlotServiceAdapter
+        timeSlotServiceAdapter.setOnSelectSlotCallback(object :
+            TimeSlotServiceAdapter.SelectSlotCallback {
+            override fun rootSelectSlot(slotId: Int, slotTime: String) {
+                Log.d(
+                    "bookAppointment", "slotId->${slotId}"
+                )
+                this@MakeAppointmentFragment.slotId = slotId
+                bookingTime = slotTime
+            }
+
+        })
 
 
     }
@@ -335,6 +349,7 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
             binding.btnBookAppointment.text = "Book an Appointment"
 
         }
+        setEmptyListToMorningEveningAdapter()
         viewModel.professionalId.set(professionalItem.professionalDetail?.professionalDetailId)
         viewModel.getServiceAvailableDates()
         binding.tvMorning.isSelected = true
@@ -345,20 +360,21 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onClick(v: View?) {
         when (v) {
             binding.tvMorning -> {
-                slotId=0
+                slotId = 0
                 binding.tvMorning.isSelected = true
                 binding.tvEvening.isSelected = false
-                updateAdapterWithMorningSlots()
+                callServiceAvailableTimeSlotsApi(bookingDate)
             }
 
             binding.tvEvening -> {
-                slotId=0
+                slotId = 0
                 binding.tvMorning.isSelected = false
                 binding.tvEvening.isSelected = true
-                updateAdapterWithEveningSlots()
+                callServiceAvailableTimeSlotsApi(bookingDate)
             }
 
             binding.ivArrowBack -> {
@@ -372,15 +388,10 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
     }
 
     private fun proceedToAppointmentBooking() {
-        Log.d("bookAppointment", "inside proceedToAppointmentBooking slotId->${slotId}")
-        Log.d("bookAppointment", "spaServiceId->${args.spaServiceId} ")
+        Log.d("bookAppointment", "inside proceedToAppointmentBooking slotId->${slotId} appointmentType->${args.appointmentType} spaServiceId->${args.spaServiceId} orderId->${args.orderId} serviceBookingId->${args.serviceBookingId} ")
         Log.d(
             "bookAppointment", "spaDetailId->${professionalItem.professionalDetail?.spaDetailId} "
         )
-        Log.d("bookAppointment", "appointmentType->${args.appointmentType} ")
-        Log.d("bookAppointment", "serviceBookingId->${args.serviceBookingId} ")
-        Log.d("bookAppointment", "orderId->${args.orderId} ")
-
         if (slotId == 0) {
             requireContext().showToast("Please Select Time Slot")
         } else {
@@ -402,59 +413,22 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
 
     }
 
-
-    // Method to update adapter with morning slots
-    @SuppressLint("NotifyDataSetChanged")
-    private fun updateAdapterWithMorningSlots() {
-        if (morningSlots.isNotEmpty()) {
-            binding.rvTimeSlots.setVisible()
-            binding.tvNoSlotFound.setGone()
-            val timeSlotServiceAdapter = TimeSlotServiceAdapter(morningSlots)
-            binding.rvTimeSlots.adapter = timeSlotServiceAdapter
-            timeSlotServiceAdapter.notifyDataSetChanged()
-            timeSlotServiceAdapter.setOnClickSlotCallback(object :
-                TimeSlotServiceAdapter.SelectSlotCallback {
-                override fun rootSelectSlot(slotId: Int, slotTime: String) {
-                    Log.d(
-                        "bookAppointment", "inside updateAdapterWithMorningSlots slotId->${slotId}"
-                    )
-                    this@MakeAppointmentFragment.slotId = slotId
-                    bookingTime = slotTime
-                }
-
-            })
-        } else {
-            binding.rvTimeSlots.setGone()
-            binding.tvNoSlotFound.setVisible()
+    private fun filterMorningSlots(slots: List<Slot>): List<Slot> {
+        return slots.filter { slot ->
+            val startTime = slot.fromTime
+            val timePeriod = startTime.substring(startTime.length - 2)
+            timePeriod == "AM"
         }
     }
 
-    // Method to update adapter with evening slots
-    @SuppressLint("NotifyDataSetChanged")
-    private fun updateAdapterWithEveningSlots() {
-        if (eveningSlots.isNotEmpty()) {
-            binding.rvTimeSlots.setVisible()
-            binding.tvNoSlotFound.setGone()
-            val timeSlotServiceAdapter = TimeSlotServiceAdapter(eveningSlots)
-            binding.rvTimeSlots.adapter = timeSlotServiceAdapter
-            timeSlotServiceAdapter.notifyDataSetChanged()
-            timeSlotServiceAdapter.setOnClickSlotCallback(object :
-                TimeSlotServiceAdapter.SelectSlotCallback {
-                override fun rootSelectSlot(slotId: Int, slotTime: String) {
-                    Log.d(
-                        "bookAppointment", "inside updateAdapterWithEveningSlots slotId->${slotId}"
-                    )
-                    this@MakeAppointmentFragment.slotId = slotId
-                    bookingTime = slotTime
-                }
-
-            })
-        } else {
-            binding.rvTimeSlots.setGone()
-            binding.tvNoSlotFound.setVisible()
+    private fun filterEveningSlots(slots: List<Slot>): List<Slot> {
+        return slots.filter { slot ->
+            val startTime = slot.fromTime
+            val timePeriod = startTime.substring(startTime.length - 2)
+            timePeriod == "PM"
         }
-
     }
+
 }
 
 

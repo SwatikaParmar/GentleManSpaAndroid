@@ -39,6 +39,7 @@ import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.adapter
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.adapter.ProductPhotoAdapter
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.AddPhotoRequest
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.viewModel.AddProductViewModel
+import com.app.gentlemanspa.utils.AlertWithoutCancelCallbackInt
 import com.app.gentlemanspa.utils.AppPrefs
 import com.app.gentlemanspa.utils.CommonFunctions
 import com.app.gentlemanspa.utils.CommonFunctions.compressImageFile
@@ -50,6 +51,7 @@ import com.app.gentlemanspa.utils.CommonFunctions.uriToFile
 import com.app.gentlemanspa.utils.DecimalDigitsInputFilter
 import com.app.gentlemanspa.utils.ViewModelFactory
 import com.app.gentlemanspa.utils.setVisible
+import com.app.gentlemanspa.utils.showAlertForPlaceOrder
 import com.app.gentlemanspa.utils.showToast
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -212,8 +214,15 @@ class AddProductFragment : Fragment(), View.OnClickListener {
 
                     Status.SUCCESS -> {
                         hideProgress()
-                        requireContext().showToast(messagesProduct)
-                        findNavController().popBackStack()
+                       // requireContext().showToast(messagesProduct)
+                       // findNavController().popBackStack()
+                        requireContext().showAlertForPlaceOrder(messagesProduct,object :
+                           AlertWithoutCancelCallbackInt{
+                           override fun onOkayClicked(view: View) {
+                               findNavController().popBackStack()
+                           }
+
+                       })
                     }
 
                     Status.ERROR -> {

@@ -18,12 +18,15 @@ import com.app.gentlemanspa.utils.setGone
 import com.app.gentlemanspa.utils.setVisible
 import com.bumptech.glide.Glide
 
-class CartServicesAdapter (private var serviceList: List<Service>) : RecyclerView.Adapter<CartServicesAdapter.ViewHolder>() {
-    private lateinit var cartServicesCallbacks : CartServicesCallbacks
-    class ViewHolder(val binding : ItemCartServicesBinding) : RecyclerView.ViewHolder(binding.root)
+class CartServicesAdapter(private var serviceList: List<Service>) :
+    RecyclerView.Adapter<CartServicesAdapter.ViewHolder>() {
+    private lateinit var cartServicesCallbacks: CartServicesCallbacks
+
+    class ViewHolder(val binding: ItemCartServicesBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemCartServicesBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        val binding =
+            ItemCartServicesBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
@@ -39,24 +42,26 @@ class CartServicesAdapter (private var serviceList: List<Service>) : RecyclerVie
         holder.binding.apply {
             tvServiceName.text = item.name
             tvTime.text = "${item.durationInMinutes} mins"
-           /* tvRupees.text = String.format("%.2f", item.listingPrice.toDouble())
-            tvLessRupees.text = String.format("%.2f",item.basePrice.toDouble())*/
+            /* tvRupees.text = String.format("%.2f", item.listingPrice.toDouble())
+             tvLessRupees.text = String.format("%.2f",item.basePrice.toDouble())*/
             tvRupees.text = "$${item.listingPrice}"
             tvLessRupees.text = "$${item.basePrice}"
-            Log.d("slotDate","slotDate->${item.slotDate}")
-            if (item.slotDate !=null){
+            Log.d("slotDate", "slotDate->${item.slotDate}")
+            if (item.slotDate != null) {
                 tvSlotDateTime.setVisible()
                 tvSlotDateTime.text = "${formatDayDate(item.slotDate)} ${item.fromTime}"
                 tvSelectDateTime.text = "Reschedule"
 
-            }else{
+            } else {
                 tvSlotDateTime.setGone()
-                tvSelectDateTime.text ="Select date and time"
+                tvSelectDateTime.text = "Select date and time"
 
 
             }
-            Glide.with(holder.itemView.context).load(ApiConstants.BASE_FILE +item.serviceIconImage).placeholder(
-                R.drawable.service_placeholder).error(R.drawable.service_placeholder).into(ivService)
+            Glide.with(holder.itemView.context).load(ApiConstants.BASE_FILE + item.serviceIconImage)
+                .placeholder(
+                    R.drawable.service_placeholder
+                ).error(R.drawable.service_placeholder).into(ivService)
 
 
 
@@ -67,21 +72,26 @@ class CartServicesAdapter (private var serviceList: List<Service>) : RecyclerVie
             ivAddService.setOnClickListener {
                 cartServicesCallbacks.addOrRemoveService(item)
             }
-            tvSelectDateTime.setOnClickListener{
-                cartServicesCallbacks.addSlot(item)
+            tvSelectDateTime.setOnClickListener {
+                if (item.slotDate != null) {
+                    cartServicesCallbacks.addSlot(item,"update")
+                }else{
+                    cartServicesCallbacks.addSlot(item,"add")
+
+                }
             }
         }
 
     }
 
-    fun setOnCartServicesCallbacks(onClick :CartServicesCallbacks) {
+    fun setOnCartServicesCallbacks(onClick: CartServicesCallbacks) {
         cartServicesCallbacks = onClick
     }
 
-    interface CartServicesCallbacks{
+    interface CartServicesCallbacks {
         fun rootService(item: Service)
         fun addOrRemoveService(item: Service)
-        fun addSlot(item: Service)
+        fun addSlot(item: Service, status:String)
     }
 
 }

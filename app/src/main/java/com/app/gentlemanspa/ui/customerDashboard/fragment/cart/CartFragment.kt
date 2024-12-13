@@ -91,13 +91,14 @@ class CartFragment : Fragment(), View.OnClickListener {
             } else {
                 if (!binding.cbHomeDelivery.isChecked) {
                     binding.cbAtVenue.isChecked = true
-                }else{
+                } else {
                     binding.cbAtVenue.isChecked = false
 
                 }
             }
         }
     }
+
     private fun deliverAddress() {
         if (AppPrefs(requireContext()).getStringPref(DELIVERY_ADDRESS).toString().isNotEmpty()) {
             when (AppPrefs(requireContext()).getStringPref(DELIVERY_ADDRESS)) {
@@ -107,17 +108,19 @@ class CartFragment : Fragment(), View.OnClickListener {
                     binding.cbHomeDelivery.isChecked = false
                     binding.clAddressViews.setGone()
                 }
+
                 "Home Delivery" -> {
                     Log.d("deliveryAddress", "Home Delivery")
                     binding.cbHomeDelivery.isChecked = true
                     binding.cbAtVenue.isChecked = false
                     binding.clAddressViews.setVisible()
                 }
+
                 else -> {
                     Log.d("deliveryAddress", "else")
                 }
             }
-        }else{
+        } else {
             Log.d("deliveryAddress", "deliveryAddress is empty")
             binding.cbHomeDelivery.isChecked = true
             binding.cbAtVenue.isChecked = false
@@ -153,13 +156,36 @@ class CartFragment : Fragment(), View.OnClickListener {
                                 binding.cvServicesTotal.setVisible()
                                 //  binding.clPay.setVisible()
                                 setCartServicesAdapter(it.data.data.cartServices.services)
-                                binding.tvTotalPrice.text = "$${String.format("%.2f",it.data.data.cartServices.totalMrp.toDouble())}"
+                                binding.tvTotalPrice.text = "$${
+                                    String.format(
+                                        "%.2f",
+                                        it.data.data.cartServices.totalMrp.toDouble()
+                                    )
+                                }"
                                 binding.tvTotalDiscountPrice.text =
-                                    "-$${String.format("%.2f",it.data.data.cartServices.totalDiscount.toDouble())}"
-                                binding.tvGrandTotalPrice.text = "$${String.format("%.2f",it.data.data.cartServices.totalSellingPrice.toDouble())}"
-                               // binding.btnPay.text = "Pay $${it.data.data.spaTotalSellingPrice}.00"
-                                binding.btnPay.text = "Pay $${String.format("%.2f",it.data.data.spaTotalSellingPrice.toDouble())}"
-                                Log.d("testIssue", "spaTotalSellingPrice: ${{it.data.data.spaTotalSellingPrice}}")
+                                    "-$${
+                                        String.format(
+                                            "%.2f",
+                                            it.data.data.cartServices.totalDiscount.toDouble()
+                                        )
+                                    }"
+                                binding.tvGrandTotalPrice.text = "$${
+                                    String.format(
+                                        "%.2f",
+                                        it.data.data.cartServices.totalSellingPrice.toDouble()
+                                    )
+                                }"
+                                // binding.btnPay.text = "Pay $${it.data.data.spaTotalSellingPrice}.00"
+                                binding.btnPay.text = "Pay $${
+                                    String.format(
+                                        "%.2f",
+                                        it.data.data.spaTotalSellingPrice.toDouble()
+                                    )
+                                }"
+                                Log.d(
+                                    "testIssue",
+                                    "spaTotalSellingPrice: ${{ it.data.data.spaTotalSellingPrice }}"
+                                )
 
 
                             } else {
@@ -175,13 +201,33 @@ class CartFragment : Fragment(), View.OnClickListener {
                                 //     binding.clDelivery.setVisible()
                                 setCartProductsAdapter(it.data.data.cartProducts.products)
                                 binding.tvProductTotalPrice.text =
-                                    "$${String.format("%.2f",it.data.data.cartProducts.totalMrp.toDouble())}"
+                                    "$${
+                                        String.format(
+                                            "%.2f",
+                                            it.data.data.cartProducts.totalMrp.toDouble()
+                                        )
+                                    }"
                                 binding.tvProductTotalDiscountPrice.text =
-                                    "-$${String.format("%.2f",it.data.data.cartProducts.totalDiscount.toDouble())}"
+                                    "-$${
+                                        String.format(
+                                            "%.2f",
+                                            it.data.data.cartProducts.totalDiscount.toDouble()
+                                        )
+                                    }"
                                 binding.tvProductGrandTotalPrice.text =
-                                    "$${String.format("%.2f",it.data.data.cartProducts.totalSellingPrice.toDouble())}"
+                                    "$${
+                                        String.format(
+                                            "%.2f",
+                                            it.data.data.cartProducts.totalSellingPrice.toDouble()
+                                        )
+                                    }"
                                 //  binding.cbHomeDelivery.isChecked = true
-                                binding.btnPay.text = "Pay $${String.format("%.2f",it.data.data.spaTotalSellingPrice.toDouble())}"
+                                binding.btnPay.text = "Pay $${
+                                    String.format(
+                                        "%.2f",
+                                        it.data.data.spaTotalSellingPrice.toDouble()
+                                    )
+                                }"
                                 deliverAddress()
                             } else {
                                 binding.clProducts.setGone()
@@ -267,21 +313,28 @@ class CartFragment : Fragment(), View.OnClickListener {
                         hideProgress()
                         val addressList = ArrayList<AddressItem>()
                         var primaryAddress = ""
+                        var deliveryAddressName = ""
                         addressList.clear()
                         it.data?.data?.let { it1 -> addressList.addAll(it1) }
                         for (i in addressList.indices) {
                             if (addressList[i].status) {
                                 primaryAddress =
                                     "${addressList[i].houseNoOrBuildingName},${addressList[i].streetAddresss},${addressList[i].nearbyLandMark},${addressList[i].city},${addressList[i].state}"
+                                deliveryAddressName = addressList[i].addressType
                             }
                         }
                         if (primaryAddress.isNotEmpty()) {
                             binding.tvDeliveryAddress.setVisible()
-                            binding.tvDeliveryAddress.text = primaryAddress
+                            var cleanPrimaryAddress = primaryAddress.replace(",,", ",")
+                            if (cleanPrimaryAddress.endsWith(",")) {
+                                cleanPrimaryAddress = cleanPrimaryAddress.dropLast(1)
+                            }
+                            binding.tvDeliveryAddress.text = cleanPrimaryAddress
                         } else {
                             requireContext().showToast("Address is empty")
                             binding.tvDeliveryAddress.setGone()
                         }
+                        binding.tvDeliveryPlaceName.text = "Delivering to $deliveryAddressName"
 
 
                     }
@@ -350,13 +403,23 @@ class CartFragment : Fragment(), View.OnClickListener {
                 viewModel.addServiceToCart()
             }
 
-            override fun addSlot(item: Service) {
-                val action = CartFragmentDirections.actionCartFragmentAnyProfessionalFragment(
-                    "Update Cart Service",
-                    item.spaDetailId,
-                    item.spaServiceId
-                )
-                findNavController().navigate(action)
+            override fun addSlot(item: Service,status:String) {
+                if (status=="update"){
+                    val action = CartFragmentDirections.actionCartFragmentAnyProfessionalFragment(
+                        "Update Cart Service",
+                        item.spaDetailId,
+                        item.spaServiceId
+                    )
+                    findNavController().navigate(action)
+                }else{
+                    val action = CartFragmentDirections.actionCartFragmentAnyProfessionalFragment(
+                        "Book Cart Service",
+                        item.spaDetailId,
+                        item.spaServiceId
+                    )
+                    findNavController().navigate(action)
+                }
+
             }
 
         })

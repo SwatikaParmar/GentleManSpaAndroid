@@ -19,6 +19,13 @@ class TimeSlotServiceAdapter(private var timeSlotList: ArrayList<Slot>): Recycle
   //  private var positionChecked: Int=0
     private var positionChecked: Int=-1
 
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateTimeSlotList(newSlots: List<Slot>) {
+        timeSlotList.clear()
+        timeSlotList.addAll(newSlots)
+        notifyDataSetChanged()
+    }
+
     class ViewHolder(val binding : ItemTimeSlotsServiceBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -69,7 +76,7 @@ class TimeSlotServiceAdapter(private var timeSlotList: ArrayList<Slot>): Recycle
         }
     }
 
-    fun setOnClickSlotCallback(onClick : SelectSlotCallback){
+    fun setOnSelectSlotCallback(onClick : SelectSlotCallback){
         selectSlotClick = onClick
 
     }

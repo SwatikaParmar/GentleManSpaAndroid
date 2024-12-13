@@ -23,6 +23,8 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import org.json.JSONObject
+import retrofit2.HttpException
 
 class AddProductViewModel (private var initialRepository: InitialRepository) : AndroidViewModel(
     Application()
@@ -58,12 +60,32 @@ class AddProductViewModel (private var initialRepository: InitialRepository) : A
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->
-                    if (!CommonFunctions.getError(exception)!!.contains("401"))
+                   /* if (!CommonFunctions.getError(exception)!!.contains("401"))
+                        resultProductCategories.value =
+                            Resource.error(
+                                data = null,
+                                message = CommonFunctions.getError(exception)
+                            )*/
+                    if (exception is HttpException) {
+                        try {
+                            val errorBody = exception.response()?.errorBody()?.string()
+                            if (!errorBody.isNullOrEmpty()) {
+                                val jsonError = JSONObject(errorBody)
+                                val errorMessage = jsonError.optString("messages", "Unknown HTTP error")
+                                resultProductCategories.value = Resource.error(data = null, message = errorMessage)
+                            } else {
+                                resultProductCategories.value = Resource.error(data = null, message = "Unknown HTTP error")
+                            }
+                        } catch (e: Exception) {
+                            resultProductCategories.value = Resource.error(data = null, message = e.message)
+                        }
+                    }else{
                         resultProductCategories.value =
                             Resource.error(
                                 data = null,
                                 message = CommonFunctions.getError(exception)
                             )
+                    }
                 }
                 .collect {
                     if (it?.statusCode == 200) {
@@ -84,12 +106,32 @@ class AddProductViewModel (private var initialRepository: InitialRepository) : A
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->
-                    if (!CommonFunctions.getError(exception)!!.contains("401"))
+                 /*   if (!CommonFunctions.getError(exception)!!.contains("401"))
+                        resultAddProduct.value =
+                            Resource.error(
+                                data = null,
+                                message = CommonFunctions.getError(exception)
+                            )*/
+                    if (exception is HttpException) {
+                        try {
+                            val errorBody = exception.response()?.errorBody()?.string()
+                            if (!errorBody.isNullOrEmpty()) {
+                                val jsonError = JSONObject(errorBody)
+                                val errorMessage = jsonError.optString("messages", "Unknown HTTP error")
+                                resultAddProduct.value = Resource.error(data = null, message = errorMessage)
+                            } else {
+                                resultAddProduct.value = Resource.error(data = null, message = "Unknown HTTP error")
+                            }
+                        } catch (e: Exception) {
+                            resultAddProduct.value = Resource.error(data = null, message = e.message)
+                        }
+                    }else{
                         resultAddProduct.value =
                             Resource.error(
                                 data = null,
                                 message = CommonFunctions.getError(exception)
                             )
+                    }
                 }
                 .collect {
                     if (it?.statusCode == 200) {
@@ -115,12 +157,33 @@ class AddProductViewModel (private var initialRepository: InitialRepository) : A
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->
-                    if (!CommonFunctions.getError(exception)!!.contains("401"))
+                /*    if (!CommonFunctions.getError(exception)!!.contains("401"))
+                        resultUpdateProduct.value =
+                            Resource.error(
+                                data = null,
+                                message = CommonFunctions.getError(exception)
+                            )*/
+                    if (exception is HttpException) {
+                        try {
+                            val errorBody = exception.response()?.errorBody()?.string()
+                            if (!errorBody.isNullOrEmpty()) {
+                                val jsonError = JSONObject(errorBody)
+                                val errorMessage = jsonError.optString("messages", "Unknown HTTP error")
+                                resultUpdateProduct.value = Resource.error(data = null, message = errorMessage)
+                            } else {
+                                resultUpdateProduct.value = Resource.error(data = null, message = "Unknown HTTP error")
+                            }
+                        } catch (e: Exception) {
+                            resultUpdateProduct.value = Resource.error(data = null, message = e.message)
+                        }
+                    }else{
                         resultUpdateProduct.value =
                             Resource.error(
                                 data = null,
                                 message = CommonFunctions.getError(exception)
                             )
+                    }
+
                 }
                 .collect {
                     if (it?.statusCode == 200) {
@@ -141,12 +204,32 @@ class AddProductViewModel (private var initialRepository: InitialRepository) : A
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->
-                    if (!CommonFunctions.getError(exception)!!.contains("401"))
+                  /*  if (!CommonFunctions.getError(exception)!!.contains("401"))
+                        resultUploadProductImage.value =
+                            Resource.error(
+                                data = null,
+                                message = CommonFunctions.getError(exception)
+                            )*/
+                    if (exception is HttpException) {
+                        try {
+                            val errorBody = exception.response()?.errorBody()?.string()
+                            if (!errorBody.isNullOrEmpty()) {
+                                val jsonError = JSONObject(errorBody)
+                                val errorMessage = jsonError.optString("messages", "Unknown HTTP error")
+                                resultUploadProductImage.value = Resource.error(data = null, message = errorMessage)
+                            } else {
+                                resultUploadProductImage.value = Resource.error(data = null, message = "Unknown HTTP error")
+                            }
+                        } catch (e: Exception) {
+                            resultUploadProductImage.value = Resource.error(data = null, message = e.message)
+                        }
+                    }else{
                         resultUploadProductImage.value =
                             Resource.error(
                                 data = null,
                                 message = CommonFunctions.getError(exception)
                             )
+                    }
                 }
                 .collect {
                     if (it?.statusCode == 200) {

@@ -50,8 +50,6 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-
-
 @Suppress("DEPRECATION")
 class RegisterFragment : Fragment(), View.OnClickListener {
     private var messagesRegister: String? = ""
@@ -67,7 +65,6 @@ class RegisterFragment : Fragment(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initObserver()
-
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -99,14 +96,12 @@ class RegisterFragment : Fragment(), View.OnClickListener {
             }
             binding.btnSignup -> {
                 if (isValidation()) {
-                    viewModel.dialCode.set(binding.countryCode.defaultCountryCode)
+                    viewModel.dialCode.set("+${binding.countryCode.selectedCountryCode}")
                     viewModel.phoneNumber.set(binding.etPhone.text.toString())
                     viewModel.email.set(binding.etEmail.text.toString())
                     viewModel.emailOtp()
                 }
-
             }
-
             binding.ivTogglePassword -> {
                 isPasswordVisible = !isPasswordVisible
                 togglePasswordVisibility(
@@ -182,7 +177,6 @@ class RegisterFragment : Fragment(), View.OnClickListener {
             requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         return File.createTempFile(imageFileName, ".jpg", storageDir)
     }
-
     private fun openGallery() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         galleryLauncher.launch(intent)
@@ -217,10 +211,7 @@ class RegisterFragment : Fragment(), View.OnClickListener {
             } else {
                 cameraPermission = true
             }
-
         }
-
-
     }
 
     private fun checkAndRequestPermissionsForGallery(onPermissionsGranted: () -> Unit) {
@@ -253,19 +244,15 @@ class RegisterFragment : Fragment(), View.OnClickListener {
 
 
     private fun setImagePickerBottomSheet() {
-
         val bottomSheet = BottomSheetDialog(requireContext(), R.style.DialogTheme_transparent)
         val bottomSheetLayout = ImagePickerBottomBinding.inflate(layoutInflater)
         bottomSheet.setContentView(bottomSheetLayout.root)
-
         // Adjust the layout parameters for full screen
         val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout.root.parent as View)
         bottomSheetBehavior.peekHeight = Resources.getSystem().displayMetrics.heightPixels
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-
         bottomSheet.setCancelable(false)
         bottomSheet.show()
-
         bottomSheetLayout.tvCancel.setOnClickListener {
             bottomSheet.dismiss()
         }
@@ -276,7 +263,6 @@ class RegisterFragment : Fragment(), View.OnClickListener {
         bottomSheetLayout.clGallery.setOnClickListener {
             checkAndRequestPermissionsForGallery { openGallery() }
             bottomSheet.dismiss()
-
         }
         bottomSheet.behavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
@@ -287,9 +273,7 @@ class RegisterFragment : Fragment(), View.OnClickListener {
                 when (result.status) {
                     Status.LOADING -> {
                         showProgress(requireContext())
-
                     }
-
                     Status.SUCCESS -> {
                         hideProgress()
                         messagesRegister = it.data?.messages.toString()
@@ -297,17 +281,16 @@ class RegisterFragment : Fragment(), View.OnClickListener {
                             Log.d("apiEmail", "Otp is ->${it.data.data.otp}")
                             emailOtp=it.data.data.otp.toString()
                             requireContext().showToast(messagesRegister.toString())
+                            viewModel.dialCode.set("+${binding.countryCode.selectedCountryCode}")
+                            viewModel.phoneNumber.set(binding.etPhone.text.toString())
                             viewModel.phoneUnique()
                         }else{
                             requireContext().showToast(messagesRegister.toString())
                         }
-
                     }
-
                     Status.ERROR -> {
                         hideProgress()
                         Log.d("apiEmail", "error->${it.message}")
-
                         if (it.message != null) {
                             requireContext().showToast(it.message.toString())
                         }
@@ -320,29 +303,22 @@ class RegisterFragment : Fragment(), View.OnClickListener {
                 when (result.status) {
                     Status.LOADING -> {
                         showProgress(requireContext())
-
                     }
-
                     Status.SUCCESS -> {
                         hideProgress()
                         messagesRegister = it.data?.messages.toString()
                         Log.d("apiEmail", "inside phoneUnique emailOtp->${emailOtp} currentPhotoPath->$currentPhotoPath")
-
-                        if (it.data!!.isSuccess) {
+                        if (it.data!!.isSuccess){
                             requireContext().showToast(messagesRegister.toString())
                             val signUpRequest= SignUpRequest(binding.etFirstName.text.toString(),binding.etLastName.text.toString(),binding.etPassword.text.toString(),
                                 binding.etPhone.text.toString(),"Professional",binding.spGender.selectedItem.toString(),binding.etEmail.text.toString(),
-                                binding.countryCode.defaultCountryCode)
-                            val action =
-                                RegisterFragmentDirections.actionRegisterFragmentToOtpFragment(emailOtp,currentPhotoPath.toString(),signUpRequest,0)
+                                "+${binding.countryCode.selectedCountryCode}")
+                            val action = RegisterFragmentDirections.actionRegisterFragmentToOtpFragment(emailOtp,currentPhotoPath.toString(),signUpRequest,0)
                             findNavController().navigate(action)
                         }else{
                             requireContext().showToast(messagesRegister.toString())
                         }
                     }
-
-
-
                     Status.ERROR -> {
                         hideProgress()
                         if (it.message != null) {
@@ -352,9 +328,6 @@ class RegisterFragment : Fragment(), View.OnClickListener {
                 }
             }
         }
-
-
-
     }
 
 
@@ -403,13 +376,10 @@ class RegisterFragment : Fragment(), View.OnClickListener {
 
     private fun isValidation(): Boolean {
         when {
-            //   profileImage == null -> requireContext().showToast("Please select profile picture")
+            // profileImage == null -> requireContext().showToast("Please select profile picture")
             checkString(binding.etFirstName) -> requireContext().showToast("Please enter first name")
             checkString(binding.etLastName) -> requireContext().showToast("Please enter last name")
-            binding.spGender.selectedItem.toString() == "Select Gender" -> requireContext().showToast(
-                "Please select gender"
-            )
-
+            binding.spGender.selectedItem.toString() == "Select Gender" -> requireContext().showToast("Please select gender")
             checkString(binding.etEmail) -> requireContext().showToast("Please enter email")
             !isValidEmail(checkValidString(binding.etEmail)) -> requireContext().showToast("Please enter a valid email address")
             checkString(binding.etPhone) -> requireContext().showToast("Please enter phone number")
@@ -420,12 +390,10 @@ class RegisterFragment : Fragment(), View.OnClickListener {
             (checkValidString(binding.etPassword) != checkValidString(binding.etConfirmPassword)) -> requireContext().showToast(
                 "Password and confirm password mismatched"
             )
-
             else -> return true
         }
         return false
     }
-
 
     companion object {
         private const val REQUEST_CODE_CAMERA_PERMISSIONS = 101

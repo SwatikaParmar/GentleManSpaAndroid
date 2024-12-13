@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="@dimen/_12sdp"
+            android:layout_marginHorizontal="@dimen/_5sdp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/_15sdp">
+
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/verticalG1"
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.5" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/confirmTV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Confirm"
+                    android:layout_marginEnd="@dimen/_15sdp"
+                    android:layout_marginStart="@dimen/_15sdp"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:textSize="@dimen/_14sdp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/appCloseTV"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:layout_marginEnd="@dimen/_15sdp"
+                    android:fontFamily="@font/poppins"
+                    android:text="Are you sure want to delete chat with this user"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_12sdp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/confirmTV"
+                    app:layout_constraintTop_toBottomOf="@id/confirmTV"
+                    tools:ignore="TextSizeCheck" />
+
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/tvCancel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Cancel"
+                    android:fontFamily="@font/poppins_medium"
+                    android:gravity="center"
+                    android:backgroundTint="#6F7179"
+                    app:cornerRadius="@dimen/_20sdp"
+                    android:layout_marginEnd="@dimen/_7sdp"
+                    android:padding="@dimen/_5sdp"
+                    android:paddingStart="@dimen/_10sdp"
+                    android:paddingEnd="@dimen/_10sdp"
+                    android:textColor="@color/white"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/appCloseTV"
+                    app:layout_constraintEnd_toStartOf="@id/verticalG1"
+                    app:layout_constraintTop_toBottomOf="@id/appCloseTV" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/tvDelete"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Delete"
+                    android:fontFamily="@font/poppins_medium"
+                    android:gravity="center"
+                    android:layout_marginStart="@dimen/_7sdp"
+                    android:padding="@dimen/_5sdp"
+                    app:cornerRadius="@dimen/_20sdp"
+                    android:paddingStart="@dimen/_10sdp"
+                    android:paddingEnd="@dimen/_10sdp"
+                    android:textColor="@color/white"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    app:layout_constraintEnd_toEndOf="@id/appCloseTV"
+                    app:layout_constraintStart_toEndOf="@id/verticalG1"
+                    app:layout_constraintTop_toBottomOf="@id/appCloseTV" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

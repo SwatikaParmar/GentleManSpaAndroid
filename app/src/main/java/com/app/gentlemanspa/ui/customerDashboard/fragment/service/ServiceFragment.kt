@@ -54,38 +54,35 @@ class ServiceFragment : Fragment(), View.OnClickListener {
     }
     private val handler = Handler(Looper.getMainLooper())
     private var searchRunnable: Runnable? = null
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         selectPosition = args.selectPosition
         categoryId = args.categoryId
         initObserver()
     }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
         if (!this::binding.isInitialized) {
             binding = FragmentServiceBinding.inflate(layoutInflater, container, false)
         }
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as CustomerActivity).bottomNavigation(false)
         initUI()
     }
-
     private fun initUI() {
         callGetCartItemsApi()
         viewModel.getCategories()
-        callServiceListApi("")
+        if (binding.etSearch.text.toString().trim().isNotEmpty()){
+            callServiceListApi(binding.etSearch.text.toString().trim())
+        }else{
+            callServiceListApi("")
+        }
         binding.onClick = this
-
         binding.etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -101,11 +98,9 @@ class ServiceFragment : Fragment(), View.OnClickListener {
             override fun afterTextChanged(s: Editable?) {}
         })
     }
-
     private fun searchProductByName(searchQuery: String) {
         callServiceListApi(searchQuery)
     }
-
     private fun setServiceAdapter() {
         Log.d("serviceList","serviceList->${serviceList}")
         if (serviceList.isNotEmpty()){
@@ -140,9 +135,7 @@ class ServiceFragment : Fragment(), View.OnClickListener {
             binding.rvService.setGone()
             binding.clNoDataFound.setVisible()
         }
-
     }
-
     private fun setCategoriesServiceAdapter() {
         categoriesList.reverse()
         serviceCategoriesAdapter = ServiceCategoriesAdapter(categoriesList, selectPosition)
@@ -156,27 +149,27 @@ class ServiceFragment : Fragment(), View.OnClickListener {
                 val offset = (itemWidth * position!!) - (recyclerViewWidth / 2) + (itemWidth / 2)
                 binding.rvCategories.smoothScrollBy(offset, 0)
                 categoryId = item?.categoryId
-                callServiceListApi("")
+                if (binding.etSearch.text.toString().trim().isNotEmpty()){
+                    callServiceListApi(binding.etSearch.text.toString().trim())
+                }else{
+                    callServiceListApi("")
 
+                }
             }
-
         })
         if (selectPosition != -1) {
             binding.rvCategories.scrollToPosition(selectPosition)
         }
     }
-
     private fun callServiceListApi(searchQuery:String) {
         viewModel.categoryId.set(categoryId)
         viewModel.searchQuery.set(searchQuery)
         viewModel.spaDetailId.set(spaDetailId)
         viewModel.getServiceList()
     }
-
     private fun callGetCartItemsApi() {
         viewModel.getServiceCartItem()
     }
-
     @SuppressLint("SetTextI18n")
     private fun initObserver() {
         viewModel.resultCategories.observe(this) {
@@ -276,7 +269,11 @@ class ServiceFragment : Fragment(), View.OnClickListener {
                     Status.SUCCESS -> {
                         //    hideProgress()
                         requireContext().showToast(it.message.toString())
-                        callServiceListApi("")
+                        if (binding.etSearch.text.toString().trim().isNotEmpty()){
+                            callServiceListApi(binding.etSearch.text.toString().trim())
+                        }else{
+                            callServiceListApi("")
+                        }
                         callGetCartItemsApi()
 
                     }
@@ -291,7 +288,6 @@ class ServiceFragment : Fragment(), View.OnClickListener {
 
         }
     }
-
     override fun onClick(v: View?) {
         when (v) {
             binding.btnContinue -> {
@@ -304,6 +300,4 @@ class ServiceFragment : Fragment(), View.OnClickListener {
             }
         }
     }
-
-
 }

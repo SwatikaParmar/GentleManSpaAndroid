@@ -51,5 +51,9 @@ data class ProductDetailData(
 	val stock: Int? = 0,
 
 	@field:SerializedName("quantity")
-	val quantity: Int? = 0
+	val quantity: Int? = 0,
+
+	@field:SerializedName("countInCart")
+     val countInCart: Int? = 0,
+
 ) : Parcelable

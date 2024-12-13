@@ -137,9 +137,6 @@ class CreateScheduleFragment : Fragment(), View.OnClickListener {
             Log.d("SelectedTime", "startSelectedTime: $startSelectedTime")
             bottomSheet.dismiss()
         }
-
-
-
         bottomSheet.behavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
@@ -171,8 +168,6 @@ class CreateScheduleFragment : Fragment(), View.OnClickListener {
             // Round minutes to the nearest 30-minute interval
             val roundedMinute = if (minute % 30 == 0) minute else if (minute < 30) 0 else 30
             bottomSheetLayout.timePicker.minute = roundedMinute
-
-
         }
 
         bottomSheetLayout.tvDone.setOnClickListener {
@@ -221,6 +216,10 @@ class CreateScheduleFragment : Fragment(), View.OnClickListener {
             }
 
             binding.clEndTimeValue -> {
+                if (binding.tvStartHour.text.toString().trim()=="00" && binding.tvStartMin.text.toString().trim()=="00"){
+                    requireContext().showToast("Select Start Time first")
+                    return
+                }
                 setEndTimePickerBottomSheet()
             }
 
@@ -259,6 +258,7 @@ class CreateScheduleFragment : Fragment(), View.OnClickListener {
         viewModel.toTime.set(endSelectedTime)
         viewModel.addUpdateProfessionalSchedule()
     }
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun isStartTimeBeforeEndTime(startTime: String, endTime: String): Boolean {
         val startTime24Hour = convertTo24HourFormat(startTime)
         val endTime24Hour = convertTo24HourFormat(endTime)

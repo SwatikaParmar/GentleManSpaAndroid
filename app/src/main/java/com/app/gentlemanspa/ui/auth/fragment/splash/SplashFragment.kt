@@ -22,7 +22,6 @@ import com.app.gentlemanspa.ui.customerDashboard.activity.CustomerActivity
 import com.app.gentlemanspa.ui.professionalDashboard.activity.ProfessionalActivity
 import com.app.gentlemanspa.utils.AppPrefs
 import com.app.gentlemanspa.utils.FCM_TOKEN
-import com.app.gentlemanspa.utils.USER_ID
 import com.app.gentlemanspa.utils.areNotificationsEnabled
 import com.app.gentlemanspa.utils.openNotificationSettings
 import com.google.firebase.messaging.FirebaseMessaging
@@ -165,7 +164,7 @@ class SplashFragment : Fragment() {
             }
             .setNegativeButton("No, thanks") { _, _ ->
                 proceedToNextScreen()
-            }            .show()
+            }.show()
     }
 
 

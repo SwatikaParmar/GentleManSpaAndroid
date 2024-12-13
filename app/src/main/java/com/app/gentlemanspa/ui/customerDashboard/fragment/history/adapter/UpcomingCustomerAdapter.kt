@@ -49,8 +49,10 @@ class UpcomingCustomerAdapter(private val dataList:ArrayList<UpcomingServiceAppo
             btnReschedule.setOnClickListener{
                 upcomingCallbacks.upcomingReschedule(item)
             }
-            root.setOnClickListener {
+            btnMessage.setOnClickListener{
+                upcomingCallbacks.sendMessage(item)
             }
+
         }
     }
 
@@ -60,5 +62,6 @@ class UpcomingCustomerAdapter(private val dataList:ArrayList<UpcomingServiceAppo
     interface UpcomingCallbacks {
         fun upcomingCancel(item: UpcomingServiceAppointmentItem)
         fun upcomingReschedule(item: UpcomingServiceAppointmentItem)
+        fun sendMessage(item: UpcomingServiceAppointmentItem)
     }
 }

@@ -1,13 +1,7 @@
-package com.app.gentlemanspa.ui.chat.fragment.messages.model
+package com.app.gentlemanspa.ui.professionalDashboard.fragment.chat.messages.model
 
-/*
-data class MessagesModel(
-    var name:String,
-    var email:String,
-    var uid:String,
-)*/
 
-class MessageModel {
+class ProfessionalMessageModel {
     var name: String? = null
     var status: String? = null
     var image: String? = null

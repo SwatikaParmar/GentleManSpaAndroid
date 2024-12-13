@@ -7,7 +7,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.app.gentlemanspa.base.MyApplication.Companion.hideProgress
 import com.app.gentlemanspa.base.MyApplication.Companion.showProgress
@@ -26,6 +28,10 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.mod
 import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.model.ProfessionalItem
 import com.app.gentlemanspa.utils.ViewModelFactory
 import com.app.gentlemanspa.utils.showToast
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 
 class HistoryCustomerFragment : Fragment(), View.OnClickListener {
@@ -125,6 +131,33 @@ class HistoryCustomerFragment : Fragment(), View.OnClickListener {
                         professionalItem
                     )
                 findNavController().navigate(action)
+            }
+
+            override fun sendMessage(item: UpcomingServiceAppointmentItem) {
+
+                Log.d("sendMessage","sendMessage userId->${item.userId} professionalUserId->${item.professionalUserId}")
+                if (item.userId.isNotEmpty()&&item.professionalUserId.isNotEmpty()){
+                    FirebaseDatabase.getInstance().reference
+                        .child("Users").child(item.professionalUserId)
+                        .addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                Log.d("sendMessage", "sendMessage snapshot exists: ${snapshot.exists()} ")
+                                if(snapshot.exists()){
+                                    val action=HistoryCustomerFragmentDirections.actionHistoryCustomerFragmentToCustomerChatFragment(item.userId,item.professionalUserId,"FromHistoryCustomerFragment")
+                                    findNavController().navigate(action)
+                                    Log.d("sendMessage", "sendMessage inside if : ${snapshot.exists()} ")
+                                }else{
+                                    Log.d("sendMessage", "sendMessage inside else: ${snapshot.exists()} ")
+                                    requireContext().showToast( "This user is unavailable for chat!")
+                                }
+                            }
+                            override fun onCancelled(error: DatabaseError) {
+                                requireContext().showToast(error.message)
+                            }
+                        })
+
+                }
+
             }
         })
     }

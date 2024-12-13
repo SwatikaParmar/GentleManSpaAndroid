@@ -12,39 +12,41 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.chat.fragment.messages.MessageFragment"
-        android:background="@color/black_bg">
+        android:background="@color/black_bg"
+        tools:context=".ui.customerDashboard.fragment.chat.messages.CustomerMessageFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/clHeader"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/_7sdp"
-        app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/ivArrowBack"
-            android:layout_width="@dimen/_20sdp"
-            android:layout_height="@dimen/_20sdp"
-            android:onClick="@{onClick}"
-            android:padding="@dimen/_3sdp"
-            android:src="@drawable/arrow_back"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/white" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clHeader"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:includeFontPadding="false"
-            android:text="Message"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_13ssp"
-            app:fontFamily="@font/poppins_medium"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:padding="@dimen/_7sdp"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivArrowBack"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:onClick="@{onClick}"
+                android:padding="@dimen/_3sdp"
+                android:src="@drawable/arrow_back"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/white" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:includeFontPadding="false"
+                android:text="@string/message"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_13ssp"
+                app:fontFamily="@font/poppins_medium"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/noDataFoundMessage"
             android:layout_width="match_parent"
@@ -71,12 +73,12 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:paddingVertical="@dimen/_20sdp"
-                android:text="No user exists!"/>
+                android:text="@string/no_user_exists" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvMessages"
+            android:id="@+id/rvCustomerMessages"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:nestedScrollingEnabled="false"
@@ -86,8 +88,6 @@
             tools:listitem="@layout/item_messages"
             android:layout_marginTop="@dimen/_10sdp"
             android:layout_marginHorizontal="@dimen/_10sdp"
-            app:layout_constraintTop_toBottomOf="@+id/clHeader"/>
-
+            app:layout_constraintTop_toBottomOf="@+id/clHeader" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </layout>

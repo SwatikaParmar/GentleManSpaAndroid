@@ -77,7 +77,11 @@ class ProductFragment : Fragment(), View.OnClickListener {
     private fun initUI() {
         (activity as CustomerActivity).bottomNavigation(false)
         viewModel.getProductCategories()
-        callProductListApi("")
+        if (binding.etSearchService.text.toString().trim().isNotEmpty()){
+            callProductListApi(binding.etSearchService.text.toString().trim())
+        }else{
+            callProductListApi("")
+        }
         callGetCartItemsApi()
         binding.onClick = this
         binding.etSearchService.addTextChangedListener(object : TextWatcher {
@@ -97,7 +101,6 @@ class ProductFragment : Fragment(), View.OnClickListener {
             }
         })
     }
-
     fun searchServiceByName(searchQuery: String) {
         callProductListApi(searchQuery)
     }
@@ -156,14 +159,11 @@ class ProductFragment : Fragment(), View.OnClickListener {
                 when (result.status) {
                     Status.LOADING -> {
                         //  MyApplication.showProgress(requireContext())
-
-
                     }
 
                     Status.SUCCESS -> {
                         hideProgress()
                         productCategoriesList.clear()
-
                         it.data?.data?.let { it1 -> productCategoriesList.addAll(it1) }
                         setCategoriesProductAdapter()
 
@@ -238,7 +238,11 @@ class ProductFragment : Fragment(), View.OnClickListener {
                         )
                         hideProgress()
                         //    requireContext().showToast(it.message.toString())
-                        callProductListApi("")
+                        if (binding.etSearchService.text.toString().trim().isNotEmpty()){
+                            callProductListApi(binding.etSearchService.text.toString().trim())
+                        }else{
+                            callProductListApi("")
+                        }
                         callGetCartItemsApi()
 
 
@@ -248,7 +252,11 @@ class ProductFragment : Fragment(), View.OnClickListener {
                         Log.d("testIssue", "inside resultAddProductInCart ERROR")
                         hideProgress()
                         //        requireContext().showToast(it.message.toString())
-                        callProductListApi("")
+                        if (binding.etSearchService.text.toString().trim().isNotEmpty()){
+                            callProductListApi(binding.etSearchService.text.toString().trim())
+                        }else{
+                            callProductListApi("")
+                        }
                         callGetCartItemsApi()
                     }
                 }
@@ -274,9 +282,11 @@ class ProductFragment : Fragment(), View.OnClickListener {
                 val offset = (itemWidth * position!!) - (recyclerViewWidth / 2) + (itemWidth / 2)
                 binding.rvProductCategories.smoothScrollBy(offset, 0)
                 mainCategory = item.mainCategoryId
-                /*   viewModel.mainCategoryId.set(mainCategory)
-                   viewModel.getProductsList()*/
-                callProductListApi("")
+                if (binding.etSearchService.text.toString().trim().isNotEmpty()){
+                    callProductListApi(binding.etSearchService.text.toString().trim())
+                }else{
+                    callProductListApi("")
+                }
             }
 
         })

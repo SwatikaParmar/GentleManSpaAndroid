@@ -1,17 +1,12 @@
-package com.app.gentlemanspa.ui.chat.fragment.chat
+package com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.ProgressDialog
-import android.content.ContentValues
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.util.Log
-import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -22,24 +17,20 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doOnTextChanged
-import androidx.lifecycle.Lifecycle
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.app.gentlemanspa.base.MyApplication
-import com.app.gentlemanspa.base.MyApplication.Companion
-import com.app.gentlemanspa.databinding.FragmentChatBinding
+import com.app.gentlemanspa.databinding.FragmentCustomerChatBinding
 import com.app.gentlemanspa.network.ApiConstants
-import com.app.gentlemanspa.ui.chat.fragment.chat.adapter.ChatAdapter
-import com.app.gentlemanspa.ui.chat.fragment.messages.MessageFragment
-import com.app.gentlemanspa.ui.chat.fragment.messages.MessageFragmentArgs
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.chat.messages.ProfessionalMessageFragment
+import com.app.gentlemanspa.ui.customerDashboard.activity.CustomerActivity
+import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.adapter.CustomerChatAdapter
+import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.model.CustomerChatModel
 import com.app.gentlemanspa.utils.AppPrefs
+import com.app.gentlemanspa.utils.CUSTOMER_USER_ID
 import com.app.gentlemanspa.utils.CommonUtils
 import com.app.gentlemanspa.utils.PROFILE_CUSTOMER_DATA
-import com.app.gentlemanspa.utils.USER_ID
-import com.app.gentlemanspa.utils.getCurrentTime
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.database.ChildEventListener
@@ -49,7 +40,6 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
-import com.trubbled.ui.main.chat.model.MyChatModel
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.MediaType.Companion.toMediaType
@@ -65,27 +55,22 @@ import java.util.Calendar
 import java.util.HashMap
 import java.util.Locale
 
+class CustomerChatFragment : Fragment(), View.OnClickListener {
 
-class ChatFragment : Fragment(), View.OnClickListener {
-    lateinit var binding: FragmentChatBinding
-    private val args: ChatFragmentArgs by navArgs()
+    lateinit var binding: FragmentCustomerChatBinding
+    private val args: CustomerChatFragmentArgs by navArgs()
 
     var dialogBuilder: AlertDialog.Builder? = null
     var alertDialog1: AlertDialog? = null
     var alertDialog: AlertDialog? = null
-
     private var response: Response? = null
     var usertoken: String? = null
     var myTxtMsg: String = ""
-
-    private val argsFromUserProfile: ChatFragmentArgs by navArgs()
     var firebaseDataBase: FirebaseDatabase? = null
     var myBlockStatus: Any? = null
     var dialog: BottomSheetDialog? = null
-
     //var alertUnBlockDialogBinding :UnblockAlertDialogBinding? =null
     var alertDialog2: AlertDialog? = null
-
     //firebase database ref
     private var contactsRef: DatabaseReference? = null
 
@@ -101,12 +86,11 @@ class ChatFragment : Fragment(), View.OnClickListener {
     var genderIs: Int? = null
     var myIndex: Int? = null
 
-    var currentUserId = ""
-    var userRef: DatabaseReference? = null
-    private var chatAdapter: ChatAdapter? = null
+    private var userRef: DatabaseReference? = null
+    private var customerChatAdapter: CustomerChatAdapter? = null
     private var messageSenderId: String? = null
     private var messageRecieverId: String? = null
-    private var RootRef: DatabaseReference? = null
+    private var rootRef: DatabaseReference? = null
     private var loadingBar: ProgressDialog? = null
     private var savecurrentTime: String? = null
     private var savecurrentDate: String? = null
@@ -115,12 +99,11 @@ class ChatFragment : Fragment(), View.OnClickListener {
     private var checker = ""
     private var textDeleteSpace = ""
     private var linearLayoutManager: LinearLayoutManager? = null
-    private var messagesList: MutableList<MyChatModel?> = ArrayList()
+    private var messagesList: MutableList<CustomerChatModel?> = ArrayList()
     private val FCM_API = "https://fcm.googleapis.com/fcm/send"
     private val serverKey =
         "AAAA9DE-xZQ:APA91bF9MXwYOv6UIqaW4GUyVtPic16dUKOTKt-H4SQ8gm_zGG2RP8F88m2BUvsMWOO0b--FtCK1D07iAr0HWPi1QfBDePQhU_P6Ou4Z32tz2OjQ0QtCAhFP1yeE8Q3rb8Q3IyBF5wam"
     private val contentType = "application/json"
-    val TAG = "NOTIFICATION TAG"
 
 
     var NOTIFICATION_TITLE: String? = null
@@ -140,7 +123,6 @@ class ChatFragment : Fragment(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        currentUserId = AppPrefs(MyApplication.context).getString("TOKEN").toString()
         contactsRef = FirebaseDatabase.getInstance().reference.child("Contacts")
 
     }
@@ -149,7 +131,7 @@ class ChatFragment : Fragment(), View.OnClickListener {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         if (!this::binding.isInitialized) {
-            binding = FragmentChatBinding.inflate(layoutInflater, container, false)
+            binding = FragmentCustomerChatBinding.inflate(layoutInflater, container, false)
         }
         return binding.root
     }
@@ -161,59 +143,53 @@ class ChatFragment : Fragment(), View.OnClickListener {
     }
 
     private fun initUI() {
+        (activity as CustomerActivity).bottomNavigation(false)
         binding.onClick = this
         setUpChat()
     }
 
     private fun setUpChat() {
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
-        messageSenderId = "${AppPrefs(requireContext()).getStringPref(USER_ID)}"
+        messageSenderId = "${AppPrefs(requireContext()).getStringPref(CUSTOMER_USER_ID)}"
+
         userRef = FirebaseDatabase.getInstance().reference.child("Users")
-        RootRef = FirebaseDatabase.getInstance().reference
-        chatAdapter = ChatAdapter(requireContext(), messagesList)
-        Log.d(TAG, "oncalled onViewCreatedChatCreated")
+        rootRef = FirebaseDatabase.getInstance().reference
+        Log.d("ChatFragmentTest", "onCalled onViewCreatedChatCreated")
+        Log.d("ChatFragmentTest", "args.messageReceiverId->${args.messageReceiverId}")
+
+        customerChatAdapter = CustomerChatAdapter(requireContext(),messagesList)
         //for emoji support in chat
         // EmojiManager.install(GoogleEmojiProvider())
 
 //        binding.chatMsgET.setOnFocusChangeListener { view, b ->
 //            if(b){
-//                Log.d(TAG, "onViewCreatedOmChatClick: $b  ${chatAdapter?.itemCount}")
-//                chatAdapter?.itemCount?.let { binding.recycleMyMessage.scrollToPosition(it-1) }
+//                Log.d("ChatFragmentTest", "onViewCreatedOmChatClick: $b  ${customerChatAdapter?.itemCount}")
+//                customerChatAdapter?.itemCount?.let { binding.recycleMyMessage.scrollToPosition(it-1) }
 //            }
 //        }
 
-        val uId = MessageFragment.fromMessageNotificationUserId
-        Log.d(TAG, "onViewCreatedNotificationuid: ${uId}")
+        val uId = ProfessionalMessageFragment.fromMessageNotificationUserId
+        Log.d("ChatFragmentTest", "onViewCreatedNotificationUid: $uId")
         if (!uId.isNullOrEmpty()) {
             messageRecieverId = uId
-            MessageFragment.fromMessageNotificationUserId = ""
+            ProfessionalMessageFragment.fromMessageNotificationUserId = ""
         } else {
-           /* val dataFromArgs = ChatFragmentArgs.fromBundle(requireArguments())
-            Log.d(TAG, "dataFromArgsonuid-->${dataFromArgs}")
-
-            if (dataFromArgs.from.equals("FromUserProfile")) {
-                messageRecieverId = dataFromArgs.messageReceiverId
-            } else {
-                messageRecieverId = dataFromArgs.messageReceiverId
-            }*/
             messageRecieverId= args.messageReceiverId
         }
 
         binding.tvName.text = nameIs
         linearLayoutManager = LinearLayoutManager(requireContext())
         linearLayoutManager?.stackFromEnd = true
-//        linearLayoutManager?.reverseLayout =false
-//        binding.recycleMyMessage.setNestedScrollingEnabled(true)
         binding.recycleMyMessage.layoutManager = linearLayoutManager
-        RootRef!!.child("Messages").child(messageSenderId!!).child(messageRecieverId!!)
+        rootRef!!.child("Messages").child(messageSenderId!!).child(messageRecieverId!!)
             .addListenerForSingleValueEvent(object : ValueEventListener {
+                @SuppressLint("NotifyDataSetChanged")
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         val countIs = snapshot.childrenCount.toInt()
-                        Log.d(TAG, "onDataChangeSendMessageChildCount: ${countIs}")
 //                    binding.recycleMyMessage.smoothScrollToPosition(countIs-1)
                         linearLayoutManager?.scrollToPosition(countIs)
-                        chatAdapter?.notifyDataSetChanged()
+                        customerChatAdapter?.notifyDataSetChanged()
                     }
                 }
 
@@ -223,37 +199,37 @@ class ChatFragment : Fragment(), View.OnClickListener {
             })
 
 
-        binding.recycleMyMessage.adapter = chatAdapter
-        chatAdapter?.setOnMyItemClickListener(object : ChatAdapter.OnItemClickListener {
+        binding.recycleMyMessage.adapter = customerChatAdapter
+        customerChatAdapter?.setOnMyItemClickListener(object : CustomerChatAdapter.OnItemClickListener {
             override fun deleteForEveryone(
-                position: Int, userMessageList: MutableList<MyChatModel?>
+                position: Int, userMessageList: MutableList<CustomerChatModel?>
             ) {
                 val messageId = userMessageList[position]?.messageID
-                RootRef!!.child("Messages").child(messageSenderId.toString())
+                rootRef!!.child("Messages").child(messageSenderId.toString())
                     .child(messageRecieverId.toString()).child(messageId.toString()).removeValue()
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            RootRef!!.child("Messages").child(messageRecieverId.toString())
+                            rootRef!!.child("Messages").child(messageRecieverId.toString())
                                 .child(messageSenderId.toString()).child(messageId.toString())
                                 .removeValue().addOnCompleteListener { task ->
                                     if (task.isSuccessful) {
-                                        Log.d(TAG, "deleteForEveryone: Success")
+                                        Log.d("ChatFragmentTest", "deleteForEveryone: Success")
                                     }
                                 }
                         }
                     }
-                Log.d(TAG, "deleteMessageForEveryoneChatInterface: Called")
+                Log.d("ChatFragmentTest", "deleteMessageForEveryoneChatInterface: Called")
             }
         })
 
-        RootRef?.child("Messages")?.child(messageSenderId!!)?.child(messageRecieverId.toString())
+        rootRef?.child("Messages")?.child(messageSenderId!!)?.child(messageRecieverId.toString())
             ?.addChildEventListener(object : ChildEventListener {
                 override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {}
                 override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {}
                 @SuppressLint("NotifyDataSetChanged")
                 override fun onChildRemoved(dataSnapshot: DataSnapshot) {
                     Log.d(
-                        TAG,
+                        "ChatFragmentTest",
                         "onChildRemovedObserver: value -${dataSnapshot.value}   Key-${dataSnapshot.key}"
                     )
                     myIndex = -1
@@ -262,20 +238,20 @@ class ChatFragment : Fragment(), View.OnClickListener {
                             myIndex = i
                         }
                     }
-                    Log.d(TAG, "onChildRemovedMyIndex: ${myIndex}")
+                    Log.d("ChatFragmentTest", "onChildRemovedMyIndex: ${myIndex}")
                     if (myIndex == -1) {
 
                     } else {
                         if (messagesList.size > myIndex!!) {
                             messagesList.removeAt(myIndex!!)
-                            chatAdapter?.notifyDataSetChanged()
+                            customerChatAdapter?.notifyDataSetChanged()
                         }
                     }
 //                    messagesList.clear()
 //                    val messages = dataSnapshot.getValue(
-//                        MyChatModel::class.java)
+//                        CustomerChatModel::class.java)
 //                    messagesList.add(messages)
-//                    chatAdapter!!.notifyDataSetChanged()
+//                    customerChatAdapter!!.notifyDataSetChanged()
 //                    binding.recycleMyMessage.smoothScrollToPosition(
 //                        binding.recycleMyMessage.getAdapter()!!.itemCount
 //                    )
@@ -284,7 +260,7 @@ class ChatFragment : Fragment(), View.OnClickListener {
                 override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {}
                 override fun onCancelled(databaseError: DatabaseError) {}
             })
-        Log.d(TAG, "onViewCreatedChatScreenUserId: $messageRecieverId")
+        Log.d("ChatFragmentTest", "onViewCreatedChatScreenUserId: $messageRecieverId")
         addChildToList()
         sender = messageRecieverId.toString()
         loadingBar = ProgressDialog(requireContext())
@@ -311,95 +287,83 @@ class ChatFragment : Fragment(), View.OnClickListener {
         savecurrentDate = currentDate.format(calendar.time)
         val currentTime = SimpleDateFormat("hh:mm a", Locale.getDefault())
         val timeampm = currentTime.format(calendar.time)
-        Log.d(TAG, "onViewCreatedTimeIs: $timeampm")
+        Log.d("ChatFragmentTest", "onViewCreatedTimeIs: $timeampm")
         val timeAMPM = timeampm.replace("am", "AM").replace("pm", "PM");
-        Log.d(TAG, "onViewCreatedTimeIsAMPM: $timeAMPM")
+        Log.d("ChatFragmentTest", "onViewCreatedTimeIsAMPM: $timeAMPM")
         savecurrentTime = timeAMPM
         displayLastSeen()
 
 
 
-//FOR BLOCK USER IN CHAT MESSAGE SCREEN
-        RootRef?.child("Contacts")?.child(messageSenderId.toString())
-            ?.child(messageRecieverId.toString())?.child("ContactStatus")?.child("BlockStatus")
-            ?.addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    myBlockStatus = snapshot.value
+        /*
+        //FOR BLOCK USER IN CHAT MESSAGE SCREEN
+                rootRef?.child("Contacts")?.child(messageSenderId.toString())
+                    ?.child(messageRecieverId.toString())?.child("ContactStatus")?.child("BlockStatus")
+                    ?.addValueEventListener(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            myBlockStatus = snapshot.value
 
-                    RootRef?.child("Contacts")?.child(messageRecieverId.toString())
-                        ?.child(messageSenderId.toString())?.child("ContactStatus")
-                        ?.child("BlockStatus")?.addValueEventListener(object : ValueEventListener {
-                            override fun onDataChange(snapshot: DataSnapshot) {
-                                Log.d(
-                                    TAG,
-                                    "onDataChangeBlockStatus: ${myBlockStatus}  ${snapshot.value}"
-                                )
-                                if (myBlockStatus == true && snapshot.value == true) {
-                                    binding.blockBottomCL.visibility = View.VISIBLE
-                                    binding.typeChatCL.visibility = View.GONE
-                                    binding.settingRL.visibility = View.GONE
-                                    binding.blockBottomTextView.visibility = View.GONE
-                                    binding.rootCLChat.setBackgroundColor(Color.parseColor("#E7E5E2"))
-                                } else {
-                                    if (myBlockStatus == true) {
-                                        binding.blockBottomCL.visibility = View.VISIBLE
-                                        binding.typeChatCL.visibility = View.GONE
-                                        binding.settingRL.visibility = View.GONE
-                                        binding.rootCLChat.setBackgroundColor(Color.parseColor("#E7E5E2"))
-                                    } else if (snapshot.value == true) {
-                                        binding.typeChatCL.visibility = View.GONE
-                                        binding.blockBottomCL.visibility = View.GONE
-                                        binding.blockBottomTextView.visibility = View.VISIBLE
-                                        binding.rootCLChat.setBackgroundColor(Color.parseColor("#E7E5E2"))
-                                    } else {
-                                        binding.typeChatCL.visibility = View.VISIBLE
-                                        binding.blockBottomCL.visibility = View.GONE
-                                        binding.blockBottomTextView.visibility = View.GONE
-                                        binding.settingRL.visibility = View.VISIBLE
-                                        binding.rootCLChat.setBackgroundColor(Color.parseColor("#333333"))
+                            rootRef?.child("Contacts")?.child(messageRecieverId.toString())
+                                ?.child(messageSenderId.toString())?.child("ContactStatus")
+                                ?.child("BlockStatus")?.addValueEventListener(object : ValueEventListener {
+                                    override fun onDataChange(snapshot: DataSnapshot) {
+                                        Log.d(
+                                            "ChatFragmentTest",
+                                            "onDataChangeBlockStatus: ${myBlockStatus}  ${snapshot.value}"
+                                        )
+                                        if (myBlockStatus == true && snapshot.value == true) {
+                                            binding.blockBottomCL.visibility = View.VISIBLE
+                                            binding.typeChatCL.visibility = View.GONE
+                                            binding.settingRL.visibility = View.GONE
+                                            binding.blockBottomTextView.visibility = View.GONE
+                                            binding.rootCLChat.setBackgroundColor(Color.parseColor("#E7E5E2"))
+                                        } else {
+                                            if (myBlockStatus == true) {
+                                                binding.blockBottomCL.visibility = View.VISIBLE
+                                                binding.typeChatCL.visibility = View.GONE
+                                                binding.settingRL.visibility = View.GONE
+                                                binding.rootCLChat.setBackgroundColor(Color.parseColor("#E7E5E2"))
+                                            } else if (snapshot.value == true) {
+                                                binding.typeChatCL.visibility = View.GONE
+                                                binding.blockBottomCL.visibility = View.GONE
+                                                binding.blockBottomTextView.visibility = View.VISIBLE
+                                                binding.rootCLChat.setBackgroundColor(Color.parseColor("#E7E5E2"))
+                                            } else {
+                                                binding.typeChatCL.visibility = View.VISIBLE
+                                                binding.blockBottomCL.visibility = View.GONE
+                                                binding.blockBottomTextView.visibility = View.GONE
+                                                binding.settingRL.visibility = View.VISIBLE
+                                                binding.rootCLChat.setBackgroundColor(Color.parseColor("#333333"))
+                                            }
+                                        }
+
                                     }
-                                }
 
-                            }
+                                    override fun onCancelled(error: DatabaseError) {
+                                    }
+                                })
+                        }
 
-                            override fun onCancelled(error: DatabaseError) {
-                            }
-                        })
-                }
+                        override fun onCancelled(error: DatabaseError) {
+                        }
+                    })
 
-                override fun onCancelled(error: DatabaseError) {
-                }
-            })
-
+        */
 
 
         binding.chatMsgET.doOnTextChanged { text, start, before, count ->
             if (!text.isNullOrEmpty()) {
-                Log.d(TAG, "onViewCreatedOnTextChange: true")
-//               textDeleteSpace =text.toString()
-//                binding.chatMsgET.inputType =InputType.TYPE_TEXT_FLAG_MULTI_LINE
-                binding.chatMsgET.setSingleLine(false)
+                Log.d("ChatFragmentTest", "onViewCreatedOnTextChange: true")
+                binding.chatMsgET.isSingleLine = false
                 binding.chatMsgET.maxLines = 4
                 binding.chatMsgET.minLines = 1
                 binding.chatMsgET.setSelection(text.toString().length)
             } else {
-                binding.chatMsgET.setSingleLine(true)
-                Log.d(TAG, "onViewCreatedOnTextChange: Else")
+                binding.chatMsgET.isSingleLine = true
+                Log.d("ChatFragmentTest", "onViewCreatedOnTextChange: Else")
             }
         }
 
-        binding.sendMsgCV.setOnClickListener {
-            binding.sendMsgCV.isEnabled = false
-            textDeleteSpace = binding.chatMsgET.text.toString()
-            if (textDeleteSpace?.startsWith(" ") == true) {
-                Log.d(TAG, "onViewCreatedSendMsgCVTrue: ${textDeleteSpace}")
-                myTxtMsg = textDeleteSpace.trimStart()
-            } else {
-                Log.d(TAG, "onViewCreatedSendMsgCVFalse: ${textDeleteSpace}")
-                myTxtMsg = textDeleteSpace.toString()
-            }
-            sendMessage()
-        }
 
 
         /*  binding.settingIV1.setOnClickListener {
@@ -435,19 +399,19 @@ class ChatFragment : Fragment(), View.OnClickListener {
     }
 
     fun addChildToList() {
-        Log.d(TAG, "onViewCreated: $messageSenderId $messageRecieverId")
-        RootRef?.child("Messages")?.child(messageSenderId!!)?.child(messageRecieverId.toString())
+        Log.d("ChatFragmentTest", "onViewCreated: $messageSenderId $messageRecieverId")
+        rootRef?.child("Messages")?.child(messageSenderId!!)?.child(messageRecieverId.toString())
             ?.addChildEventListener(object : ChildEventListener {
                 override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
                     Log.d(
-                        TAG,
+                        "ChatFragmentTest",
                         "onChildAddedObserver: value -${dataSnapshot.value}   Key-${dataSnapshot.key}  size-${dataSnapshot.childrenCount}"
                     )
-                    val messages = dataSnapshot.getValue(MyChatModel::class.java)
+                    val messages = dataSnapshot.getValue(CustomerChatModel::class.java)
                     messagesList.add(messages)
-                    chatAdapter?.notifyDataSetChanged()
+                    customerChatAdapter?.notifyDataSetChanged()
                     Log.d(
-                        TAG,
+                        "ChatFragmentTest",
                         "onViewCreatedAdapterPosition: adapter -${binding.recycleMyMessage.adapter!!.itemCount}  arrayCount-${messagesList.size}"
                     )
                     binding.recycleMyMessage.postDelayed({
@@ -467,8 +431,8 @@ class ChatFragment : Fragment(), View.OnClickListener {
 
     override fun onResume() {
         super.onResume()
-        Log.d(TAG, "oncalled  onResumeChatCreated")
-        chatAdapter!!.notifyDataSetChanged()
+        Log.d("ChatFragmentTest", "oncalled  onResumeChatCreated")
+        customerChatAdapter!!.notifyDataSetChanged()
         sender = messageRecieverId.toString()
         //  activity?.startService(Intent(activity,PushMessagingService::class.java))
     }
@@ -573,7 +537,7 @@ class ChatFragment : Fragment(), View.OnClickListener {
                     FirebaseStorage.getInstance().reference.child("Document Files")
                 val messageSenderRef = "Messages/$messageSenderId/$messageRecieverId"
                 val messageReceiverRef = "Messages/$messageRecieverId/$messageSenderId"
-                val Usermessagekeyref = RootRef!!.child("Messages").child(messageSenderId!!).child(
+                val Usermessagekeyref = rootRef!!.child("Messages").child(messageSenderId!!).child(
                     messageRecieverId!!
                 ).push()
                 val messagePushID = Usermessagekeyref.key
@@ -596,7 +560,7 @@ class ChatFragment : Fragment(), View.OnClickListener {
                             java.util.HashMap<String, Any>()
                         messageBodyDDetail["$messageSenderRef/$messagePushID"] = messageDocsBody
                         messageBodyDDetail["$messageReceiverRef/$messagePushID"] = messageDocsBody
-                        RootRef!!.updateChildren(messageBodyDDetail)
+                        rootRef!!.updateChildren(messageBodyDDetail)
                         loadingBar!!.dismiss()
                     }.addOnFailureListener { e ->
                         loadingBar!!.dismiss()
@@ -610,7 +574,7 @@ class ChatFragment : Fragment(), View.OnClickListener {
                 val storageReference = FirebaseStorage.getInstance().reference.child("Image Files")
                 val messageSenderRef = "Messages/$messageSenderId/$messageRecieverId"
                 val messageReceiverRef = "Messages/$messageRecieverId/$messageSenderId"
-                val Usermessagekeyref = RootRef!!.child("Messages").child(messageSenderId!!).child(
+                val Usermessagekeyref = rootRef!!.child("Messages").child(messageSenderId!!).child(
                     messageRecieverId!!
                 ).push()
                 val messagePushID = Usermessagekeyref.key
@@ -663,8 +627,9 @@ class ChatFragment : Fragment(), View.OnClickListener {
     }
 
     private fun displayLastSeen() {
-        RootRef!!.child("Users").child(messageRecieverId!!)
+        rootRef!!.child("Users").child(messageRecieverId!!)
             .addValueEventListener(object : ValueEventListener {
+                @SuppressLint("SetTextI18n")
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     if (dataSnapshot.exists()) {
                         nameIs = dataSnapshot.child("name").value.toString()
@@ -691,7 +656,7 @@ class ChatFragment : Fragment(), View.OnClickListener {
                         } else {
                             userlastseen!!.text = "offline"
                         }
-                        Log.d(TAG, "onDataChangeChatScreenOut: ${nameIs} ${imageIs}")
+                        Log.d("ChatFragmentTest", "onDataChangeChatScreenOut: $nameIs $imageIs")
                         if (nameIs.equals("null")) {
                             binding.tvName.text = "GentleMan User"
                         } else {
@@ -712,7 +677,7 @@ class ChatFragment : Fragment(), View.OnClickListener {
 
                                 }
 
-                                if (imageIs.isNullOrEmpty()) {
+                                if (imageIs.isEmpty()) {
                                     Glide.with(requireContext())
                                         .load(imageIs)
                                         .placeholder(com.app.gentlemanspa.R.drawable.profile_placeholder)
@@ -742,21 +707,20 @@ class ChatFragment : Fragment(), View.OnClickListener {
     }
 
     private fun sendMessage() {
-        if (myTxtMsg.isNullOrEmpty()) {
-            binding.sendMsgCV.isEnabled = true
-//            Toast.makeText(requireContext(), "Please enter message first..", Toast.LENGTH_SHORT)
-//                .show()
+        Log.d("sendMessage","myTxtMsg->${myTxtMsg}")
+        if (myTxtMsg.isEmpty()) {
+            Log.d("sendMessage","myTxtMsg is empty")
+            //  binding.sendMsgCV.isEnabled = true
         } else {
-            RootRef?.child("Users")?.child(messageRecieverId.toString())
+            Log.d("sendMessage","myTxtMsg->${myTxtMsg}")
+            rootRef?.child("Users")?.child(messageRecieverId.toString())
                 ?.addListenerForSingleValueEvent(object : ValueEventListener {
+                    @SuppressLint("SetTextI18n")
                     override fun onDataChange(snapshot: DataSnapshot) {
                         if (snapshot.exists()) {
                             val messageSenderRef = "Messages/$messageSenderId/$messageRecieverId"
                             val messageReceiverRef = "Messages/$messageRecieverId/$messageSenderId"
-                            val Usermessagekeyref =
-                                RootRef!!.child("Messages").child(messageSenderId!!).child(
-                                    messageRecieverId!!
-                                ).push()
+                            val Usermessagekeyref = rootRef!!.child("Messages").child(messageSenderId!!).child(messageRecieverId!!).push()
                             val messagePushID = Usermessagekeyref.key
                             val messageTextBody: MutableMap<String, Any> =
                                 java.util.HashMap<String, Any>()
@@ -767,20 +731,18 @@ class ChatFragment : Fragment(), View.OnClickListener {
                             messageTextBody["messageID"] = messagePushID.toString()
                             messageTextBody["time"] = savecurrentTime.toString()
                             messageTextBody["date"] = savecurrentDate.toString()
-                            Log.d(TAG, "sendMessage: $messageTextBody")
+                            Log.d("ChatFragmentTest", "sendMessage: $messageTextBody")
                             val messageBodyDetails: MutableMap<String, Any> =
                                 java.util.HashMap<String, Any>()
                             messageBodyDetails["$messageSenderRef/$messagePushID"] = messageTextBody
                             messageBodyDetails["$messageReceiverRef/$messagePushID"] =
                                 messageTextBody
 
-                            RootRef!!.updateChildren(messageBodyDetails)
+                            rootRef!!.updateChildren(messageBodyDetails)
                                 .addOnCompleteListener { task ->
                                     if (task.isSuccessful) {
-                                        Log.d(TAG, "onDataChangeSendMessage: ${task.isSuccessful}")
-
-                                        binding.sendMsgCV.isEnabled = true
-
+                                        Log.d("ChatFragmentTest", "onDataChangeSendMessage: ${task.isSuccessful}")
+                                        //     binding.sendMsgCV.isEnabled = true
                                         FirebaseDatabase.getInstance().reference.child("Users")
                                             .child(messageRecieverId.toString().trim())
                                             .child("fcm_token")
@@ -808,11 +770,11 @@ class ChatFragment : Fragment(), View.OnClickListener {
                                                         myTxtMsg
                                                     )
                                                     Log.d(
-                                                        TAG,
+                                                        "ChatFragmentTest",
                                                         "onDataChangeMyTextMsg: $myTxtMsg  $usertoken"
                                                     )
 
-//FOR CONTACT SAVED FOR MESSAGE LIST======
+                                                    //FOR CONTACT SAVED FOR MESSAGE LIST======
                                                     if (contactsRef?.child(messageRecieverId.toString()) != null && contactsRef?.child(
                                                             messageSenderId.toString()
                                                         ) != null
@@ -837,8 +799,7 @@ class ChatFragment : Fragment(), View.OnClickListener {
                                     binding.chatMsgET.setText("")
                                 }
 
-                            val toParse: String =
-                                savecurrentDate + " " + savecurrentTime // Results in "2-5-2012 20:43"
+                            val toParse = "$savecurrentDate $savecurrentTime"
 
                             //val formatter = SimpleDateFormat("dd-MM-yyyy hh:mm a") // I assume d-M, you may refer to M-d for month-day instead.
                             val pattern = "dd/MM/yyyy hh:mm a"
@@ -863,10 +824,10 @@ class ChatFragment : Fragment(), View.OnClickListener {
                             hashMapLatestMsg.put("timeStamp", msgTimeStamp)
                             hashMapLatestMsg.put("is_read", isRead)
                             Log.d(
-                                TAG,
+                                "ChatFragmentTest",
                                 "sendMessageLatestMessage: $messageRecieverId  $messageSenderId  $"
                             )
-                            RootRef?.child("Contacts")?.child(messageRecieverId.toString())
+                            rootRef?.child("Contacts")?.child(messageRecieverId.toString())
                                 ?.child(messageSenderId.toString())?.child("latest_message")
                                 ?.updateChildren(hashMapLatestMsg)?.addOnCompleteListener { task ->
                                     if (task.isSuccessful) {
@@ -875,17 +836,17 @@ class ChatFragment : Fragment(), View.OnClickListener {
 //                                Toast.makeText(context, "Contact Saved sender into receiver", Toast.LENGTH_SHORT).show()
 //                            }
                                         Log.d(
-                                            TAG,
+                                            "ChatFragmentTest",
                                             "sendMessageLatestMsgReceive: $msgText  $messageSenderId"
                                         )
                                     } else {
                                     }
                                 }
-                            RootRef?.child("Contacts")?.child(messageSenderId.toString())
+                            rootRef?.child("Contacts")?.child(messageSenderId.toString())
                                 ?.child(messageRecieverId.toString())?.child("latest_message")
                                 ?.updateChildren(hashMapLatestMsg)?.addOnCompleteListener { task ->
                                     if (task.isSuccessful) {
-                                        RootRef?.child("Contacts")
+                                        rootRef?.child("Contacts")
                                             ?.child(messageSenderId.toString())
                                             ?.child(messageRecieverId.toString())
                                             ?.child("ContactStatus")?.setValue(contactHash)
@@ -893,7 +854,7 @@ class ChatFragment : Fragment(), View.OnClickListener {
 //                                Toast.makeText(context, "Contact Saved receiver into Sender", Toast.LENGTH_SHORT).show()
                                             }
                                         Log.d(
-                                            TAG,
+                                            "ChatFragmentTest",
                                             "sendMessageLatestMsgReceive: $msgText  $messageRecieverId"
                                         )
                                     } else {
@@ -905,14 +866,14 @@ class ChatFragment : Fragment(), View.OnClickListener {
                             ).show()
                             // findNavController().navigate(R.id.action_chat_to_messages)
 
-                            val navController = view?.let { Navigation.findNavController(it) }
-                            navController?.navigateUp()
-                            navController?.navigate(com.app.gentlemanspa.R.id.customerActivity)
+                            /* val navController = view?.let { Navigation.findNavController(it) }
+                             navController?.navigateUp()
+                             navController?.navigate(com.app.gentlemanspa.R.id.customerActivity)*/
                         }
                     }
 
                     override fun onCancelled(error: DatabaseError) {
-                        TODO("Not yet implemented")
+
                     }
 
                 })
@@ -1107,14 +1068,14 @@ class ChatFragment : Fragment(), View.OnClickListener {
                        reportId = dialogData.reportId!!
                        reportType =dialogData.reportType.toString()
                    }
-                   Log.d(ContentValues.TAG, "setDataSpamReport: $reportId")
+                   Log.d(ContentValues."ChatFragmentTest", "setDataSpamReport: $reportId")
                }
                reportType =""
            }
 
 
            alertReportLayoutBinding.reportTV.setOnClickListener({
-               Log.d(ContentValues.TAG, "setDataReportProblem: $reportId")
+               Log.d(ContentValues."ChatFragmentTest", "setDataReportProblem: $reportId")
                problemDesc = alertReportLayoutBinding.titleDescET.text.toString()
                if(reportType !=""){
                    if(problemDesc !=""){
@@ -1164,7 +1125,7 @@ class ChatFragment : Fragment(), View.OnClickListener {
         token: String?, receiverId: String, senderId: String, title: String, body: String
     ) {
         val url = "https://fcm.googleapis.com/fcm/send"
-        Log.d(TAG, "sendPushNotificationLog: $title  $body")
+        Log.d("ChatFragmentTest", "sendPushNotificationLog: $title  $body")
         val bodyJson = JSONObject()
         bodyJson.put("notification", JSONObject().also {
             it.put("title", title)
@@ -1188,7 +1149,7 @@ class ChatFragment : Fragment(), View.OnClickListener {
 //                it.put("title", title)
 //                it.put("body", body)
 //            })
-        Log.d(TAG, "sendPushNotificationJSON: $bodyJson")
+        Log.d("ChatFragmentTest", "sendPushNotificationJSON: $bodyJson")
 //        bodyJson.put("data", JSONObject(data))
 
         val request = Request.Builder().url(url).addHeader("Content-Type", "application/json")
@@ -1201,14 +1162,14 @@ class ChatFragment : Fragment(), View.OnClickListener {
         client.newCall(request).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
                 println("Received data: ${response.body?.string()}")
-                Log.d(TAG, "onResponseNotificationSuccess: ${response.body.toString()}")
-                Log.d(TAG, "onResponseNotificationSuccessMsg:  ${response.message}")
+                Log.d("ChatFragmentTest", "onResponseNotificationSuccess: ${response.body.toString()}")
+                Log.d("ChatFragmentTest", "onResponseNotificationSuccessMsg:  ${response.message}")
             }
 
             override fun onFailure(call: Call, e: IOException) {
                 println(e.message.toString())
                 Log.d(
-                    TAG,
+                    "ChatFragmentTest",
                     "onResponseNotificationfailure: ${response?.body.toString()}  ${e.message.toString()}"
                 )
 
@@ -1219,15 +1180,24 @@ class ChatFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v) {
             binding.ivArrowBack->{
-                  findNavController().popBackStack()
-               // activity?.onBackPressedDispatcher?.onBackPressed()
+                findNavController().popBackStack()
+                // activity?.onBackPressedDispatcher?.onBackPressed()
 
             }
-            /*  binding.ivMessageSend -> {
-                  //doChat()
-              }*/
+            binding.sendMsgCV->{
+                // binding.sendMsgCV.isEnabled = false
+                textDeleteSpace = binding.chatMsgET.text.toString().trim()
+                if (textDeleteSpace.startsWith(" ")) {
+                    Log.d("ChatFragmentTest", "onViewCreatedSendMsgCVTrue: ${textDeleteSpace}")
+                    myTxtMsg = textDeleteSpace.trimStart()
+                } else {
+                    myTxtMsg = textDeleteSpace.toString()
+                }
+                sendMessage()
+            }
         }
     }
 
 
 }
+

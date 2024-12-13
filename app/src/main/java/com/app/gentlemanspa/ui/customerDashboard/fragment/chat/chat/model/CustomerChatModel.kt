@@ -1,6 +1,6 @@
-package com.trubbled.ui.main.chat.model
+package com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.model
 
-class MyChatModel {
+class CustomerChatModel {
     var from: String? = null
     var message: String? = null
     var type: String? = null

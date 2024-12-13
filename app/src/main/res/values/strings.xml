@@ -64,7 +64,7 @@
     <string name="last_seen">Last Seen</string>
     <string name="sender_messages_here">Sender Messages here</string>
     <string name="time">time</string>
-    <string name="write_a_message">write a message</string>
+    <string name="write_a_message">Write a message</string>
     <string name="receiver_messages_here">Receiver Messages here</string>
     <string name="report">Report</string>
     <string name="please_unblock_first_to_chat_with_this_user">Please unblock first to chat with this user ?</string>
@@ -73,4 +73,6 @@
     <string name="cancel">Cancel</string>
     <string name="this_user_have_blocked_you">This user have blocked you !</string>
     <string name="block_user">Block User</string>
+    <string name="message">Message</string>
+    <string name="no_user_exists">No user exists!</string>
 </resources>

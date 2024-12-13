@@ -1,32 +1,26 @@
-package com.app.gentlemanspa.ui.chat.fragment.messages.adapter
+package com.app.gentlemanspa.ui.professionalDashboard.fragment.chat.messages.adapter
 
-import android.annotation.SuppressLint
 import android.content.ContentValues
-import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.AdapterView
-import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.app.gentlemanspa.R
 import com.app.gentlemanspa.databinding.ItemMessagesBinding
-import com.app.gentlemanspa.network.ApiConstants
-import com.app.gentlemanspa.ui.chat.fragment.messages.model.MessageModel
-import com.bumptech.glide.Glide
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.chat.messages.model.ProfessionalMessageModel
 import com.google.firebase.database.FirebaseDatabase
 
-class MessagesAdapter(userId :String) : ListAdapter<MessageModel, MessagesAdapter.MyViewHolder>(
+class MessagesAdapter(userId :String) : ListAdapter<ProfessionalMessageModel, MessagesAdapter.MyViewHolder>(
     COMPARATOR
 ) {
         var onItemClickListener : onItemClickInterface? =null
         val contactsRef = FirebaseDatabase.getInstance().reference.child("Contacts").child(userId)
-        var mItem :ArrayList<MessageModel> = ArrayList()
+        var mItem :ArrayList<ProfessionalMessageModel> = ArrayList()
 
         interface onItemClickInterface : AdapterView.OnItemClickListener{
-            fun onMyItemClick(item: MessageModel?, position: Int)
+            fun onMyItemClick(item: ProfessionalMessageModel?, position: Int)
 
         }
 
@@ -50,17 +44,17 @@ class MessagesAdapter(userId :String) : ListAdapter<MessageModel, MessagesAdapte
         override fun getItemViewType(position: Int): Int = position
 
         companion object{
-            var COMPARATOR =object : DiffUtil.ItemCallback<MessageModel>(){
+            var COMPARATOR =object : DiffUtil.ItemCallback<ProfessionalMessageModel>(){
                 override fun areItemsTheSame(
-                    oldItem: MessageModel,
-                    newItem: MessageModel
+                    oldItem: ProfessionalMessageModel,
+                    newItem: ProfessionalMessageModel
                 ): Boolean {
                     return  oldItem==newItem
                 }
 
                 override fun areContentsTheSame(
-                    oldItem: MessageModel,
-                    newItem: MessageModel
+                    oldItem: ProfessionalMessageModel,
+                    newItem: ProfessionalMessageModel
                 ): Boolean {
                     return oldItem.name == newItem.name
                 }

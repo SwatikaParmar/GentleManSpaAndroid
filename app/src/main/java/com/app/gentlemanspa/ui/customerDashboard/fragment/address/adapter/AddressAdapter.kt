@@ -36,11 +36,12 @@ class AddressAdapter (var productsList: List<AddressItem>) : RecyclerView.Adapte
         val item = productsList[position]
         holder.binding.apply {
             tvAddressType.text = item.addressType
-            if (item.state.isNotEmpty()){
-                tvAddressName.text = "${item.houseNoOrBuildingName},${item.streetAddresss},${item.nearbyLandMark},${item.city},${item.state}"
-            }else{
-                tvAddressName.text = "${item.houseNoOrBuildingName},${item.streetAddresss},${item.nearbyLandMark},${item.city}"
+            val fullAddress= "${item.houseNoOrBuildingName},${item.streetAddresss},${item.nearbyLandMark},${item.city},${item.state}"
+            var cleanFullAddress=fullAddress.replace(",,",",")
+            if (cleanFullAddress.endsWith(",")){
+                cleanFullAddress = cleanFullAddress.dropLast(1)
             }
+            tvAddressName.text = cleanFullAddress
             if (item.status){
                 tvStatus.setVisible()
                 tvStatus.text="Primary"

@@ -18,10 +18,11 @@ import com.app.gentlemanspa.network.Status
 import com.app.gentlemanspa.ui.auth.fragment.login.viewModel.LoginViewModel
 import com.app.gentlemanspa.ui.customerDashboard.activity.CustomerActivity
 import com.app.gentlemanspa.utils.AppPrefs
+import com.app.gentlemanspa.utils.CUSTOMER_USER_ID
 import com.app.gentlemanspa.utils.CommonFunctions
 import com.app.gentlemanspa.utils.CommonFunctions.togglePasswordVisibility
 import com.app.gentlemanspa.utils.PROFESSIONAL_USER_ID
-import com.app.gentlemanspa.utils.USER_ID
+import com.app.gentlemanspa.utils.ROLE
 import com.app.gentlemanspa.utils.ViewModelFactory
 import com.app.gentlemanspa.utils.checkString
 import com.app.gentlemanspa.utils.showToast
@@ -66,13 +67,15 @@ class LoginFragment : Fragment(), View.OnClickListener {
                         }else if (it.data?.data?.role =="Customer" && it.data.data.passwordChanged == true){
                             AppPrefs(requireContext()).setString("TOKEN",it.data?.data?.token)
                             AppPrefs(requireContext()).setString("ROLE",it.data?.data?.role)
-                            AppPrefs(requireContext()).saveStringPref(USER_ID, it.data.data.id)
+                            AppPrefs(requireContext()).saveStringPref(ROLE,it.data?.data?.role)
+                            AppPrefs(requireContext()).saveStringPref(CUSTOMER_USER_ID, it.data.data.id)
                            // requireActivity().showToast(it.data.messages.toString())
                             startActivity(Intent(requireContext(), CustomerActivity::class.java))
                             requireActivity().finishAffinity()
                         }else if (it.data?.data?.role =="Professional"){
                             AppPrefs(requireContext()).setString("TOKEN",it.data?.data?.token)
                             AppPrefs(requireContext()).setString("ROLE",it.data?.data?.role)
+                            AppPrefs(requireContext()).saveStringPref(ROLE,it.data?.data?.role)
                             AppPrefs(requireContext()).setString("CREATED_BY",it.data?.data?.id)
                             AppPrefs(requireContext()).saveStringPref(PROFESSIONAL_USER_ID, it.data.data.id)
                            // requireActivity().showToast(it.data.messages.toString())

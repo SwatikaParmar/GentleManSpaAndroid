@@ -38,7 +38,7 @@ class ProfileProfessionalFragment : Fragment(), View.OnClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View{
         // Inflate the layout for this fragment
         binding = FragmentProfileProfessionalBinding.inflate(layoutInflater,container,false)
         return binding.root
@@ -50,6 +50,7 @@ class ProfileProfessionalFragment : Fragment(), View.OnClickListener {
     }
 
     private fun initUI() {
+
         binding.onClick = this
         (activity as ProfessionalActivity).bottomNavigation(true)
         viewModel.getProfessionalDetail()

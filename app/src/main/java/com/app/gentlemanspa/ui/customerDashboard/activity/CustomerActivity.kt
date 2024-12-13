@@ -12,8 +12,12 @@ import androidx.navigation.fragment.NavHostFragment
 import com.app.gentlemanspa.R
 import com.app.gentlemanspa.databinding.ActivityCustomerBinding
 import com.app.gentlemanspa.ui.auth.activity.AuthActivity
+import com.app.gentlemanspa.utils.updateUserStatus
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.HomeCustomerFragment
 import com.app.gentlemanspa.utils.AppPrefs
+import com.app.gentlemanspa.utils.CUSTOMER_USER_ID
+import com.app.gentlemanspa.utils.PROFESSIONAL_USER_ID
+import com.app.gentlemanspa.utils.ROLE
 import com.app.gentlemanspa.utils.setGone
 import com.app.gentlemanspa.utils.setVisible
 import com.bumptech.glide.Glide
@@ -24,6 +28,8 @@ class CustomerActivity : AppCompatActivity(),HomeCustomerFragment.OnProfileUpdat
     private lateinit var navController: NavController
     private lateinit var navHost: NavHostFragment
     private lateinit var navView: NavigationView
+    var userIdIs: String = ""
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +40,12 @@ class CustomerActivity : AppCompatActivity(),HomeCustomerFragment.OnProfileUpdat
     }
 
     private fun initUI() {
+        userIdIs=if (AppPrefs(this).getStringPref(ROLE).toString()=="Customer"){
+            "${AppPrefs(this).getStringPref(CUSTOMER_USER_ID)}"
+        }else{
+            "${AppPrefs(this).getStringPref(PROFESSIONAL_USER_ID)}"
+
+        }
         navHost = supportFragmentManager.findFragmentById(R.id.customerContainer) as NavHostFragment
         navController = navHost.navController
         setBottomNavigation()
@@ -81,6 +93,7 @@ class CustomerActivity : AppCompatActivity(),HomeCustomerFragment.OnProfileUpdat
             binding.viewBottom.setGone()
         }
     }
+    @Deprecated("This method has been deprecated in favor of using the\n      {@link OnBackPressedDispatcher} via {@link #getOnBackPressedDispatcher()}.\n      The OnBackPressedDispatcher controls how back button events are dispatched\n      to one or more {@link OnBackPressedCallback} objects.")
     override fun onBackPressed() {
         val fragmentPosition = navHost.childFragmentManager.fragments[0]
         if (fragmentPosition is HomeCustomerFragment){
@@ -158,4 +171,19 @@ class CustomerActivity : AppCompatActivity(),HomeCustomerFragment.OnProfileUpdat
         Glide.with(this).load(profileImage).into(ivNavProfileImage)
     }
 
+
+    override fun onStart() {
+        super.onStart()
+        updateUserStatus(userIdIs,"online")
+    }
+    override fun onStop() {
+        super.onStop()
+        updateUserStatus(userIdIs,"offline")
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        updateUserStatus(userIdIs,"offline")
+    }
 }

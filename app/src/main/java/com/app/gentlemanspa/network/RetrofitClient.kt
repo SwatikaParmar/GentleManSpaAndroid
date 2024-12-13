@@ -48,7 +48,7 @@ object RetrofitClient {
         return Interceptor { chain ->
             val request: Request
             val token = AppPrefs(context).getString("TOKEN")
-            Log.e("TAG", "getNetworkInterceptor: " + token.toString())
+            Log.e("token", "TOKEN: " + token.toString())
 
             request = if (!token.isNullOrEmpty()) {
                 chain.request().newBuilder()

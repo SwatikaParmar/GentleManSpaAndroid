@@ -1,4 +1,4 @@
-package com.app.gentlemanspa.ui.chat.fragment.chat.adapter
+package com.app.gentlemanspa.ui.professionalDashboard.fragment.chat.chat.adapter
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
@@ -17,21 +17,23 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.gentlemanspa.databinding.ItemMyMessageBinding
 import com.app.gentlemanspa.utils.AppPrefs
-import com.app.gentlemanspa.utils.USER_ID
+import com.app.gentlemanspa.utils.CUSTOMER_USER_ID
+import com.app.gentlemanspa.utils.PROFESSIONAL_USER_ID
+import com.app.gentlemanspa.utils.ROLE
 import com.bumptech.glide.Glide
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.trubbled.ui.main.chat.model.MyChatModel
+import com.trubbled.ui.main.chat.model.ProfessionalChatModel
 
-class ChatAdapter (val context:Context,private val UserMessageList: MutableList<MyChatModel?>) : RecyclerView.Adapter<ChatAdapter.MessageViewHolder>(){
+class ProfessionalChatAdapter (val context:Context, private val UserMessageList: MutableList<ProfessionalChatModel?>) : RecyclerView.Adapter<ProfessionalChatAdapter.MessageViewHolder>(){
         private var userRef: DatabaseReference? = null
         var onItemClickListener : OnItemClickListener? =null
 
         interface OnItemClickListener{
-            fun deleteForEveryone(position: Int, userMessageList: MutableList<MyChatModel?>)
+            fun deleteForEveryone(position: Int, userMessageList: MutableList<ProfessionalChatModel?>)
         }
 
         fun setOnMyItemClickListener(mItemClickListener: OnItemClickListener){
@@ -43,12 +45,11 @@ class ChatAdapter (val context:Context,private val UserMessageList: MutableList<
 
         @SuppressLint("SetTextI18n")
         override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
-
-            val messagesenderid ="${AppPrefs(context).getStringPref(USER_ID)}"
+            val messageSenderId = "${AppPrefs(context).getStringPref(PROFESSIONAL_USER_ID)}"
             val messages = UserMessageList[position]
-            val fromuserid = messages?.from
+            val fromUserId = messages?.from
             val frommessagetype = messages?.type
-            userRef = FirebaseDatabase.getInstance().reference.child("Users").child(fromuserid!!)
+            userRef = FirebaseDatabase.getInstance().reference.child("Users").child(fromUserId!!)
             userRef!!.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     if (dataSnapshot.hasChild("image")) {
@@ -68,15 +69,15 @@ class ChatAdapter (val context:Context,private val UserMessageList: MutableList<
             holder.sendermessagetext.visibility = View.GONE
             holder.messageSenderPicture.visibility = View.GONE
             holder.messageReceiverPicture.visibility = View.GONE
-            Log.d(TAG, "onBindViewHolderFrommessageType: $frommessagetype    $fromuserid    $messagesenderid")
+            Log.d("ChatAdapterLog", "onBindViewHolderFromMessageType: $frommessagetype    $fromUserId    $messageSenderId")
             if (frommessagetype == "text") {
-                if (fromuserid == messagesenderid) {
+                if (fromUserId == messageSenderId) {
                     holder.sendermessagetext.visibility = View.VISIBLE
                     holder.timeSender.visibility = View.VISIBLE
 //              holder.sendermessagetext.setBackgroundResource(R.drawable.sender_message_layout)
                     holder.sendermessagetext.text = "${messages?.message}"
 
-                    Log.d(TAG, "onBindViewHolderTime: ${messages.time}")
+                    Log.d("ChatAdapterLog", "onBindViewHolderTime: ${messages.time}")
                     holder.timeSender.text ="${messages.time}"
                 } else {
                     holder.receivermessagetext.visibility = View.VISIBLE
@@ -89,7 +90,7 @@ class ChatAdapter (val context:Context,private val UserMessageList: MutableList<
                     holder.timeReceiver.text ="${messages.time}"
                 }
             } else if (frommessagetype == "image") {
-                if (fromuserid == messagesenderid) {
+                if (fromUserId == messageSenderId) {
                     holder.messageSenderPicture.visibility = View.VISIBLE
                     Glide.with(holder.itemView.context).load(messages.message).into(holder.messageSenderPicture)
                 } else {
@@ -98,7 +99,7 @@ class ChatAdapter (val context:Context,private val UserMessageList: MutableList<
                     Glide.with(holder.itemView.context).load(messages.message).into(holder.messageReceiverPicture)
                 }
             } else if (frommessagetype == "pdf" || frommessagetype == "docx") {
-                if (fromuserid == messagesenderid) {
+                if (fromUserId == messageSenderId) {
                     holder.messageSenderPicture.visibility = View.VISIBLE
                     Glide.with(holder.itemView.context).load(messages.message).into(holder.messageSenderPicture)
                 } else {
@@ -107,7 +108,7 @@ class ChatAdapter (val context:Context,private val UserMessageList: MutableList<
                 //          holder.receiverprofileimage.visibility = View.GONE
                 }
             }
-            if (fromuserid == messagesenderid) {
+            if (fromUserId == messageSenderId) {
                 holder.messageSenderCV.setOnClickListener {
                     if (UserMessageList[position]?.type == "pdf" || UserMessageList[position]?.type == "docx") {
                         val options = arrayOf<CharSequence>(
@@ -352,42 +353,4 @@ class ChatAdapter (val context:Context,private val UserMessageList: MutableList<
 
             }
         }
-   /* // ViewHolder using ViewBinding
-    inner class ChatViewHolder(val binding: ViewBinding) : RecyclerView.ViewHolder(binding.root)
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder {
-        val binding = if (viewType == MessageType.SENT.ordinal) {
-            // Inflate the specific binding class for SENT messages
-            ItemChatSentBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        } else {
-            // Inflate the specific binding class for RECEIVED messages
-            ItemChatReceivedBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        }
-        return ChatViewHolder(binding)
-    }
-
-    override fun onBindViewHolder(holder: ChatViewHolder, position: Int) {
-        val chatMessage = messages[position]
-    // Use the ViewBinding to access views
-        if (holder.binding is ItemChatSentBinding) {
-            // Handle the SENT message view
-            holder.binding.messageTextView.text = chatMessage.message
-            holder.binding.timestampTextView.text = chatMessage.timestamp
-            holder.binding.messageTextView.setBackgroundResource(R.drawable.bg_message_sent)
-        } else if (holder.binding is ItemChatReceivedBinding) {
-            // Handle the RECEIVED message view
-            holder.binding.messageTextView.text = chatMessage.message
-            holder.binding.timestampTextView.text = chatMessage.timestamp
-            holder.binding.messageTextView.setBackgroundResource(R.drawable.bg_message_received)
-
-      }
-    }
-
-    override fun getItemViewType(position: Int): Int {
-        return messages[position].messageType.ordinal
-    }
-
-    override fun getItemCount(): Int {
-        return messages.size
-    }*/
 }
