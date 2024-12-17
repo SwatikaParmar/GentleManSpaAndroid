@@ -39,6 +39,8 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.RegisterUse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.UserState
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.viewModel.HomeCustomerViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.model.ProfessionalItem
+import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.SpaCategoriesData
+import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.SpaCategoriesResponse
 import com.app.gentlemanspa.utils.AppPrefs
 import com.app.gentlemanspa.utils.CUSTOMER_USER_ID
 import com.app.gentlemanspa.utils.FCM_TOKEN
@@ -59,7 +61,7 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
     private lateinit var categoriesAdapter: CategoriesAdapter
     private lateinit var bannerCustomerAdapter: BannerCustomerAdapter
     private var bannerCustomerList: ArrayList<BannerItem> = ArrayList()
-    private var categoriesList: ArrayList<CategoriesItem> = ArrayList()
+    private var categoriesList: ArrayList<SpaCategoriesData> = ArrayList()
     private var productCategoriesList: ArrayList<ProductCategoriesItem> = ArrayList()
     private var professionalTeamList: ArrayList<ProfessionalItem> = ArrayList()
     private lateinit var bottomSheetLayout: BottomSheetLocationBinding
@@ -150,6 +152,7 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
         binding.onClick=this
         viewModel.getCustomerDetail()
         viewModel.getBanner()
+        viewModel.spaDetailId.set(21)
         viewModel.getCategories()
         viewModel.getProductCategories()
         viewModel.getProfessionalTeamList()
@@ -368,11 +371,11 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
     @SuppressLint("NotifyDataSetChanged")
     private fun setCategoriesAdapter() {
         Log.d("data","categoriesList${categoriesList}")
-        categoriesList.reverse()
+      //  categoriesList.reverse()
         categoriesAdapter = CategoriesAdapter(categoriesList)
         binding.rvCategories.adapter = categoriesAdapter
         categoriesAdapter.setOnCategoriesCallbacks(object : CategoriesAdapter.CategoriesCallbacks {
-            override fun rootCategories(item: CategoriesItem, position: Int) {
+            override fun rootCategories(item: SpaCategoriesData, position: Int) {
                 val action = HomeCustomerFragmentDirections.actionHomeCustomerFragmentToServiceFragment(item.categoryId,position)
                 findNavController().navigate(action)
             }

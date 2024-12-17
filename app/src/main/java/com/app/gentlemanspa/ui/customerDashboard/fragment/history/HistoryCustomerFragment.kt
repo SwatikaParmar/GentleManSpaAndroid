@@ -88,7 +88,8 @@ class HistoryCustomerFragment : Fragment(), View.OnClickListener {
         binding.rvAppointment.adapter = completedCustomerAdapter
         completedCustomerAdapter.setOnClickCompleteCustomer(object :
             CompletedCustomerAdapter.CompleteCustomerCallbacks {
-            override fun onCompleteCustomerMessageClicked() {
+            override fun onCompleteCustomerMessageClicked(item:UpcomingServiceAppointmentItem) {
+                checkUserExistsAndNavigateToChat(item)
 
             }
 
@@ -134,30 +135,7 @@ class HistoryCustomerFragment : Fragment(), View.OnClickListener {
             }
 
             override fun sendMessage(item: UpcomingServiceAppointmentItem) {
-
-                Log.d("sendMessage","sendMessage userId->${item.userId} professionalUserId->${item.professionalUserId}")
-                if (item.userId.isNotEmpty()&&item.professionalUserId.isNotEmpty()){
-                    FirebaseDatabase.getInstance().reference
-                        .child("Users").child(item.professionalUserId)
-                        .addListenerForSingleValueEvent(object : ValueEventListener {
-                            override fun onDataChange(snapshot: DataSnapshot) {
-                                Log.d("sendMessage", "sendMessage snapshot exists: ${snapshot.exists()} ")
-                                if(snapshot.exists()){
-                                    val action=HistoryCustomerFragmentDirections.actionHistoryCustomerFragmentToCustomerChatFragment(item.userId,item.professionalUserId,"FromHistoryCustomerFragment")
-                                    findNavController().navigate(action)
-                                    Log.d("sendMessage", "sendMessage inside if : ${snapshot.exists()} ")
-                                }else{
-                                    Log.d("sendMessage", "sendMessage inside else: ${snapshot.exists()} ")
-                                    requireContext().showToast( "This user is unavailable for chat!")
-                                }
-                            }
-                            override fun onCancelled(error: DatabaseError) {
-                                requireContext().showToast(error.message)
-                            }
-                        })
-
-                }
-
+                checkUserExistsAndNavigateToChat(item)
             }
         })
     }
@@ -225,6 +203,33 @@ class HistoryCustomerFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    fun checkUserExistsAndNavigateToChat(item: UpcomingServiceAppointmentItem) {
+        Log.d("sendMessage", "sendMessage userId->${item.userId} professionalUserId->${item.professionalUserId}")
+
+        if (item.userId.isNotEmpty() && item.professionalUserId.isNotEmpty()) {
+            FirebaseDatabase.getInstance().reference
+                .child("Users").child(item.professionalUserId)
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        Log.d("sendMessage", "sendMessage snapshot exists: ${snapshot.exists()} ")
+                        if (snapshot.exists()) {
+                            val action = HistoryCustomerFragmentDirections.actionHistoryCustomerFragmentToCustomerChatFragment(
+                                item.userId, item.professionalUserId, "FromHistoryCustomerFragment"
+                            )
+                            findNavController().navigate(action)
+                            Log.d("sendMessage", "sendMessage inside if : ${snapshot.exists()} ")
+                        } else {
+                            Log.d("sendMessage", "sendMessage inside else: ${snapshot.exists()} ")
+                            requireContext().showToast("This user is unavailable for chat!")
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        requireContext().showToast(error.message)
+                    }
+                })
+        }
+    }
 
     private fun initObserver() {
         viewModel.resultUpcomingServiceAppointmentList.observe(this) {

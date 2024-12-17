@@ -19,6 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/_7sdp"
+            android:layout_marginTop="@dimen/_10sdp"
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -115,9 +116,9 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginHorizontal="@dimen/_5sdp"
                                     android:ellipsize="end"
+                                    android:maxLines="4"
                                     android:fontFamily="@font/poppins"
                                     android:includeFontPadding="false"
-                                    android:singleLine="true"
                                     android:text="Skin Care Specialist"
                                     android:textColor="@color/light_grey"
                                     android:textSize="@dimen/_11ssp"
@@ -270,7 +271,7 @@
                                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                                 app:spanCount="4"
                                 tools:itemCount="5"
-                                android:minHeight="@dimen/_50sdp"
+                                android:minHeight="@dimen/_30sdp"
                                 tools:listitem="@layout/item_time_slots_service" />
 
                             <androidx.appcompat.widget.AppCompatTextView

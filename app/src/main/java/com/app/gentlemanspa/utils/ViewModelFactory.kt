@@ -20,6 +20,7 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.myOrders.viewModel.MyO
 import com.app.gentlemanspa.ui.customerDashboard.fragment.product.viewModel.ProductViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.productDetail.viewModel.ProductDetailViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeamServices.viewModel.ProfessionalServicesViewModel
+import com.app.gentlemanspa.ui.customerDashboard.fragment.profile.viewModel.ProfileCustomerViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.viewModel.ProfessionalViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessionalService.viewModel.SelectProfessionalServiceViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.service.viewModel.ServiceViewModel
@@ -154,18 +155,18 @@ class ViewModelFactory(
                 return MyServiceViewModel(repository) as T
             }
 
-           /*
-            modelClass.isAssignableFrom(HomeViewModel::class.java) -> {
-                return HomeViewModel(repository) as T
-            }
 
-            modelClass.isAssignableFrom(ServiceDetailViewModel::class.java) -> {
-                return ServiceDetailViewModel(repository) as T
+            modelClass.isAssignableFrom(ProfileCustomerViewModel::class.java) -> {
+                return ProfileCustomerViewModel(repository) as T
             }
+            /*
+                       modelClass.isAssignableFrom(ServiceDetailViewModel::class.java) -> {
+                           return ServiceDetailViewModel(repository) as T
+                       }
 
-            modelClass.isAssignableFrom(FindDoctorViewModel::class.java) -> {
-                return FindDoctorViewModel(repository) as T
-            }*/
+                       modelClass.isAssignableFrom(FindDoctorViewModel::class.java) -> {
+                           return FindDoctorViewModel(repository) as T
+                       }*/
 
 
 

@@ -12,14 +12,15 @@
         app:cardCornerRadius="@dimen/_8sdp"
         app:cardElevation="@dimen/_2sdp"
         app:cardUseCompatPadding="true"
-
+        android:layout_marginBottom="@dimen/_5sdp"
         app:strokeColor="@android:color/transparent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/white"
-            android:padding="@dimen/_5sdp">
+            android:paddingHorizontal="@dimen/_4sdp"
+            android:paddingVertical="@dimen/_7sdp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/clBooking"
@@ -34,7 +35,7 @@
                     android:layout_marginEnd="@dimen/_5sdp"
                     android:fontFamily="@font/poppins"
                     android:includeFontPadding="false"
-                    android:text="BOOKING ID: #RBA183578"
+                    android:text=""
                     android:textColor="@color/dark_brown"
                     android:textSize="@dimen/_10ssp"
                     app:layout_constraintEnd_toStartOf="@+id/tvConfirmed"
@@ -47,7 +48,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins"
                     android:includeFontPadding="false"
-                    android:text="14 Dec | 12:00 PM"
+                    android:text=""
                     android:textColor="@color/dark_brown"
                     android:textSize="@dimen/_10ssp"
                     app:layout_constraintEnd_toEndOf="@+id/tvBooking"
@@ -64,7 +65,7 @@
                     android:includeFontPadding="false"
                     android:paddingHorizontal="@dimen/_10sdp"
                     android:paddingVertical="@dimen/_3sdp"
-                    android:text="Confirmed"
+                    android:text="Cancelled"
                     android:textColor="@color/green_color"
                     android:textSize="@dimen/_10ssp"
                     app:layout_constraintEnd_toEndOf="parent"

@@ -48,6 +48,8 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.AddServi
 import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.AddServiceToCartResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.GetCartItemsResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.ServiceResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.SpaCategoriesResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.SpaSubCategoriesResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.serviceDetail.model.ServiceDetailResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.AddProductRequest
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.AddProductResponse
@@ -134,6 +136,17 @@ interface ApiInterface {
     @GET(ApiConstants.CATEGORIES)
     suspend fun getCategories(): CategoriesResponse
 
+    @GET(ApiConstants.SPA_CATEGORIES)
+    suspend fun getSpaCategories(
+        @Query("spaDetailId")spaDetailId:Int
+    ): SpaCategoriesResponse
+
+    @GET(ApiConstants.SPA_CATEGORIES)
+    suspend fun getSpaSubCategories(
+        @Query("spaDetailId")spaDetailId:Int,
+        @Query("categoryId")categoryId:Int
+    ): SpaSubCategoriesResponse
+
     @GET(ApiConstants.PRODUCT_CATEGORIES)
     suspend fun getProductCategories(): ProductCategoriesResponse
 
@@ -200,6 +213,7 @@ interface ApiInterface {
         @Query("pageNumber") pageNumber: Int?,
         @Query("pageSize") pageSize: Int?,
         @Query("categoryId") categoryId: Int?,
+        @Query("subCategoryId") subCategoryId: Int?,
         @Query("SearchQuery") searchQuery: String?,
         @Query("spaDetailId") spaDetailId: Int?
     ): ServiceResponse
@@ -308,6 +322,14 @@ interface ApiInterface {
         @Query("type") type: String?,
         @Query("pageSize") pageSize: Int?,
         @Query("pageNumber") pageNumber: Int?
+    ): UpcomingServiceAppointmentResponse
+
+    @GET(ApiConstants.GET_SERVICE_APPOINTMENTS)
+    suspend fun getAppointmentsList(
+        @Query("type") type: String?,
+        @Query("pageSize") pageSize: Int?,
+        @Query("pageNumber") pageNumber: Int?,
+        @Query("ProfessionalDetailId") professionalDetailId: Int?
     ): UpcomingServiceAppointmentResponse
 
     @POST(ApiConstants.CANCEL_UPCOMING_APPOINTMENTS)

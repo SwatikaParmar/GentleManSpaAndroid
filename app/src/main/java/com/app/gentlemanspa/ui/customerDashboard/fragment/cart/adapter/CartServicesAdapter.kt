@@ -49,7 +49,7 @@ class CartServicesAdapter(private var serviceList: List<Service>) :
             Log.d("slotDate", "slotDate->${item.slotDate}")
             if (item.slotDate != null) {
                 tvSlotDateTime.setVisible()
-                tvSlotDateTime.text = "${formatDayDate(item.slotDate)} ${item.fromTime}"
+                tvSlotDateTime.text = "${formatDayDate(item.slotDate)} at ${item.fromTime}"
                 tvSelectDateTime.text = "Reschedule"
 
             } else {

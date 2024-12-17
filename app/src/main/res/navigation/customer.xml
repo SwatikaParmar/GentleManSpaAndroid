@@ -67,6 +67,9 @@
         <action
             android:id="@+id/action_makeAppointmentFragment_to_cartFragment"
             app:destination="@+id/cartFragment" />
+        <action
+            android:id="@+id/action_makeAppointmentFragment_to_anyProfessionalFragment"
+            app:destination="@+id/anyProfessionalFragment" />
 
         <argument
             android:name="appointmentType"

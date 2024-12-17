@@ -29,8 +29,6 @@ class HistoryViewModel (private var initialRepository: InitialRepository) : Andr
     val resultCancelUpcomingAppointment = MutableLiveData<Resource<CancelUpcomingAppointmentResponse>>()
 
 
-
-
     fun getServiceAppointments() {
         resultUpcomingServiceAppointmentList.value = Resource.loading(null)
         viewModelScope.launch {

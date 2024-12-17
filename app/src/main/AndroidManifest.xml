@@ -41,6 +41,7 @@
             android:name=".ui.customerDashboard.activity.CustomerActivity"
             android:exported="false"
             android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"
             tools:ignore="DiscouragedApi,LockedOrientationActivity" />
         <activity
             android:name=".ui.professionalDashboard.activity.ProfessionalActivity"

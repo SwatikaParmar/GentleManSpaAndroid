@@ -276,10 +276,11 @@ class ProductFragment : Fragment(), View.OnClickListener {
         categoriesProductsAdapter.setOnCategoriesProduct(object :
             CategoriesProductsAdapter.CategoriesProductCallbacks {
             override fun rootCategoriesProduct(item: ProductCategoriesItem, position: Int?) {
+                selectPosition=position!!
                 val recyclerViewWidth = binding.rvProductCategories.width
                 val layoutManager = binding.rvProductCategories.layoutManager
                 val itemWidth = layoutManager?.getChildAt(0)?.width ?: 0
-                val offset = (itemWidth * position!!) - (recyclerViewWidth / 2) + (itemWidth / 2)
+                val offset = (itemWidth * position) - (recyclerViewWidth / 2) + (itemWidth / 2)
                 binding.rvProductCategories.smoothScrollBy(offset, 0)
                 mainCategory = item.mainCategoryId
                 if (binding.etSearchService.text.toString().trim().isNotEmpty()){

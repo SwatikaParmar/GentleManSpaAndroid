@@ -37,7 +37,7 @@ class CompletedCustomerAdapter(private val dataList:ArrayList<UpcomingServiceApp
         holder.binding.apply {
             tvServiceName.text=item.serviceName
             tvRupees.text="$${item.price}"
-            //   tvAssignedValue.text= item.professionalName
+            tvAssignedValue.text= item.professionalName
             tvBookingId.text="BOOKING ID: ${item.orderId}"
             tvDate.text="${formatDayDate(item.slotDate)} at ${item.fromTime}"
             Glide.with(holder.itemView.context).load(ApiConstants.BASE_FILE +item.image).error(
@@ -45,7 +45,7 @@ class CompletedCustomerAdapter(private val dataList:ArrayList<UpcomingServiceApp
             root.setOnClickListener {
             }
             tvMessage.setOnClickListener{
-                completeCustomerCallbacks.onCompleteCustomerMessageClicked()
+                completeCustomerCallbacks.onCompleteCustomerMessageClicked(item)
             }
         }
     }
@@ -54,7 +54,7 @@ class CompletedCustomerAdapter(private val dataList:ArrayList<UpcomingServiceApp
     }
 
     interface CompleteCustomerCallbacks{
-        fun onCompleteCustomerMessageClicked()
+        fun onCompleteCustomerMessageClicked(item:UpcomingServiceAppointmentItem)
 
     }
 

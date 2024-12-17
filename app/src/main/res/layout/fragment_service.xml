@@ -126,15 +126,36 @@
 
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cvCategories"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="@dimen/_16sdp"
+                        app:cardUseCompatPadding="true"
+                        app:cardBackgroundColor="@color/light_app_text_color"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        app:cardElevation="@dimen/_2sdp"
+                        app:layout_constraintTop_toBottomOf="@+id/clSearch"
+
+                        >
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvCategories"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            tools:listitem="@layout/item_categories_service" />
+
+                    </com.google.android.material.card.MaterialCardView>
 
                     <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rvCategories"
+                        android:id="@+id/rvSubCategories"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_10sdp"
                         android:orientation="horizontal"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        app:layout_constraintTop_toBottomOf="@+id/clSearch"
+                        app:layout_constraintTop_toBottomOf="@+id/cvCategories"
                         tools:listitem="@layout/item_categories_service" />
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -144,7 +165,7 @@
                         android:layout_marginTop="@dimen/_10sdp"
                         android:orientation="vertical"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        app:layout_constraintTop_toBottomOf="@+id/rvCategories"
+                        app:layout_constraintTop_toBottomOf="@+id/rvSubCategories"
                         tools:listitem="@layout/item_service" />
 
 
@@ -159,10 +180,9 @@
             android:id="@+id/clNoDataFound"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
-           >
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/ivNoDataFound"
@@ -185,6 +205,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/ivNoDataFound" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/clBooking"
             android:layout_width="match_parent"

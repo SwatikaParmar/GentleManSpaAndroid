@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.viewpager2.widget.ViewPager2
 import com.app.gentlemanspa.R
 import com.app.gentlemanspa.base.MyApplication
 import com.app.gentlemanspa.base.MyApplication.Companion.hideProgress
@@ -19,7 +20,9 @@ import com.app.gentlemanspa.databinding.FragmentProductDetailBinding
 import com.app.gentlemanspa.network.ApiConstants
 import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.network.Status
+import com.app.gentlemanspa.ui.customerDashboard.fragment.home.adapter.BannerCustomerAdapter
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.viewModel.HomeCustomerViewModel
+import com.app.gentlemanspa.ui.customerDashboard.fragment.productDetail.adapter.ProductImagesAdapter
 import com.app.gentlemanspa.ui.customerDashboard.fragment.productDetail.viewModel.ProductDetailViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.serviceDetail.ServiceDetailFragmentArgs
 import com.app.gentlemanspa.utils.CommonFunctions.decimalRoundToInt
@@ -28,6 +31,7 @@ import com.app.gentlemanspa.utils.setGone
 import com.app.gentlemanspa.utils.setVisible
 import com.app.gentlemanspa.utils.showToast
 import com.bumptech.glide.Glide
+import com.google.android.material.tabs.TabLayoutMediator
 
 
 class ProductDetailFragment : Fragment(), View.OnClickListener {
@@ -98,6 +102,12 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
                 binding.clAddCart.setGone()
                 binding.clPlusMinus.setVisible()
                 binding.tvCount.text = count.toString()
+                if (count >= stock) {
+                    requireContext().showToast("Can't add more than $stock items")
+                } else {
+                    binding.tvCount.text = count.toString()
+                    callAddOrUpdateProductApi()
+                }
             }
 
             binding.ivPlus -> {
@@ -110,6 +120,20 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
                 }
             }
         }
+    }
+    private fun setProductImagesAdapter(imageList: ArrayList<String>) {
+       val  bannerCustomerAdapter = ProductImagesAdapter(imageList)
+        binding.vpProductImages.adapter = bannerCustomerAdapter
+
+        if (imageList.size > 1) {
+            binding.tlProductImages.visibility = View.VISIBLE
+        } else {
+            binding.tlProductImages.visibility = View.GONE
+        }
+
+        TabLayoutMediator(binding.tlProductImages, binding.vpProductImages) { tab, position ->
+        }.attach()
+
     }
 
     @SuppressLint("SetTextI18n")
@@ -144,11 +168,7 @@ class ProductDetailFragment : Fragment(), View.OnClickListener {
                             binding.clAddCart.setVisible()
                             binding.clPlusMinus.setGone()
                         }
-                        Glide.with(requireContext())
-                            .load(ApiConstants.BASE_FILE + (data.images.get(0)))
-                            .into(binding.ivProduct)
-
-
+                        setProductImagesAdapter(data.images)
                         binding.tvDescription.text = data.description
                         binding.clFirst.setVisible()
 

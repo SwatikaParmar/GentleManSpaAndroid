@@ -232,8 +232,8 @@ class OtpFragment : Fragment(), View.OnClickListener {
     }
 
     private fun proceedToResendCode() {
+        binding.pvOtp.text?.clear()
         Log.d("proceedToResendCode", "proceedToResendCode email->${signUpRequest!!.email}")
-
         if (args.OtpType == 1) {
             viewModel.isVerify.set(false)
         }else{

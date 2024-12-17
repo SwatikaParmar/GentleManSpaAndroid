@@ -38,11 +38,11 @@ class ServiceAdapter(private var serviceList: ArrayList<ServiceListItem>) : Recy
          holder.binding.apply {
              tvServiceName.text = item.name
              tvTime.text = "${item.durationInMinutes} mins"
-             tvRupees.text = "$${String.format("%.2f", item.listingPrice!!.toDouble())}"
-             tvLessRupees.text =  "$${String.format("%.2f",item.basePrice!!.toDouble())}"
+            /* tvRupees.text = "$${String.format("%.2f", item.listingPrice!!.toDouble())}"
+             tvLessRupees.text =  "$${String.format("%.2f",item.basePrice!!.toDouble())}"*/
+             tvRupees.text ="$${item.listingPrice?.toInt()}"
+             tvLessRupees.text = "$${item.basePrice?.toInt()}"
              Glide.with(holder.itemView.context).load(ApiConstants.BASE_FILE +item.serviceIconImage).placeholder(R.drawable.service_placeholder).error(R.drawable.service_placeholder).into(ivService)
-
-
 
              /*    if (item.status ==true){
                           tvAddCart.text="Added"

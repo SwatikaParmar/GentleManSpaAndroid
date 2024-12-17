@@ -70,12 +70,11 @@ class ProfessionalActivity : AppCompatActivity(), HomeProfessionalFragment.OnPro
                 }
 
                 R.id.notification -> {
-                   // navController.navigate(R.id.notificationFragment)
+                    navController.navigate(R.id.professionalNotificationFragment)
                     true
                 }
 
                 R.id.profile -> {
-                 //   navController.navigate(R.id.profileProfessionalFragment)
                     navController.navigate(R.id.editProfileProfessionalFragment)
                     true
                 }

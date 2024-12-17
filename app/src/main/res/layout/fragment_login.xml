@@ -33,7 +33,7 @@
                 android:id="@+id/tvWelcome"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Welcome Back !"
+                android:text="Welcome Back!"
                 android:fontFamily="@font/poppins_semibold"
                 android:textSize="@dimen/_20ssp"
                 android:includeFontPadding="false"
@@ -66,6 +66,7 @@
                 android:hint="@string/email_or_phone_no"
                 android:singleLine="true"
                 android:elevation="@dimen/_2sdp"
+                android:fontFamily="@font/poppins"
                 android:layout_marginTop="@dimen/_20sdp"
                 android:layout_marginHorizontal="@dimen/_15sdp"
                 app:layout_constraintTop_toBottomOf="@+id/tvPlease"/>
@@ -186,6 +187,7 @@
                 android:hint="Activation Code"
                 android:singleLine="true"
                 android:elevation="@dimen/_2sdp"
+                android:fontFamily="@font/poppins"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:layout_marginHorizontal="@dimen/_15sdp"
                 app:layout_constraintTop_toBottomOf="@+id/clOr"/>

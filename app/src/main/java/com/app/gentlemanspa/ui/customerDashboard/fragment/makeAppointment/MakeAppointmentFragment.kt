@@ -32,6 +32,7 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.mod
 import com.app.gentlemanspa.utils.ViewModelFactory
 import com.app.gentlemanspa.utils.formatCalendarDayToYear
 import com.app.gentlemanspa.utils.formatDayDate
+import com.app.gentlemanspa.utils.formatDayMonthYearDate
 import com.app.gentlemanspa.utils.setGone
 import com.app.gentlemanspa.utils.setVisible
 import com.app.gentlemanspa.utils.showToast
@@ -317,7 +318,7 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun callServiceAvailableTimeSlotsApi(dateFormat: String) {
         bookingDate = dateFormat
-        binding.tvDate.text = formatDayDate(dateFormat)
+        binding.tvDate.text = formatDayMonthYearDate(dateFormat)
         viewModel.spaServiceId.set(args.spaServiceId)
         viewModel.date.set(dateFormat)
         viewModel.professionalId.set(professionalItem.professionalDetail?.professionalDetailId)
@@ -379,8 +380,8 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
 
             binding.ivArrowBack -> {
                 findNavController().popBackStack()
+              //  val action=MakeAppointmentFragmentDirections.actionMakeAppointmentFragmentToAnyProfessionalFragment()
             }
-
             binding.btnBookAppointment -> {
                 proceedToAppointmentBooking()
             }
@@ -389,9 +390,7 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
 
     private fun proceedToAppointmentBooking() {
         Log.d("bookAppointment", "inside proceedToAppointmentBooking slotId->${slotId} appointmentType->${args.appointmentType} spaServiceId->${args.spaServiceId} orderId->${args.orderId} serviceBookingId->${args.serviceBookingId} ")
-        Log.d(
-            "bookAppointment", "spaDetailId->${professionalItem.professionalDetail?.spaDetailId} "
-        )
+        Log.d("bookAppointment", "spaDetailId->${professionalItem.professionalDetail?.spaDetailId}")
         if (slotId == 0) {
             requireContext().showToast("Please Select Time Slot")
         } else {

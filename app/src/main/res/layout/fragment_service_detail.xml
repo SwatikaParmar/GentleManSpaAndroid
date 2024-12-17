@@ -63,7 +63,7 @@
                     android:layout_height="match_parent"
                     android:visibility="visible">
 
-                    <com.google.android.material.imageview.ShapeableImageView
+               <!--     <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/ivService"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_120sdp"
@@ -72,7 +72,41 @@
                         android:scaleType="centerCrop"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        />
+                        />-->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/cvSlider"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_180sdp"
+                        android:layout_marginHorizontal="@dimen/_8sdp"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <androidx.viewpager2.widget.ViewPager2
+                                android:id="@+id/vpProductImages"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent" />
+
+                            <com.google.android.material.tabs.TabLayout
+                                android:id="@+id/tlProductImages"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:background="@android:color/transparent"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:tabBackground="@drawable/tab_indicator_circle"
+                                app:tabGravity="center"
+                                app:tabIndicator="@android:color/transparent"
+                                app:tabIndicatorColor="@null" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tvServiceName"
@@ -86,7 +120,7 @@
                         android:layout_marginTop="@dimen/_10sdp"
                         android:layout_marginHorizontal="@dimen/_8sdp"
                         android:fontFamily="@font/poppins_semibold"
-                        app:layout_constraintTop_toBottomOf="@+id/ivService" />
+                        app:layout_constraintTop_toBottomOf="@+id/cvSlider" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tvTime"
@@ -104,7 +138,7 @@
                         android:id="@+id/tvRupees"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="$60"
+                        android:text=""
                         android:textColor="#E8CE82"
                         android:fontFamily="@font/poppins_medium"
                         android:textSize="@dimen/_13ssp"
@@ -120,7 +154,7 @@
                         android:id="@+id/tvLessRupees"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="$70"
+                        android:text=""
                         android:textColor="@color/app_color"
                         android:fontFamily="@font/poppins"
                         android:textSize="@dimen/_13ssp"

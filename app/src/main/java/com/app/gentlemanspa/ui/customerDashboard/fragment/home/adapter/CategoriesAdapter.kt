@@ -7,9 +7,10 @@ import com.app.gentlemanspa.R
 import com.app.gentlemanspa.databinding.ItemCategoriesBinding
 import com.app.gentlemanspa.network.ApiConstants
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.CategoriesItem
+import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.SpaCategoriesData
 import com.bumptech.glide.Glide
 
-class CategoriesAdapter(private var categoriesList: ArrayList<CategoriesItem>) : RecyclerView.Adapter<CategoriesAdapter.ViewHolder>() {
+class CategoriesAdapter(private var categoriesList: ArrayList<SpaCategoriesData>) : RecyclerView.Adapter<CategoriesAdapter.ViewHolder>() {
 
     private lateinit var categoriesCallbacks: CategoriesCallbacks
     class ViewHolder(val binding : ItemCategoriesBinding) : RecyclerView.ViewHolder(binding.root)
@@ -43,7 +44,7 @@ class CategoriesAdapter(private var categoriesList: ArrayList<CategoriesItem>) :
     }
 
     interface CategoriesCallbacks {
-        fun rootCategories(item: CategoriesItem, position: Int)
+        fun rootCategories(item: SpaCategoriesData, position: Int)
     }
 
 }

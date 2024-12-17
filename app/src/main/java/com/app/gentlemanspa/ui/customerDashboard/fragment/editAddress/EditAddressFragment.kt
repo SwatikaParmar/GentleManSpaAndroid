@@ -141,11 +141,16 @@ class EditAddressFragment : Fragment(), View.OnClickListener {
             // binding.etNearbyLandmark.setText(addressArgs.locality)
 
             val arr = addressString.split(",").toTypedArray()
-            if (addressArgs.subLocality == arr[1].trim()) {
-                binding.etHouseNo.setText(arr[0])
-            } else {
-                binding.etHouseNo.setText("${arr[0]},${arr[1]}")
+            if (arr.isNotEmpty()){
+                if (addressArgs.subLocality == arr[1].trim()) {
+                    binding.etHouseNo.setText(arr[0])
+                } else {
+                    binding.etHouseNo.setText("${arr[0]},${arr[1]}")
+                }
+            }else{
+                requireContext().showToast("Something Went wrong")
             }
+
 
 
         }

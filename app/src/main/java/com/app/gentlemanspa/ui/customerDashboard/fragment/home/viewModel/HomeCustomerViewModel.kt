@@ -12,6 +12,7 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.CategoriesR
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.LocationResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductCategoriesResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.model.ProfessionalResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.SpaCategoriesResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.profile.model.GetProfessionalDetailResponse
 import com.app.gentlemanspa.utils.CommonFunctions
 import com.app.gentlemanspa.utils.Resource
@@ -25,10 +26,12 @@ class HomeCustomerViewModel (private var initialRepository: InitialRepository) :
 ) {
 
     val search = ObservableField<String>()
+    val spaDetailId = ObservableField<Int>()
     val resultLocationAddress = MutableLiveData<Resource<LocationResponse>>()
     val resultSearchLocationAddress = MutableLiveData<Resource<LocationResponse>>()
     val resultBanner = MutableLiveData<Resource<BannerResponse>>()
-    val resultCategories = MutableLiveData<Resource<CategoriesResponse>>()
+  //  val resultCategories = MutableLiveData<Resource<CategoriesResponse>>()
+    val resultCategories = MutableLiveData<Resource<SpaCategoriesResponse>>()
     val resultProductCategories = MutableLiveData<Resource<ProductCategoriesResponse>>()
     val resultProfileCustomerDetail =
         MutableLiveData<Resource<GetProfessionalDetailResponse>>()
@@ -118,7 +121,7 @@ class HomeCustomerViewModel (private var initialRepository: InitialRepository) :
     fun getCategories() {
         resultCategories.value = Resource.loading(null)
         viewModelScope.launch {
-            initialRepository.getCategories()
+            initialRepository.getSpaCategories(spaDetailId.get()!!)
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->

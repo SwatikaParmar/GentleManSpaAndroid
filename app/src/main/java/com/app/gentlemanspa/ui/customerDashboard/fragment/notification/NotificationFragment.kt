@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.app.gentlemanspa.databinding.FragmentNotificationBinding
 import com.app.gentlemanspa.ui.customerDashboard.activity.CustomerActivity
-import com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeamServices.adapter.NotificationAdapter
+import com.app.gentlemanspa.ui.customerDashboard.fragment.notification.adapter.NotificationAdapter
 
 class NotificationFragment : Fragment(), View.OnClickListener {
 lateinit var binding:FragmentNotificationBinding
@@ -40,7 +40,7 @@ lateinit var binding:FragmentNotificationBinding
     }
 
     private fun setAdapter() {
-        val notificationAdapter=NotificationAdapter()
+        val notificationAdapter= NotificationAdapter()
          binding.rvNotification.adapter=notificationAdapter
     }
 

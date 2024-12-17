@@ -18,6 +18,7 @@ import com.app.gentlemanspa.network.ApiConstants
 import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.network.Status
 import com.app.gentlemanspa.ui.customerDashboard.activity.CustomerActivity
+import com.app.gentlemanspa.ui.customerDashboard.fragment.productDetail.adapter.ProductImagesAdapter
 import com.app.gentlemanspa.ui.customerDashboard.fragment.serviceDetail.model.ServiceDetailData
 import com.app.gentlemanspa.ui.customerDashboard.fragment.serviceDetail.viewModel.ServiceDetailViewModel
 import com.app.gentlemanspa.utils.CommonFunctions.decimalRoundToInt
@@ -25,6 +26,7 @@ import com.app.gentlemanspa.utils.ViewModelFactory
 import com.app.gentlemanspa.utils.setVisible
 import com.app.gentlemanspa.utils.showToast
 import com.bumptech.glide.Glide
+import com.google.android.material.tabs.TabLayoutMediator
 
 
 class ServiceDetailFragment : Fragment(), View.OnClickListener {
@@ -146,14 +148,28 @@ class ServiceDetailFragment : Fragment(), View.OnClickListener {
             binding.ivAddService.setImageResource(R.drawable.ic_checked)
         } else {
             binding.ivAddService.setImageResource(R.drawable.ic_add)
-
         }
-        Glide.with(requireContext())
+        /*Glide.with(requireContext())
             .load(ApiConstants.BASE_FILE + data.serviceIconImage)
-            .into(binding.ivService)
-
+            .into(binding.ivService)*/
+        setServiceImagesAdapter(data.imageList)
         binding.tvDescription.text = data.description
         binding.clFirst.setVisible()
+    }
+
+    private fun setServiceImagesAdapter(imageList: ArrayList<String>) {
+        val  bannerCustomerAdapter = ProductImagesAdapter(imageList)
+        binding.vpProductImages.adapter = bannerCustomerAdapter
+
+        if (imageList.size > 1) {
+            binding.tlProductImages.visibility = View.VISIBLE
+        } else {
+            binding.tlProductImages.visibility = View.GONE
+        }
+
+        TabLayoutMediator(binding.tlProductImages, binding.vpProductImages) { tab, position ->
+        }.attach()
+
     }
 
     override fun onClick(v: View) {
@@ -161,7 +177,6 @@ class ServiceDetailFragment : Fragment(), View.OnClickListener {
             binding.ivArrowBack -> {
                 findNavController().popBackStack()
             }
-
             binding.ivAddService -> {
                 viewModel.spaServiceId.set(spaServiceId)
                 viewModel.slotId.set(0)

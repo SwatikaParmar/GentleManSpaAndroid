@@ -43,7 +43,8 @@
                 android:includeFontPadding="false"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:ignore="HardcodedText" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -62,16 +63,16 @@
                     android:id="@+id/ivProfile"
                     android:layout_width="@dimen/_90sdp"
                     android:layout_height="@dimen/_90sdp"
-                    android:layout_marginEnd="@dimen/_15sdp"
-                    android:scaleType="fitXY"
-                    app:shapeAppearance="@style/circular50"
-                    app:strokeWidth="@dimen/_1sdp"
-                    app:strokeColor="@color/app_color"
                     android:layout_marginTop="@dimen/_20sdp"
+                    android:scaleType="fitXY"
                     android:src="@drawable/profile_placeholder"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:shapeAppearance="@style/circular50"
+                    app:strokeColor="@color/app_color"
+                    app:strokeWidth="@dimen/_1sdp"
+                    tools:ignore="ImageContrastCheck" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivUpload"
@@ -83,45 +84,48 @@
                     app:layout_constraintBottom_toBottomOf="@+id/ivProfile"/>
 
 
-
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/etFirstName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_edit_text"
-                    android:padding="@dimen/_8sdp"
-                    android:hint="@string/first_name"
-                    android:textSize="@dimen/_13ssp"
-                    android:singleLine="true"
-                    android:imeOptions="actionNext"
-                    android:inputType="text"
-                    android:fontFamily="@font/poppins"
-                    android:includeFontPadding="false"
-                    android:elevation="@dimen/_2sdp"
-                    android:layout_marginTop="@dimen/_20sdp"
                     android:layout_marginHorizontal="@dimen/_15sdp"
-                    app:layout_constraintTop_toBottomOf="@+id/ivProfile"/>
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:background="@drawable/bg_edit_text"
+                    android:elevation="@dimen/_2sdp"
+                    android:fontFamily="@font/poppins"
+                    android:hint="@string/first_name"
+                    android:imeOptions="actionNext"
+                    android:includeFontPadding="false"
+                    android:inputType="text"
+                    android:padding="@dimen/_9sdp"
+                    android:singleLine="true"
+                    android:textSize="@dimen/_13ssp"
+                    app:layout_constraintTop_toBottomOf="@+id/ivProfile"
+                    tools:ignore="TouchTargetSizeCheck,VisualLintTextFieldSize"
+                    tools:layout_editor_absoluteX="19dp" />
 
 
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/etLastName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_15sdp"
+                    android:layout_marginTop="@dimen/_15sdp"
                     android:background="@drawable/bg_edit_text"
-                    android:padding="@dimen/_8sdp"
+                    android:elevation="@dimen/_2sdp"
+                    android:fontFamily="@font/poppins"
                     android:hint="@string/last_name"
+                    android:imeOptions="actionDone"
+                    android:includeFontPadding="false"
+                    android:inputType="text"
+                    android:padding="@dimen/_9sdp"
                     android:singleLine="true"
                     android:textSize="@dimen/_13ssp"
-                    android:imeOptions="actionNext"
-                    android:inputType="text"
-                    android:fontFamily="@font/poppins"
-                    android:includeFontPadding="false"
-                    android:elevation="@dimen/_2sdp"
-                    android:layout_marginTop="@dimen/_15sdp"
-                    android:layout_marginHorizontal="@dimen/_15sdp"
-                    app:layout_constraintTop_toBottomOf="@+id/etFirstName"/>
+                    app:layout_constraintTop_toBottomOf="@+id/etFirstName"
+                    tools:ignore="TouchTargetSizeCheck,VisualLintTextFieldSize"
+                    tools:layout_editor_absoluteX="19dp" />
 
-                <Spinner
+   <!--             <Spinner
                     android:id="@+id/spGender"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -132,26 +136,64 @@
                     android:layout_marginTop="@dimen/_15sdp"
                     android:background="@drawable/bg_edit_text"
                     app:layout_constraintTop_toBottomOf="@+id/etLastName" />
+-->
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@id/clSpinnerGender"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_15sdp"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:background="@drawable/bg_edit_text"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/etLastName">
+
+                    <Spinner
+                        android:id="@+id/spGender"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_edit_text"
+                        android:textSize="@dimen/_13ssp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="TouchTargetSizeCheck" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivDropDown"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/_3sdp"
+                    android:layout_marginEnd="@dimen/_18sdp"
+                    android:src="@drawable/ic_arrow_down"
+                    app:layout_constraintTop_toTopOf="@+id/clSpinnerGender"
+                    app:layout_constraintBottom_toBottomOf="@+id/clSpinnerGender"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    />
 
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/etEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_edit_text"
-                    android:padding="@dimen/_8sdp"
-                    android:hint="@string/email"
-                    android:textSize="@dimen/_13ssp"
-                    android:singleLine="true"
-                    android:focusable="false"
-                    android:cursorVisible="false"
-                    android:imeOptions="actionNext"
-                    android:inputType="text"
-                    android:fontFamily="@font/poppins"
-                    android:includeFontPadding="false"
-                    android:elevation="@dimen/_2sdp"
-                    android:layout_marginTop="@dimen/_15sdp"
                     android:layout_marginHorizontal="@dimen/_15sdp"
-                    app:layout_constraintTop_toBottomOf="@+id/spGender"/>
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:background="@drawable/bg_edit_text"
+                    android:cursorVisible="false"
+                    android:elevation="@dimen/_2sdp"
+                    android:focusable="false"
+                    android:fontFamily="@font/poppins"
+                    android:hint="@string/email"
+                    android:imeOptions="actionNext"
+                    android:includeFontPadding="false"
+                    android:inputType="text"
+                    android:padding="@dimen/_9sdp"
+                    android:singleLine="true"
+                    android:textSize="@dimen/_13ssp"
+                    app:layout_constraintTop_toBottomOf="@+id/clSpinnerGender"
+                    tools:ignore="TouchTargetSizeCheck,VisualLintTextFieldSize"
+                    tools:layout_editor_absoluteX="19dp" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/clPhone"
@@ -173,6 +215,7 @@
                         app:ccp_showNameCode="false"
                         app:ccp_showFullName="false"
                         app:ccp_showArrow="false"
+                        android:visibility="gone"
                         android:gravity="center"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -184,6 +227,7 @@
                         android:layout_width="@dimen/_1sdp"
                         android:layout_height="0dp"
                         android:background="#7B7B7B"
+                        android:visibility="gone"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/countryCode"/>
@@ -192,58 +236,62 @@
                         android:id="@+id/etPhone"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_marginHorizontal="@dimen/_2sdp"
-                        android:padding="@dimen/_8sdp"
                         android:background="@null"
-                        android:hint="@string/phone_no"
-                        android:textSize="@dimen/_13ssp"
-                        android:focusable="false"
                         android:cursorVisible="false"
+                        android:focusable="false"
                         android:fontFamily="@font/poppins"
-                        android:includeFontPadding="false"
+                        android:hint="@string/phone_no"
                         android:imeOptions="actionNext"
+                        android:includeFontPadding="false"
                         android:inputType="text"
+                        android:padding="@dimen/_9sdp"
+                        android:textSize="@dimen/_13ssp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/view"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="TouchTargetSizeCheck,VisualLintTextFieldSize" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/etSpeciality"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_edit_text"
-                    android:padding="@dimen/_8sdp"
-                    android:focusable="false"
-                    android:hint="@string/vip_clients"
-                    android:textColorHint="@color/black"
-                    android:cursorVisible="false"
-                    android:imeOptions="actionNext"
-                    android:onClick="@{onClick}"
-                    android:textSize="@dimen/_13ssp"
-                    android:fontFamily="@font/poppins"
-                    android:includeFontPadding="false"
-                    android:elevation="@dimen/_2sdp"
-                    android:layout_marginTop="@dimen/_15sdp"
                     android:layout_marginHorizontal="@dimen/_15sdp"
-                    app:layout_constraintTop_toBottomOf="@+id/clPhone"/>
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:background="@drawable/bg_edit_text"
+                    android:cursorVisible="false"
+                    android:elevation="@dimen/_2sdp"
+                    android:focusable="false"
+                    android:fontFamily="@font/poppins"
+                    android:hint="@string/vip_clients"
+                    android:imeOptions="actionNext"
+                    android:includeFontPadding="false"
+                    android:onClick="@{onClick}"
+                    android:padding="@dimen/_9sdp"
+                    android:textColorHint="@color/black"
+                    android:textSize="@dimen/_13ssp"
+                    app:layout_constraintTop_toBottomOf="@+id/clPhone"
+                    tools:ignore="TouchTargetSizeCheck,VisualLintTextFieldSize"
+                    tools:layout_editor_absoluteX="19dp" />
 
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnUpdate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Update"
-                    android:padding="@dimen/_8sdp"
-                    android:textSize="@dimen/_13ssp"
-                    android:onClick="@{onClick}"
-                    app:cornerRadius="@dimen/_20sdp"
-                    android:textAllCaps="false"
+                    android:layout_marginHorizontal="@dimen/_15sdp"
+                    android:layout_marginTop="@dimen/_20sdp"
                     android:fontFamily="@font/poppins_medium"
                     android:includeFontPadding="false"
-                    android:layout_marginTop="@dimen/_20sdp"
-                    android:layout_marginHorizontal="@dimen/_15sdp"
-                    app:layout_constraintTop_toBottomOf="@+id/etSpeciality"/>
+                    android:onClick="@{onClick}"
+                    android:padding="@dimen/_8sdp"
+                    android:text="Update"
+                    android:textAllCaps="false"
+                    android:textSize="@dimen/_13ssp"
+                    app:cornerRadius="@dimen/_20sdp"
+                    app:layout_constraintTop_toBottomOf="@+id/etSpeciality"
+                    tools:ignore="HardcodedText,TextContrastCheck,VisualLintButtonSize"
+                    tools:layout_editor_absoluteX="19dp" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

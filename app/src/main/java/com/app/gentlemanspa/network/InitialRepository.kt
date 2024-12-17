@@ -51,6 +51,8 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.AddServi
 import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.AddServiceToCartResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.GetCartItemsResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.ServiceResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.SpaCategoriesResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.SpaSubCategoriesResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.serviceDetail.model.ServiceDetailResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.AddProductRequest
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.AddProductResponse
@@ -72,6 +74,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.http.Query
 
 
 class InitialRepository {
@@ -170,6 +173,18 @@ class InitialRepository {
             emit(result)
         }.flowOn(Dispatchers.IO)
     }
+    suspend fun getSpaCategories(spaDetailId:Int): Flow<SpaCategoriesResponse?> {
+        return flow {
+            val result =Api.apiInterface?.getSpaCategories(spaDetailId)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+    suspend fun getSpaSubCategories(spaDetailId:Int,categoryId:Int): Flow<SpaSubCategoriesResponse?> {
+        return flow {
+            val result =Api.apiInterface?.getSpaSubCategories(spaDetailId,categoryId)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
 
     suspend fun getProductCategories(): Flow<ProductCategoriesResponse?> {
         return flow {
@@ -200,9 +215,9 @@ class InitialRepository {
     }
 
 
-    suspend fun getServiceList(pageNumber: Int?, pageSize: Int?,categoryId: Int?,searchQuery:String, spaDetailId:Int?): Flow<ServiceResponse?> {
+    suspend fun getServiceList(pageNumber: Int?, pageSize: Int?,categoryId: Int?,subCategoryId: Int?,searchQuery:String, spaDetailId:Int?): Flow<ServiceResponse?> {
         return flow {
-            val result =Api.apiInterface?.getServiceList(pageNumber,pageSize,categoryId,searchQuery,spaDetailId)
+            val result =Api.apiInterface?.getServiceList(pageNumber,pageSize,categoryId,subCategoryId,searchQuery,spaDetailId)
             emit(result)
         }.flowOn(Dispatchers.IO)
     }
@@ -385,6 +400,13 @@ class InitialRepository {
     suspend fun getServiceAppointments(type:String, pageSize: Int?,pageNumber: Int?): Flow<UpcomingServiceAppointmentResponse?> {
         return flow {
             val result =Api.apiInterface?.getServiceAppointments(type,pageSize,pageNumber)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+
+    suspend fun getAppointmentsList(type:String, pageSize: Int?,pageNumber: Int?,professionalDetailId:Int): Flow<UpcomingServiceAppointmentResponse?> {
+        return flow {
+            val result =Api.apiInterface?.getAppointmentsList(type,pageSize,pageNumber,professionalDetailId)
             emit(result)
         }.flowOn(Dispatchers.IO)
     }

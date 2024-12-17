@@ -17,6 +17,8 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import org.json.JSONObject
+import retrofit2.HttpException
 
 class MyOrdersViewModel (private var initialRepository: InitialRepository) : AndroidViewModel(
     Application()
@@ -35,12 +37,26 @@ class MyOrdersViewModel (private var initialRepository: InitialRepository) : And
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->
-                    if (!CommonFunctions.getError(exception)!!.contains("401"))
+                    if (exception is HttpException) {
+                        try {
+                            val errorBody = exception.response()?.errorBody()?.string()
+                            if (!errorBody.isNullOrEmpty()) {
+                                val jsonError = JSONObject(errorBody)
+                                val errorMessage = jsonError.optString("messages", "Unknown HTTP error")
+                                resultMyOrdersList.value = Resource.error(data = null, message = errorMessage)
+                            } else {
+                                resultMyOrdersList.value = Resource.error(data = null, message = "Unknown HTTP error")
+                            }
+                        } catch (e: Exception) {
+                            resultMyOrdersList.value = Resource.error(data = null, message = e.message)
+                        }
+                    }else{
                         resultMyOrdersList.value =
                             Resource.error(
                                 data = null,
                                 message = CommonFunctions.getError(exception)
                             )
+                    }
                 }
                 .collect {
                     if (it?.statusCode == 200) {
@@ -54,33 +70,5 @@ class MyOrdersViewModel (private var initialRepository: InitialRepository) : And
         }
     }
 
-  /*  fun cancelUpcomingAppointment() {
-        resultCancelUpcomingAppointment.value = Resource.loading(null)
-        viewModelScope.launch {
-            initialRepository.cancelUpcomingAppointment(
-                CancelUpcomingAppointmentRequest(orderId.get()!!,listOf(serviceBookingIds.get()!!))
-            )
-                .onStart { }
-                .onCompletion { }
-                .catch { exception ->
-                    if (!CommonFunctions.getError(exception)!!.contains("401"))
-                        resultCancelUpcomingAppointment.value =
-                            Resource.error(
-                                data = null,
-                                message = CommonFunctions.getError(exception)
-                            )
-                }
-                .collect {
-                    if (it?.statusCode == 200) {
-                        //  Log.d("dataList","inside viewModel dataList size ${it.data.dataList.size} ")
 
-                        resultCancelUpcomingAppointment.value =
-                            Resource.success(message = it.messages, data = it)
-                    } else {
-                        resultCancelUpcomingAppointment.value =
-                            Resource.error(data = null, message = it?.messages)
-                    }
-                }
-        }
-    }*/
 }

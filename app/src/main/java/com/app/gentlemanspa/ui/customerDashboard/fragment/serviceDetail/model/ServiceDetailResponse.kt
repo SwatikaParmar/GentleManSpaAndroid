@@ -59,7 +59,7 @@ data class ServiceDetailData(
 	val spaServiceId: Int? = 0,
 
 	@field:SerializedName("imageList")
-	val imageList: ArrayList<String>?,
+	val imageList: ArrayList<String>,
 
 	@field:SerializedName("categoryId")
 	val categoryId: Int? = 0,

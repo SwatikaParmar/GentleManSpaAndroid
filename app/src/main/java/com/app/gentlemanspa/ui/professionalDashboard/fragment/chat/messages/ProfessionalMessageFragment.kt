@@ -22,6 +22,7 @@ import com.app.gentlemanspa.databinding.DialogRemoveUserChatBinding
 import com.app.gentlemanspa.databinding.FragmentProfessionalMessagesBinding
 import com.app.gentlemanspa.databinding.ItemMessagesBinding
 import com.app.gentlemanspa.network.ApiConstants
+import com.app.gentlemanspa.ui.professionalDashboard.activity.ProfessionalActivity
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.chat.messages.model.ProfessionalMessageModel
 import com.app.gentlemanspa.utils.CommonUtils
 import com.app.gentlemanspa.utils.showToast
@@ -88,6 +89,7 @@ class ProfessionalMessageFragment : Fragment(), View.OnClickListener {
     }
 
     private fun initUI() {
+        (activity as ProfessionalActivity).bottomNavigation(false)
         binding.onClick=this
 
     }

@@ -32,7 +32,7 @@ class ProfessionalTeamAdapter (private var professionalTeamList: ArrayList<Profe
         holder.binding.apply {
             tvProfessionalName.text =  "${item.firstName} ${item.lastName}"
             Glide.with(holder.itemView.context).load(ApiConstants.BASE_FILE +item.profilepic).placeholder(
-                R.drawable.service_placeholder).error(R.drawable.service_placeholder).into(ivProfessional)
+                R.drawable.service_placeholder).error(R.drawable.ic_profile_holder).into(ivProfessional)
 
             root.setOnClickListener {
                 professionalTeamCallbacks.rootProfessionalTeam(item)

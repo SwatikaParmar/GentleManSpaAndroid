@@ -8,9 +8,10 @@ import com.app.gentlemanspa.R
 import com.app.gentlemanspa.base.MyApplication.Companion.context
 import com.app.gentlemanspa.databinding.ItemCategoriesServiceBinding
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.CategoriesItem
+import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.SpaCategoriesData
 
 class ServiceCategoriesAdapter(
-    private var categoriesList: ArrayList<CategoriesItem>,
+    private var categoriesList: ArrayList<SpaCategoriesData>,
     private var positionHor: Int
 ) : RecyclerView.Adapter<ServiceCategoriesAdapter.ViewHolder>() {
 
@@ -39,7 +40,7 @@ class ServiceCategoriesAdapter(
                 tvServiceName.setTextColor(ContextCompat.getColor(context, R.color.black))
             }else{
                 clFirst.isSelected =false
-                tvServiceName.setTextColor(ContextCompat.getColor(context, R.color.white))
+                tvServiceName.setTextColor(ContextCompat.getColor(context, R.color.black))
 
             }
 
@@ -58,7 +59,7 @@ class ServiceCategoriesAdapter(
 
 
     interface ServiceCategoriesCallbacks{
-        fun rootServiceCategories(item: CategoriesItem?, position: Int?)
+        fun rootServiceCategories(item: SpaCategoriesData?, position: Int?)
     }
 
 }

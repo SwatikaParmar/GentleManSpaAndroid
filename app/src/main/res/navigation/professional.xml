@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_homeProfessionalFragment_to_professionalMessageFragment"
             app:destination="@id/professionalMessageFragment" />
+        <action
+            android:id="@+id/action_homeProfessionalFragment_to_professionalChatFragment"
+            app:destination="@id/professionalChatFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileProfessionalFragment"
@@ -140,5 +143,10 @@
             android:name="from"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/professionalNotificationFragment"
+        android:name="com.app.gentlemanspa.ui.professionalDashboard.fragment.notification.ProfessionalNotificationFragment"
+        android:label="ProfessionalNotificationFragment"
+        tools:layout="@layout/fragment_professional_notification"/>
 
 </navigation>

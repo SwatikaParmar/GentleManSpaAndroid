@@ -77,8 +77,8 @@ class ProfessionalServicesFragment : Fragment(), View.OnClickListener {
         binding.tvSpecialist.text = specialityName
         Glide.with(requireContext()).load(ApiConstants.BASE_FILE + professionalItem.profilepic)
             .placeholder(
-                R.drawable.professional_placeholder
-            ).error(R.drawable.professional_placeholder).into(binding.ivDoctor)
+                R.drawable.ic_profile_holder
+            ).error(R.drawable.ic_profile_holder).into(binding.ivDoctor)
 
         Log.d("professionalId","ProfessionalId->${professionalItem.professionalDetail?.professionalDetailId}")
     }

@@ -68,7 +68,7 @@
                     android:layout_width="@dimen/_70sdp"
                     android:layout_height="@dimen/_70sdp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/professional_placeholder"
+                    android:src="@drawable/ic_profile_holder"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:shapeAppearance="@style/circular50" />

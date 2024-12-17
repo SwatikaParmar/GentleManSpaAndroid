@@ -8,7 +8,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
+import com.app.gentlemanspa.R
 import com.app.gentlemanspa.base.MyApplication.Companion.hideProgress
 import com.app.gentlemanspa.base.MyApplication.Companion.showProgress
 import com.app.gentlemanspa.databinding.FragmentCartBinding
@@ -251,7 +253,6 @@ class CartFragment : Fragment(), View.OnClickListener {
                 }
             }
         }
-
         viewModel.resultServiceToCart.observe(this) {
             it.let { result ->
                 when (result.status) {
@@ -301,7 +302,6 @@ class CartFragment : Fragment(), View.OnClickListener {
 
 
         }
-
         viewModel.resultCustomerAddress.observe(this) {
             it.let { result ->
                 when (result.status) {
@@ -331,11 +331,15 @@ class CartFragment : Fragment(), View.OnClickListener {
                             }
                             binding.tvDeliveryAddress.text = cleanPrimaryAddress
                         } else {
-                            requireContext().showToast("Address is empty")
+                            //requireContext().showToast("Address is empty")
                             binding.tvDeliveryAddress.setGone()
                         }
-                        binding.tvDeliveryPlaceName.text = "Delivering to $deliveryAddressName"
+                        if (deliveryAddressName.isNotEmpty()){
+                            binding.tvDeliveryPlaceName.text = "Delivering to $deliveryAddressName"
 
+                        }else{
+                            binding.tvDeliveryPlaceName.setGone()
+                        }
 
                     }
 
@@ -346,33 +350,25 @@ class CartFragment : Fragment(), View.OnClickListener {
                 }
             }
         }
-
         viewModel.resultCustomerPlaceOrder.observe(this) {
             it.let { result ->
                 when (result.status) {
                     Status.LOADING -> {
                         showProgress(requireContext())
-
                     }
-
                     Status.SUCCESS -> {
                         Log.d("resultCustomerPlaceOrder", "inside resultCustomerPlaceOrder SUCCESS")
-                        Log.d(
-                            "resultCustomerPlaceOrder",
-                            "inside resultCustomerPlaceOrder Message->${it.message.toString()}"
-                        )
+                        Log.d("resultCustomerPlaceOrder", "inside resultCustomerPlaceOrder Message->${it.message.toString()}")
                         hideProgress()
                         requireContext().showAlertForPlaceOrder(it.message.toString(), object :
                             AlertWithoutCancelCallbackInt {
                             override fun onOkayClicked(view: View) {
-                                val action =
-                                    CartFragmentDirections.actionCartFragmentToHomeFragment()
+                                val action = CartFragmentDirections.actionCartFragmentToHomeFragment()
                                 findNavController().navigate(action)
                             }
                         })
                         requireContext().showToast(it.message.toString())
                     }
-
                     Status.ERROR -> {
                         requireContext().showToast(it.message.toString())
                         Log.d("resultCustomerPlaceOrder", "inside resultAddProductInCart ERROR")
@@ -380,11 +376,7 @@ class CartFragment : Fragment(), View.OnClickListener {
                     }
                 }
             }
-
-
         }
-
-
     }
 
     private fun setCartServicesAdapter(servicesList: List<Service>) {
@@ -419,10 +411,8 @@ class CartFragment : Fragment(), View.OnClickListener {
                     )
                     findNavController().navigate(action)
                 }
-
             }
-
-        })
+            })
     }
 
     private fun setCartProductsAdapter(productsList: List<Product>) {
@@ -447,9 +437,7 @@ class CartFragment : Fragment(), View.OnClickListener {
                     viewModel.addProductInCart()
                 }
             }
-
-        })
-
+            })
     }
 
     override fun onClick(v: View?) {
@@ -460,7 +448,11 @@ class CartFragment : Fragment(), View.OnClickListener {
             }
 
             binding.ivArrowBack -> {
-                findNavController().popBackStack()
+               // findNavController().popBackStack()
+                findNavController().navigate(
+                    R.id.homeCustomerFragment, null, NavOptions.Builder()
+                    .setPopUpTo(R.id.customer, true)  // Pop the entire back stack up to the navigation graph
+                    .build())
             }
 
             binding.btnPay -> {

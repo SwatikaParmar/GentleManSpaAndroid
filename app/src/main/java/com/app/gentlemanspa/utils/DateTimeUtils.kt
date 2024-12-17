@@ -34,6 +34,14 @@ fun formatDayDate(inputDate: String): String {
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
+fun formatDayMonthYearDate(inputDate: String): String {
+    val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    val outputFormatter = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy")
+    val date = LocalDate.parse(inputDate, inputFormatter)
+    return date.format(outputFormatter)
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
 fun formatCalendarDayToString(calendarDay: CalendarDay): String {
     val localDate = LocalDate.of(calendarDay.year, calendarDay.month, calendarDay.day)
     val formatter = DateTimeFormatter.ofPattern("EEE, d MMM yyyy", Locale.getDefault())
@@ -47,8 +55,7 @@ fun formatCalendarDayToYear(calendarDay: CalendarDay): String {
     return localDate.format(formatter)
 }
 
-
- fun getCurrentTime(): String {
+fun getCurrentTime(): String {
     val dateFormat = SimpleDateFormat("hh:mm a", Locale.getDefault()) // Format like "10:30 AM"
     return dateFormat.format(Date()) // Get the current date and time, and format it
 }

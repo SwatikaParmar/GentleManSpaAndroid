@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.app.gentlemanspa.R
 import com.app.gentlemanspa.base.MyApplication.Companion.context
+import com.app.gentlemanspa.databinding.ItemCategoriesProductBinding
 import com.app.gentlemanspa.databinding.ItemCategoriesServiceBinding
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductCategoriesItem
 
@@ -16,12 +17,12 @@ class CategoriesProductsAdapter(
 
     private lateinit var categoriesProductCallbacks: CategoriesProductCallbacks
 
-    class ViewHolder(val binding: ItemCategoriesServiceBinding) :
+    class ViewHolder(val binding: ItemCategoriesProductBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding =
-            ItemCategoriesServiceBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemCategoriesProductBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 

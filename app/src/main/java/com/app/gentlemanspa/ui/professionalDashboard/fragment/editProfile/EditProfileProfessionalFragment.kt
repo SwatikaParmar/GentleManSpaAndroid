@@ -207,11 +207,14 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
     }
 
 
+    @SuppressLint("SetTextI18n")
     private fun initUI() {
         profileData = AppPrefs(requireContext()).getProfileProfessionalData(PROFESSIONAL_PROFILE_DATA)
         binding.etFirstName.setText(profileData?.data?.firstName)
         binding.etLastName.setText(profileData?.data?.lastName)
-        binding.etPhone.setText(profileData?.data?.phoneNumber)
+        Log.d("profileUrl","dialCode:${profileData?.data?.dialCode}  phoneNumber:${profileData?.data?.phoneNumber}")
+
+        binding.etPhone.setText("${profileData?.data?.dialCode} ${profileData?.data?.phoneNumber}")
         binding.etEmail.setText(profileData?.data?.email)
         // binding.countryCodePicker.setCountryForPhoneCode(profileData?.data?)
         binding.countryCodePicker.isEnabled = false

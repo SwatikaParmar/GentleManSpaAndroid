@@ -6,28 +6,27 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Resources
+import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.app.gentlemanspa.R
-import com.app.gentlemanspa.base.MyApplication
 import com.app.gentlemanspa.base.MyApplication.Companion.hideProgress
 import com.app.gentlemanspa.base.MyApplication.Companion.showProgress
-import com.app.gentlemanspa.databinding.BottomSheetSpecialityBinding
 import com.app.gentlemanspa.databinding.FragmentEditProfileCustomerBinding
 import com.app.gentlemanspa.databinding.ImagePickerBottomBinding
 import com.app.gentlemanspa.network.ApiConstants
@@ -37,8 +36,6 @@ import com.app.gentlemanspa.ui.auth.fragment.register.adapter.GenderAdapter
 import com.app.gentlemanspa.ui.auth.fragment.register.model.GenderRequest
 import com.app.gentlemanspa.ui.customerDashboard.activity.CustomerActivity
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.viewModel.UpdateCustomerViewModel
-import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.adapter.SpecialityAdapter
-import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.viewModel.UpdateProfessionalViewModel
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.profile.model.GetProfessionalDetailResponse
 import com.app.gentlemanspa.utils.AppPrefs
 import com.app.gentlemanspa.utils.CommonFunctions
@@ -58,10 +55,11 @@ import java.util.Date
 import java.util.Locale
 
 
+@Suppress("DEPRECATION")
 class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
-    private lateinit var binding : FragmentEditProfileCustomerBinding
+    private lateinit var binding: FragmentEditProfileCustomerBinding
     private var currentPhotoPath: String? = null
-    private var profileImage: File?= null
+    private var profileImage: File? = null
     private var genderItem: Int? = null
     private var onPermissionsGranted: (() -> Unit)? = null
     private var profileCustomerData: GetProfessionalDetailResponse? = null
@@ -70,6 +68,7 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
             InitialRepository()
         )
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -85,6 +84,7 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
         initObserver()
         initUI()
     }
+
     private fun initObserver() {
 
         viewModel.resultUpdateCustomer.observe(viewLifecycleOwner) {
@@ -109,7 +109,7 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
                                 )
                             )
                             viewModel.updateCustomerProfilePic()
-                         //   requireContext().showToast( it.data?.messages.toString())
+                            //   requireContext().showToast( it.data?.messages.toString())
                         } else {
                             requireContext().showToast(it.data?.messages.toString())
                         }
@@ -119,7 +119,7 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
 
                     Status.ERROR -> {
                         requireContext().showToast(it.message.toString())
-                        MyApplication.hideProgress()
+                        hideProgress()
                     }
                 }
             }
@@ -146,6 +146,7 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
             }
         }
     }
+
     private fun initUI() {
         binding.onClick = this
         binding.countryCode.isEnabled = false
@@ -154,23 +155,34 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
         setProfileData()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setProfileData() {
-        profileCustomerData= AppPrefs(requireContext()).getProfileCustomerData(PROFILE_CUSTOMER_DATA)
+        profileCustomerData =
+            AppPrefs(requireContext()).getProfileCustomerData(PROFILE_CUSTOMER_DATA)
         binding.etFirstName.setText(profileCustomerData?.data?.firstName.toString())
         binding.etLastName.setText(profileCustomerData?.data?.lastName)
-  //      binding.spGender.setText(profileCustomerData?.data?.professionalDetail?.speciality.)
+        //      binding.spGender.setText(profileCustomerData?.data?.professionalDetail?.speciality.)
         binding.etEmail.setText(profileCustomerData?.data?.email)
-        binding.etPhone.setText(profileCustomerData?.data?.phoneNumber)
-        Glide.with(requireContext()).load(ApiConstants.BASE_FILE +profileCustomerData?.data?.profilepic).into(binding.ivProfile)
-        val specialityName = profileCustomerData?.data?.professionalDetail?.speciality?.joinToString(",")
+        binding.etPhone.setText("${profileCustomerData?.data?.dialCode} ${profileCustomerData?.data?.phoneNumber}")
+        Glide.with(requireContext())
+            .load(ApiConstants.BASE_FILE + profileCustomerData?.data?.profilepic)
+            .into(binding.ivProfile)
+        val specialityName =
+            profileCustomerData?.data?.professionalDetail?.speciality?.joinToString(",")
 
         binding.etSpeciality.setText(specialityName)
-        if (profileCustomerData?.data?.gender == "Male") {
-            genderItem = 1
-        } else if (profileCustomerData?.data?.gender == "Female") {
-            genderItem = 2
-        } else if (profileCustomerData?.data?.gender == "Other") {
-            genderItem = 3
+        when (profileCustomerData?.data?.gender) {
+            "Male" -> {
+                genderItem = 1
+            }
+
+            "Female" -> {
+                genderItem = 2
+            }
+
+            "Other" -> {
+                genderItem = 3
+            }
         }
         if (genderItem != null) {
             binding.spGender.setSelection(genderItem!!)
@@ -220,7 +232,7 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
                         }
                     }
 
-                    genderItem =position
+                    genderItem = position
                 }
             }
     }
@@ -235,9 +247,8 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-        when(v) {
+        when (v) {
             binding.btnUpdate -> {
-
                 if (isValidation()) {
                     viewModel.firstName.set(binding.etFirstName.text.toString())
                     viewModel.lastName.set(binding.etLastName.text.toString())
@@ -248,10 +259,9 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
                     viewModel.updateCustomerProfile()
                 }
 
-
             }
 
-            binding.etSpeciality ->{
+            binding.etSpeciality -> {
                 //setSpecialityBottom()
             }
 
@@ -270,42 +280,67 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
         when {
             checkString(binding.etFirstName) -> requireContext().showToast("Please enter first name")
             checkString(binding.etLastName) -> requireContext().showToast("Please enter last name")
-            binding.spGender.selectedItem.toString() == "Select Gender" -> requireContext().showToast("Please select gender")
-            checkString(binding.etEmail) -> requireContext().showToast("Please enter email")
-            !isValidEmail(checkValidString(binding.etEmail)) -> requireContext().showToast("Please enter a valid email address")
-            checkString(binding.etPhone) -> requireContext().showToast("Please enter phone number")
-            checkValidString(binding.etPhone).length != 10 -> requireContext().showToast("Please enter a valid 10 digit phone number")
-        //    checkString(binding.etSpeciality) -> requireContext().showToast("Please enter VIP Clients")
+            binding.spGender.selectedItem.toString() == "Select Gender" -> requireContext().showToast(
+                "Please select gender"
+            )
+
+          //  checkString(binding.etEmail) -> requireContext().showToast("Please enter email")
+            //    !isValidEmail(checkValidString(binding.etEmail)) -> requireContext().showToast("Please enter a valid email address")
+            //   checkString(binding.etPhone) -> requireContext().showToast("Please enter phone number")
+            //   checkValidString(binding.etPhone).length != 10 -> requireContext().showToast("Please enter a valid 10 digit phone number")
+            //    checkString(binding.etSpeciality) -> requireContext().showToast("Please enter VIP Clients")
             else -> return true
         }
         return false
     }
 
-
-
-
-
-    private var cameraLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            // Handle the camera result
-            // val imageUri = result.data?.data
-            profileImage = File(currentPhotoPath)
-
-            binding.ivProfile.setImageURI(Uri.fromFile(profileImage))
-            // Use the imageUri
+    private var cameraLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                // val imageUri = result.data?.data
+                profileImage = currentPhotoPath?.let { File(it) }
+                binding.ivProfile.setImageURI(Uri.fromFile(profileImage))
+            }
         }
-    }
 
-    private var  galleryLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            // Handle the gallery result
-            val imageUri = result.data?.data
-            profileImage = File(imageUri?.path.toString())
-            binding.ivProfile.setImageURI(imageUri)
-            // Use the imageUri
+    private var galleryLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val imageUri = result.data?.data
+                Log.d("GalleryImage", "imageUri->$imageUri")
+                /* profileImage = File(imageUri?.path.toString())
+                 Log.d("GalleryImage","profileImage->$profileImage")
+                 binding.ivProfile.setImageURI(imageUri)*/
+                imageUri?.let {
+                    val file = getFileFromUri(it)
+                    if (file != null) {
+                        Log.d("GalleryImage", "profileImage->$file")
+                        // binding.ivProfile.setImageURI(it)
+                        profileImage = file
+                        Glide.with(this)
+                            .load(profileImage)
+                            .into(binding.ivProfile)
+                    }
+                }
+            }
         }
-    }
 
+    private fun getFileFromUri(uri: Uri): File? {
+        var cursor: Cursor? = null
+        try {
+            val projection = arrayOf(MediaStore.Images.Media.DATA)
+            cursor = requireContext().contentResolver.query(uri, projection, null, null, null)
+            val columnIndex = cursor?.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+            cursor?.moveToFirst()
+            val filePath = columnIndex?.let { cursor?.getString(it) }
+            return if (filePath != null) File(filePath) else null
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            cursor?.close()
+        }
+        return null
+    }
 
     @SuppressLint("QueryPermissionsNeeded")
     private fun openCamera() {
@@ -334,7 +369,8 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
     private fun createImageFile(): File {
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
         val imageFileName = "JPEG_" + timeStamp + "_"
-        val storageDir: File? = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val storageDir: File? =
+            requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         return File.createTempFile(imageFileName, ".jpg", storageDir)
     }
 
@@ -343,12 +379,15 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
         galleryLauncher.launch(intent)
     }
 
-
-
     private fun checkAndRequestPermissionsForCamera(onPermissionsGranted: () -> Unit) {
         val permissions = arrayOf(Manifest.permission.CAMERA)
 
-        if (permissions.all { ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED }) {
+        if (permissions.all {
+                ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    it
+                ) == PackageManager.PERMISSION_GRANTED
+            }) {
             onPermissionsGranted()
         } else {
             this.onPermissionsGranted = onPermissionsGranted
@@ -357,6 +396,7 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
     }
 
 
+    @Deprecated("Deprecated in Java")
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -364,15 +404,13 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if ((requestCode == REQUEST_CODE_CAMERA_PERMISSIONS || requestCode == REQUEST_CODE_GALLERY_PERMISSIONS) &&
-            grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
+            grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }
+        ) {
             // Permissions are granted, proceed with the action
             //openCamera()
             onPermissionsGranted?.invoke()
         } else {
-
-
             CommonFunctions.goToAppSettings(requireContext())
-
         }
 
     }
@@ -389,34 +427,31 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
             )
         }
 
-        if (permissions.all { ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED }) {
-            // Permissions are already granted, proceed with the action
-            //onPermissionsGranted()
-            // openCamera()
+        if (permissions.all {
+                ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    it
+                ) == PackageManager.PERMISSION_GRANTED
+            }) {
             openGallery()
         } else {
             // Request permissions
             this.onPermissionsGranted = onPermissionsGranted
-            requestPermissions(permissions,REQUEST_CODE_GALLERY_PERMISSIONS)
+            requestPermissions(permissions, REQUEST_CODE_GALLERY_PERMISSIONS)
         }
     }
 
 
-
     private fun setImagePickerBottomSheet() {
-
-        val bottomSheet = BottomSheetDialog(requireContext(),R.style.DialogTheme_transparent)
+        val bottomSheet = BottomSheetDialog(requireContext(), R.style.DialogTheme_transparent)
         val bottomSheetLayout = ImagePickerBottomBinding.inflate(layoutInflater)
         bottomSheet.setContentView(bottomSheetLayout.root)
-
         // Adjust the layout parameters for full screen
         val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout.root.parent as View)
         bottomSheetBehavior.peekHeight = Resources.getSystem().displayMetrics.heightPixels
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-
         bottomSheet.setCancelable(false)
         bottomSheet.show()
-
         bottomSheetLayout.tvCancel.setOnClickListener {
             bottomSheet.dismiss()
         }
@@ -427,12 +462,9 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
         bottomSheetLayout.clGallery.setOnClickListener {
             checkAndRequestPermissionsForGallery { openGallery() }
             bottomSheet.dismiss()
-
         }
         bottomSheet.behavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
-
-
 
     companion object {
         private const val REQUEST_CODE_CAMERA_PERMISSIONS = 101
