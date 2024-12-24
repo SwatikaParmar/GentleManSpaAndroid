@@ -235,6 +235,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/white"
                         android:includeFontPadding="false"
+                        android:textAlignment="center"
                         android:fontFamily="@font/poppins"
                         android:textSize="@dimen/_11ssp"
                         android:layout_marginTop="@dimen/_8sdp"

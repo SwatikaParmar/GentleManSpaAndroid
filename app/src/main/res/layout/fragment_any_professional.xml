@@ -97,7 +97,7 @@
                             android:hint="@string/search_here"
                             android:imeOptions="actionDone"
                             android:paddingVertical="@dimen/_6sdp"
-                            android:singleLine="false"
+                            android:singleLine="true"
                             android:textSize="@dimen/_12sdp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@+id/ivSearch" />

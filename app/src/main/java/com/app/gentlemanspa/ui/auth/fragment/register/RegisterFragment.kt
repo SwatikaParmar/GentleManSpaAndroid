@@ -7,6 +7,7 @@ import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Resources
+import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -43,6 +44,7 @@ import com.app.gentlemanspa.utils.checkString
 import com.app.gentlemanspa.utils.checkValidString
 import com.app.gentlemanspa.utils.isValidEmail
 import com.app.gentlemanspa.utils.showToast
+import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import java.io.File
@@ -132,6 +134,7 @@ class RegisterFragment : Fragment(), View.OnClickListener {
                 // Handle the camera result
                 // val imageUri = result.data?.data
                 profileImage = File(currentPhotoPath)
+                Log.d("imageUri","galleryLauncher profileImage->${profileImage}")
                 binding.ivProfile.setImageURI(Uri.fromFile(profileImage))
                 // Use the imageUri
             }
@@ -142,9 +145,20 @@ class RegisterFragment : Fragment(), View.OnClickListener {
                 // Handle the gallery result
                 val imageUri = result.data?.data
                 currentPhotoPath=imageUri?.path.toString()
-                profileImage = File(imageUri?.path.toString())
-                binding.ivProfile.setImageURI(imageUri)
-                // Use the imageUri
+                /*   profileImage = File(imageUri?.path.toString())
+                  Log.d("imageUri","galleryLauncher imageUri->${imageUri}")
+                  binding.ivProfile.setImageURI(imageUri)*/
+                imageUri?.let {
+                    val file = getFileFromUri(it)
+                    if (file != null) {
+                        Log.d("GalleryImage", "profileImage->$file")
+                        // binding.ivProfile.setImageURI(it)
+                        profileImage = file
+                        Glide.with(this)
+                            .load(profileImage)
+                            .into(binding.ivProfile)
+                    }
+                }
             }
         }
 
@@ -167,6 +181,22 @@ class RegisterFragment : Fragment(), View.OnClickListener {
                 cameraLauncher.launch(intent)
             }
         }
+    }
+    private fun getFileFromUri(uri: Uri): File? {
+        var cursor: Cursor? = null
+        try {
+            val projection = arrayOf(MediaStore.Images.Media.DATA)
+            cursor = requireContext().contentResolver.query(uri, projection, null, null, null)
+            val columnIndex = cursor?.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+            cursor?.moveToFirst()
+            val filePath = columnIndex?.let { cursor?.getString(it) }
+            return if (filePath != null) File(filePath) else null
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            cursor?.close()
+        }
+        return null
     }
 
     @Throws(IOException::class)
@@ -393,6 +423,19 @@ class RegisterFragment : Fragment(), View.OnClickListener {
             else -> return true
         }
         return false
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d("imageUri","onResume profileImage->${profileImage}")
+        profileImage?.let {
+          Glide.with(requireContext())
+                .load(it)
+                .into(binding.ivProfile)
+        }
+
+
+
     }
 
     companion object {

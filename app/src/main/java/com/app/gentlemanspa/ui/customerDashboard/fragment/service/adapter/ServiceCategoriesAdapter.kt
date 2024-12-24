@@ -1,5 +1,6 @@
 package com.app.gentlemanspa.ui.customerDashboard.fragment.service.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -28,24 +29,36 @@ class ServiceCategoriesAdapter(
         return categoriesList.size
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         val item = categoriesList[position]
         holder.binding.apply {
             tvServiceName.text = item.categoryName
 
-            if (position ==positionHor){
+           /* if (position ==positionHor){
                 positionHor =-1
                 clFirst.isSelected =true
                 tvServiceName.setTextColor(ContextCompat.getColor(context, R.color.black))
             }else{
                 clFirst.isSelected =false
                 tvServiceName.setTextColor(ContextCompat.getColor(context, R.color.black))
+            }*/
 
+            if (item.isSelected){
+                clFirst.isSelected =true
+                tvServiceName.setTextColor(ContextCompat.getColor(context, R.color.black))
+            }else{
+                clFirst.isSelected =false
+                tvServiceName.setTextColor(ContextCompat.getColor(context, R.color.black))
             }
 
             root.setOnClickListener {
-                positionHor = position
+              /*positionHor = position
+                */
+                for (i in categoriesList.indices) {
+                    categoriesList[i].isSelected = i == position  // Set selected for clicked item
+                }
                 notifyDataSetChanged()
                 serviceCategoriesCallbacks.rootServiceCategories(item,position)
             }

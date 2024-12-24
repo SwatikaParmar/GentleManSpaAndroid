@@ -125,7 +125,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_edit_text"
                 android:elevation="@dimen/_3sdp"
-                android:paddingStart="@dimen/_3sdp"
+                android:paddingStart="@dimen/_2sdp"
                 android:fontFamily="@font/poppins"
                 android:textSize="@dimen/_13sdp"
                 tools:ignore="RtlSymmetry,TouchTargetSizeCheck"

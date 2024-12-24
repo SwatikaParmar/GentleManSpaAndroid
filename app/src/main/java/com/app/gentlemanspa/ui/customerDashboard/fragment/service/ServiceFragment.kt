@@ -34,7 +34,6 @@ import com.app.gentlemanspa.utils.setGone
 import com.app.gentlemanspa.utils.setVisible
 import com.app.gentlemanspa.utils.showToast
 
-
 class ServiceFragment : Fragment(), View.OnClickListener {
     private var mainLoader: Int = 0
     private var categoryId: Int? = 0
@@ -42,6 +41,7 @@ class ServiceFragment : Fragment(), View.OnClickListener {
     private val spaDetailId = 21
     private val args: ServiceFragmentArgs by navArgs()
     private var selectPosition: Int = 0
+    private var subCategoryPosition:Int=0
     private var serviceList: ArrayList<ServiceListItem> = ArrayList()
     private lateinit var serviceCategoriesAdapter: ServiceCategoriesAdapter
     private lateinit var serviceSubCategoriesAdapter: ServiceSubCategoriesAdapter
@@ -49,41 +49,33 @@ class ServiceFragment : Fragment(), View.OnClickListener {
     private lateinit var binding: FragmentServiceBinding
     private var categoriesList: ArrayList<SpaCategoriesData> = ArrayList()
     private var spaSubCategoriesList: ArrayList<SpaSubCategoriesData> = ArrayList()
-    private val viewModel: ServiceViewModel by viewModels {
-        ViewModelFactory(
-            InitialRepository()
-        )
-    }
+    private val viewModel: ServiceViewModel by viewModels { ViewModelFactory(InitialRepository()) }
     private val handler = Handler(Looper.getMainLooper())
     private var searchRunnable: Runnable? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        categoryId=args.categoryId
         selectPosition = args.selectPosition
-        categoryId = args.categoryId
         initObserver()
     }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         if (!this::binding.isInitialized) {
             binding = FragmentServiceBinding.inflate(layoutInflater, container, false)
         }
         return binding.root
     }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?){
         super.onViewCreated(view, savedInstanceState)
         (activity as CustomerActivity).bottomNavigation(false)
+        //subCategoryId=0
+        Log.d("onViewCreated"," onViewCreated categoryId:${categoryId} subCategoryId: ${subCategoryId} selectPosition: ${selectPosition} subCategoryPosition:$subCategoryPosition")
         initUI()
     }
-
     private fun initUI() {
         callGetCartItemsApi()
         viewModel.spaDetailId.set(spaDetailId)
         viewModel.getSpaCategoriesApi()
-        callSpaSubCategoriesApi(args.categoryId)
+        callSpaSubCategoriesApi(categoryId!!)
         if (binding.etSearch.text.toString().trim().isNotEmpty()) {
             callServiceListApi(binding.etSearch.text.toString().trim())
         } else {
@@ -101,7 +93,6 @@ class ServiceFragment : Fragment(), View.OnClickListener {
                 }
                 handler.postDelayed(searchRunnable!!, 2000)
             }
-
             override fun afterTextChanged(s: Editable?) {}
         })
     }
@@ -115,6 +106,7 @@ class ServiceFragment : Fragment(), View.OnClickListener {
     }
     private fun setServiceAdapter() {
         Log.d("serviceList", "serviceList->${serviceList}")
+        Log.d("serviceList", "serviceList size->${serviceList.size?:0}")
         if (serviceList.isNotEmpty()) {
             binding.rvService.setVisible()
             binding.clNoDataFound.setGone()
@@ -122,8 +114,7 @@ class ServiceFragment : Fragment(), View.OnClickListener {
             binding.rvService.adapter = serviceAdapter
             serviceAdapter.setOnServiceCallbacks(object : ServiceAdapter.ServiceCallbacks {
                 override fun rootService(item: ServiceListItem) {
-                    val action =
-                        ServiceFragmentDirections.actionServiceFragmentToServiceDetailFragment(
+                    val action = ServiceFragmentDirections.actionServiceFragmentToServiceDetailFragment(
                             item.serviceId!!,
                             item.spaDetailId!!
                         )
@@ -154,13 +145,14 @@ class ServiceFragment : Fragment(), View.OnClickListener {
     }
     private fun setCategoriesServiceAdapter() {
         Log.d("Service", "selectPosition:$selectPosition")
-       // categoriesList.reverse()
-        serviceCategoriesAdapter = ServiceCategoriesAdapter(categoriesList, selectPosition)
+        categoriesList[selectPosition].isSelected=true
+        serviceCategoriesAdapter = ServiceCategoriesAdapter(categoriesList, 0)
         binding.rvCategories.adapter = serviceCategoriesAdapter
         serviceCategoriesAdapter.setOnServiceCategories(object :
             ServiceCategoriesAdapter.ServiceCategoriesCallbacks {
             override fun rootServiceCategories(item: SpaCategoriesData?, position: Int?) {
                 selectPosition = position!!
+                subCategoryPosition=0
                 val recyclerViewWidth = binding.rvCategories.width
                 val layoutManager = binding.rvCategories.layoutManager
                 val itemWidth = layoutManager?.getChildAt(0)?.width ?: 0
@@ -175,7 +167,6 @@ class ServiceFragment : Fragment(), View.OnClickListener {
                 } else {
                     callServiceListApi("")
                 }
-
             }
         })
         if (selectPosition != -1) {
@@ -183,13 +174,12 @@ class ServiceFragment : Fragment(), View.OnClickListener {
         }
     }
     private fun setSubCategoriesServiceAdapter() {
-        Log.d("Service", "selectPosition:$selectPosition")
-        serviceSubCategoriesAdapter = ServiceSubCategoriesAdapter(spaSubCategoriesList, 0)
+        serviceSubCategoriesAdapter = ServiceSubCategoriesAdapter(spaSubCategoriesList, subCategoryPosition)
         binding.rvSubCategories.adapter = serviceSubCategoriesAdapter
         serviceSubCategoriesAdapter.setOnServiceSubCategories(object :
             ServiceSubCategoriesAdapter.ServiceSubCategoriesCallbacks {
             override fun rootServiceCategories(item: SpaSubCategoriesData?, position: Int?) {
-                selectPosition = position!!
+                subCategoryPosition = position!!
                 val recyclerViewWidth = binding.rvSubCategories.width
                 val layoutManager = binding.rvSubCategories.layoutManager
                 val itemWidth = layoutManager?.getChildAt(0)?.width ?: 0
@@ -204,12 +194,12 @@ class ServiceFragment : Fragment(), View.OnClickListener {
                 }
             }
         })
-        /* if (selectPosition != -1) {
-             binding.rvSubCategories.scrollToPosition(selectPosition)
-         }*/
+         if (subCategoryPosition != -1) {
+             binding.rvSubCategories.scrollToPosition(subCategoryPosition)
+         }
     }
     private fun callServiceListApi(searchQuery: String) {
-        Log.d("ServiceFragmentTest", "args.categoryId:${args.categoryId} subCategoryId:$subCategoryId")
+        Log.d("OnResume", "inside callServiceListApi categoryId:${categoryId} subCategoryId:$subCategoryId selectPosition:$selectPosition subCategoryPosition:$subCategoryPosition")
         viewModel.subCategoryId.set(subCategoryId)
         viewModel.categoryId.set(categoryId)
         viewModel.searchQuery.set(searchQuery)
@@ -232,15 +222,6 @@ class ServiceFragment : Fragment(), View.OnClickListener {
             }
         }
     }
-    override fun onResume() {
-        super.onResume()
-        if (binding.etSearch.text.toString().trim().isNotEmpty()) {
-            callServiceListApi(binding.etSearch.text.toString().trim())
-        } else {
-            callServiceListApi("")
-        }
-    }
-
     @SuppressLint("SetTextI18n")
     private fun initObserver() {
         viewModel.resultSpaCategories.observe(this) {

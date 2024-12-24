@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
@@ -70,20 +71,22 @@ fun getCustomerCurrentTime(): String {
 }
 
 fun convertDateFormat(inputDate: String): String {
-    // Define the input and output date formats
     val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     val outputFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
-
     return try {
-        // Parse the input date string to a Date object
         val date = inputFormat.parse(inputDate)
-
-        // If parsing is successful, format it into the desired format
         date?.let {
             outputFormat.format(it)
-        } ?: inputDate // In case parsing fails, return the original string
+        } ?: inputDate
     } catch (e: Exception) {
         e.printStackTrace()
-        inputDate // In case of error, return the original string
+        inputDate
     }
+}
+@RequiresApi(Build.VERSION_CODES.O)
+fun formatDate(date: String): String {
+    val inputFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
+    val localDateTime = LocalDateTime.parse(date, inputFormatter)
+    val outputFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy")
+    return localDateTime.format(outputFormatter)
 }

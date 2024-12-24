@@ -18,7 +18,7 @@ import com.bumptech.glide.Glide
 
 class OrdersProcessingAdapter(private val dataList: ArrayList<MyOrdersDataItem>) :
     RecyclerView.Adapter<OrdersProcessingAdapter.ViewHolder>() {
-    // private lateinit var upcomingCallbacks: UpcomingCallbacks
+     private lateinit var ordersProcessingCallbacks: OrdersProcessingCallbacks
 
     class ViewHolder(val binding: ItemOrdersProcessingBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -41,7 +41,6 @@ class OrdersProcessingAdapter(private val dataList: ArrayList<MyOrdersDataItem>)
         holder.binding.apply {
             tvServiceName.text = item.productName
             tvPrice.text = "$${item.price}"
-            // tvAssignedValue.text= item.professionalName
             Log.d("professionalName", "name:${item.professionalName}")
             tvBookingId.text = "BOOKING ID: ${item.orderId}"
             tvDate.text = "ORDER DATE: ${convertDateFormat(item.orderDate)}"
@@ -51,22 +50,16 @@ class OrdersProcessingAdapter(private val dataList: ArrayList<MyOrdersDataItem>)
                     R.drawable.no_product
                 ).into(ivProfessional)
 
-            /*  btnCancel.setOnClickListener{
-                  upcomingCallbacks.upcomingCancel(item)
-              }
-              btnReschedule.setOnClickListener{
-                  upcomingCallbacks.upcomingReschedule(item)
-              }*/
             root.setOnClickListener {
+                ordersProcessingCallbacks.onOrdersProcessingItemClick(item)
             }
         }
     }
 
-    /* fun setOnUpcomingCallbacks(onClick : UpcomingCallbacks) {
-         upcomingCallbacks =onClick
+     fun setOnOrdersProcessingCallbacks(onClick : OrdersProcessingCallbacks) {
+         ordersProcessingCallbacks =onClick
      }
-     interface UpcomingCallbacks {
-         fun upcomingCancel(item: UpcomingServiceAppointmentItem)
-         fun upcomingReschedule(item: UpcomingServiceAppointmentItem)
-     }*/
+     interface OrdersProcessingCallbacks {
+         fun onOrdersProcessingItemClick(item: MyOrdersDataItem)
+     }
 }

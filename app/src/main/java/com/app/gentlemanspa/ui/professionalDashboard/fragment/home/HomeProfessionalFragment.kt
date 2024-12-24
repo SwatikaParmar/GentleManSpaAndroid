@@ -202,7 +202,6 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
                             }
                         }
                     }
-
                     Status.ERROR -> {
                         requireContext().showToast(it.message.toString())
                         hideProgress()
@@ -250,7 +249,6 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
                         )
                         callAppointmentsListApi("Cancelled")
                     }
-
                 }
             }
 
@@ -263,12 +261,18 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
             }
 
         })
-        viewModel.professionalDetailId.set(
-            AppPrefs(requireContext()).getStringPref(
+        if (AppPrefs(requireContext()).getStringPref(
                 PROFESSIONAL_DETAIL_ID
-            )?.toInt()
-        )
-        callAppointmentsListApi("Upcoming")
+            ).toString().isNotEmpty()){
+            viewModel.professionalDetailId.set(
+                AppPrefs(requireContext()).getStringPref(
+                    PROFESSIONAL_DETAIL_ID
+                )?.toInt()
+            )
+            callAppointmentsListApi("Upcoming")
+        }else{
+            Log.d("professionalDetailId","professionalDetailId is empty")
+        }
     }
 
     private fun setUpCompletedAdapter() {
@@ -313,8 +317,6 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
 
             }
         }
-
-
     }
 
     fun checkUserExistsAndNavigateToChat(item: UpcomingServiceAppointmentItem) {

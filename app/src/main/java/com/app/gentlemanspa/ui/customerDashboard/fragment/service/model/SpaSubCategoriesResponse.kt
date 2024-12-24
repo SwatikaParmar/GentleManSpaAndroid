@@ -24,5 +24,6 @@ data class SpaSubCategoriesData(
     val spaDetailId: Int,
     val status: Boolean,
     val subCategoryId: Int,
-    val subSubCategoryId: Int
+    val subSubCategoryId: Int,
+    var isSelected: Boolean = false
 )

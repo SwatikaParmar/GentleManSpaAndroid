@@ -14,7 +14,7 @@
     <string name="sign_up">Sign Up</string>
     <string name="already_you_have_account">Already you have account?</string>
     <string name="sign_in">Sign In</string>
-    <string name="create_your_new_account">Create\nYour New\nAccount !</string>
+    <string name="create_your_new_account">Create\nYour New\nAccount!</string>
     <string name="please_enter_5_digit_code_sent_to_email">Please Enter 5 Digit Code Sent\nTo Email</string>
     <string name="verify">Verify</string>
     <string name="forgot_password">Forgot Password</string>

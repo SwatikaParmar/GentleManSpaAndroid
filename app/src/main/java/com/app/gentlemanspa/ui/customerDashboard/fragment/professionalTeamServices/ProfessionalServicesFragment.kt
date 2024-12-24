@@ -249,7 +249,7 @@ class ProfessionalServicesFragment : Fragment(), View.OnClickListener {
                 if (spaServiceId == 0){
                     requireContext().showToast("Invalid SpaServiceId")
                 }else{
-                    val action=ProfessionalServicesFragmentDirections.actionProfessionalServiceFragmentToMakeAppointmentFragment("",0,0,spaServiceId,professionalItem)
+                    val action=ProfessionalServicesFragmentDirections.actionProfessionalServiceFragmentToMakeAppointmentFragment("Book ProfessionalServicesFragment",0,0,spaServiceId,professionalItem)
                     findNavController().navigate(action)
                 }
 

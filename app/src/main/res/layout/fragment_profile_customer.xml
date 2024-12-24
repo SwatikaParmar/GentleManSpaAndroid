@@ -22,7 +22,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/clPicture"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_175sdp"
+                android:layout_height="@dimen/_180sdp"
                 android:background="@color/light_app_color"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -54,12 +54,12 @@
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/ivProfile"
-                    android:layout_width="@dimen/_80sdp"
-                    android:layout_height="@dimen/_80sdp"
-                    android:layout_marginTop="@dimen/_15sdp"
+                    android:layout_width="@dimen/_90sdp"
+                    android:layout_height="@dimen/_90sdp"
                     android:scaleType="centerCrop"
                     app:strokeWidth="@dimen/_1sdp"
                     app:strokeColor="@color/black"
+                    android:padding="@dimen/_2sdp"
                     android:src="@drawable/profile_placeholder"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

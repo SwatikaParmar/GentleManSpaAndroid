@@ -36,7 +36,6 @@ fun updateUserStatus(userIdIs:String,state: String) {
                 }
             }
             override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
             }
 
         })

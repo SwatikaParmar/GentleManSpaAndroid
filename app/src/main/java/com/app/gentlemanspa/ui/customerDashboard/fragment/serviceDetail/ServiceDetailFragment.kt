@@ -35,7 +35,7 @@ class ServiceDetailFragment : Fragment(), View.OnClickListener {
     private var serviceId: Int? = null
     private var spaServiceId: Int? = null
     private var spaDetailId: Int? = null
-    var isAddedinCart:Boolean?=null
+    private var isAddedinCart:Boolean?=null
     private val args: ServiceDetailFragmentArgs by navArgs()
     private val viewModel: ServiceDetailViewModel by viewModels {
         ViewModelFactory(
@@ -53,8 +53,7 @@ class ServiceDetailFragment : Fragment(), View.OnClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
+    ): View {
         if (!this::binding.isInitialized) {
             binding = FragmentServiceDetailBinding.inflate(layoutInflater, container, false)
         }

@@ -1,4 +1,4 @@
-package com.app.gentlemanspa.ui.customerDashboard.fragment.event
+package com.app.gentlemanspa.ui.customerDashboard.fragment.orderDetail
 
 import android.os.Bundle
 import android.util.Log
@@ -8,21 +8,25 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import com.app.gentlemanspa.R
 import com.app.gentlemanspa.base.MyApplication.Companion.hideProgress
 import com.app.gentlemanspa.base.MyApplication.Companion.showProgress
-import com.app.gentlemanspa.databinding.FragmentEventBinding
+import com.app.gentlemanspa.databinding.FragmentOrderDetailBinding
 import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.network.Status
 import com.app.gentlemanspa.ui.customerDashboard.activity.CustomerActivity
-import com.app.gentlemanspa.ui.customerDashboard.fragment.event.adapter.EventAdapter
-import com.app.gentlemanspa.ui.customerDashboard.fragment.event.model.EventListData
-import com.app.gentlemanspa.ui.customerDashboard.fragment.event.viewModel.EventViewModel
+import com.app.gentlemanspa.ui.customerDashboard.fragment.myOrders.viewModel.MyOrdersViewModel
+import com.app.gentlemanspa.ui.customerDashboard.fragment.orderDetail.adapter.OrderDetailsAdapter
+import com.app.gentlemanspa.ui.customerDashboard.fragment.orderDetail.model.OrderDetailsProductItem
+import com.app.gentlemanspa.ui.customerDashboard.fragment.orderDetail.viewModel.OrderDetailsViewModel
 import com.app.gentlemanspa.utils.ViewModelFactory
 import com.app.gentlemanspa.utils.showToast
 
-class EventFragment : Fragment(), View.OnClickListener {
-    lateinit var binding: FragmentEventBinding
-    private val viewModel: EventViewModel by viewModels {
+class OrderDetailFragment : Fragment(), View.OnClickListener {
+    lateinit var binding:FragmentOrderDetailBinding
+    val args:OrderDetailFragmentArgs by navArgs()
+    private val viewModel: OrderDetailsViewModel by viewModels {
         ViewModelFactory(
             InitialRepository()
         )
@@ -35,9 +39,9 @@ class EventFragment : Fragment(), View.OnClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ):View{
+    ): View{
         if (!this::binding.isInitialized){
-            binding=FragmentEventBinding.inflate(layoutInflater,container,false)
+            binding=FragmentOrderDetailBinding.inflate(layoutInflater,container,false)
         }
         return binding.root
     }
@@ -50,27 +54,27 @@ class EventFragment : Fragment(), View.OnClickListener {
     private fun initUI() {
         (activity as CustomerActivity).bottomNavigation(false)
         binding.onClick=this
-        callEventListApi()
+        callGetOrderDetailsApi()
+    }
+    private fun callGetOrderDetailsApi(){
+        Log.d("orderDetails","orderId->${args.orderId}")
+        viewModel.orderId.set(args.orderId)
+        viewModel.getOrderDetailsApi()
     }
 
-    private fun callEventListApi(){
-        viewModel.getEventListApi()
-    }
-
-    private fun setEventAdapter(eventListData:List<EventListData>) {
-        val eventAdapter = EventAdapter(eventListData)
-        binding.rvEvents.adapter=eventAdapter
-    }
-
-    override fun onClick(v: View) {
-        when(v){
-            binding.ivArrowBack ->{
+    override fun onClick(v: View?) {
+        when(v) {
+            binding.ivArrowBack->{
                 findNavController().popBackStack()
             }
         }
     }
+    private  fun setUpOrderDetailsAdapter(orderDetailsProductItem:List<OrderDetailsProductItem>){
+        val orderDetailsAdapter=OrderDetailsAdapter(orderDetailsProductItem)
+        binding.rvOrderDetailsProduct.adapter=orderDetailsAdapter
+    }
     private fun initObserver() {
-        viewModel.resultEventList.observe(this) {
+        viewModel.resultOrderDetail.observe(this) {
             it?.let { result ->
                 when (result.status) {
                     Status.LOADING -> {
@@ -79,12 +83,13 @@ class EventFragment : Fragment(), View.OnClickListener {
 
                     Status.SUCCESS -> {
                         hideProgress()
-                        Log.d("Event","EventList->${it.data?.data}")
-                        if (it.data?.data!!.isNotEmpty()){
-                            setEventAdapter(it.data.data)
+                        Log.d("orderDetails","products List:${it.data?.data?.products}")
+                        if (it.data?.data?.products!!.isNotEmpty()){
+                            setUpOrderDetailsAdapter(it.data.data.products)
                         }else{
-                            Log.d("Event","EventList is empty")
+                            Log.d("orderDetails","products List is empty")
                         }
+
                     }
 
                     Status.ERROR -> {
@@ -95,4 +100,5 @@ class EventFragment : Fragment(), View.OnClickListener {
             }
         }
     }
+
 }

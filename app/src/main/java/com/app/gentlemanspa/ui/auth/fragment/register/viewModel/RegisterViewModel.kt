@@ -27,10 +27,8 @@ class RegisterViewModel(private var initialRepository: InitialRepository) : Andr
     val email = ObservableField<String>()
     val phoneNumber = ObservableField<String>()
     val dialCode = ObservableField<String>()
-
     val resultEmailOtp = MutableLiveData<Resource<EmailOtpResponse>>()
     val resultPhoneUnique = MutableLiveData<Resource<EmailOtpResponse>>()
-
 
     fun emailOtp() {
         resultEmailOtp.value = Resource.loading(null)

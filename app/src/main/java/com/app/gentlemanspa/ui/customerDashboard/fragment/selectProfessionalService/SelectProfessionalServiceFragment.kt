@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.app.gentlemanspa.base.MyApplication.Companion.hideProgress
 import com.app.gentlemanspa.databinding.FragmentSelectProfessionalServiceBinding
 import com.app.gentlemanspa.network.InitialRepository
@@ -23,6 +24,7 @@ import com.app.gentlemanspa.utils.showToast
 
 class SelectProfessionalServiceFragment : Fragment(), View.OnClickListener {
     private lateinit var binding : FragmentSelectProfessionalServiceBinding
+    // val args: SelectProfessionalServiceFragmentArgs by navArgs()
     private val viewModel: SelectProfessionalServiceViewModel by viewModels {
         ViewModelFactory(
             InitialRepository()
@@ -92,15 +94,13 @@ class SelectProfessionalServiceFragment : Fragment(), View.OnClickListener {
                 Log.d("professionalList","inside setServiceAdapter  serviceId->${item.spaServiceId} spaDetailId->${item.spaDetailId}")
                 Log.d("professionalName","professionalName${item.professionalName}")
                 val appointmentType = if (!item.professionalName.isNullOrEmpty()){
-                    "Update Service"
+                    "Reschedule SelectProfessionalServiceFragment"
                 }else{
-                    "Book Service"
+                    "Book SelectProfessionalServiceFragment"
                 }
                 val action= SelectProfessionalServiceFragmentDirections.actionSelectProfessionalServiceFragmentToAnyProfessionalFragment(appointmentType,item.spaDetailId,item.spaServiceId)
-               findNavController().navigate(action)
+                findNavController().navigate(action)
             }
-
-
         })
     }
     override fun onClick(v: View?) {

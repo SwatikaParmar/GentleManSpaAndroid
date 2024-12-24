@@ -26,6 +26,7 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.editAddress.model.AddC
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editAddress.model.AddCustomerAddressResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.model.UpdateProfileCustomerRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.model.UpdateProfileCustomerResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.event.model.EventListResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.CancelUpcomingAppointmentRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.CancelUpcomingAppointmentResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.BannerResponse
@@ -42,6 +43,7 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.model.
 import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.model.ServiceRescheduleRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.model.ServiceRescheduleResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.myOrders.model.MyOrdersResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.orderDetail.model.OrderDetailsResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.product.model.AddProductInCartRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.product.model.AddProductInCartResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.productDetail.model.ProductDetailResponse
@@ -430,6 +432,12 @@ class InitialRepository {
             emit(result)
         }.flowOn(Dispatchers.IO)
     }
+    suspend fun getOrderDetails(orderId:Int): Flow<OrderDetailsResponse?> {
+        return flow {
+            val result =Api.apiInterface?.getOrderDetails(orderId)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
 
     suspend fun serviceReschedule(body:ServiceRescheduleRequest): Flow<ServiceRescheduleResponse?> {
         return flow {
@@ -448,6 +456,13 @@ class InitialRepository {
     suspend fun addUpdateProfessionalSchedule(request: AddUpdateProfessionalScheduleRequest): Flow<AddUpdateProfessionalScheduleResponse?> {
         return flow {
             val result =Api.apiInterface?.addUpdateProfessionalSchedule(request)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+
+    suspend fun getEventList(): Flow<EventListResponse?> {
+        return flow {
+            val result =Api.apiInterface?.getEventList()
             emit(result)
         }.flowOn(Dispatchers.IO)
     }

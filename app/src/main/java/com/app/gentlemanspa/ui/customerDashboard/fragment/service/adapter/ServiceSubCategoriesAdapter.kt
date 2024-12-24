@@ -1,5 +1,6 @@
 package com.app.gentlemanspa.ui.customerDashboard.fragment.service.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -28,6 +29,7 @@ class ServiceSubCategoriesAdapter(
         return subcategoriesList.size
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         val item = subcategoriesList[position]
@@ -43,9 +45,19 @@ class ServiceSubCategoriesAdapter(
                 tvServiceName.setTextColor(ContextCompat.getColor(context, R.color.white))
 
             }
+           /* if (item.isSelected) {
+                clFirst.isSelected = true
+                tvServiceName.setTextColor(ContextCompat.getColor(context, R.color.black))
+            } else {
+                clFirst.isSelected = false
+                tvServiceName.setTextColor(ContextCompat.getColor(context, R.color.white))
+            }*/
 
             root.setOnClickListener {
                 positionHor = position
+               /* for (i in subcategoriesList.indices) {
+                    subcategoriesList[i].isSelected = i == position  // Set selected for clicked item
+                }*/
                 notifyDataSetChanged()
                 serviceSubCategoriesCallbacks.rootServiceCategories(item,position)
             }

@@ -182,6 +182,7 @@
                 android:layout_marginTop="@dimen/_5sdp"
                 android:focusable="true"
                 android:padding="@dimen/_5sdp"
+                android:scaleType="fitXY"
                 android:src="@drawable/profile_placeholder"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/ivArrowBack"
@@ -401,7 +402,7 @@
                             android:hint="@string/write_a_message"
                             android:inputType="text"
                             android:scrollbars="vertical"
-                            android:textColor="@color/light_grey"
+                            android:textColor="@color/black"
                             tools:ignore="InefficientWeight,TextContrastCheck,TouchTargetSizeCheck,VisualLintTextFieldSize" />
 
 

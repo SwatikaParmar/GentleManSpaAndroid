@@ -125,7 +125,7 @@ class HistoryCustomerFragment : Fragment(), View.OnClickListener {
                 val professionalItem = item.toProfessionalItem(professionalDetail)
                 val action =
                     HistoryCustomerFragmentDirections.actionHistoryCustomerFragmentToMakeAppointmentFragment(
-                        "Reschedule",
+                        "Reschedule HistoryCustomerFragment",
                         item.orderId,
                         item.serviceBookingId,
                         item.spaServiceId,

@@ -68,8 +68,11 @@
             android:id="@+id/action_makeAppointmentFragment_to_cartFragment"
             app:destination="@+id/cartFragment" />
         <action
-            android:id="@+id/action_makeAppointmentFragment_to_anyProfessionalFragment"
-            app:destination="@+id/anyProfessionalFragment" />
+            android:id="@+id/action_makeAppointmentFragment_to_selectProfessionalServiceFragment"
+            app:destination="@+id/selectProfessionalServiceFragment" />
+     <!--   <argument
+            android:name="fromFragment"
+            app:argType="string" />-->
 
         <argument
             android:name="appointmentType"
@@ -179,6 +182,9 @@
             android:id="@+id/action_selectProfessionalServiceFragment_to_anyProfessionalFragment"
             app:destination="@id/anyProfessionalFragment" />
 
+        <!--<argument android:name="bookingType"
+             app:argType="string"/>-->
+
     </fragment>
 
     <fragment
@@ -190,6 +196,9 @@
         <action
             android:id="@+id/action_anyProfessionalFragment_to_makeAppointmentFragment"
             app:destination="@id/makeAppointmentFragment" />
+    <!--    <argument
+            android:name="fromFragment"
+            app:argType="string" />-->
         <argument
             android:name="appointmentType"
             app:argType="string" />
@@ -308,7 +317,12 @@
         android:id="@+id/myOrdersFragment"
         android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.myOrders.MyOrdersFragment"
         android:label="MyOrdersFragment"
-        tools:layout="@layout/fragment_my_orders" />
+        tools:layout="@layout/fragment_my_orders" >
+
+        <action
+            android:id="@+id/action_myOrdersFragment_to_orderDetail"
+            app:destination="@+id/orderDetail" />
+    </fragment>
 
     <fragment
         android:id="@+id/eventFragment"
@@ -349,5 +363,13 @@
             android:name="from"
             app:argType="string" />
     </fragment>
-
+    <fragment
+        android:id="@+id/orderDetail"
+        android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.orderDetail.OrderDetailFragment"
+        android:label="orderDetail"
+        tools:layout="@layout/fragment_order_detail">
+        <argument
+            android:name="orderId"
+            app:argType="integer" />
+    </fragment>
 </navigation>

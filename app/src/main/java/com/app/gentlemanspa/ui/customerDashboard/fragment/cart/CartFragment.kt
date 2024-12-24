@@ -398,14 +398,14 @@ class CartFragment : Fragment(), View.OnClickListener {
             override fun addSlot(item: Service,status:String) {
                 if (status=="update"){
                     val action = CartFragmentDirections.actionCartFragmentAnyProfessionalFragment(
-                        "Update Cart Service",
+                        "Reschedule CartFragment",
                         item.spaDetailId,
                         item.spaServiceId
                     )
                     findNavController().navigate(action)
                 }else{
                     val action = CartFragmentDirections.actionCartFragmentAnyProfessionalFragment(
-                        "Book Cart Service",
+                        "Book CartFragment",
                         item.spaDetailId,
                         item.spaServiceId
                     )

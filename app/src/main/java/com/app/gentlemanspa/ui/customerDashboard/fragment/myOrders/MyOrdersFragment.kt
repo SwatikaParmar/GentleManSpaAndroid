@@ -46,7 +46,6 @@ class MyOrdersFragment : Fragment(), View.OnClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
         if (!this::binding.isInitialized){
             binding=FragmentMyOrdersBinding.inflate(layoutInflater,container,false)
         }
@@ -81,6 +80,12 @@ class MyOrdersFragment : Fragment(), View.OnClickListener {
     private fun setOrdersProcessingAdapter(){
         val ordersProcessingAdapter=OrdersProcessingAdapter(myOrdersList)
         binding.rvOrders.adapter=ordersProcessingAdapter
+        ordersProcessingAdapter.setOnOrdersProcessingCallbacks(object :OrdersProcessingAdapter.OrdersProcessingCallbacks{
+            override fun onOrdersProcessingItemClick(item: MyOrdersDataItem) {
+               val action= MyOrdersFragmentDirections.actionMyOrdersFragmentToOrderDetail(item.orderId)
+                findNavController().navigate(action)
+            }
+        })
     }
 
     private fun setOrdersCompletedAdapter(){

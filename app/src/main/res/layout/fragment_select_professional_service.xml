@@ -59,6 +59,6 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintTop_toBottomOf="@+id/clHeader"
             tools:layout_editor_absoluteX="-127dp"
-            tools:listitem="@layout/item_select_professional" />
+            tools:listitem="@layout/item_select_professional_service" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

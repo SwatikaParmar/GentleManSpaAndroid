@@ -65,12 +65,13 @@
                     android:layout_height="@dimen/_90sdp"
                     android:layout_marginTop="@dimen/_20sdp"
                     android:scaleType="fitXY"
+                    android:padding="@dimen/_2sdp"
                     android:src="@drawable/profile_placeholder"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:shapeAppearance="@style/circular50"
-                    app:strokeColor="@color/app_color"
+                    app:strokeColor="@color/white"
                     app:strokeWidth="@dimen/_1sdp"
                     tools:ignore="ImageContrastCheck" />
 

@@ -308,9 +308,9 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
             if (result.resultCode == Activity.RESULT_OK) {
                 val imageUri = result.data?.data
                 Log.d("GalleryImage", "imageUri->$imageUri")
-                /* profileImage = File(imageUri?.path.toString())
-                 Log.d("GalleryImage","profileImage->$profileImage")
-                 binding.ivProfile.setImageURI(imageUri)*/
+            /*  profileImage = File(imageUri?.path.toString())
+                Log.d("GalleryImage","profileImage->$profileImage")
+                binding.ivProfile.setImageURI(imageUri) */
                 imageUri?.let {
                     val file = getFileFromUri(it)
                     if (file != null) {

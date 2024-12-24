@@ -48,6 +48,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@+id/clBooking"
@@ -126,18 +127,20 @@
 
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
+
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/cvCategories"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="@dimen/_16sdp"
-                        app:cardUseCompatPadding="true"
-                        app:cardBackgroundColor="@color/light_app_text_color"
                         android:layout_marginTop="@dimen/_8sdp"
+                        app:cardBackgroundColor="@color/light_app_text_color"
+                        app:cardCornerRadius="@dimen/_16sdp"
                         app:cardElevation="@dimen/_2sdp"
+                        app:cardUseCompatPadding="true"
                         app:layout_constraintTop_toBottomOf="@+id/clSearch"
 
                         >
+
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/rvCategories"
                             android:layout_width="match_parent"

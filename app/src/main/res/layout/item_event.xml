@@ -13,7 +13,6 @@
         app:cardUseCompatPadding="true"
         app:strokeColor="@color/app_color"
         app:strokeWidth="@dimen/_1sdp"
-        android:layout_marginHorizontal="@dimen/_8sdp"
         app:cardElevation="@dimen/_2sdp"
         >
 
@@ -57,7 +56,7 @@
                 android:id="@+id/tvEventDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sept"
+                android:text="Sept 27 - Sep 30"
                 android:textColor="@color/light_grey"
                 android:fontFamily="@font/poppins_medium"
                 android:textSize="@dimen/_11ssp"
@@ -69,15 +68,16 @@
                 />
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvLocation"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="India"
-                android:textColor="@color/light_grey"
-                android:fontFamily="@font/poppins_medium"
+                android:text="X269+PR De Soto, Kansa, Mexico"
+                android:textColor="@color/light_grey_text_color"
+                android:fontFamily="@font/poppins"
                 android:textSize="@dimen/_11ssp"
                 android:includeFontPadding="false"
                 android:layout_marginTop="@dimen/_2sdp"
                 android:layout_marginStart="@dimen/_8sdp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvEventDate"
                 app:layout_constraintStart_toEndOf="@+id/ivEvent"
                 />

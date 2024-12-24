@@ -2,6 +2,7 @@ package com.app.gentlemanspa.ui.customerDashboard.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
@@ -44,8 +45,9 @@ class CustomerActivity : AppCompatActivity(),HomeCustomerFragment.OnProfileUpdat
             "${AppPrefs(this).getStringPref(CUSTOMER_USER_ID)}"
         }else{
             "${AppPrefs(this).getStringPref(PROFESSIONAL_USER_ID)}"
-
         }
+        Log.d("online","initUI called userIdIs:$userIdIs")
+
         navHost = supportFragmentManager.findFragmentById(R.id.customerContainer) as NavHostFragment
         navController = navHost.navController
         setBottomNavigation()
@@ -174,15 +176,19 @@ class CustomerActivity : AppCompatActivity(),HomeCustomerFragment.OnProfileUpdat
 
     override fun onStart() {
         super.onStart()
+        Log.d("online","onStart called userIdIs:$userIdIs")
         updateUserStatus(userIdIs,"online")
     }
     override fun onStop() {
         super.onStop()
+        Log.d("online","onStop called userIdIs:$userIdIs")
         updateUserStatus(userIdIs,"offline")
 
     }
 
     override fun onDestroy() {
+        Log.d("online","onDestroy called userIdIs:$userIdIs")
+
         super.onDestroy()
         updateUserStatus(userIdIs,"offline")
     }

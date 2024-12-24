@@ -23,6 +23,7 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.editAddress.model.AddC
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editAddress.model.AddCustomerAddressResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.model.UpdateProfileCustomerRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.model.UpdateProfileCustomerResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.event.model.EventListResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.CancelUpcomingAppointmentRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.CancelUpcomingAppointmentResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.BannerResponse
@@ -39,6 +40,7 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.model.
 import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.model.ServiceRescheduleRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.model.ServiceRescheduleResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.myOrders.model.MyOrdersResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.orderDetail.model.OrderDetailsResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.product.model.AddProductInCartRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.product.model.AddProductInCartResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.productDetail.model.ProductDetailResponse
@@ -72,6 +74,7 @@ import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 
@@ -344,6 +347,11 @@ interface ApiInterface {
         @Query("pageNumber") pageNumber: Int?
     ): MyOrdersResponse
 
+    @GET("${ApiConstants.GET_ORDER_DETAIL}/{orderId}")
+    suspend fun getOrderDetails(
+        @Path("orderId") orderId: Int,
+        ): OrderDetailsResponse
+
     @GET(ApiConstants.GET_PROFESSIONALS_SCHEDULES_BY_PROFESSIONAL_DETAIL_ID)
     suspend fun getSchedulesByProfessionalDetailId(
         @Query("professionalDetailId")professionalDetailId:Int): SchedulesByProfessionalDetailIdResponse
@@ -352,6 +360,9 @@ interface ApiInterface {
     suspend fun addUpdateProfessionalSchedule(
     @Body request:AddUpdateProfessionalScheduleRequest ): AddUpdateProfessionalScheduleResponse
 
+    @GET(ApiConstants.GET_EVENT_LIST)
+    suspend fun getEventList(
+        ): EventListResponse
     /*
        @GET(ApiConstants.SPECIALITY)
        suspend fun getSpeciality(
