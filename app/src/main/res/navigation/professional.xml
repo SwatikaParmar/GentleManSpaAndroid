@@ -66,7 +66,16 @@
             app:argType="string" />
         <argument
             android:name="professionalScheduleId"
-            app:argType="integer" />
+            app:argType="integer"
+       />
+        <argument
+            android:name="oldFromTime"
+            app:argType="string"
+          />
+        <argument
+            android:name="oldToTime"
+            app:argType="string"
+           />
     </fragment>
     <fragment
         android:id="@+id/addProductFragment"
@@ -134,14 +143,20 @@
         android:label="ProfessionalChatFragment"
         tools:layout="@layout/fragment_chat">
         <argument
-            android:name="userId"
+            android:name="messageSenderId"
             app:argType="string" />
         <argument
             android:name="messageReceiverId"
             app:argType="string" />
         <argument
-            android:name="from"
-            app:argType="string" />
+            android:name="name"
+            app:argType="string"
+            />
+        <argument
+            android:name="profilePic"
+            app:argType="string"
+            />
+
     </fragment>
     <fragment
         android:id="@+id/professionalNotificationFragment"

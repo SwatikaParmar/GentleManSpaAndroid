@@ -1,6 +1,5 @@
 package com.app.gentlemanspa.utils
 
-
 import android.content.Context
 import android.content.SharedPreferences
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.profile.model.GetProfessionalDetailResponse
@@ -23,9 +22,7 @@ class AppPrefs(private val ctx: Context) {
         return ctx.getSharedPreferences("PREF_NAME", Context.MODE_PRIVATE)
     }
 
-
-
-    fun getInt(key: String?) :Int?{
+    fun getInt(key: String?) : Int {
         return getPrefs().getInt(key,0)
     }
 
@@ -87,7 +84,14 @@ class AppPrefs(private val ctx: Context) {
         val type = object  : TypeToken<GetProfessionalDetailResponse>(){}.type
         return gson.fromJson(getPrefs().getString(key,""),type)
     }
-
-
-
+    fun clearAllPrefs() {
+        val edit = getPrefs().edit()
+        edit.clear() // Clears all keys and values
+        edit.apply()
+    }
+    fun clearPref(key: String?) {
+        val edit = getPrefs().edit()
+        edit.remove(key) // Removes the specific key
+        edit.apply()
+    }
 }

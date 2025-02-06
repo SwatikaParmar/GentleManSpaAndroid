@@ -17,7 +17,6 @@ class ServiceSubCategoriesAdapter(
 ) : RecyclerView.Adapter<ServiceSubCategoriesAdapter.ViewHolder>() {
 
     private lateinit var serviceSubCategoriesCallbacks :ServiceSubCategoriesCallbacks
-
     class ViewHolder(val binding : ItemServiceSubCategoriesBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -31,7 +30,6 @@ class ServiceSubCategoriesAdapter(
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
         val item = subcategoriesList[position]
         holder.binding.apply {
             tvServiceName.text = item.categoryName
@@ -43,7 +41,6 @@ class ServiceSubCategoriesAdapter(
             }else{
                 clFirst.isSelected =false
                 tvServiceName.setTextColor(ContextCompat.getColor(context, R.color.white))
-
             }
            /* if (item.isSelected) {
                 clFirst.isSelected = true

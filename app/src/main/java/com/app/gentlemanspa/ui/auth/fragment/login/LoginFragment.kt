@@ -40,17 +40,15 @@ class LoginFragment : Fragment(), View.OnClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = FragmentLoginBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initUI()
     }
-
     private fun initObserver() {
         viewModel.resultLoginAccount.observe(this) {
             it?.let { result ->
@@ -91,19 +89,15 @@ class LoginFragment : Fragment(), View.OnClickListener {
             }
         }
     }
-
     private fun initUI() {
         binding.onClick = this
         editTextSpace()
     }
-
     private fun editTextSpace() {
         CommonFunctions.startSpaceEditText(binding.etEmail)
         CommonFunctions.startSpaceEditText(binding.etPassword)
         CommonFunctions.startSpaceEditText(binding.etActivationCode)
     }
-
-
     override fun onClick(v: View?) {
         when (v) {
             binding.tvSignUp -> {
@@ -149,8 +143,6 @@ class LoginFragment : Fragment(), View.OnClickListener {
 
         }
     }
-
-
     private fun isValidation(): Boolean {
         when {
             (checkString(binding.etEmail)&&  checkString(binding.etActivationCode) )-> requireContext().showToast("Please enter email or Activation Code" )

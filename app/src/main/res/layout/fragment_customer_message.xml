@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/black_bg"
-        tools:context=".ui.customerDashboard.fragment.chat.messages.CustomerMessageFragment">
+        tools:context=".ui.customerDashboard.fragment.chat.messages.CustomerMessagesFragment">
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -48,7 +48,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/noDataFoundMessage"
+            android:id="@+id/clNoUserExist"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/background_no_data_found"
@@ -78,7 +78,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvCustomerMessages"
+            android:id="@+id/rvCustomerChatUsers"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:nestedScrollingEnabled="false"

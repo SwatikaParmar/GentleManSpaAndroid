@@ -23,7 +23,6 @@ import java.io.IOException
 class RegisterViewModel(private var initialRepository: InitialRepository) : AndroidViewModel(
     Application()
 ) {
-
     val email = ObservableField<String>()
     val phoneNumber = ObservableField<String>()
     val dialCode = ObservableField<String>()

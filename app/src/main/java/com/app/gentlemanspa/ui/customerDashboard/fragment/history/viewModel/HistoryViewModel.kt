@@ -7,6 +7,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.app.gentlemanspa.network.InitialRepository
+import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.AddUserToChatRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.AddUserToChatResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.UpcomingServiceAppointmentResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.CancelUpcomingAppointmentRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.CancelUpcomingAppointmentResponse
@@ -27,6 +29,7 @@ class HistoryViewModel (private var initialRepository: InitialRepository) : Andr
 
     val resultUpcomingServiceAppointmentList = MutableLiveData<Resource<UpcomingServiceAppointmentResponse>>()
     val resultCancelUpcomingAppointment = MutableLiveData<Resource<CancelUpcomingAppointmentResponse>>()
+    val resultAddUserToChat= MutableLiveData<Resource<AddUserToChatResponse>>()
 
 
     fun getServiceAppointments() {
@@ -88,4 +91,33 @@ class HistoryViewModel (private var initialRepository: InitialRepository) : Andr
                 }
         }
     }
+
+    fun addUserToChatApi(addUserToChatRequest: AddUserToChatRequest) {
+        resultAddUserToChat.value = Resource.loading(null)
+        viewModelScope.launch {
+            initialRepository.addUserToChat(addUserToChatRequest)
+                .onStart { }
+                .onCompletion { }
+                .catch { exception ->
+                    if (!CommonFunctions.getError(exception)!!.contains("401"))
+                        resultAddUserToChat.value =
+                            Resource.error(
+                                data = null,
+                                message = CommonFunctions.getError(exception)
+                            )
+                }
+                .collect {
+                    if (it?.statusCode == 200) {
+                        //  Log.d("dataList","inside viewModel dataList size ${it.data.dataList.size} ")
+
+                        resultAddUserToChat.value =
+                            Resource.success(message = it.messages, data = it)
+                    } else {
+                        resultAddUserToChat.value =
+                            Resource.error(data = null, message = it?.messages)
+                    }
+                }
+        }
+    }
+
 }

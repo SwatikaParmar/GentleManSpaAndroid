@@ -1,28 +1,35 @@
 package com.app.gentlemanspa.ui.professionalDashboard.activity
 
+import android.content.ContentUris
 import android.content.Intent
 import android.os.Bundle
+import android.provider.CalendarContract
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.app.gentlemanspa.R
+import com.app.gentlemanspa.base.MyApplication.Companion.context
 import com.app.gentlemanspa.databinding.ActivityProfessionalBinding
+import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.ui.auth.activity.AuthActivity
-import com.app.gentlemanspa.utils.updateUserStatus
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.HomeCustomerFragment
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.home.HomeProfessionalFragment
 import com.app.gentlemanspa.utils.AppPrefs
 import com.app.gentlemanspa.utils.CUSTOMER_USER_ID
 import com.app.gentlemanspa.utils.PROFESSIONAL_USER_ID
 import com.app.gentlemanspa.utils.ROLE
+import com.app.gentlemanspa.utils.ViewModelFactory
+import com.app.gentlemanspa.utils.isCalendarPermissionGranted
 import com.app.gentlemanspa.utils.setGone
 import com.app.gentlemanspa.utils.setVisible
 import com.app.gentlemanspa.utils.share
+import com.app.gentlemanspa.utils.updateStatus.UpdateStatusViewModel
 import com.bumptech.glide.Glide
 import com.google.android.material.navigation.NavigationView
 
@@ -31,9 +38,12 @@ class ProfessionalActivity : AppCompatActivity(), HomeProfessionalFragment.OnPro
     private lateinit var navController: NavController
     private lateinit var navHost: NavHostFragment
     private lateinit var navView: NavigationView
-    private var userIdIs: String = ""
 
-
+    private val viewModel: UpdateStatusViewModel by viewModels {
+        ViewModelFactory(
+            InitialRepository()
+        )
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProfessionalBinding.inflate(layoutInflater)
@@ -44,12 +54,6 @@ class ProfessionalActivity : AppCompatActivity(), HomeProfessionalFragment.OnPro
     }
 
     private fun initUI() {
-        userIdIs=if (AppPrefs(this).getStringPref(ROLE).toString()=="Customer"){
-            "${AppPrefs(this).getStringPref(CUSTOMER_USER_ID)}"
-        }else{
-            "${AppPrefs(this).getStringPref(PROFESSIONAL_USER_ID)}"
-
-        }
         navHost = supportFragmentManager.findFragmentById(R.id.professionalContainer) as NavHostFragment
         navController = navHost.navController
         setBottomNavigation()
@@ -147,9 +151,12 @@ class ProfessionalActivity : AppCompatActivity(), HomeProfessionalFragment.OnPro
         builder.setMessage("Are you sure you want to Logout?")
 
         builder.setPositiveButton(android.R.string.yes) { dialog, which ->
-
+            if (isCalendarPermissionGranted(this)){
+                    removeAllEventsOnLogout()
+            }
             AppPrefs(this).setString("TOKEN","")
             AppPrefs(this).setString("ROLE","")
+            AppPrefs(this).clearAllPrefs()
             val intent = Intent(this, AuthActivity::class.java)
             intent.putExtra("LOG_OUT","logout")
             startActivity(intent)
@@ -165,6 +172,66 @@ class ProfessionalActivity : AppCompatActivity(), HomeProfessionalFragment.OnPro
         builder.show()
     }
 
+    private fun removeAllEventsOnLogout() {
+        val projection = arrayOf("_id", "calendar_displayName")
+        var calCursor = context.contentResolver.query(
+            CalendarContract.Calendars.CONTENT_URI,
+            projection,
+            "${CalendarContract.Calendars.VISIBLE} = 1 AND ${CalendarContract.Calendars.IS_PRIMARY} = 1",
+            null,
+            "${CalendarContract.Calendars._ID} ASC"
+        )
+
+        // If no calendars are visible and primary, try to get any visible calendars
+        if ((calCursor?.count ?: 0) <= 0) {
+            calCursor = context.contentResolver.query(
+                CalendarContract.Calendars.CONTENT_URI,
+                projection,
+                "${CalendarContract.Calendars.VISIBLE} = 1",
+                null,
+                "${CalendarContract.Calendars._ID} ASC"
+            )
+        }
+
+        calCursor?.let { cursor ->
+            while (cursor.moveToNext()) {
+                val calendarId = cursor.getLong(cursor.getColumnIndexOrThrow(CalendarContract.Calendars._ID))
+                Log.d("removeAllEventsOnLogout", "Processing calendar with ID: $calendarId")
+
+                // Remove events added during this session
+                val eventCursor = context.contentResolver.query(
+                    CalendarContract.Events.CONTENT_URI,
+                    arrayOf(CalendarContract.Events._ID, CalendarContract.Events.TITLE, CalendarContract.Events.DTSTART, CalendarContract.Events.DTEND),
+                    "${CalendarContract.Events.CALENDAR_ID} = ?",
+                    arrayOf(calendarId.toString()),
+                    null
+                )
+
+                eventCursor?.use { eventCursor ->
+                    Log.d("removeAllEventsOnLogout", "eventCursor$eventCursor")
+
+                    if (eventCursor.moveToFirst()) {
+                        do {
+                            val eventId = eventCursor.getLong(eventCursor.getColumnIndexOrThrow(CalendarContract.Events._ID))
+                            val eventTitle = eventCursor.getString(eventCursor.getColumnIndexOrThrow(CalendarContract.Events.TITLE))
+                            val eventStart = eventCursor.getLong(eventCursor.getColumnIndexOrThrow(CalendarContract.Events.DTSTART))
+                            val eventEnd = eventCursor.getLong(eventCursor.getColumnIndexOrThrow(CalendarContract.Events.DTEND))
+
+                            // Check if the event matches the added ones (you could track them via SharedPreferences, or use any other identifier)
+                            val eventKey = "${eventTitle}_${eventStart}_${eventEnd}"
+                            if (AppPrefs(this).getString(eventKey)!!.isNotEmpty()) {
+                                // Event was added during this session, remove it
+                                val deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventId)
+                                context.contentResolver.delete(deleteUri, null, null)
+                                Log.d("removeAllEventsOnLogout", "Event with ID $eventId removed from calendar")
+                            }
+                        } while (eventCursor.moveToNext())
+                    }
+                }
+            }
+            cursor.close()
+        }
+    }
 
     override fun onBackPressed() {
         val fragmentPosition = navHost.childFragmentManager.fragments[0]
@@ -203,16 +270,16 @@ class ProfessionalActivity : AppCompatActivity(), HomeProfessionalFragment.OnPro
 
     override fun onStart() {
         super.onStart()
-        updateUserStatus(userIdIs,"online")
+        viewModel.updateStatus(AppPrefs(this).getStringPref(PROFESSIONAL_USER_ID).toString(),true)
     }
     override fun onStop() {
         super.onStop()
-        updateUserStatus(userIdIs,"offline")
+        viewModel.updateStatus(AppPrefs(this).getStringPref(PROFESSIONAL_USER_ID).toString(),false)
 
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        updateUserStatus(userIdIs,"offline")
+        viewModel.updateStatus(AppPrefs(this).getStringPref(PROFESSIONAL_USER_ID).toString(),false)
     }
 }

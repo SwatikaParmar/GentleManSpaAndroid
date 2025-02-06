@@ -16,6 +16,8 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import org.json.JSONObject
+import retrofit2.HttpException
 
 class CreateScheduleViewModel(private var initialRepository: InitialRepository) : AndroidViewModel(
     Application()
@@ -28,20 +30,33 @@ class CreateScheduleViewModel(private var initialRepository: InitialRepository) 
     val toTime= ObservableField<String>()
     val resultAddUpdateProfessionalSchedule= MutableLiveData<Resource<AddUpdateProfessionalScheduleResponse>>()
 
-    fun addUpdateProfessionalSchedule() {
+    fun addUpdateProfessionalSchedule(request:AddUpdateProfessionalScheduleRequest) {
         resultAddUpdateProfessionalSchedule.value = Resource.loading(null)
         viewModelScope.launch {
-            initialRepository.addUpdateProfessionalSchedule(AddUpdateProfessionalScheduleRequest("","",professionalDetailId.get()!!,
-                professionalScheduleId.get()!!,weekDaysId.get()!!,fromTime.get()!!,toTime.get()!!))
+            initialRepository.addUpdateProfessionalSchedule(request)
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->
-                    if (!CommonFunctions.getError(exception)!!.contains("401"))
+                    if (exception is HttpException) {
+                        try {
+                            val errorBody = exception.response()?.errorBody()?.string()
+                            if (!errorBody.isNullOrEmpty()) {
+                                val jsonError = JSONObject(errorBody)
+                                val errorMessage = jsonError.optString("messages", "Unknown HTTP error")
+                                resultAddUpdateProfessionalSchedule.value = Resource.error(data = null, message = errorMessage)
+                            } else {
+                                resultAddUpdateProfessionalSchedule.value = Resource.error(data = null, message = "Unknown HTTP error")
+                            }
+                        } catch (e: Exception) {
+                            resultAddUpdateProfessionalSchedule.value = Resource.error(data = null, message = e.message)
+                        }
+                    }else{
                         resultAddUpdateProfessionalSchedule.value =
                             Resource.error(
                                 data = null,
                                 message = CommonFunctions.getError(exception)
                             )
+                    }
                 }
                 .collect {
                     if (it?.statusCode == 200) {

@@ -348,8 +348,6 @@ class ServiceFragment : Fragment(), View.OnClickListener {
                         } else {
                             binding.clBooking.setGone()
                         }
-
-
                     }
 
                     Status.ERROR -> {
@@ -389,8 +387,6 @@ class ServiceFragment : Fragment(), View.OnClickListener {
                     }
                 }
             }
-
-
         }
     }
 }

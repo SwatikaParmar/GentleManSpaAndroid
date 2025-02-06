@@ -11,6 +11,9 @@ import com.app.gentlemanspa.ui.auth.fragment.setPassword.viewModel.SetPasswordVi
 import com.app.gentlemanspa.ui.customerDashboard.fragment.address.viewModel.AddressViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.anyProfessional.viewModel.AnyProfessionalViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.viewModel.CartViewModel
+import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.viewModel.CustomerChatViewModel
+import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.messages.viewModel.CustomerMessagesViewModel
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.chat.messages.viewModel.ProfessionalMessagesViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editAddress.viewModel.EditAddressViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.viewModel.UpdateCustomerViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.event.viewModel.EventViewModel
@@ -19,6 +22,7 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.home.viewModel.HomeCus
 import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.viewModel.MakeAppointmentViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.myOrders.viewModel.MyOrdersViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.orderDetail.viewModel.OrderDetailsViewModel
+import com.app.gentlemanspa.ui.customerDashboard.fragment.payment.viewModel.PaymentViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.product.viewModel.ProductViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.productDetail.viewModel.ProductDetailViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.professionalTeamServices.viewModel.ProfessionalServicesViewModel
@@ -28,6 +32,7 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessionalServ
 import com.app.gentlemanspa.ui.customerDashboard.fragment.service.viewModel.ServiceViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.serviceDetail.viewModel.ServiceDetailViewModel
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.viewModel.AddProductViewModel
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.chat.chat.viewModel.ProfessionalChatViewModel
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.createSchedule.viewModel.CreateScheduleViewModel
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.viewModel.UpdateProfessionalViewModel
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.home.viewModel.HomeProfessionalViewModel
@@ -37,6 +42,7 @@ import com.app.gentlemanspa.ui.professionalDashboard.fragment.productDetail.view
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.profile.viewModel.ProfileProfessionalDetailViewModel
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.viewModel.ScheduleViewModel
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.selectCountry.viewModel.SelectCountryViewModel
+import com.app.gentlemanspa.utils.updateStatus.UpdateStatusViewModel
 
 
 @Suppress("UNCHECKED_CAST")
@@ -183,6 +189,25 @@ class ViewModelFactory(
             modelClass.isAssignableFrom(EventViewModel::class.java) -> {
                 return EventViewModel(repository) as T
             }
+            modelClass.isAssignableFrom(CustomerMessagesViewModel::class.java) -> {
+                return CustomerMessagesViewModel(repository) as T
+            }
+            modelClass.isAssignableFrom(CustomerChatViewModel::class.java) -> {
+                return CustomerChatViewModel(repository) as T
+            }
+            modelClass.isAssignableFrom(ProfessionalMessagesViewModel::class.java) -> {
+                return ProfessionalMessagesViewModel(repository) as T
+            }
+            modelClass.isAssignableFrom(ProfessionalChatViewModel::class.java) -> {
+                return ProfessionalChatViewModel(repository) as T
+            }
+            modelClass.isAssignableFrom(UpdateStatusViewModel::class.java) -> {
+                return UpdateStatusViewModel(repository) as T
+            }
+            modelClass.isAssignableFrom(PaymentViewModel::class.java) -> {
+                return PaymentViewModel(repository) as T
+            }
+
             else -> throw IllegalArgumentException("Class not found")
         }
     }

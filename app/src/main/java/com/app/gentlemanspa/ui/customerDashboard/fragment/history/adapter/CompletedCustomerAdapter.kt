@@ -17,23 +17,18 @@ import com.bumptech.glide.Glide
 
 class CompletedCustomerAdapter(private val dataList:ArrayList<UpcomingServiceAppointmentItem>) : RecyclerView.Adapter<CompletedCustomerAdapter.ViewHolder>()  {
     private lateinit var completeCustomerCallbacks: CompleteCustomerCallbacks
-
     class ViewHolder(val binding : ItemConfirmedCustomerBinding) : RecyclerView.ViewHolder(binding.root)
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemConfirmedCustomerBinding.inflate(LayoutInflater.from(parent.context),parent,false)
         return ViewHolder(binding)
     }
-
     override fun getItemCount(): Int {
         return dataList.size
     }
-
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item=dataList[position]
-
         holder.binding.apply {
             tvServiceName.text=item.serviceName
             tvRupees.text="$${item.price}"
@@ -52,10 +47,7 @@ class CompletedCustomerAdapter(private val dataList:ArrayList<UpcomingServiceApp
     fun setOnClickCompleteCustomer(onClick : CompleteCustomerCallbacks){
         completeCustomerCallbacks = onClick
     }
-
     interface CompleteCustomerCallbacks{
         fun onCompleteCustomerMessageClicked(item:UpcomingServiceAppointmentItem)
-
     }
-
 }

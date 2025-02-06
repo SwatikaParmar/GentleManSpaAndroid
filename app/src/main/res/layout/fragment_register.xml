@@ -188,7 +188,6 @@
                 app:ccp_showNameCode="false"
                 app:ccp_showFullName="false"
                 app:ccp_showArrow="false"
-
                 android:gravity="center"
                 android:textSize="@dimen/_13sdp"
                 app:layout_constraintStart_toStartOf="parent"

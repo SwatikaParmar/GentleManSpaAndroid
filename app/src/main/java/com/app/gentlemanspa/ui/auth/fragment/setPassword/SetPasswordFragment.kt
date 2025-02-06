@@ -119,13 +119,10 @@ class SetPasswordFragment : Fragment(), View.OnClickListener {
 
     private fun isValidation(): Boolean {
         when {
-
+            checkString(binding.etEmail) -> requireContext().showToast("Please enter email or phone")
             checkString(binding.etPassword) -> requireContext().showToast("Please enter new password")
-
             checkValidString(binding.etPassword).length < 6 -> requireContext().showToast("Password should be 6 characters or more")
-
             checkString(binding.etConfirmPassword) -> requireContext().showToast("Please enter confirm password")
-
             (checkValidString(binding.etPassword) != checkValidString(binding.etConfirmPassword)) -> requireContext().showToast("Password and confirm password mismatched")
 
 

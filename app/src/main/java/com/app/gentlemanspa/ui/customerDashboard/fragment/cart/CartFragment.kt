@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.app.gentlemanspa.R
@@ -22,16 +23,21 @@ import com.app.gentlemanspa.ui.customerDashboard.activity.CustomerActivity
 import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.AddressItem
 import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.adapter.CartProductsAdapter
 import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.adapter.CartServicesAdapter
+import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.model.PayByStripeRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.viewModel.CartViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.Product
 import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.Service
+import com.app.gentlemanspa.utils.AlertPaymentCallbackInt
 import com.app.gentlemanspa.utils.AppPrefs
+import com.app.gentlemanspa.utils.CUSTOMER_USER_ID
 import com.app.gentlemanspa.utils.DELIVERY_ADDRESS
 import com.app.gentlemanspa.utils.PROFESSIONAL_DETAIL_ID
 import com.app.gentlemanspa.utils.ViewModelFactory
 import com.app.gentlemanspa.utils.setGone
 import com.app.gentlemanspa.utils.setVisible
+import com.app.gentlemanspa.utils.showAlertForPayment
 import com.app.gentlemanspa.utils.showToast
+import com.google.firebase.firestore.auth.User
 
 class CartFragment : Fragment(), View.OnClickListener {
     lateinit var binding: FragmentCartBinding
@@ -334,10 +340,10 @@ class CartFragment : Fragment(), View.OnClickListener {
                             //requireContext().showToast("Address is empty")
                             binding.tvDeliveryAddress.setGone()
                         }
-                        if (deliveryAddressName.isNotEmpty()){
+                        if (deliveryAddressName.isNotEmpty()) {
                             binding.tvDeliveryPlaceName.text = "Delivering to $deliveryAddressName"
 
-                        }else{
+                        } else {
                             binding.tvDeliveryPlaceName.setGone()
                         }
 
@@ -356,19 +362,24 @@ class CartFragment : Fragment(), View.OnClickListener {
                     Status.LOADING -> {
                         showProgress(requireContext())
                     }
+
                     Status.SUCCESS -> {
                         Log.d("resultCustomerPlaceOrder", "inside resultCustomerPlaceOrder SUCCESS")
-                        Log.d("resultCustomerPlaceOrder", "inside resultCustomerPlaceOrder Message->${it.message.toString()}")
+                        Log.d(
+                            "resultCustomerPlaceOrder",
+                            "inside resultCustomerPlaceOrder Message->${it.message.toString()}"
+                        )
                         hideProgress()
                         requireContext().showAlertForPlaceOrder(it.message.toString(), object :
                             AlertWithoutCancelCallbackInt {
                             override fun onOkayClicked(view: View) {
-                                val action = CartFragmentDirections.actionCartFragmentToHomeFragment()
+                                val action =
+                                    CartFragmentDirections.actionCartFragmentToHomeFragment()
                                 findNavController().navigate(action)
                             }
                         })
-                        requireContext().showToast(it.message.toString())
                     }
+
                     Status.ERROR -> {
                         requireContext().showToast(it.message.toString())
                         Log.d("resultCustomerPlaceOrder", "inside resultAddProductInCart ERROR")
@@ -377,6 +388,37 @@ class CartFragment : Fragment(), View.OnClickListener {
                 }
             }
         }
+        viewModel.resultPayByStripe.observe(this) {
+            it.let { result ->
+                when (result.status) {
+                    Status.LOADING -> {
+                        showProgress(requireContext())
+                    }
+
+                    Status.SUCCESS -> {
+                        hideProgress()
+                        Log.d(
+                            "resultPayByStripe",
+                            "sessionUrl->${it.data!!.data.sessionUrl} paymentId->${it.data.data.paymentId}"
+                        )
+                        if (it.data.data.sessionUrl.isNotBlank()) {
+                            val action = CartFragmentDirections.actionCartFragmentToPaymentFragment(
+                                it.data.data.sessionUrl,
+                                it.data.data.paymentId
+                            )
+                            findNavController().navigate(action)
+                        }
+                    }
+
+                    Status.ERROR -> {
+                        requireContext().showToast(it.message.toString())
+                        Log.d("resultCustomerPlaceOrder", "inside resultAddProductInCart ERROR")
+                        hideProgress()
+                    }
+                }
+            }
+        }
+
     }
 
     private fun setCartServicesAdapter(servicesList: List<Service>) {
@@ -395,15 +437,15 @@ class CartFragment : Fragment(), View.OnClickListener {
                 viewModel.addServiceToCart()
             }
 
-            override fun addSlot(item: Service,status:String) {
-                if (status=="update"){
+            override fun addSlot(item: Service, status: String) {
+                if (status == "update") {
                     val action = CartFragmentDirections.actionCartFragmentAnyProfessionalFragment(
                         "Reschedule CartFragment",
                         item.spaDetailId,
                         item.spaServiceId
                     )
                     findNavController().navigate(action)
-                }else{
+                } else {
                     val action = CartFragmentDirections.actionCartFragmentAnyProfessionalFragment(
                         "Book CartFragment",
                         item.spaDetailId,
@@ -412,7 +454,7 @@ class CartFragment : Fragment(), View.OnClickListener {
                     findNavController().navigate(action)
                 }
             }
-            })
+        })
     }
 
     private fun setCartProductsAdapter(productsList: List<Product>) {
@@ -437,7 +479,7 @@ class CartFragment : Fragment(), View.OnClickListener {
                     viewModel.addProductInCart()
                 }
             }
-            })
+        })
     }
 
     override fun onClick(v: View?) {
@@ -448,11 +490,15 @@ class CartFragment : Fragment(), View.OnClickListener {
             }
 
             binding.ivArrowBack -> {
-               // findNavController().popBackStack()
+                // findNavController().popBackStack()
                 findNavController().navigate(
                     R.id.homeCustomerFragment, null, NavOptions.Builder()
-                    .setPopUpTo(R.id.customer, true)  // Pop the entire back stack up to the navigation graph
-                    .build())
+                        .setPopUpTo(
+                            R.id.customer,
+                            true
+                        )  // Pop the entire back stack up to the navigation graph
+                        .build()
+                )
             }
 
             binding.btnPay -> {
@@ -461,11 +507,28 @@ class CartFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    private fun proceedToPlaceOrder() {
+    private fun callCustomerPlaceOderApi() {
         viewModel.customerAddressId.set(0)
         viewModel.deliveryType.set("AtVenue")
         viewModel.paymentType.set("Cash")
+        viewModel.paymentId.set(0)
         viewModel.customerPlaceOrder()
+    }
+
+    private fun proceedToPlaceOrder() {
+        requireContext().showAlertForPayment(object : AlertPaymentCallbackInt {
+            override fun onOkayClicked(view: View, onlinePayment: Boolean) {
+                Log.d("paymentType", "onlinePayment->$onlinePayment")
+                if (onlinePayment) {
+                    val request = PayByStripeRequest(
+                        AppPrefs(requireContext()).getStringPref(CUSTOMER_USER_ID).toString()
+                    )
+                    viewModel.payByStripeApi(request)
+                } else {
+                     callCustomerPlaceOderApi()
+                }
+            }
+        })
     }
 
 }

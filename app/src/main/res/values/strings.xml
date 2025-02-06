@@ -21,6 +21,7 @@
     <string name="couple_massage">Couple Massage</string>
     <string name="submit">Submit</string>
     <string name="name">Name</string>
+    <string name="online">Online</string>
     <string name="_9896989698">9896989698</string>
     <string name="vip_clients">VIP Clients</string>
     <string name="service_categories">Service Categories</string>
@@ -75,4 +76,7 @@
     <string name="block_user">Block User</string>
     <string name="message">Message</string>
     <string name="no_user_exists">No user exists!</string>
+    <string name="payment">Payment</string>
+    <string name="proceed">Proceed</string>
+    <string name="no_appointment_found">No appointment found</string>
 </resources>

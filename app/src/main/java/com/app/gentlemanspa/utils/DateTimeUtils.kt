@@ -9,6 +9,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 fun formatDuration(durationInMinutes: Int): String {
     val hours = durationInMinutes / 60
@@ -89,4 +90,17 @@ fun formatDate(date: String): String {
     val localDateTime = LocalDateTime.parse(date, inputFormatter)
     val outputFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy")
     return localDateTime.format(outputFormatter)
+}
+fun utcToCurrentDateTimeFormat(dateString: String): String {
+    val inputFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S", Locale.US)
+    inputFormatter.timeZone = TimeZone.getTimeZone("UTC")
+    try {
+        val date = inputFormatter.parse(dateString)
+        val outputLocale =  Locale("en", "US")  // English locale
+        val outputFormatter = SimpleDateFormat("hh:mm a", outputLocale)
+        outputFormatter.timeZone = TimeZone.getDefault()
+        return date?.let { outputFormatter.format(it) } ?: dateString
+    } catch (e: Exception) {
+        return dateString
+    }
 }

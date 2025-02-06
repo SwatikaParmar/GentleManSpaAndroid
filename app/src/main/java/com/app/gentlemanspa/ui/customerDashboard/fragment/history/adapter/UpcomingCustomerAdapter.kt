@@ -23,11 +23,9 @@ class UpcomingCustomerAdapter(private val dataList:ArrayList<UpcomingServiceAppo
         val binding = ItemUpcomingCustomerBinding.inflate(LayoutInflater.from(parent.context),parent,false)
         return ViewHolder(binding)
     }
-
     override fun getItemCount(): Int {
         return dataList.size
     }
-
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -52,10 +50,8 @@ class UpcomingCustomerAdapter(private val dataList:ArrayList<UpcomingServiceAppo
             btnMessage.setOnClickListener{
                 upcomingCallbacks.sendMessage(item)
             }
-
         }
     }
-
     fun setOnUpcomingCallbacks(onClick : UpcomingCallbacks) {
         upcomingCallbacks =onClick
     }

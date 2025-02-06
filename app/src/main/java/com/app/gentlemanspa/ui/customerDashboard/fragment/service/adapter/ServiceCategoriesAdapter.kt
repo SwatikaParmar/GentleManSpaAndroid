@@ -17,9 +17,7 @@ class ServiceCategoriesAdapter(
 ) : RecyclerView.Adapter<ServiceCategoriesAdapter.ViewHolder>() {
 
     private lateinit var serviceCategoriesCallbacks :ServiceCategoriesCallbacks
-
     class ViewHolder(val binding : ItemCategoriesServiceBinding) : RecyclerView.ViewHolder(binding.root)
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemCategoriesServiceBinding.inflate(LayoutInflater.from(parent.context),parent,false)
         return ViewHolder(binding)

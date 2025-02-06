@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
@@ -18,59 +19,86 @@
             android:padding="@dimen/_8sdp">
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvWeek"
-                android:layout_width="0dp"
+                android:id="@+id/tvDayName"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Monday"
                 android:textSize="@dimen/_12ssp"
                 android:textColor="@color/black"
                 android:fontFamily="@font/poppins_medium"
                 android:includeFontPadding="false"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/btnAdd"
+                app:layout_constraintBottom_toBottomOf="@+id/btnAdd"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/clWorkingBreak"
-                app:layout_constraintBottom_toBottomOf="parent" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/clWorkingBreak"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+        />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAdd"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:backgroundTint="@color/light_white"
+                android:fontFamily="@font/poppins"
+                android:padding="0dp"
+                android:text="Add"
+                android:textAllCaps="false"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_10ssp"
+                app:cornerRadius="@dimen/_20sdp"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvWeek"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_constraintEnd_toEndOf="parent"
+                app:strokeColor="@color/dark_brown"
+                app:strokeWidth="@dimen/_1sdp" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvScheduleTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_3sdp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:orientation="vertical"
+                tools:itemCount="2"
+                tools:listitem="@layout/item_schedule_time"
+                app:layout_constraintTop_toBottomOf="@+id/btnAdd"
+                />
+          <!--  <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clWorkingBreak"
+                android:layout_width="130dp"
+                android:layout_height="38dp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tvDayName"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/clWorking"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/_10sdp"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/view"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/view">
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tvWorking"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Working Time"
-                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"/>
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tvWorkingTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_medium"
                         android:text="10 AM to 5 AM"
                         android:textColor="@color/app_color"
                         android:textSize="@dimen/_10ssp"
-                        android:fontFamily="@font/poppins_medium"
-                        app:layout_constraintTop_toBottomOf="@+id/tvWorking"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"/>
+                        app:layout_constraintTop_toBottomOf="@+id/tvWorking" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 
                 <View
@@ -79,60 +107,165 @@
                     android:layout_height="0dp"
                     android:background="@color/black"
                     android:visibility="gone"
-                    app:layout_constraintStart_toEndOf="@+id/clWorking"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/clBreak"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintStart_toEndOf="@+id/clWorking"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/clBreak"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/_10sdp"
-                    app:layout_constraintTop_toTopOf="parent"
                     android:visibility="gone"
+                    app:layout_constraintEnd_toStartOf="@+id/ivArrowForward"
                     app:layout_constraintStart_toEndOf="@+id/view"
-                    app:layout_constraintEnd_toStartOf="@+id/ivArrowForward">
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tvBreak"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Break Time"
-                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"/>
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tvBreakTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_medium"
                         android:text="10 AM to 5 AM"
                         android:textColor="@color/app_color"
                         android:textSize="@dimen/_10ssp"
-                        android:fontFamily="@font/poppins_medium"
-                        app:layout_constraintTop_toBottomOf="@+id/tvBreak"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"/>
+                        app:layout_constraintTop_toBottomOf="@+id/tvBreak" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-              <androidx.appcompat.widget.AppCompatImageView
-                  android:id="@+id/ivArrowForward"
-                  android:layout_width="@dimen/_15sdp"
-                  android:layout_height="@dimen/_15sdp"
-                  android:src="@drawable/arrow_forward"
-                  android:tint="@color/black"
-                  app:layout_constraintTop_toTopOf="parent"
-                  app:layout_constraintBottom_toBottomOf="parent"
-                  app:layout_constraintStart_toEndOf="@id/clBreak"
-                  app:layout_constraintEnd_toEndOf="parent"/>
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivArrowForward"
+                    android:layout_width="@dimen/_15sdp"
+                    android:layout_height="@dimen/_15sdp"
+                    android:src="@drawable/arrow_forward"
+                    android:tint="@color/black"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/clBreak"
+                    app:layout_constraintTop_toTopOf="parent" />
 
 
+            </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+
+          <!--  <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clShiftFirst"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_5sdp"
+                android:background="@drawable/item_circular_background"
+                android:layout_marginTop="@dimen/_5sdp"
+                app:layout_constraintTop_toBottomOf="@+id/tvDayName">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvShiftFirst"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins"
+                    android:text="Shift 1 :"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_10sdp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvShiftFirstTime"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="10 AM -11AM"
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/poppins"
+                    android:textSize="@dimen/_10sdp"
+                    android:textAlignment="center"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:layout_marginEnd="@dimen/_5sdp"
+                    app:layout_constraintStart_toEndOf="@+id/tvShiftFirst"
+                    app:layout_constraintEnd_toStartOf="@+id/ivEditShiftFirst"
+                    app:layout_constraintTop_toTopOf="parent" />
+                <ImageView
+                    android:id="@+id/ivEditShiftFirst"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:src="@drawable/ic_edit"
+                    android:layout_marginEnd="@dimen/_5sdp"
+                    android:contentDescription="@string/image_description"
+                    app:layout_constraintEnd_toStartOf="@+id/ivDeleteShiftFirst"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/black" />
+                <ImageView
+                    android:id="@+id/ivDeleteShiftFirst"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:src="@drawable/ic_cancel"
+                    android:contentDescription="@string/image_description"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clShiftSecond"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_5sdp"
+                android:background="@drawable/item_circular_background"
+                android:layout_marginTop="@dimen/_5sdp"
+                app:layout_constraintTop_toBottomOf="@+id/clShiftFirst">
 
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvShiftSecond"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins"
+                    android:text="Shift 2 :"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_10sdp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvShiftSecondTime"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="12:30 PM - 01 PM"
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/poppins"
+                    android:textSize="@dimen/_10sdp"
+                    android:textAlignment="center"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:layout_marginEnd="@dimen/_5sdp"
+                    app:layout_constraintStart_toEndOf="@+id/tvShiftSecond"
+                    app:layout_constraintEnd_toStartOf="@+id/ivEditShiftSecond"
+                    app:layout_constraintTop_toTopOf="parent" />
+                <ImageView
+                    android:id="@+id/ivEditShiftSecond"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:src="@drawable/ic_edit"
+                    android:layout_marginEnd="@dimen/_5sdp"
+                    android:contentDescription="@string/image_description"
+                    app:layout_constraintEnd_toStartOf="@+id/ivDeleteShiftSecond"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/black" />
+                <ImageView
+                    android:id="@+id/ivDeleteShiftSecond"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:src="@drawable/ic_cancel"
+                    android:contentDescription="@string/image_description"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>-->
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

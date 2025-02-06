@@ -7,9 +7,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.viewModels
-import androidx.navigation.Navigation
+import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.navigation.fragment.findNavController
 import com.app.gentlemanspa.base.MyApplication.Companion.hideProgress
 import com.app.gentlemanspa.base.MyApplication.Companion.showProgress
@@ -23,21 +22,23 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.Upcoming
 import com.app.gentlemanspa.ui.customerDashboard.fragment.history.adapter.CompletedCustomerAdapter
 import com.app.gentlemanspa.ui.customerDashboard.fragment.history.adapter.CancelledCustomerAdapter
 import com.app.gentlemanspa.ui.customerDashboard.fragment.history.adapter.UpcomingCustomerAdapter
+import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.AddUserToChatRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.history.viewModel.HistoryViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.model.ProfessionalDetail
 import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.model.ProfessionalItem
+import com.app.gentlemanspa.utils.AppPrefs
+import com.app.gentlemanspa.utils.CUSTOMER_USER_ID
 import com.app.gentlemanspa.utils.ViewModelFactory
 import com.app.gentlemanspa.utils.showToast
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 
 
 class HistoryCustomerFragment : Fragment(), View.OnClickListener {
 
     private lateinit var binding: FragmentHistoryCustomerBinding
     private var appointmentType = ""
+    private var professionalUserId = ""
+    private var name = ""
+    private var profilePic = ""
     val spaDetailId = 21
     private val serviceAppointmentList: ArrayList<UpcomingServiceAppointmentItem> = ArrayList()
     private val viewModel: HistoryViewModel by viewModels {
@@ -45,10 +46,12 @@ class HistoryCustomerFragment : Fragment(), View.OnClickListener {
             InitialRepository()
         )
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initObserver()
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -62,40 +65,35 @@ class HistoryCustomerFragment : Fragment(), View.OnClickListener {
         (activity as CustomerActivity).bottomNavigation(true)
         initUI()
     }
-
-    private fun initUI(){
+    private fun initUI() {
         setAppointmentSelection(binding.tvUpcoming)
         callGetServiceAppointmentsApi("Upcoming")
         //  binding.tvUpcoming.isSelected = true
         //  setUpcomingAdapter()
         binding.onClick = this
     }
-
     private fun callGetServiceAppointmentsApi(type: String) {
         Log.d("type", "type->$type")
         appointmentType = type
         viewModel.type.set(type)
         viewModel.getServiceAppointments()
     }
-
     private fun setCancelledAdapter() {
         val cancelledCustomerAdapter = CancelledCustomerAdapter(serviceAppointmentList)
         binding.rvAppointment.adapter = cancelledCustomerAdapter
     }
-
     private fun setCompletedAdapter() {
         val completedCustomerAdapter = CompletedCustomerAdapter(serviceAppointmentList)
         binding.rvAppointment.adapter = completedCustomerAdapter
         completedCustomerAdapter.setOnClickCompleteCustomer(object :
             CompletedCustomerAdapter.CompleteCustomerCallbacks {
-            override fun onCompleteCustomerMessageClicked(item:UpcomingServiceAppointmentItem) {
-                checkUserExistsAndNavigateToChat(item)
+            override fun onCompleteCustomerMessageClicked(item: UpcomingServiceAppointmentItem) {
+                callAddUserToChatApi(item.professionalUserId)
 
             }
 
         })
     }
-
     private fun setUpcomingAdapter() {
         val upcomingCustomerAdapter = UpcomingCustomerAdapter(serviceAppointmentList)
         binding.rvAppointment.adapter = upcomingCustomerAdapter
@@ -135,11 +133,20 @@ class HistoryCustomerFragment : Fragment(), View.OnClickListener {
             }
 
             override fun sendMessage(item: UpcomingServiceAppointmentItem) {
-                checkUserExistsAndNavigateToChat(item)
+                Log.d("userId", "receiverUserId or professionalUserId ->${item.professionalUserId}")
+                professionalUserId = item.professionalUserId
+                name = item.professionalName
+                profilePic = item.professionalImage
+                callAddUserToChatApi(item.professionalUserId)
             }
         })
     }
-
+    private fun callAddUserToChatApi(userId: String) {
+        val request = AddUserToChatRequest(
+            AppPrefs(requireContext()).getStringPref(CUSTOMER_USER_ID).toString(), userId
+        )
+        viewModel.addUserToChatApi(request)
+    }
     private fun UpcomingServiceAppointmentItem.toProfessionalItem(professionalDetail: ProfessionalDetail?): ProfessionalItem {
         val nameParts = this.professionalName.split(" ")
         val firstName = nameParts.getOrElse(0) { "" }
@@ -156,8 +163,6 @@ class HistoryCustomerFragment : Fragment(), View.OnClickListener {
             email = null
         )
     }
-
-
     fun proceedToCancel(item: UpcomingServiceAppointmentItem) {
         requireContext().showWarningAlert(object : AlertCallbackInt {
             override fun onOkayClicked(view: View) {
@@ -173,13 +178,11 @@ class HistoryCustomerFragment : Fragment(), View.OnClickListener {
         })
 
     }
-
     private fun setAppointmentSelection(selectedView: View) {
         binding.tvCompleted.isSelected = (selectedView == binding.tvCompleted)
         binding.tvCancelled.isSelected = (selectedView == binding.tvCancelled)
         binding.tvUpcoming.isSelected = (selectedView == binding.tvUpcoming)
     }
-
     override fun onClick(v: View?) {
         when (v) {
 
@@ -202,35 +205,6 @@ class HistoryCustomerFragment : Fragment(), View.OnClickListener {
             }
         }
     }
-
-    fun checkUserExistsAndNavigateToChat(item: UpcomingServiceAppointmentItem) {
-        Log.d("sendMessage", "sendMessage userId->${item.userId} professionalUserId->${item.professionalUserId}")
-
-        if (item.userId.isNotEmpty() && item.professionalUserId.isNotEmpty()) {
-            FirebaseDatabase.getInstance().reference
-                .child("Users").child(item.professionalUserId)
-                .addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        Log.d("sendMessage", "sendMessage snapshot exists: ${snapshot.exists()} ")
-                        if (snapshot.exists()) {
-                            val action = HistoryCustomerFragmentDirections.actionHistoryCustomerFragmentToCustomerChatFragment(
-                                item.userId, item.professionalUserId, "FromHistoryCustomerFragment"
-                            )
-                            findNavController().navigate(action)
-                            Log.d("sendMessage", "sendMessage inside if : ${snapshot.exists()} ")
-                        } else {
-                            Log.d("sendMessage", "sendMessage inside else: ${snapshot.exists()} ")
-                            requireContext().showToast("This user is unavailable for chat!")
-                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        requireContext().showToast(error.message)
-                    }
-                })
-        }
-    }
-
     private fun initObserver() {
         viewModel.resultUpcomingServiceAppointmentList.observe(this) {
             it?.let { result ->
@@ -291,6 +265,46 @@ class HistoryCustomerFragment : Fragment(), View.OnClickListener {
                 }
             }
         }
-    }
+        viewModel.resultAddUserToChat.observe(this) {
+            it?.let { result ->
+                when (result.status) {
+                    Status.LOADING -> {
+                        showProgress(requireContext())
+                    }
 
+                    Status.SUCCESS -> {
+                        hideProgress()
+                        Log.d("addUserToChat", "inside success messages->${it.data?.messages}")
+                        Log.d("addUserToChat", "inside success message->${it.message}")
+                        if (it.data!!.isSuccess) {
+                            moveToChatFragment()
+                        } else {
+                            requireContext().showToast(it.data.messages.toString())
+
+                        }
+                    }
+
+                    Status.ERROR -> {
+                        Log.d("addUserToChat", "inside error message->${it.message.toString()}")
+                        if (it.message.toString() == "Chat already exists.") {
+                            moveToChatFragment()
+                        } else {
+                            requireContext().showToast(it.message.toString())
+                        }
+                        hideProgress()
+                    }
+                }
+            }
+        }
+
+    }
+    private fun moveToChatFragment() {
+        val action =
+            HistoryCustomerFragmentDirections.actionHistoryCustomerFragmentToCustomerChatFragment(
+                AppPrefs(requireContext()).getStringPref(
+                    CUSTOMER_USER_ID
+                ).toString(), professionalUserId,name,profilePic
+            )
+        findNavController().navigate(action)
+    }
 }

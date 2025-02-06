@@ -20,7 +20,6 @@
             android:background="@color/white"
             android:padding="@dimen/_8sdp"
             >
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/clBooking"
                 android:layout_width="match_parent"
@@ -64,7 +63,7 @@
                     android:includeFontPadding="false"
                     android:paddingHorizontal="@dimen/_10sdp"
                     android:paddingVertical="@dimen/_3sdp"
-                    android:text="Completed"
+                    android:text="Cancelled"
                     android:textColor="@color/red_color"
                     android:textSize="@dimen/_10ssp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -79,7 +78,6 @@
                     app:layout_constraintTop_toBottomOf="@+id/tvDate" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/clProfessional"
                 android:layout_width="match_parent"
@@ -152,8 +150,6 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

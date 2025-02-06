@@ -18,12 +18,21 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.Customer
 import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.DeleteAddressResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.model.CustomerPlaceOrderRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.model.CustomerPlaceOrderResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.model.PayByStripeRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.model.PayByStripeResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.model.CustomerChatMessageHistoryResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.model.CustomerSendMessageRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.model.CustomerSendMessageResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.model.DeleteMessageResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.messages.model.CustomerMessagesResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.UpcomingServiceAppointmentResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editAddress.model.AddCustomerAddressRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editAddress.model.AddCustomerAddressResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.model.UpdateProfileCustomerRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.model.UpdateProfileCustomerResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.event.model.EventListResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.AddUserToChatRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.AddUserToChatResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.CancelUpcomingAppointmentRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.CancelUpcomingAppointmentResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.BannerResponse
@@ -41,6 +50,7 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.model.
 import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.model.ServiceRescheduleResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.myOrders.model.MyOrdersResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.orderDetail.model.OrderDetailsResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.payment.model.OrderConfirmationResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.product.model.AddProductInCartRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.product.model.AddProductInCartResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.productDetail.model.ProductDetailResponse
@@ -66,8 +76,11 @@ import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.model.Sch
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.model.WeekDaysResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.selectCountry.model.country.CountryResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.selectCountry.model.states.StatesResponse
+import com.app.gentlemanspa.utils.updateStatus.UpdateStatusRequest
+import com.app.gentlemanspa.utils.updateStatus.UpdateStatusResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -188,6 +201,16 @@ interface ApiInterface {
     suspend fun customerPlaceOrder(
         @Body body: CustomerPlaceOrderRequest?
     ): CustomerPlaceOrderResponse
+
+    @POST(ApiConstants.PAY_BY_STRIPE)
+    suspend fun payByStripe(
+        @Body body: PayByStripeRequest?
+    ): PayByStripeResponse
+
+    @GET(ApiConstants.ORDER_CONFIRMATION)
+    suspend fun orderConfirmation(
+        @Query("paymentId") paymentId: Int
+    ): OrderConfirmationResponse
 
     @POST(ApiConstants.RESCHEDULE_SERVICE)
     suspend fun serviceReschedule(
@@ -363,29 +386,36 @@ interface ApiInterface {
     @GET(ApiConstants.GET_EVENT_LIST)
     suspend fun getEventList(
         ): EventListResponse
-    /*
-       @GET(ApiConstants.SPECIALITY)
-       suspend fun getSpeciality(
-       ): BrowserServicesResponse
 
-       @GET(ApiConstants.SERVICE_DETAIL)
-       suspend fun getServiceDetail(@Query("serviceTypeValue") serviceTypeValue: Int?
-       ): ServiceDetailResponse
+    @POST(ApiConstants.ADD_USER_TO_CHAT)
+    suspend fun addUserToChat(
+        @Body addUserToChatRequest: AddUserToChatRequest
+    ): AddUserToChatResponse
 
-       @GET(ApiConstants.TOP_DOCTORS)
-       suspend fun getTopDoctors(@Query("pageNumber") pageNumber: Int?,
-                                 @Query("pageSize") pageSize: Int?
-       ): TopDoctorsResponse
+    @GET("${ApiConstants.CHAT_USERS}/{userName}")
+    suspend fun getCustomerMessagesList(
+        @Path("userName") userName:String
+    ): CustomerMessagesResponse
 
-       @GET(ApiConstants.TOP_DOCTORS)
-       suspend fun getSearchTopFindDoctors( @Query("pageNumber") pageNumber: Int?,
-                                            @Query("pageSize") pageSize: Int?,  @Query("searchQuery") searchQuery: String?): TopDoctorsResponse
-   */
+    @POST(ApiConstants.SEND_MESSAGE)
+    suspend fun customerSendMessage(
+        @Body customerSendMessageRequest: CustomerSendMessageRequest
+    ): CustomerSendMessageResponse
 
-    /*  @POST(ApiConstants.RESET_PASSWORD)
-      suspend fun resetPassword(
-          @Body body: ResetPasswordRequest?
-      ): ResetPasswordResponse*/
+    @GET(ApiConstants.CHAT_HISTORY)
+    suspend fun getCustomerChatHistory(
+        @Query("senderId") senderId:String,
+        @Query("receiverId") receiverId:String
+    ): CustomerChatMessageHistoryResponse
 
 
+    @DELETE("${ApiConstants.DELETE_MESSAGE}/{messageId}")
+    suspend fun deleteMessage(
+        @Path("messageId")messageId:Int
+    ): DeleteMessageResponse
+
+    @POST(ApiConstants.UPDATE_STATUS)
+    suspend fun updateStatus(
+        @Body updateStatusRequest: UpdateStatusRequest
+    ): UpdateStatusResponse
 }

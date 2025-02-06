@@ -67,16 +67,13 @@ class SplashFragment : Fragment() {
             Handler(Looper.getMainLooper()).postDelayed({
                 val token = AppPrefs(requireContext()).getString("TOKEN").toString()
                 val role = AppPrefs(requireContext()).getString("ROLE").toString()
-
                 when {
-                    token.isNotEmpty() && role == "Customer" -> {
+                    token.isNotEmpty() && role =="Customer" -> {
                      moveToCustomerHome()
                     }
-
-                    token.isNotEmpty() && role == "Professional" -> {
+                    token.isNotEmpty() && role =="Professional"-> {
                        moveToProfessionalHome()
                     }
-
                     else -> {
                         moveToLogin()
                     }

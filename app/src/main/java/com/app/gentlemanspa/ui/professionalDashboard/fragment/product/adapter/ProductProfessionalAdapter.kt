@@ -15,7 +15,6 @@ import com.daimajia.swipe.adapters.RecyclerSwipeAdapter
 class ProductProfessionalAdapter(private var productsList: ArrayList<ProductsListItem>) : RecyclerSwipeAdapter<ProductProfessionalAdapter.ViewHolder>() {
 
     private lateinit var productProfessionalCallbacks: ProductProfessionalCallbacks
-
     class ViewHolder(val binding : ItemProductProfessionalBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

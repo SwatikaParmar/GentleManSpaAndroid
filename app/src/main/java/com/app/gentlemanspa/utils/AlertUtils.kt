@@ -2,7 +2,6 @@ package com.app.gentlemanspa.utils
 
 import android.annotation.SuppressLint
 import android.app.Dialog
-import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.Gravity
@@ -13,6 +12,28 @@ import android.view.WindowManager
 import com.app.gentlemanspa.databinding.ItemAlertBookingSuccess
 import com.app.gentlemanspa.databinding.ItemAlertPlaceOrder
 import com.app.gentlemanspa.databinding.ItemWarningAlert
+
+
+
+import android.content.Context
+import androidx.appcompat.app.AlertDialog
+import com.app.gentlemanspa.databinding.ItemAlertPayment
+
+fun showMessageOptionsDialog(
+    context: Context,
+    messageContent: String,
+    onYesClick: () -> Unit
+) {
+    val dialogBuilder = AlertDialog.Builder(context)
+    dialogBuilder.setTitle(messageContent)
+    dialogBuilder.setPositiveButton("Yes") { _, _ ->
+        onYesClick()
+    }
+    dialogBuilder.setNegativeButton("Cancel", null)
+    dialogBuilder.show()
+}
+
+
 
 @SuppressLint("SetTextI18n")
 fun Context.showWarningAlert(alertCallbackInt: AlertCallbackInt) {
@@ -108,16 +129,43 @@ fun Context.showAlertForBookingSuccess(
     dialog.show()
 }
 
+@SuppressLint("SetTextI18n")
+fun Context.showAlertForPayment(
+    alertPaymentCallbackInt: AlertPaymentCallbackInt
+) {
+    val dialog = Dialog(this)
+    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+    dialog.setCancelable(false)
+    val itemAlertPayment = ItemAlertPayment.inflate(LayoutInflater.from(this))
+    dialog.setContentView(itemAlertPayment.root)
+    val width = WindowManager.LayoutParams.MATCH_PARENT
+    val height = WindowManager.LayoutParams.MATCH_PARENT
+    dialog.window?.setLayout(width, height)
+    dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+    val params: WindowManager.LayoutParams = dialog.window!!.attributes
+    params.gravity = Gravity.CENTER
+    itemAlertPayment.tvCancel.setOnClickListener {
+        dialog.dismiss()
+
+    }
+    itemAlertPayment.tvProceed.setOnClickListener {
+        dialog.dismiss()
+        alertPaymentCallbackInt.onOkayClicked(it,itemAlertPayment.rbOnlinePayment.isChecked)
+    }
+    dialog.show()
+}
+
 interface AlertCallbackInt {
     fun onOkayClicked(view: View)
     fun onCancelClicked(view: View)
 }
-
 interface BookingSuccessAlertCallbackInt {
     fun onGoToCartClicked(view: View)
     fun onDoneClicked(view: View)
 }
-
 interface AlertWithoutCancelCallbackInt {
     fun onOkayClicked(view: View)
+}
+interface AlertPaymentCallbackInt {
+    fun onOkayClicked(view: View,onlinePayment: Boolean)
 }

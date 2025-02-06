@@ -6,6 +6,7 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Resources
+import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -216,15 +217,7 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
 
         binding.etPhone.setText("${profileData?.data?.dialCode} ${profileData?.data?.phoneNumber}")
         binding.etEmail.setText(profileData?.data?.email)
-        // binding.countryCodePicker.setCountryForPhoneCode(profileData?.data?)
         binding.countryCodePicker.isEnabled = false
-
-        /*     binding.etHouse.setText(profileData?.data?.professionalDetail?.houseNoOrBuildingName)
-               binding.etStreet.setText(profileData?.data?.professionalDetail?.streetAddress)
-               binding.etCountry.setText(profileData?.data?.professionalDetail?.country)
-               binding.etState.setText(profileData?.data?.professionalDetail?.state)
-               binding.etCity.setText(profileData?.data?.professionalDetail?.city)
-               binding.etPinCode.setText(profileData?.data?.professionalDetail?.pincode)*/
         Log.d("profileUrl","profilepic:${profileData?.data?.profilepic}")
         Glide.with(requireContext()).load(ApiConstants.BASE_FILE + profileData?.data?.profilepic)
             .into(binding.ivProfile)
@@ -307,15 +300,6 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
                     viewModel.gender.set(binding.spGender.selectedItem.toString())
                     viewModel.id.set(profileData?.data?.id)
                     viewModel.email.set(binding.etEmail.text.toString())
-                    /*    viewModel.pincode.set(binding.etPinCode.text.toString())
-                          viewModel.country.set(binding.etCountry.text.toString())
-                          viewModel.award.set("")
-                          viewModel.city.set(binding.etCity.text.toString())
-                          viewModel.streetAddress.set(binding.etStreet.text.toString())
-                          viewModel.houseNoOrBuildingName.set(binding.etHouse.text.toString())
-                          viewModel.state.set(binding.etState.text.toString())
-                          viewModel.trainingLevel.set("")
-                          viewModel.status.set("")*/
                     viewModel.professionalDetailId.set(profileData!!.data!!.professionalDetail!!.professionalDetailId)
                     viewModel.specialityIds.set(commaSeparatedSpecialitiesId)
                     viewModel.updateProfessional()
@@ -344,16 +328,6 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
 
             checkString(binding.etEmail) -> requireContext().showToast("Please enter email")
             !isValidEmail(checkValidString(binding.etEmail)) -> requireContext().showToast("Please enter a valid email address")
-            checkString(binding.etPhone) -> requireContext().showToast("Please enter phone number")
-            checkValidString(binding.etPhone).length != 10 -> requireContext().showToast("Please enter a valid 10 digit phone number")
-
-            /*   checkString(binding.etSpeciality) -> requireContext().showToast("Please select speciality")
-                 checkString(binding.etHouse) -> requireContext().showToast("Please enter house or building number")
-                 checkString(binding.etStreet) -> requireContext().showToast("Please enter street address")
-                 checkString(binding.etCountry) -> requireContext().showToast("Please enter country")
-                 checkString(binding.etState) -> requireContext().showToast("Please enter state")
-                 checkString(binding.etCity) -> requireContext().showToast("Please enter city")
-                 checkString(binding.etPinCode) -> requireContext().showToast("Please enter pin code")*/
             else -> return true
         }
 
@@ -380,14 +354,38 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
             if (result.resultCode == Activity.RESULT_OK) {
                 // Handle the gallery result
                 val imageUri = result.data?.data
-                profileImage = File(imageUri?.path)
+              //  profileImage = File(imageUri?.path)
               //  binding.ivProfile.setImageURI(imageUri)
-                Glide.with(this)
-                    .load(profileImage)
-                    .into(binding.ivProfile)
+                imageUri?.let {
+                    val file = getFileFromUri(it)
+                    if (file != null) {
+                        Log.d("GalleryImage", "profileImage->$file")
+                        // binding.ivProfile.setImageURI(it)
+                        profileImage = file
+                        Glide.with(this)
+                            .load(profileImage)
+                            .into(binding.ivProfile)
+                    }
+                }
             }
         }
 
+    private fun getFileFromUri(uri: Uri): File? {
+        var cursor: Cursor? = null
+        try {
+            val projection = arrayOf(MediaStore.Images.Media.DATA)
+            cursor = requireContext().contentResolver.query(uri, projection, null, null, null)
+            val columnIndex = cursor?.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+            cursor?.moveToFirst()
+            val filePath = columnIndex?.let { cursor?.getString(it) }
+            return if (filePath != null) File(filePath) else null
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            cursor?.close()
+        }
+        return null
+    }
 
     @SuppressLint("QueryPermissionsNeeded")
     private fun openCamera() {

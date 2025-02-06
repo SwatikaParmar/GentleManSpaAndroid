@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.app.gentlemanspa.network.InitialRepository
+import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.UpcomingServiceAppointmentResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.BannerResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.CategoriesResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.LocationResponse
@@ -33,10 +34,9 @@ class HomeCustomerViewModel (private var initialRepository: InitialRepository) :
   //  val resultCategories = MutableLiveData<Resource<CategoriesResponse>>()
     val resultCategories = MutableLiveData<Resource<SpaCategoriesResponse>>()
     val resultProductCategories = MutableLiveData<Resource<ProductCategoriesResponse>>()
-    val resultProfileCustomerDetail =
-        MutableLiveData<Resource<GetProfessionalDetailResponse>>()
-
+    val resultProfileCustomerDetail = MutableLiveData<Resource<GetProfessionalDetailResponse>>()
     val resultProfessionalTeam= MutableLiveData<Resource<ProfessionalResponse>>()
+    val resultUpcomingAppointmentList = MutableLiveData<Resource<UpcomingServiceAppointmentResponse>>()
 
 
     fun getLocationAddress() {
@@ -225,5 +225,35 @@ class HomeCustomerViewModel (private var initialRepository: InitialRepository) :
     }
 
 
+    fun getUpcomingAppointments() {
+        resultUpcomingAppointmentList.value = Resource.loading(null)
+        viewModelScope.launch {
+            initialRepository.getServiceAppointments("Upcoming",
+                1000,
+                1,
+            )
+                .onStart { }
+                .onCompletion { }
+                .catch { exception ->
+                    if (!CommonFunctions.getError(exception)!!.contains("401"))
+                        resultUpcomingAppointmentList.value =
+                            Resource.error(
+                                data = null,
+                                message = CommonFunctions.getError(exception)
+                            )
+                }
+                .collect {
+                    if (it?.statusCode == 200) {
+                        Log.d("dataList","inside viewModel dataList size ${it.data.dataList.size} ")
+
+                        resultUpcomingAppointmentList.value =
+                            Resource.success(message = it.messages, data = it)
+                    } else {
+                        resultUpcomingAppointmentList.value =
+                            Resource.error(data = null, message = it?.messages)
+                    }
+                }
+        }
+    }
 
 }

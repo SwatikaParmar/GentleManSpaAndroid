@@ -6,7 +6,7 @@ plugins {
     id("kotlin-kapt")
     id("kotlin-parcelize")
     id("androidx.navigation.safeargs.kotlin")
- //   id("com.android.application")
+    //   id("com.android.application")
     id("com.google.gms.google-services")
 }
 
@@ -20,7 +20,7 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-        archivesName= "GentleManSpa_V$versionName"
+        archivesName = "GentleManSpa_V$versionName"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -41,7 +41,7 @@ android {
         jvmTarget = "1.8"
     }
 
-    buildFeatures{
+    buildFeatures {
         //noinspection DataBindingWithoutKapt
         dataBinding = true
         buildConfig = true
@@ -65,15 +65,12 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    implementation (libs.androidx.navigation.fragment.ktx)
-    implementation (libs.androidx.navigation.ui.ktx)
-
-    implementation (libs.ssp.android)
-    implementation (libs.sdp.android)
-
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.ssp.android)
+    implementation(libs.sdp.android)
     implementation(libs.ccp)
-
-    implementation (libs.pinview)
+    implementation(libs.pinview)
 
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
@@ -86,24 +83,24 @@ dependencies {
 
     implementation(libs.glide)
 
-    implementation (libs.material.calendarview)
+    implementation(libs.material.calendarview)
 
-    implementation (libs.swipelayout.library)
+    implementation(libs.swipelayout.library)
 
     //GOOGLE MAPS GOOGLE PLAY SERVICES DEPENDENCY=====
-    implementation (libs.play.services.maps)
-    implementation (libs.play.services.location)
+    implementation(libs.play.services.maps)
+    implementation(libs.play.services.location)
 
     // Import the Firebase BoM
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     // Firebase UI for Realtime Database
-    implementation (libs.firebase.ui.database)
+    implementation(libs.firebase.ui.database)
 
     // Firebase Database
-   implementation ("com.google.firebase:firebase-database-ktx")
+    implementation("com.google.firebase:firebase-database-ktx")
 
-
+    implementation ("com.google.android.material:material:1.12.0")
 
 
 }

@@ -142,18 +142,15 @@ class RegisterFragment : Fragment(), View.OnClickListener {
     private var galleryLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
-                // Handle the gallery result
                 val imageUri = result.data?.data
-                currentPhotoPath=imageUri?.path.toString()
-                /*   profileImage = File(imageUri?.path.toString())
-                  Log.d("imageUri","galleryLauncher imageUri->${imageUri}")
-                  binding.ivProfile.setImageURI(imageUri)*/
+             //   currentPhotoPath=imageUri?.path.toString()
                 imageUri?.let {
                     val file = getFileFromUri(it)
                     if (file != null) {
                         Log.d("GalleryImage", "profileImage->$file")
                         // binding.ivProfile.setImageURI(it)
                         profileImage = file
+                        currentPhotoPath= file.toString()
                         Glide.with(this)
                             .load(profileImage)
                             .into(binding.ivProfile)

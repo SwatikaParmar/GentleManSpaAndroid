@@ -105,6 +105,36 @@
                 tools:itemCount="6"
                 tools:listitem="@layout/item_past_appointment" />
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clNoDataFound"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivNoDataFound"
+                    android:layout_width="@dimen/_130sdp"
+                    android:layout_height="@dimen/_140sdp"
+                    android:padding="@dimen/_3sdp"
+                    android:src="@drawable/ic_no_data_found"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no_appointment_found"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_15ssp"
+                    app:fontFamily="@font/poppins_medium"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ivNoDataFound" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

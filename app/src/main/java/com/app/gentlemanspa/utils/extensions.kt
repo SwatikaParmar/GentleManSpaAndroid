@@ -75,3 +75,8 @@ fun openNotificationSettings(context: Context) {
     }
    context.startActivity(Intent.createChooser(shareIntent, "Share URL via"))
 }
+
+fun openUrlInBrowser(context: Context, url: String) {
+    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+    context.startActivity(intent)
+}

@@ -13,11 +13,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import androidx.fragment.app.viewModels
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.app.gentlemanspa.R
-import com.app.gentlemanspa.base.MyApplication
 import com.app.gentlemanspa.base.MyApplication.Companion.hideProgress
 import com.app.gentlemanspa.base.MyApplication.Companion.showProgress
 import com.app.gentlemanspa.ui.professionalDashboard.activity.ProfessionalActivity
@@ -25,12 +23,13 @@ import com.app.gentlemanspa.databinding.AccountCreatedDialogBinding
 import com.app.gentlemanspa.databinding.FragmentOtpBinding
 import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.network.Status
-import com.app.gentlemanspa.ui.auth.fragment.forget.ForgetPasswordFragmentDirections
 import com.app.gentlemanspa.ui.auth.fragment.otp.model.SignUpRequest
 import com.app.gentlemanspa.ui.auth.fragment.otp.viewModel.OtpViewModel
 import com.app.gentlemanspa.utils.AppPrefs
 import com.app.gentlemanspa.utils.CommonFunctions.getTextRequestBodyParams
 import com.app.gentlemanspa.utils.CommonFunctions.prepareFilePart
+import com.app.gentlemanspa.utils.PROFESSIONAL_USER_ID
+import com.app.gentlemanspa.utils.ROLE
 import com.app.gentlemanspa.utils.ViewModelFactory
 import com.app.gentlemanspa.utils.showToast
 import java.io.File
@@ -79,9 +78,12 @@ class OtpFragment : Fragment(), View.OnClickListener {
                         //  hideProgress()
                         messagesRegister = it.data?.messages.toString()
                         AppPrefs(requireContext()).setString("TOKEN", it.data?.data?.token)
+                        AppPrefs(requireContext()).saveStringPref(ROLE,it.data?.data?.role)
+                        AppPrefs(requireContext()).saveStringPref(PROFESSIONAL_USER_ID, it.data?.data?.id)
+
                         Log.d("signUpRequest", "register currentPhotoPath->${args.currentPhotoPath}")
 
-                        if (args.currentPhotoPath != "null" ) {
+                        if (args.currentPhotoPath != "null") {
                             Log.d("signUpRequest", "inside currentPhotoPath")
                             profileImage = File(args.currentPhotoPath)
                             viewModel.profileId.set(getTextRequestBodyParams(it.data?.data?.id))

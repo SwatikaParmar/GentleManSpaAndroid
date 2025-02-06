@@ -21,12 +21,21 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.Customer
 import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.DeleteAddressResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.model.CustomerPlaceOrderRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.model.CustomerPlaceOrderResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.model.PayByStripeRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.model.PayByStripeResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.model.CustomerChatMessageHistoryResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.model.CustomerSendMessageRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.model.CustomerSendMessageResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.model.DeleteMessageResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.messages.model.CustomerMessagesResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.UpcomingServiceAppointmentResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editAddress.model.AddCustomerAddressRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editAddress.model.AddCustomerAddressResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.model.UpdateProfileCustomerRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.model.UpdateProfileCustomerResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.event.model.EventListResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.AddUserToChatRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.AddUserToChatResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.CancelUpcomingAppointmentRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.CancelUpcomingAppointmentResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.BannerResponse
@@ -44,6 +53,7 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.model.
 import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.model.ServiceRescheduleResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.myOrders.model.MyOrdersResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.orderDetail.model.OrderDetailsResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.payment.model.OrderConfirmationResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.product.model.AddProductInCartRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.product.model.AddProductInCartResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.productDetail.model.ProductDetailResponse
@@ -70,13 +80,15 @@ import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.model.Wee
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.selectCountry.model.country.CountryResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.selectCountry.model.states.StatesResponse
 import com.app.gentlemanspa.utils.Api
+import com.app.gentlemanspa.utils.updateStatus.UpdateStatusRequest
+import com.app.gentlemanspa.utils.updateStatus.UpdateStatusResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.http.Query
+import okhttp3.ResponseBody
 
 
 class InitialRepository {
@@ -426,6 +438,18 @@ class InitialRepository {
             emit(result)
         }.flowOn(Dispatchers.IO)
     }
+    suspend fun payByStripe(body: PayByStripeRequest): Flow<PayByStripeResponse?> {
+        return flow {
+            val result =Api.apiInterface?.payByStripe(body)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+    suspend fun orderConfirmation(paymentId: Int): Flow<OrderConfirmationResponse?> {
+        return flow {
+            val result =Api.apiInterface?.orderConfirmation(paymentId)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
     suspend fun getOrderedProducts(type:String, pageSize: Int?,pageNumber: Int?): Flow<MyOrdersResponse?> {
         return flow {
             val result =Api.apiInterface?.getOrderedProducts(type,pageSize,pageNumber)
@@ -454,6 +478,7 @@ class InitialRepository {
     }
 
     suspend fun addUpdateProfessionalSchedule(request: AddUpdateProfessionalScheduleRequest): Flow<AddUpdateProfessionalScheduleResponse?> {
+        Log.d("createSchedule","request->$request")
         return flow {
             val result =Api.apiInterface?.addUpdateProfessionalSchedule(request)
             emit(result)
@@ -467,45 +492,42 @@ class InitialRepository {
         }.flowOn(Dispatchers.IO)
     }
 
-    /*
-
-
-
-         suspend fun getSpeciality(): Flow<BrowserServicesResponse?> {
-             return flow {
-                 val result = Api.apiInterface?.getSpeciality()
-                 emit(result)
-             }.flowOn(Dispatchers.IO)
-         }
-
-
-         suspend fun getServiceDetail(serviceTypeValue :Int?): Flow<ServiceDetailResponse?> {
-             return flow {
-                 val result = Api.apiInterface?.getServiceDetail(serviceTypeValue)
-                 emit(result)
-             }.flowOn(Dispatchers.IO)
-         }
-
-
-         suspend fun getTopDoctors(pageNumber: Int?, pageSize: Int?): Flow<TopDoctorsResponse?> {
-             return flow {
-                 val result = Api.apiInterface?.getTopDoctors(pageNumber,pageSize)
-                 emit(result)
-             }.flowOn(Dispatchers.IO)
-         }
-
-         suspend fun getSearchTopFindDoctors(pageNumber: Int?, pageSize: Int?,searchQuery: String?): Flow<TopDoctorsResponse?> {
-             return flow {
-                 val result = Api.apiInterface?.getSearchTopFindDoctors(pageNumber,pageSize,searchQuery)
-                 emit(result)
-             }.flowOn(Dispatchers.IO)
-         }*/
-
- /*   suspend fun resetPassword(body: ResetPasswordRequest?): Flow<ResetPasswordResponse?> {
+    suspend fun addUserToChat(addUserToChatRequest: AddUserToChatRequest): Flow<AddUserToChatResponse?> {
         return flow {
-            val result = Api.apiInterface?.resetPassword(body)
+            val result =Api.apiInterface?.addUserToChat(addUserToChatRequest)
             emit(result)
         }.flowOn(Dispatchers.IO)
- }
-*/
+    }
+    suspend fun getCustomerMessagesList(userId:String): Flow<CustomerMessagesResponse?> {
+        return flow {
+            val result =Api.apiInterface?.getCustomerMessagesList(userId)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+    suspend fun customerSendMessage(customerSendMessageRequest: CustomerSendMessageRequest): Flow<CustomerSendMessageResponse?> {
+        return flow {
+            val result =Api.apiInterface?.customerSendMessage(customerSendMessageRequest)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+
+    suspend fun getCustomerChatHistory(senderId:String,receiverId:String): Flow<CustomerChatMessageHistoryResponse?> {
+        return flow {
+            val result =Api.apiInterface?.getCustomerChatHistory(senderId,receiverId)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+    suspend fun deleteMessage(messageId:Int): Flow<DeleteMessageResponse?> {
+        return flow {
+            val result =Api.apiInterface?.deleteMessage(messageId)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+
+    suspend fun updateStatus(updateStatusRequest: UpdateStatusRequest): Flow<UpdateStatusResponse?> {
+        return flow {
+            val result =Api.apiInterface?.updateStatus(updateStatusRequest)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
 }

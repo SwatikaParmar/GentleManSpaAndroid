@@ -24,6 +24,8 @@ import com.app.gentlemanspa.databinding.FragmentCreateScheduleBinding
 import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.network.Status
 import com.app.gentlemanspa.ui.professionalDashboard.activity.ProfessionalActivity
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.createSchedule.model.AddUpdateProfessionalScheduleRequest
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.createSchedule.model.WorkingTime
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.createSchedule.viewModel.CreateScheduleViewModel
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.viewModel.ScheduleViewModel
 import com.app.gentlemanspa.utils.AppPrefs
@@ -48,8 +50,8 @@ class CreateScheduleFragment : Fragment(), View.OnClickListener {
             InitialRepository()
         )
     }
-    var startSelectedTime: String = ""
-    var endSelectedTime: String = ""
+    private var startSelectedTime: String = ""
+    private var endSelectedTime: String = ""
     private var startSelectedTimeMillis: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,7 +84,6 @@ class CreateScheduleFragment : Fragment(), View.OnClickListener {
         (activity as ProfessionalActivity).bottomNavigation(false)
         binding.onClick = this
     }
-
 
     @SuppressLint("DefaultLocale")
     private fun setStartTimePickerBottomSheet() {
@@ -122,7 +123,7 @@ class CreateScheduleFragment : Fragment(), View.OnClickListener {
             val isAM = hour < 12
             period = if (isAM) "AM" else "PM"
             startSelectedTime = String.format("%02d:%02d %s", displayHour, minute, period)
-         // Store the start time in milliseconds
+            // Store the start time in milliseconds
             val calendarStart = Calendar.getInstance()
             calendarStart.set(Calendar.HOUR_OF_DAY, hour)
             calendarStart.set(Calendar.MINUTE, minute)
@@ -139,7 +140,6 @@ class CreateScheduleFragment : Fragment(), View.OnClickListener {
         }
         bottomSheet.behavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
-
 
     @SuppressLint("DefaultLocale")
     private fun setEndTimePickerBottomSheet() {
@@ -169,7 +169,6 @@ class CreateScheduleFragment : Fragment(), View.OnClickListener {
             val roundedMinute = if (minute % 30 == 0) minute else if (minute < 30) 0 else 30
             bottomSheetLayout.timePicker.minute = roundedMinute
         }
-
         bottomSheetLayout.tvDone.setOnClickListener {
             val hour = bottomSheetLayout.timePicker.hour
             var minute = bottomSheetLayout.timePicker.minute
@@ -210,26 +209,28 @@ class CreateScheduleFragment : Fragment(), View.OnClickListener {
             binding.ivArrowBack -> {
                 findNavController().popBackStack()
             }
-
             binding.clStartTimeValue -> {
                 setStartTimePickerBottomSheet()
             }
-
             binding.clEndTimeValue -> {
-                if (binding.tvStartHour.text.toString().trim()=="00" && binding.tvStartMin.text.toString().trim()=="00"){
+                if (binding.tvStartHour.text.toString()
+                        .trim() == "00" && binding.tvStartMin.text.toString().trim() == "00"
+                ) {
                     requireContext().showToast("Select Start Time first")
                     return
                 }
                 setEndTimePickerBottomSheet()
             }
-
             binding.btnCreate -> {
                 Log.d("SelectedTime", "btn clicked")
-                Log.d("SelectedTime", "startSelectedTime->${startSelectedTime} endSelectedTime->${endSelectedTime}")
+                Log.d(
+                    "SelectedTime",
+                    "startSelectedTime->${startSelectedTime} endSelectedTime->${endSelectedTime}"
+                )
                 if (startSelectedTime.isNotEmpty() && endSelectedTime.isNotEmpty()) {
                     if (isStartTimeBeforeEndTime(startSelectedTime, endSelectedTime)) {
                         proceedToSchedule()
-                    }else{
+                    } else {
                         requireContext().showToast("Start time must be before end time")
                     }
                 } else {
@@ -242,22 +243,30 @@ class CreateScheduleFragment : Fragment(), View.OnClickListener {
 
     private fun proceedToSchedule() {
         Log.d("SelectedTime", "inside proceedToSchedule")
+        Log.d("createSchedule", "professionalScheduleId${args.professionalScheduleId}")
 
+    /*    var professionalScheduleId = 0
         if (binding.btnCreate.text.toString() == "Update") {
-            viewModel.professionalScheduleId.set(args.professionalScheduleId)
+            professionalScheduleId = args.professionalScheduleId
         } else {
-            viewModel.professionalScheduleId.set(0)
+            professionalScheduleId = 0
+        }*/
+        val professionalDetailId = AppPrefs(requireContext()).getStringPref(PROFESSIONAL_DETAIL_ID)?.toInt()
+        Log.d("createSchedule","oldFromTime->${args.oldFromTime} oldToTime->${args.oldToTime}")
+        val workingTimeList=ArrayList<WorkingTime>()
+        if (args.oldFromTime.isNotBlank() && args.oldToTime.isNotBlank()){
+            workingTimeList.add(WorkingTime(args.oldFromTime,args.oldToTime))
         }
-        viewModel.professionalDetailId.set(
-            AppPrefs(requireContext()).getStringPref(
-                PROFESSIONAL_DETAIL_ID
-            )?.toInt()
+        workingTimeList.add(WorkingTime(startSelectedTime,endSelectedTime))
+       // val workingTime = listOf(WorkingTime(args.oldFromTime, args.oldstartSelectedTimeToTime),WorkingTime(, endSelectedTime))
+        val request = AddUpdateProfessionalScheduleRequest(
+            professionalDetailId!!, args.professionalScheduleId, args.weekDaysItem.weekdaysId!!,
+            workingTimeList
         )
-        viewModel.weekDaysId.set(args.weekDaysItem.weekdaysId)
-        viewModel.fromTime.set(startSelectedTime)
-        viewModel.toTime.set(endSelectedTime)
-        viewModel.addUpdateProfessionalSchedule()
+        Log.d("createSchedule","request->$request")
+        viewModel.addUpdateProfessionalSchedule(request)
     }
+
     @RequiresApi(Build.VERSION_CODES.O)
     private fun isStartTimeBeforeEndTime(startTime: String, endTime: String): Boolean {
         val startTime24Hour = convertTo24HourFormat(startTime)

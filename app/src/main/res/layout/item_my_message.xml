@@ -7,53 +7,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/verticalG1"
-            android:layout_width="1dp"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.03163017" />
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/verticalG1End"
-            android:layout_width="1dp"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.75" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/verticalG2"
-            android:layout_width="1dp"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.97" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/verticalG2End"
-            android:layout_width="1dp"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.25" />
-
-    <!--    <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/message_profile_image"
-            android:layout_width="@dimen/_50sdp"
-            android:layout_height="@dimen/_50sdp"
-            android:focusable="true"
-            android:visibility="gone"
-            android:padding="@dimen/_5sdp"
-            android:src="@drawable/place_holder"
-            app:layout_constraintStart_toEndOf="@id/verticalG1"
-            app:layout_constraintTop_toTopOf="parent" />-->
 
         <LinearLayout
-            android:id="@+id/msgReceiverLL"
+            android:id="@+id/llMessageReceiver"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintStart_toStartOf="@id/verticalG1"
-            app:layout_constraintEnd_toEndOf="@id/verticalG1End"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/msgReceiverCV"
@@ -68,7 +30,7 @@
                 app:cardElevation="4dp">
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/msgReceiverTV"
+                    android:id="@+id/tvReceiverMessage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -84,21 +46,11 @@
 
             </androidx.cardview.widget.CardView>
 
-            <ImageView
-                android:id="@+id/message_receiver_image_view"
-                android:contentDescription="@string/image_description"
-                android:scaleType="centerCrop"
-                android:layout_marginTop="5dp"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:visibility="gone"
-                app:layout_constraintTop_toBottomOf="@id/msgReceiverTV"
-                app:layout_constraintStart_toStartOf="@id/verticalG1" />
 
         </LinearLayout>
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/msgTimeReceiverTV"
+            android:id="@+id/tvReceiverTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -106,18 +58,17 @@
             android:text="@string/time"
             android:textSize="@dimen/_9ssp"
             android:textColor="@color/white"
-            app:layout_constraintStart_toStartOf="@id/verticalG1"
-            app:layout_constraintTop_toBottomOf="@id/msgReceiverLL"
+            app:layout_constraintStart_toStartOf="@id/llMessageReceiver"
+            app:layout_constraintTop_toBottomOf="@id/llMessageReceiver"
             />
 
         <LinearLayout
-            android:id="@+id/msgSenderLL"
+            android:id="@+id/llMessageSender"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintEnd_toStartOf="@id/verticalG2"
-            app:layout_constraintStart_toStartOf="@id/verticalG2End"
-            app:layout_constraintTop_toBottomOf="@id/msgTimeReceiverTV">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvReceiverTime">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/msgSenderCV"
@@ -133,7 +84,7 @@
                 app:cardElevation="4dp">
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/msgSenderTV"
+                    android:id="@+id/tvSenderMessage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -149,23 +100,12 @@
 
             </androidx.cardview.widget.CardView>
 
-            <ImageView
-                android:id="@+id/message_sender_image_view"
-                android:contentDescription="@string/image_description"
-                android:scaleType="centerCrop"
-                android:layout_margin="5dp"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:visibility="gone"
-                android:layout_gravity="end"
-                app:layout_constraintTop_toBottomOf="@id/msgSenderCV"
-                app:layout_constraintEnd_toEndOf="parent" />
 
         </LinearLayout>
 
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/msgTimeSenderTV"
+            android:id="@+id/tvSenderTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/_4sdp"
@@ -173,8 +113,8 @@
             android:text="@string/time"
             android:textColor="@color/white"
             android:textSize="@dimen/_9ssp"
-            app:layout_constraintEnd_toStartOf="@id/verticalG2"
-            app:layout_constraintTop_toBottomOf="@id/msgSenderLL"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/llMessageSender"
             tools:ignore="TextContrastCheck" />
 
 
