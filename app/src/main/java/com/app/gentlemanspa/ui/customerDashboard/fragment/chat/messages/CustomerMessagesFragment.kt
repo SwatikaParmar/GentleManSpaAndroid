@@ -75,7 +75,7 @@ class CustomerMessagesFragment : Fragment(), View.OnClickListener {
                 val messageSenderId= AppPrefs(requireContext()).getStringPref(CUSTOMER_USER_ID).toString()
                 val messageReceiverId=item.userName
                 val name="${item.firstName} ${item.lastName}"
-                val profilePic=item.profilePic
+                val profilePic=item.profilePic?:""
                 val action=CustomerMessagesFragmentDirections.actionCustomerMessageFragmentToCustomerChatFragment(
                     messageSenderId,messageReceiverId,name,profilePic
                 )
@@ -85,7 +85,7 @@ class CustomerMessagesFragment : Fragment(), View.OnClickListener {
 
     }
     private fun initObserver() {
-        viewModel.resultCustomerMessagesList.observe(this) {
+        viewModel.resultCustomerMessagesList.observe(this) { it ->
             it?.let { result ->
                 when (result.status) {
                     Status.LOADING -> {
@@ -96,7 +96,8 @@ class CustomerMessagesFragment : Fragment(), View.OnClickListener {
                         hideProgress()
                         if (it.data?.data!!.isNotEmpty()){
                             binding.clNoUserExist.setGone()
-                            setCustomerMessagesAdapter(it.data.data)
+                            val sortedMessages = it.data.data.sortedByDescending { it.lastMessageTime }
+                            setCustomerMessagesAdapter(sortedMessages)
                         }else{
                             binding.clNoUserExist.setVisible()
                         }

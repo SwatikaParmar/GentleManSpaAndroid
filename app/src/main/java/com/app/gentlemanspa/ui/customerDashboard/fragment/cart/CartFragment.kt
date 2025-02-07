@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.navigation.NavOptions
@@ -52,7 +54,6 @@ class CartFragment : Fragment(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         initObserver()
     }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -68,11 +69,10 @@ class CartFragment : Fragment(), View.OnClickListener {
         (activity as CustomerActivity).bottomNavigation(false)
         initUI()
     }
-
     private fun initUI() {
+        binding.onClick = this
         callGetCartItemsApi()
         viewModel.geCustomerAddressList()
-        binding.onClick = this
         setAddress()
     }
 
@@ -106,7 +106,6 @@ class CartFragment : Fragment(), View.OnClickListener {
             }
         }
     }
-
     private fun deliverAddress() {
         if (AppPrefs(requireContext()).getStringPref(DELIVERY_ADDRESS).toString().isNotEmpty()) {
             when (AppPrefs(requireContext()).getStringPref(DELIVERY_ADDRESS)) {
@@ -136,11 +135,9 @@ class CartFragment : Fragment(), View.OnClickListener {
 
         }
     }
-
     private fun callGetCartItemsApi() {
         viewModel.getCartItem()
     }
-
     @SuppressLint("SetTextI18n", "DefaultLocale")
     private fun initObserver() {
         viewModel.resultGetCartItems.observe(this) {
@@ -420,7 +417,6 @@ class CartFragment : Fragment(), View.OnClickListener {
         }
 
     }
-
     private fun setCartServicesAdapter(servicesList: List<Service>) {
         val cartServicesAdapter = CartServicesAdapter(servicesList)
         binding.rvCartServices.adapter = cartServicesAdapter
@@ -456,7 +452,6 @@ class CartFragment : Fragment(), View.OnClickListener {
             }
         })
     }
-
     private fun setCartProductsAdapter(productsList: List<Product>) {
         val cartProductAdapter = CartProductsAdapter(productsList)
         binding.rvCartProducts.adapter = cartProductAdapter
@@ -481,7 +476,6 @@ class CartFragment : Fragment(), View.OnClickListener {
             }
         })
     }
-
     override fun onClick(v: View?) {
         when (v) {
             binding.ivAddressArrow -> {
@@ -502,11 +496,14 @@ class CartFragment : Fragment(), View.OnClickListener {
             }
 
             binding.btnPay -> {
-                proceedToPlaceOrder()
+                if (binding.cbHomeDelivery.isChecked && binding.tvDeliveryAddress.isGone){
+                  requireContext().showToast("Please add your address")
+                }else{
+                    proceedToPlaceOrder()
+                }
             }
         }
     }
-
     private fun callCustomerPlaceOderApi() {
         viewModel.customerAddressId.set(0)
         viewModel.deliveryType.set("AtVenue")
@@ -514,7 +511,6 @@ class CartFragment : Fragment(), View.OnClickListener {
         viewModel.paymentId.set(0)
         viewModel.customerPlaceOrder()
     }
-
     private fun proceedToPlaceOrder() {
         requireContext().showAlertForPayment(object : AlertPaymentCallbackInt {
             override fun onOkayClicked(view: View, onlinePayment: Boolean) {

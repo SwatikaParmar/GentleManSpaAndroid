@@ -14,6 +14,7 @@ data class CustomerMessagesData(
     val firstName: String,
     val lastName: String,
     val lastMessage: String,
+    val lastMessageTime : String,
     val profilePic: String,
 )
 

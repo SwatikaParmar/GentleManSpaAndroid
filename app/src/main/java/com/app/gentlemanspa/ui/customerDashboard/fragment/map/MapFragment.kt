@@ -16,8 +16,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.app.gentlemanspa.R
 import com.app.gentlemanspa.databinding.FragmentMapBinding
-import com.app.gentlemanspa.ui.customerDashboard.fragment.address.AddressFragmentDirections
-import com.app.gentlemanspa.ui.customerDashboard.fragment.service.ServiceFragmentArgs
 import com.app.gentlemanspa.utils.showToast
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -41,11 +39,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMapClickListener
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var currentLocation: Location
     private val args: MapFragmentArgs by navArgs()
-
     private var addressType: String = ""
     private var headerTitle: String = ""
     private var customerAddressId: Int=0
-    var customerAddress: Address? =null
+    private var customerAddress: Address? =null
 
 
     companion object {
@@ -69,6 +66,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMapClickListener
         getLocation()
         initUI()
     }
+
     private fun initUI() {
         addressType=args.AddressType
         headerTitle= args.headerTitle.toString()
@@ -179,8 +177,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMapClickListener
                 }else{
                     requireContext().showToast("Please Select Address")
                 }
-
-
             }
 
             binding.ivArrowBack -> {

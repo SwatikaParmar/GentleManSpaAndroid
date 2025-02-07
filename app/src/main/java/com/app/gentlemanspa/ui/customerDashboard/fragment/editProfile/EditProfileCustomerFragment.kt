@@ -154,22 +154,18 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
         editTextSpace()
         setProfileData()
     }
-
     @SuppressLint("SetTextI18n")
     private fun setProfileData() {
-        profileCustomerData =
-            AppPrefs(requireContext()).getProfileCustomerData(PROFILE_CUSTOMER_DATA)
+        profileCustomerData=AppPrefs(requireContext()).getProfileCustomerData(PROFILE_CUSTOMER_DATA)
         binding.etFirstName.setText(profileCustomerData?.data?.firstName.toString())
         binding.etLastName.setText(profileCustomerData?.data?.lastName)
-        //      binding.spGender.setText(profileCustomerData?.data?.professionalDetail?.speciality.)
+        //binding.spGender.setText(profileCustomerData?.data?.professionalDetail?.speciality.)
         binding.etEmail.setText(profileCustomerData?.data?.email)
         binding.etPhone.setText("${profileCustomerData?.data?.dialCode} ${profileCustomerData?.data?.phoneNumber}")
         Glide.with(requireContext())
-            .load(ApiConstants.BASE_FILE + profileCustomerData?.data?.profilepic)
+            .load(ApiConstants.BASE_FILE + profileCustomerData?.data?.profilepic).error(R.drawable.profile_placeholder).placeholder(R.drawable.profile_placeholder)
             .into(binding.ivProfile)
-        val specialityName =
-            profileCustomerData?.data?.professionalDetail?.speciality?.joinToString(",")
-
+        val specialityName = profileCustomerData?.data?.professionalDetail?.speciality?.joinToString(",")
         binding.etSpeciality.setText(specialityName)
         when (profileCustomerData?.data?.gender) {
             "Male" -> {
@@ -188,7 +184,6 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
             binding.spGender.setSelection(genderItem!!)
         }
     }
-
     private fun setGenderSpinner() {
         val genderList = ArrayList<GenderRequest>()
         genderList.clear()
@@ -200,7 +195,6 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
 
         val adapter = GenderAdapter(requireContext(), genderList)
         binding.spGender.adapter = adapter
-
         binding.spGender.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
                 override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -236,16 +230,13 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
                 }
             }
     }
-
     private fun editTextSpace() {
         CommonFunctions.startSpaceEditText(binding.etFirstName)
         CommonFunctions.startSpaceEditText(binding.etLastName)
         CommonFunctions.startSpaceEditText(binding.etEmail)
         CommonFunctions.startSpaceEditText(binding.etPhone)
         CommonFunctions.startSpaceEditText(binding.etSpeciality)
-
     }
-
     override fun onClick(v: View?) {
         when (v) {
             binding.btnUpdate -> {
@@ -253,7 +244,8 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
                     viewModel.firstName.set(binding.etFirstName.text.toString())
                     viewModel.lastName.set(binding.etLastName.text.toString())
                     viewModel.gender.set(binding.spGender.selectedItem.toString())
-                    viewModel.phoneNumber.set(binding.etPhone.text.toString())
+                    viewModel.dialCode.set(profileCustomerData?.data?.dialCode)
+                    viewModel.phoneNumber.set(profileCustomerData?.data?.phoneNumber)
                     viewModel.email.set(binding.etEmail.text.toString())
                     viewModel.id.set(profileCustomerData?.data?.id)
                     viewModel.updateCustomerProfile()
@@ -274,8 +266,6 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
             }
         }
     }
-
-
     private fun isValidation(): Boolean {
         when {
             checkString(binding.etFirstName) -> requireContext().showToast("Please enter first name")
@@ -293,7 +283,6 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
         }
         return false
     }
-
     private var cameraLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -341,7 +330,6 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
         }
         return null
     }
-
     @SuppressLint("QueryPermissionsNeeded")
     private fun openCamera() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -364,7 +352,6 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
             }
         }
     }
-
     @Throws(IOException::class)
     private fun createImageFile(): File {
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
@@ -373,12 +360,10 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
             requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         return File.createTempFile(imageFileName, ".jpg", storageDir)
     }
-
     private fun openGallery() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         galleryLauncher.launch(intent)
     }
-
     private fun checkAndRequestPermissionsForCamera(onPermissionsGranted: () -> Unit) {
         val permissions = arrayOf(Manifest.permission.CAMERA)
 
@@ -394,8 +379,6 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
             requestPermissions(permissions, REQUEST_CODE_CAMERA_PERMISSIONS)
         }
     }
-
-
     @Deprecated("Deprecated in Java")
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -407,7 +390,7 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
             grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }
         ) {
             // Permissions are granted, proceed with the action
-            //openCamera()
+            // openCamera()
             onPermissionsGranted?.invoke()
         } else {
             CommonFunctions.goToAppSettings(requireContext())
@@ -440,8 +423,6 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
             requestPermissions(permissions, REQUEST_CODE_GALLERY_PERMISSIONS)
         }
     }
-
-
     private fun setImagePickerBottomSheet() {
         val bottomSheet = BottomSheetDialog(requireContext(), R.style.DialogTheme_transparent)
         val bottomSheetLayout = ImagePickerBottomBinding.inflate(layoutInflater)
@@ -465,7 +446,6 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
         }
         bottomSheet.behavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
-
     companion object {
         private const val REQUEST_CODE_CAMERA_PERMISSIONS = 101
         private const val REQUEST_CODE_GALLERY_PERMISSIONS = 102

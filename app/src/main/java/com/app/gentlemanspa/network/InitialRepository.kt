@@ -138,6 +138,7 @@ class InitialRepository {
         }.flowOn(Dispatchers.IO)
     }
     suspend fun updateProfessional(body: UpdateProfileProfessionalRequest?): Flow<UpdateProfileProfessionalResponse?> {
+        Log.d("UpdateProfileBody","UpdateProfileBody->$body")
         return flow {
             val result = Api.apiInterface?.updateProfessional(body)
             emit(result)

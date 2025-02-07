@@ -33,7 +33,7 @@ import com.bumptech.glide.Glide
 
 class ProfileCustomerFragment : Fragment(), View.OnClickListener {
 
-    private lateinit var binding : FragmentProfileCustomerBinding
+    private lateinit var binding: FragmentProfileCustomerBinding
     private var profileCustomerData: GetProfessionalDetailResponse? = null
 
     private val viewModel: ProfileCustomerViewModel by viewModels {
@@ -62,37 +62,53 @@ class ProfileCustomerFragment : Fragment(), View.OnClickListener {
         (activity as CustomerActivity).bottomNavigation(true)
         initUI()
     }
+
     @SuppressLint("SetTextI18n")
     private fun initUI() {
-        Log.d("id","customerId:${AppPrefs(requireContext()).getStringPref(CUSTOMER_USER_ID)}")
+        Log.d("id", "customerId:${AppPrefs(requireContext()).getStringPref(CUSTOMER_USER_ID)}")
         binding.onClick = this
         viewModel.getCustomerDetail()
-        profileCustomerData= AppPrefs(requireContext()).getProfileCustomerData(PROFILE_CUSTOMER_DATA)
-        binding.tvName.text="${profileCustomerData?.data?.firstName} ${profileCustomerData?.data?.lastName}"
-        binding.tvPhone.text=profileCustomerData?.data?.email
-        Glide.with(requireContext()).load(ApiConstants.BASE_FILE +profileCustomerData?.data?.profilepic).into(binding.ivProfile)
+        profileCustomerData =
+            AppPrefs(requireContext()).getProfileCustomerData(PROFILE_CUSTOMER_DATA)
+        binding.tvName.text =
+            "${profileCustomerData?.data?.firstName} ${profileCustomerData?.data?.lastName}"
+        binding.tvPhone.text = profileCustomerData?.data?.email
+        Glide.with(requireContext()).load(BASE_FILE + profileCustomerData?.data?.profilepic)
+            .error(R.drawable.profile_placeholder).placeholder(R.drawable.profile_placeholder)
+            .into(binding.ivProfile)
+
     }
+
     override fun onClick(v: View?) {
-        when(v) {
-            binding.clProfile ->{
-                val action = ProfileCustomerFragmentDirections.actionProfileCustomerFragmentToEditProfileCustomerFragment()
+        when (v) {
+            binding.clProfile -> {
+                val action =
+                    ProfileCustomerFragmentDirections.actionProfileCustomerFragmentToEditProfileCustomerFragment()
                 findNavController().navigate(action)
             }
-            binding.clMessages->{
-                val customerUserId="${AppPrefs(requireContext()).getStringPref(CUSTOMER_USER_ID)}"
-              val action=ProfileCustomerFragmentDirections.actionProfileCustomerFragmentToCustomerMessagesFragment(customerUserId)
+
+            binding.clMessages -> {
+                val customerUserId = "${AppPrefs(requireContext()).getStringPref(CUSTOMER_USER_ID)}"
+                val action =
+                    ProfileCustomerFragmentDirections.actionProfileCustomerFragmentToCustomerMessagesFragment(
+                        customerUserId
+                    )
                 findNavController().navigate(action)
             }
-            binding.clEvent ->{
-                val action=ProfileCustomerFragmentDirections.actionProfileCustomerFragmentToEvenFragment()
+
+            binding.clEvent -> {
+                val action =
+                    ProfileCustomerFragmentDirections.actionProfileCustomerFragmentToEvenFragment()
                 findNavController().navigate(action)
             }
-            binding.clRefer->{
+
+            binding.clRefer -> {
                 val url = "https://www.testUrl.com"
-                share(requireContext(),url)
+                share(requireContext(), url)
             }
         }
     }
+
     private fun initObserver() {
         viewModel.resultProfileCustomerDetail.observe(this) {
             it?.let { result ->
@@ -103,12 +119,18 @@ class ProfileCustomerFragment : Fragment(), View.OnClickListener {
 
                     Status.SUCCESS -> {
                         hideProgress()
-                        AppPrefs(requireContext()).setProfileCustomerData(PROFILE_CUSTOMER_DATA,it.data)
+                        AppPrefs(requireContext()).setProfileCustomerData(
+                            PROFILE_CUSTOMER_DATA,
+                            it.data
+                        )
                         val name = "${it.data?.data?.firstName} ${it.data?.data?.lastName}"
                         val email = it.data?.data?.email.toString()
-                        binding.tvName.text=name
-                        binding.tvPhone.text=email
-                        Glide.with(requireContext()).load(ApiConstants.BASE_FILE +it.data?.data?.profilepic).into(binding.ivProfile)
+                        binding.tvName.text = name
+                        binding.tvPhone.text = email
+                        Glide.with(requireContext())
+                            .load(ApiConstants.BASE_FILE + it.data?.data?.profilepic)
+                            .error(R.drawable.profile_placeholder)
+                            .placeholder(R.drawable.profile_placeholder).into(binding.ivProfile)
                     }
 
                     Status.ERROR -> {

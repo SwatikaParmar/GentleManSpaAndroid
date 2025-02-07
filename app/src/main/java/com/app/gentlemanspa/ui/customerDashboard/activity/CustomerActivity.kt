@@ -244,7 +244,7 @@ class CustomerActivity : AppCompatActivity(),HomeCustomerFragment.OnProfileUpdat
         val tvNavName: TextView = headerView.findViewById(R.id.nameTV)
         val ivNavProfileImage: ImageView = headerView.findViewById(R.id.profileNavIV)
         tvNavName.text=name
-        Glide.with(this).load(profileImage).into(ivNavProfileImage)
+        Glide.with(this).load(profileImage).error(R.drawable.profile_placeholder).placeholder(R.drawable.profile_placeholder).into(ivNavProfileImage)
     }
 
 

@@ -141,7 +141,7 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
                 this@MakeAppointmentFragment.slotId = slotId
                 bookingTime = slotTime
             }
-            })
+        })
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -173,7 +173,7 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
     @SuppressLint("SetTextI18n")
     private fun initUI() {
         viewModel.spaServiceId.set(args.spaServiceId)
-        Log.d("appointmentType","appointmentType:${args.appointmentType}")
+        Log.d("appointmentType", "appointmentType:${args.appointmentType}")
         if (args.appointmentType == "Reschedule HistoryCustomerFragment" || args.appointmentType == "Reschedule SelectProfessionalServiceFragment" || args.appointmentType == "Reschedule CartFragment") {
             binding.btnBookAppointment.text = "Reschedule an Appointment"
         } else {
@@ -199,16 +199,19 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
                 binding.tvEvening.isSelected = false
                 callServiceAvailableTimeSlotsApi(bookingDate)
             }
+
             binding.tvEvening -> {
                 slotId = 0
                 binding.tvMorning.isSelected = false
                 binding.tvEvening.isSelected = true
                 callServiceAvailableTimeSlotsApi(bookingDate)
             }
+
             binding.ivArrowBack -> {
                 findNavController().popBackStack()
-              //  val action=MakeAppointmentFragmentDirections.actionMakeAppointmentFragmentToAnyProfessionalFragment()
+                //  val action=MakeAppointmentFragmentDirections.actionMakeAppointmentFragmentToAnyProfessionalFragment()
             }
+
             binding.btnBookAppointment -> {
                 proceedToAppointmentBooking()
             }
@@ -216,12 +219,15 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
     }
 
     private fun proceedToAppointmentBooking() {
-        Log.d("bookAppointment", "inside proceedToAppointmentBooking slotId->${slotId} appointmentType->${args.appointmentType} spaServiceId->${args.spaServiceId} orderId->${args.orderId} serviceBookingId->${args.serviceBookingId} ")
+        Log.d(
+            "bookAppointment",
+            "inside proceedToAppointmentBooking slotId->${slotId} appointmentType->${args.appointmentType} spaServiceId->${args.spaServiceId} orderId->${args.orderId} serviceBookingId->${args.serviceBookingId} "
+        )
         Log.d("bookAppointment", "spaDetailId->${professionalItem.professionalDetail?.spaDetailId}")
         if (slotId == 0) {
             requireContext().showToast("Please Select Time Slot")
         } else {
-            if (args.appointmentType=="Reschedule HistoryCustomerFragment") {
+            if (args.appointmentType == "Reschedule HistoryCustomerFragment") {
                 Log.d("bookAppointment", "inside if part")
                 viewModel.orderId.set(args.orderId)
                 viewModel.slotId.set(slotId)
@@ -269,40 +275,49 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
                 }
 
                 override fun onDoneClicked(view: View) {
-                    when(args.appointmentType){
-                        "Reschedule CartFragment"->{
+                    when (args.appointmentType) {
+                        "Reschedule CartFragment" -> {
                             moveToCartFragment()
                         }
-                        "Book CartFragment"->{
+
+                        "Book CartFragment" -> {
                             moveToCartFragment()
                         }
-                        "Reschedule SelectProfessionalServiceFragment"->{
+
+                        "Reschedule SelectProfessionalServiceFragment" -> {
                             moveToSelectProfessionalServiceFragment()
                         }
-                        "Book SelectProfessionalServiceFragment"->{
+
+                        "Book SelectProfessionalServiceFragment" -> {
                             moveToSelectProfessionalServiceFragment()
                         }
-                        else->{
-                        findNavController().popBackStack()
-                    }
+
+                        else -> {
+                            findNavController().popBackStack()
+                        }
                     }
                 }
             })
     }
 
- private fun moveToCartFragment(){
-     val action =
-         MakeAppointmentFragmentDirections.actionMakeAppointmentFragmentToCartFragment()
-     val navOptions =
-         NavOptions.Builder().setPopUpTo(R.id.makeAppointmentFragment, true).setPopUpTo(R.id.anyProfessionalFragment,true).build()
-     findNavController().navigate(action, navOptions)
- }
- private fun moveToSelectProfessionalServiceFragment(){
-     val action = MakeAppointmentFragmentDirections.actionMakeAppointmentFragmentToSelectProfessionalServiceFragment()
-     val navOptions = NavOptions.Builder().setPopUpTo(R.id.makeAppointmentFragment, true)
-         .setPopUpTo(R.id.anyProfessionalFragment,true).setPopUpTo(R.id.selectProfessionalServiceFragment,true).build()
-     findNavController().navigate(action, navOptions)
- }
+    private fun moveToCartFragment() {
+        val action =
+            MakeAppointmentFragmentDirections.actionMakeAppointmentFragmentToCartFragment()
+        val navOptions =
+            NavOptions.Builder().setPopUpTo(R.id.makeAppointmentFragment, true)
+                .setPopUpTo(R.id.anyProfessionalFragment, true).build()
+        findNavController().navigate(action, navOptions)
+    }
+
+    private fun moveToSelectProfessionalServiceFragment() {
+        val action =
+            MakeAppointmentFragmentDirections.actionMakeAppointmentFragmentToSelectProfessionalServiceFragment()
+        val navOptions = NavOptions.Builder().setPopUpTo(R.id.makeAppointmentFragment, true)
+            .setPopUpTo(R.id.anyProfessionalFragment, true)
+            .setPopUpTo(R.id.selectProfessionalServiceFragment, true).build()
+        findNavController().navigate(action, navOptions)
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     private fun initObserver() {
         viewModel.resultServiceAvailableDates.observe(this) {
@@ -311,6 +326,7 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
                     Status.LOADING -> {
                         showProgress(requireContext())
                     }
+
                     Status.SUCCESS -> {
                         hideProgress()
                         Log.d("AvailableDatesResponse", "response->${it.data?.data}")
@@ -324,6 +340,7 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
                             binding.clData.setGone()
                         }
                     }
+
                     Status.ERROR -> {
                         hideProgress()
                         requireContext().showToast(it.message.toString())
@@ -342,122 +359,133 @@ class MakeAppointmentFragment : Fragment(), View.OnClickListener {
                     Status.SUCCESS -> {
                         Log.d("AvailableTimeResponse", "response->${it.data?.data}")
                         slotId = 0
-                        if (binding.tvMorning.isSelected) {
-                            val morningSlots =
-                                filterMorningSlots(it.data?.data?.firstOrNull()?.slots!!)
-                            Log.d(
-                                "AvailableTimeResponse",
-                                "morningSlots size-> ${morningSlots.size}"
-                            )
-                            if (morningSlots.isNotEmpty()) {
-                                binding.rvTimeSlots.setVisible()
-                                binding.tvNoSlotFound.setGone()
-                                timeSlotServiceAdapter.updateTimeSlotList(morningSlots)
-                            } else {
-                                binding.rvTimeSlots.setGone()
-                                binding.tvNoSlotFound.setVisible()
+                        if (it.data?.data?.size!! > 0) {
+                            binding.tvNoSlotFound.setGone()
 
+                            if (binding.tvMorning.isSelected) {
+                                val morningSlots =
+                                    filterMorningSlots(it.data?.data?.firstOrNull()?.slots!!)
+                                Log.d(
+                                    "AvailableTimeResponse",
+                                    "morningSlots size-> ${morningSlots.size}"
+                                )
+                                if (morningSlots.isNotEmpty()) {
+                                    binding.rvTimeSlots.setVisible()
+                                    binding.tvNoSlotFound.setGone()
+                                    timeSlotServiceAdapter.updateTimeSlotList(morningSlots)
+                                } else {
+                                    binding.rvTimeSlots.setGone()
+                                    binding.tvNoSlotFound.setVisible()
+
+                                }
+                            } else {
+                                val eveningSlots =
+                                    filterEveningSlots(it.data?.data?.firstOrNull()?.slots!!)
+                                Log.d(
+                                    "AvailableTimeResponse",
+                                    "eveningSlots size-> ${eveningSlots.size}"
+                                )
+                                if (eveningSlots.isNotEmpty()) {
+                                    binding.rvTimeSlots.setVisible()
+                                    binding.tvNoSlotFound.setGone()
+                                    timeSlotServiceAdapter.updateTimeSlotList(eveningSlots)
+                                } else {
+                                    binding.rvTimeSlots.setGone()
+                                    binding.tvNoSlotFound.setVisible()
+                                }
                             }
                         } else {
-                            val eveningSlots =
-                                filterEveningSlots(it.data?.data?.firstOrNull()?.slots!!)
-                            Log.d(
-                                "AvailableTimeResponse",
-                                "eveningSlots size-> ${eveningSlots.size}"
-                            )
-                            if (eveningSlots.isNotEmpty()) {
-                                binding.rvTimeSlots.setVisible()
-                                binding.tvNoSlotFound.setGone()
-                                timeSlotServiceAdapter.updateTimeSlotList(eveningSlots)
-                            } else {
-                                binding.rvTimeSlots.setGone()
-                                binding.tvNoSlotFound.setVisible()
-                            }
+                            binding.tvNoSlotFound.setVisible()
+
                         }
                     }
 
-                    Status.ERROR -> {
-                        requireContext().showToast(it.message.toString())
+                        Status.ERROR -> {
+                            requireContext().showToast(it.message.toString())
+
+                        }
 
                     }
-
                 }
             }
-        }
 
-        viewModel.resultAddServiceToCart.observe(this) {
-            it.let { result ->
-                when (result.status) {
-                    Status.LOADING -> {
-                        showProgress(requireContext())
-                    }
+            viewModel.resultAddServiceToCart.observe(this) {
+                it.let { result ->
+                    when (result.status) {
+                        Status.LOADING -> {
+                            showProgress(requireContext())
+                        }
 
-                    Status.SUCCESS -> {
-                        hideProgress()
-                        var tittle = ""
-                        val description =
-                            "Your booking has been scheduled for $bookingDate at $bookingTime with ${professionalItem.firstName} ${professionalItem.lastName}"
-                        when (args.appointmentType) {
+                        Status.SUCCESS -> {
+                            hideProgress()
+                            var tittle = ""
+                            val description =
+                                "Your booking has been scheduled for $bookingDate at $bookingTime with ${professionalItem.firstName} ${professionalItem.lastName}"
+                            when (args.appointmentType) {
 
-                            "Reschedule CartFragment" -> {
-                                tittle = "Rescheduling Successful!"
-                                showSuccessPopup(tittle, description, false)
-                            }
-                            "Book CartFragment"->{
-                                tittle = "Booking Successfully Scheduled!"
-                                showSuccessPopup(tittle, description, false)
-                            }
-                            "Reschedule SelectProfessionalServiceFragment"->{
-                                tittle = "Rescheduling Successful!"
-                                showSuccessPopup(tittle, description, true)
-                            }
-                            "Book SelectProfessionalServiceFragment"->{
-                                tittle = "Booking Successfully Scheduled!"
-                                showSuccessPopup(tittle, description, true)
-                            }
-                            else -> {
-                                tittle = "Booking Successfully Scheduled!"
-                                showSuccessPopup(tittle, description, true)
+                                "Reschedule CartFragment" -> {
+                                    tittle = "Rescheduling Successful!"
+                                    showSuccessPopup(tittle, description, false)
+                                }
+
+                                "Book CartFragment" -> {
+                                    tittle = "Booking Successfully Scheduled!"
+                                    showSuccessPopup(tittle, description, false)
+                                }
+
+                                "Reschedule SelectProfessionalServiceFragment" -> {
+                                    tittle = "Rescheduling Successful!"
+                                    showSuccessPopup(tittle, description, true)
+                                }
+
+                                "Book SelectProfessionalServiceFragment" -> {
+                                    tittle = "Booking Successfully Scheduled!"
+                                    showSuccessPopup(tittle, description, true)
+                                }
+
+                                else -> {
+                                    tittle = "Booking Successfully Scheduled!"
+                                    showSuccessPopup(tittle, description, true)
+                                }
                             }
                         }
-                    }
 
-                    Status.ERROR -> {
-                        hideProgress()
-                        requireContext().showToast(it.message.toString())
-                    }
+                        Status.ERROR -> {
+                            hideProgress()
+                            requireContext().showToast(it.message.toString())
+                        }
 
+                    }
                 }
             }
-        }
 
-        viewModel.resultServiceReschedule.observe(this) {
-            it.let { result ->
-                when (result.status) {
-                    Status.LOADING -> {
-                        showProgress(requireContext())
+            viewModel.resultServiceReschedule.observe(this) {
+                it.let { result ->
+                    when (result.status) {
+                        Status.LOADING -> {
+                            showProgress(requireContext())
+                        }
+
+                        Status.SUCCESS -> {
+                            hideProgress()
+                            val tittle = "Rescheduling Successful!"
+                            val description =
+                                "Your booking has been scheduled for $bookingDate at $bookingTime with ${professionalItem.firstName} ${professionalItem.lastName}"
+                            showSuccessPopup(tittle, description, false)
+
+                        }
+
+                        Status.ERROR -> {
+                            hideProgress()
+                            requireContext().showToast(it.message.toString())
+                        }
+
                     }
-
-                    Status.SUCCESS -> {
-                        hideProgress()
-                        val tittle = "Rescheduling Successful!"
-                        val description =
-                            "Your booking has been scheduled for $bookingDate at $bookingTime with ${professionalItem.firstName} ${professionalItem.lastName}"
-                        showSuccessPopup(tittle, description, false)
-
-                    }
-
-                    Status.ERROR -> {
-                        hideProgress()
-                        requireContext().showToast(it.message.toString())
-                    }
-
                 }
             }
-        }
 
+        }
     }
-}
 
 
 

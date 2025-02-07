@@ -93,7 +93,7 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
 
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = FragmentEditProfileProfessionalBinding.inflate(layoutInflater, container, false)
         return binding.root
@@ -296,7 +296,8 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
                 if (isValidation()) {
                     viewModel.firstName.set(binding.etFirstName.text.toString())
                     viewModel.lastName.set(binding.etLastName.text.toString())
-                    viewModel.phoneNumber.set(binding.etPhone.text.toString())
+                    viewModel.dialCode.set(profileData?.data?.dialCode)
+                    viewModel.phoneNumber.set(profileData?.data?.phoneNumber)
                     viewModel.gender.set(binding.spGender.selectedItem.toString())
                     viewModel.id.set(profileData?.data?.id)
                     viewModel.email.set(binding.etEmail.text.toString())
@@ -564,14 +565,7 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    private fun prepareFilePart(partName: String, file: File): MultipartBody.Part {
-        val requestFile = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), file)
-        return MultipartBody.Part.createFormData(partName, file.name, requestFile)
-    }
 
-    private fun getTextRequestBodyParams(value: String?): RequestBody? {
-        return value?.toRequestBody("text/form-data".toMediaTypeOrNull())
-    }
 
     companion object {
         private const val REQUEST_CODE_CAMERA_PERMISSIONS = 101

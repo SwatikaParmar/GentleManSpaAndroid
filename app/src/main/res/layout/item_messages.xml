@@ -97,6 +97,7 @@
                         android:includeFontPadding="false"
                         android:singleLine="true"
                         android:text="5 mins"
+                        android:visibility="gone"
                         android:textColor="@color/light_black_item"
                         android:textSize="@dimen/_11ssp"
                         android:layout_marginTop="@dimen/_3sdp"

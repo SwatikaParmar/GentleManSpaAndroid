@@ -195,6 +195,7 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
                         it.data?.data?.dataList?.let { it1 -> appointmentsList.addAll(it1) }
                         if (appointmentsList.size>0){
                             binding.clNoDataFound.setGone()
+                            binding.rvAppointment.setVisible()
 
                             when (appointmentType) {
                                 "Upcoming" -> {
@@ -215,6 +216,7 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
                             }
                         }else{
                             binding.clNoDataFound.setVisible()
+                            binding.rvAppointment.setGone()
                         }
 
                     }

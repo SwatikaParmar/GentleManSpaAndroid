@@ -27,19 +27,11 @@ class UpdateProfessionalViewModel (private var initialRepository: InitialReposit
 ) {
     val firstName  = ObservableField<String>()
     val lastName  = ObservableField<String>()
+    val dialCode = ObservableField<String>()
     val phoneNumber = ObservableField<String>()
     val gender = ObservableField<String>()
     val id = ObservableField<String>()
     val email = ObservableField<String>()
-/*    val pincode = ObservableField<String>()
-    val country = ObservableField<String>()
-    val award = ObservableField<String>()
-    val city = ObservableField<String>()
-    val streetAddress = ObservableField<String>()
-    val houseNoOrBuildingName = ObservableField<String>()
-    val state = ObservableField<String>()
-    val trainingLevel = ObservableField<String>()
-    val status = ObservableField<String>()*/
     val specialityIds = ObservableField<String>()
     val professionalDetailId = ObservableField<String>()
     val profilePic = ObservableField<MultipartBody.Part>()
@@ -51,7 +43,7 @@ class UpdateProfessionalViewModel (private var initialRepository: InitialReposit
     fun updateProfessional() {
         resultUpdateProfessional.value = Resource.loading(null)
         viewModelScope.launch {
-            initialRepository.updateProfessional(UpdateProfileProfessionalRequest(firstName.get(),lastName.get(),"+91",phoneNumber.get(),email.get(),gender.get(),id.get(),ProfessionalDetail(
+            initialRepository.updateProfessional(UpdateProfileProfessionalRequest(firstName.get(),lastName.get(),dialCode.get(),phoneNumber.get(),email.get(),gender.get(),id.get(),ProfessionalDetail(
                 professionalDetailId.get()?.toInt(),specialityIds.get(),21)))
                 .onStart { }
                 .onCompletion { }

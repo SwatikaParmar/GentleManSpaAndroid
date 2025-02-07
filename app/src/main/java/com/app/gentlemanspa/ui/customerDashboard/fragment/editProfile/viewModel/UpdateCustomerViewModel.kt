@@ -27,6 +27,7 @@ class UpdateCustomerViewModel (private var initialRepository: InitialRepository)
 ) {
     val firstName = ObservableField<String>()
     val lastName = ObservableField<String>()
+    val dialCode = ObservableField<String>()
     val phoneNumber = ObservableField<String>()
     val gender = ObservableField<String>()
     val id = ObservableField<String>()
@@ -47,7 +48,7 @@ class UpdateCustomerViewModel (private var initialRepository: InitialRepository)
                     firstName.get(),
                     lastName.get(),
                     gender.get(),
-                    "+91",
+                    dialCode.get(),
                     phoneNumber.get(),
                     email.get(),
                     )
