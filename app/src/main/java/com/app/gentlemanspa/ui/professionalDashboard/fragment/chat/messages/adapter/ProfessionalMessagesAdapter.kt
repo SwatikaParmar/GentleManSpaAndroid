@@ -1,23 +1,16 @@
 package com.app.gentlemanspa.ui.professionalDashboard.fragment.chat.messages.adapter
 
 import android.annotation.SuppressLint
-import android.content.ContentValues
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.AdapterView
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.app.gentlemanspa.R
 import com.app.gentlemanspa.databinding.ItemMessagesBinding
 import com.app.gentlemanspa.network.ApiConstants
-import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.messages.adapter.CustomerMessagesAdapter
 import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.messages.model.CustomerMessagesData
 import com.app.gentlemanspa.utils.setGone
 import com.app.gentlemanspa.utils.setVisible
 import com.bumptech.glide.Glide
-import com.google.firebase.database.FirebaseDatabase
 
 class ProfessionalMessagesAdapter(private var customerMessagesList: List<CustomerMessagesData>) : RecyclerView.Adapter<ProfessionalMessagesAdapter.ViewHolder>() {
 

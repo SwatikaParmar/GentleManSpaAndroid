@@ -22,34 +22,24 @@ import com.app.gentlemanspa.databinding.FragmentHomeProfessionalBinding
 import com.app.gentlemanspa.network.ApiConstants.BASE_FILE
 import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.network.Status
-import com.app.gentlemanspa.ui.customerDashboard.fragment.history.HistoryCustomerFragmentDirections
 import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.AddUserToChatRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.UpcomingServiceAppointmentItem
-import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.RegisterUserInFirebaseRequest
-import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.UserState
 import com.app.gentlemanspa.ui.professionalDashboard.activity.ProfessionalActivity
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.home.adapter.CompletedAppointmentAdapter
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.home.adapter.CancelledAppointmentAdapter
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.home.adapter.UpcomingAppointmentAdapter
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.home.viewModel.HomeProfessionalViewModel
 import com.app.gentlemanspa.utils.AppPrefs
-import com.app.gentlemanspa.utils.CUSTOMER_USER_ID
-import com.app.gentlemanspa.utils.FCM_TOKEN
 import com.app.gentlemanspa.utils.PROFESSIONAL_DETAIL_ID
 import com.app.gentlemanspa.utils.PROFESSIONAL_PROFILE_DATA
 import com.app.gentlemanspa.utils.PROFESSIONAL_USER_ID
 import com.app.gentlemanspa.utils.ViewModelFactory
-import com.app.gentlemanspa.utils.getCustomerCurrentDate
-import com.app.gentlemanspa.utils.getCustomerCurrentTime
 import com.app.gentlemanspa.utils.setGone
 import com.app.gentlemanspa.utils.setVisible
 import com.app.gentlemanspa.utils.showToast
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Locale
 import java.util.TimeZone
 
@@ -68,6 +58,7 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
             InitialRepository()
         )
     }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is OnProfileUpdatedListener) {
@@ -76,26 +67,33 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
             throw ClassCastException("$context must implement OnProfileUpdatedListener")
         }
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initObserver()
     }
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentHomeProfessionalBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initUI()
         //  registerProfessionalInFirebase()
 
     }
+
     private fun callAppointmentsListApi(type: String) {
-        Log.d("type", "type->$type PROFESSIONAL_DETAIL_ID  ${AppPrefs(requireContext()).getStringPref(PROFESSIONAL_DETAIL_ID)?.toInt()}")
+        Log.d(
+            "type", "type->$type PROFESSIONAL_DETAIL_ID  ${
+                AppPrefs(requireContext()).getStringPref(PROFESSIONAL_DETAIL_ID)?.toInt()
+            }"
+        )
         appointmentType = type
         viewModel.type.set(type)
         viewModel.professionalDetailId.set(
@@ -105,43 +103,7 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
         )
         viewModel.getAppointmentListApi()
     }
-    private fun registerProfessionalInFirebase() {
-        Log.e(
-            "FirebaseRegister",
-            "${AppPrefs(requireContext()).getStringPref(PROFESSIONAL_USER_ID)}"
-        )
 
-        val profileProfessionalData =
-            AppPrefs(requireContext()).getProfileProfessionalData(PROFESSIONAL_PROFILE_DATA)
-        if (profileProfessionalData?.data?.firstName.toString()
-                .isNotEmpty() && profileProfessionalData?.data?.email.toString()
-                .isNotEmpty() && profileProfessionalData?.data?.gender.toString().isNotEmpty()
-        ) {
-            val userState = UserState(getCustomerCurrentDate(), "online", getCustomerCurrentTime())
-            val user = RegisterUserInFirebaseRequest(
-                uid = "${AppPrefs(requireContext()).getStringPref(PROFESSIONAL_USER_ID)}",
-                email = profileProfessionalData?.data?.email.toString(),
-                fcm_token = "${AppPrefs(requireContext()).getStringPref(FCM_TOKEN)}",
-                gender = profileProfessionalData?.data?.gender.toString(),
-                image = "${profileProfessionalData?.data?.profilepic}",
-                name = "${profileProfessionalData?.data?.firstName} ${profileProfessionalData?.data?.lastName}",
-                userState = userState
-            )
-            registerProfessional(user)
-        } else {
-            Log.e("FirebaseRegister", "Please fill all fields")
-        }
-    }
-    private fun registerProfessional(user: RegisterUserInFirebaseRequest) {
-        val database: DatabaseReference = FirebaseDatabase.getInstance().reference
-        database.child("Users").child(user.uid).setValue(user)
-            .addOnSuccessListener {
-                Log.d("FirebaseRegister", "Professional registered successfully!")
-            }
-            .addOnFailureListener { exception ->
-                Log.e("FirebaseRegister", "Error registering user: ${exception.message}")
-            }
-    }
     private fun initObserver() {
         viewModel.resultProfileProfessionalDetailAccount.observe(this) {
             it?.let { result ->
@@ -153,10 +115,8 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
                     Status.SUCCESS -> {
                         MyApplication.hideProgress()
                         AppPrefs(requireContext()).setProfileProfessionalData(
-                            PROFESSIONAL_PROFILE_DATA,
-                            it.data
+                            PROFESSIONAL_PROFILE_DATA, it.data
                         )
-                        registerProfessionalInFirebase()
                         val name = "${it.data?.data?.firstName} ${it.data?.data?.lastName}"
                         val email = it.data?.data?.email.toString()
                         if (!it.data?.data?.professionalDetail?.professionalDetailId.isNullOrEmpty()) {
@@ -166,9 +126,7 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
                             )
                         }
                         profileUpdatedListener.onProfileUpdated(
-                            name,
-                            email,
-                            BASE_FILE + it.data?.data?.profilepic
+                            name, email, BASE_FILE + it.data?.data?.profilepic
                         )
                         //   Glide.with(requireContext()).load(BASE_FILE +it.data?.data?.profilepic).into(binding.ivProfile)
 
@@ -193,7 +151,7 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
                         //   requireContext().showToast(it.message.toString())
                         appointmentsList.clear()
                         it.data?.data?.dataList?.let { it1 -> appointmentsList.addAll(it1) }
-                        if (appointmentsList.size>0){
+                        if (appointmentsList.size > 0) {
                             binding.clNoDataFound.setGone()
                             binding.rvAppointment.setVisible()
 
@@ -214,7 +172,7 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
                                     requireContext().showToast("Something went wrong while fetching appointment")
                                 }
                             }
-                        }else{
+                        } else {
                             binding.clNoDataFound.setVisible()
                             binding.rvAppointment.setGone()
                         }
@@ -262,6 +220,7 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
         }
 
     }
+
     private fun initUI() {
         (activity as ProfessionalActivity).bottomNavigation(true)
         binding.onClick = this
@@ -312,32 +271,30 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
             Log.d("professionalDetailId", "professionalDetailId is empty")
         }
     }
+
     private fun callAddUserToChatApi(userId: String) {
         val request = AddUserToChatRequest(
             AppPrefs(requireContext()).getStringPref(PROFESSIONAL_USER_ID).toString(), userId
         )
         viewModel.addUserToChatApi(request)
     }
+
     private fun setUpCompletedAdapter() {
         binding.rvAppointment.adapter = CompletedAppointmentAdapter(appointmentsList)
     }
+
     private fun setUpComingAdapter() {
         if (ContextCompat.checkSelfPermission(
-                requireActivity(),
-                android.Manifest.permission.READ_CALENDAR
-            ) != PackageManager.PERMISSION_GRANTED ||
-            ContextCompat.checkSelfPermission(
-                requireActivity(),
-                android.Manifest.permission.WRITE_CALENDAR
+                requireActivity(), android.Manifest.permission.READ_CALENDAR
+            ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
+                requireActivity(), android.Manifest.permission.WRITE_CALENDAR
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(
+                requireActivity(), arrayOf(
                     android.Manifest.permission.READ_CALENDAR,
                     android.Manifest.permission.WRITE_CALENDAR
-                ),
-                1
+                ), 1
             )
         } else {
             addEventToCalendar(appointmentsList)
@@ -347,7 +304,7 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
         upcomingAppointmentAdapter.setUpcomingAppointmentCallbacks(object :
             UpcomingAppointmentAdapter.UpcomingAppointmentCallbacks {
             override fun onItemMessageClick(item: UpcomingServiceAppointmentItem) {
-            //    checkUserExistsAndNavigateToChat(item)
+                //    checkUserExistsAndNavigateToChat(item)
                 Log.d("userId", "receiverUserId or professionalUserId ->${item.professionalUserId}")
                 professionalUserId = item.professionalUserId
                 name = item.professionalName
@@ -356,6 +313,7 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
             }
         })
     }
+
     private fun addEventToCalendar(eventList: ArrayList<UpcomingServiceAppointmentItem>) {
         Log.d("addEventToCalendar", "Starting to process event list: ${eventList.size} events")
         val context = requireContext()
@@ -386,7 +344,7 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
                     it.getLong(it.getColumnIndexOrThrow(CalendarContract.Calendars._ID))
                 Log.d("addEventToCalendar", "Processing calendar with ID: $calendarId")
                 // First, remove all previous events with the same title, start time, and end time
-              //  removePreviousEventsFromCalendar(context, calendarId)
+                //  removePreviousEventsFromCalendar(context, calendarId)
 
                 for (event in eventList) {
                     Log.d(
@@ -415,14 +373,25 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
                         eventCursor?.use {
                             if (it.count == 0) {
                                 // No duplicate event found, add it to the calendar
-                                Log.d("addEventToCalendar", "No duplicate event found, adding to calendar")
-                                addEventToCalendarProvider(event, calendarId, startMillis, endMillis)
+                                Log.d(
+                                    "addEventToCalendar",
+                                    "No duplicate event found, adding to calendar"
+                                )
+                                addEventToCalendarProvider(
+                                    event, calendarId, startMillis, endMillis
+                                )
 
                                 // Save the event in SharedPreferences to avoid adding it again
                                 AppPrefs(requireContext()).setString(eventKey, "added")
-                                Log.d("addEventToCalendar", "Event added and saved to SharedPreferences with key: $eventKey")
+                                Log.d(
+                                    "addEventToCalendar",
+                                    "Event added and saved to SharedPreferences with key: $eventKey"
+                                )
                             } else {
-                                Log.i("addEventToCalendar", "Event with the same name, date, and time already exists in calendar, skipping.")
+                                Log.i(
+                                    "addEventToCalendar",
+                                    "Event with the same name, date, and time already exists in calendar, skipping."
+                                )
                             }
                         }
                     } else {
@@ -437,19 +406,16 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
             it.close()
         }
     }
+
     private fun removePreviousEventsFromCalendar(context: Context, calendarId: Long) {
         // Query the calendar to get the events to remove (can be filtered by title, time range, etc.)
         val eventCursor = context.contentResolver.query(
-            CalendarContract.Events.CONTENT_URI,
-            arrayOf(
+            CalendarContract.Events.CONTENT_URI, arrayOf(
                 CalendarContract.Events._ID,
                 CalendarContract.Events.TITLE,
                 CalendarContract.Events.DTSTART,
                 CalendarContract.Events.DTEND
-            ),
-            "${CalendarContract.Events.CALENDAR_ID} = ?",
-            arrayOf(calendarId.toString()),
-            null
+            ), "${CalendarContract.Events.CALENDAR_ID} = ?", arrayOf(calendarId.toString()), null
         )
 
         eventCursor?.use { cursor ->
@@ -472,8 +438,7 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
                             ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventId)
                         context.contentResolver.delete(deleteUri, null, null)
                         Log.d(
-                            "removePreviousEvents",
-                            "Event with ID $eventId removed from calendar"
+                            "removePreviousEvents", "Event with ID $eventId removed from calendar"
                         )
                     }
 
@@ -481,14 +446,13 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
             }
         }
     }
+
     private fun shouldRemoveEvent(title: String, startMillis: Long, endMillis: Long): Boolean {
         return true // For now, just remove all events
     }
+
     private fun addEventToCalendarProvider(
-        event: UpcomingServiceAppointmentItem,
-        calendarId: Long,
-        startMillis: Long,
-        endMillis: Long
+        event: UpcomingServiceAppointmentItem, calendarId: Long, startMillis: Long, endMillis: Long
     ) {
         val values = ContentValues().apply {
             put(CalendarContract.Events.DTSTART, startMillis)
@@ -518,9 +482,11 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
         val endMillis = endDate?.time ?: 0L
         return Pair(startMillis, endMillis)
     }
+
     private fun setUpCancelledAdapter() {
         binding.rvAppointment.adapter = CancelledAppointmentAdapter(appointmentsList)
     }
+
     override fun onClick(v: View?) {
         when (v) {
             binding.ivDrawer -> {
@@ -541,15 +507,11 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
 
     @Deprecated("Deprecated in Java")
     override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
+        requestCode: Int, permissions: Array<out String>, grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == 1) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
-                grantResults[1] == PackageManager.PERMISSION_GRANTED
-            ) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 addEventToCalendar(appointmentsList)
             } else {
                 // Permissions denied, inform the user
@@ -557,15 +519,17 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
             }
         }
     }
+
     private fun moveToChatFragment() {
         val action =
             HomeProfessionalFragmentDirections.actionHomeProfessionalFragmentToProfessionalChatFragment(
                 AppPrefs(requireContext()).getStringPref(
                     PROFESSIONAL_USER_ID
-                ).toString(), professionalUserId,name,profilePic
+                ).toString(), professionalUserId, name, profilePic
             )
         findNavController().navigate(action)
     }
+
     interface OnProfileUpdatedListener {
         fun onProfileUpdated(name: String, email: String, profileImage: String)
     }

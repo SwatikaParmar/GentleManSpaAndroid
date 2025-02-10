@@ -91,14 +91,14 @@ dependencies {
     implementation(libs.play.services.maps)
     implementation(libs.play.services.location)
 
-    // Import the Firebase BoM
+/*    // Import the Firebase BoM
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     // Firebase UI for Realtime Database
     implementation(libs.firebase.ui.database)
 
     // Firebase Database
-    implementation("com.google.firebase:firebase-database-ktx")
+    implementation("com.google.firebase:firebase-database-ktx")*/
 
     implementation ("com.google.android.material:material:1.12.0")
 

@@ -24,7 +24,6 @@ import com.app.gentlemanspa.utils.setVisible
 import com.app.gentlemanspa.utils.showToast
 
 
-
 class ProfessionalMessageFragment : Fragment(), View.OnClickListener {
   lateinit var binding:FragmentProfessionalMessagesBinding
     private val viewModel: ProfessionalMessagesViewModel by viewModels {
@@ -89,6 +88,7 @@ class ProfessionalMessageFragment : Fragment(), View.OnClickListener {
         })
 
     }
+
     private fun initObserver() {
         viewModel.resultCustomerMessagesList.observe(this) { it ->
             it?.let { result ->
