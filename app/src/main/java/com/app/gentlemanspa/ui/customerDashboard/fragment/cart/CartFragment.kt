@@ -496,11 +496,16 @@ class CartFragment : Fragment(), View.OnClickListener {
             }
 
             binding.btnPay -> {
-                if (binding.cbHomeDelivery.isChecked && binding.tvDeliveryAddress.isGone){
-                  requireContext().showToast("Please add your address")
+                if (binding.clProducts.isVisible){
+                    if (binding.cbHomeDelivery.isChecked && binding.tvDeliveryAddress.isGone){
+                        requireContext().showToast("Please add your address")
+                    }else{
+                        proceedToPlaceOrder()
+                    }
                 }else{
                     proceedToPlaceOrder()
                 }
+
             }
         }
     }

@@ -21,6 +21,7 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.history.viewModel.Hist
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.viewModel.HomeCustomerViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.viewModel.MakeAppointmentViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.myOrders.viewModel.MyOrdersViewModel
+import com.app.gentlemanspa.ui.customerDashboard.fragment.notification.viewModel.CustomerNotificationViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.orderDetail.viewModel.OrderDetailsViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.payment.viewModel.PaymentViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.product.viewModel.ProductViewModel
@@ -42,7 +43,7 @@ import com.app.gentlemanspa.ui.professionalDashboard.fragment.productDetail.view
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.profile.viewModel.ProfileProfessionalDetailViewModel
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.viewModel.ScheduleViewModel
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.selectCountry.viewModel.SelectCountryViewModel
-import com.app.gentlemanspa.utils.updateStatus.UpdateStatusViewModel
+import com.app.gentlemanspa.utils.updateStatus.viewModel.UpdateStatusViewModel
 
 
 @Suppress("UNCHECKED_CAST")
@@ -207,7 +208,9 @@ class ViewModelFactory(
             modelClass.isAssignableFrom(PaymentViewModel::class.java) -> {
                 return PaymentViewModel(repository) as T
             }
-
+            modelClass.isAssignableFrom(CustomerNotificationViewModel::class.java) -> {
+                return CustomerNotificationViewModel(repository) as T
+            }
             else -> throw IllegalArgumentException("Class not found")
         }
     }

@@ -22,16 +22,16 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 import retrofit2.HttpException
 
-class ServiceViewModel (private var initialRepository: InitialRepository) : AndroidViewModel(
+class ServiceViewModel(private var initialRepository: InitialRepository) : AndroidViewModel(
     Application()
 ) {
-    val categoryId =ObservableField<Int>()
-    val subCategoryId =ObservableField<Int>()
-    val spaDetailId =ObservableField<Int>()
-    val serviceCountInCart =ObservableField<Int>()
-    val slotId =ObservableField<Int>()
-    val spaServiceId =ObservableField<Int>()
-    val searchQuery =ObservableField<String>()
+    val categoryId = ObservableField<Int>()
+    val subCategoryId = ObservableField<Int>()
+    val spaDetailId = ObservableField<Int>()
+    val serviceCountInCart = ObservableField<Int>()
+    val slotId = ObservableField<Int>()
+    val spaServiceId = ObservableField<Int>()
+    val searchQuery = ObservableField<String>()
     val resultSpaCategories = MutableLiveData<Resource<SpaCategoriesResponse>>()
     val resultSpaSubCategories = MutableLiveData<Resource<SpaSubCategoriesResponse>>()
     val resultServiceList = MutableLiveData<Resource<ServiceResponse>>()
@@ -51,15 +51,19 @@ class ServiceViewModel (private var initialRepository: InitialRepository) : Andr
                             val errorBody = exception.response()?.errorBody()?.string()
                             if (!errorBody.isNullOrEmpty()) {
                                 val jsonError = JSONObject(errorBody)
-                                val errorMessage = jsonError.optString("messages", "Unknown HTTP error")
-                                resultSpaCategories.value = Resource.error(data = null, message = errorMessage)
+                                val errorMessage =
+                                    jsonError.optString("messages", "Unknown HTTP error")
+                                resultSpaCategories.value =
+                                    Resource.error(data = null, message = errorMessage)
                             } else {
-                                resultSpaCategories.value = Resource.error(data = null, message = "Unknown HTTP error")
+                                resultSpaCategories.value =
+                                    Resource.error(data = null, message = "Unknown HTTP error")
                             }
                         } catch (e: Exception) {
-                            resultSpaCategories.value = Resource.error(data = null, message = e.message)
+                            resultSpaCategories.value =
+                                Resource.error(data = null, message = e.message)
                         }
-                    }else{
+                    } else {
                         resultSpaCategories.value =
                             Resource.error(
                                 data = null,
@@ -82,7 +86,7 @@ class ServiceViewModel (private var initialRepository: InitialRepository) : Andr
     fun getSpaSubCategoriesApi() {
         resultSpaSubCategories.value = Resource.loading(null)
         viewModelScope.launch {
-            initialRepository.getSpaSubCategories(spaDetailId.get()!!,categoryId.get()!!)
+            initialRepository.getSpaSubCategories(spaDetailId.get()!!, categoryId.get()!!)
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->
@@ -91,15 +95,19 @@ class ServiceViewModel (private var initialRepository: InitialRepository) : Andr
                             val errorBody = exception.response()?.errorBody()?.string()
                             if (!errorBody.isNullOrEmpty()) {
                                 val jsonError = JSONObject(errorBody)
-                                val errorMessage = jsonError.optString("messages", "Unknown HTTP error")
-                                resultSpaSubCategories.value = Resource.error(data = null, message = errorMessage)
+                                val errorMessage =
+                                    jsonError.optString("messages", "Unknown HTTP error")
+                                resultSpaSubCategories.value =
+                                    Resource.error(data = null, message = errorMessage)
                             } else {
-                                resultSpaSubCategories.value = Resource.error(data = null, message = "Unknown HTTP error")
+                                resultSpaSubCategories.value =
+                                    Resource.error(data = null, message = "Unknown HTTP error")
                             }
                         } catch (e: Exception) {
-                            resultSpaSubCategories.value = Resource.error(data = null, message = e.message)
+                            resultSpaSubCategories.value =
+                                Resource.error(data = null, message = e.message)
                         }
-                    }else{
+                    } else {
                         resultSpaSubCategories.value =
                             Resource.error(
                                 data = null,
@@ -122,16 +130,48 @@ class ServiceViewModel (private var initialRepository: InitialRepository) : Andr
     fun getServiceList() {
         resultServiceList.value = Resource.loading(null)
         viewModelScope.launch {
-            initialRepository.getServiceList(1,1000,categoryId.get(),subCategoryId.get(),searchQuery.get()!!,spaDetailId.get())
+            initialRepository.getServiceList(
+                1,
+                1000,
+                categoryId.get(),
+                subCategoryId.get(),
+                searchQuery.get()!!,
+                spaDetailId.get()
+            )
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->
-                    if (!CommonFunctions.getError(exception)!!.contains("401"))
+                    /*        if (!CommonFunctions.getError(exception)!!.contains("401"))
+                                resultServiceList.value =
+                                    Resource.error(
+                                        data = null,
+                                        message = CommonFunctions.getError(exception)
+                                    )*/
+
+                    if (exception is HttpException) {
+                        try {
+                            val errorBody = exception.response()?.errorBody()?.string()
+                            if (!errorBody.isNullOrEmpty()) {
+                                val jsonError = JSONObject(errorBody)
+                                val errorMessage =
+                                    jsonError.optString("messages", "Unknown HTTP error")
+                                resultServiceList.value =
+                                    Resource.error(data = null, message = errorMessage)
+                            } else {
+                                resultServiceList.value =
+                                    Resource.error(data = null, message = "Unknown HTTP error")
+                            }
+                        } catch (e: Exception) {
+                            resultServiceList.value =
+                                Resource.error(data = null, message = e.message)
+                        }
+                    } else {
                         resultServiceList.value =
                             Resource.error(
                                 data = null,
                                 message = CommonFunctions.getError(exception)
                             )
+                    }
                 }
                 .collect {
                     if (it?.statusCode == 200) {
@@ -144,6 +184,7 @@ class ServiceViewModel (private var initialRepository: InitialRepository) : Andr
                 }
         }
     }
+
     fun getServiceCartItem() {
         resultGetCartItems.value = Resource.loading(null)
         viewModelScope.launch {
@@ -151,12 +192,37 @@ class ServiceViewModel (private var initialRepository: InitialRepository) : Andr
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->
-                    if (!CommonFunctions.getError(exception)!!.contains("401"))
+                    /*if (!CommonFunctions.getError(exception)!!.contains("401"))
+                        resultGetCartItems.value =
+                            Resource.error(
+                                data = null,
+                                message = CommonFunctions.getError(exception)
+                            )*/
+
+                    if (exception is HttpException) {
+                        try {
+                            val errorBody = exception.response()?.errorBody()?.string()
+                            if (!errorBody.isNullOrEmpty()) {
+                                val jsonError = JSONObject(errorBody)
+                                val errorMessage =
+                                    jsonError.optString("messages", "Unknown HTTP error")
+                                resultGetCartItems.value =
+                                    Resource.error(data = null, message = errorMessage)
+                            } else {
+                                resultGetCartItems.value =
+                                    Resource.error(data = null, message = "Unknown HTTP error")
+                            }
+                        } catch (e: Exception) {
+                            resultGetCartItems.value =
+                                Resource.error(data = null, message = e.message)
+                        }
+                    } else {
                         resultGetCartItems.value =
                             Resource.error(
                                 data = null,
                                 message = CommonFunctions.getError(exception)
                             )
+                    }
                 }
                 .collect {
                     if (it?.statusCode == 200) {
@@ -169,19 +235,52 @@ class ServiceViewModel (private var initialRepository: InitialRepository) : Andr
                 }
         }
     }
+
     fun addServiceToCart() {
         resultServiceToCart.value = Resource.loading(null)
         viewModelScope.launch {
-            initialRepository.addServiceToCart(AddServiceToCartRequest(serviceCountInCart.get()!!, slotId.get()!!,spaDetailId.get()!!,spaServiceId.get()!!))
+            initialRepository.addServiceToCart(
+                AddServiceToCartRequest(
+                    serviceCountInCart.get()!!,
+                    slotId.get()!!,
+                    spaDetailId.get()!!,
+                    spaServiceId.get()!!
+                )
+            )
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->
-                    if (!CommonFunctions.getError(exception)!!.contains("401"))
+                    /*    if (!CommonFunctions.getError(exception)!!.contains("401"))
+                            resultServiceToCart.value =
+                                Resource.error(
+                                    data = null,
+                                    message = CommonFunctions.getError(exception)
+                                )*/
+
+                    if (exception is HttpException) {
+                        try {
+                            val errorBody = exception.response()?.errorBody()?.string()
+                            if (!errorBody.isNullOrEmpty()) {
+                                val jsonError = JSONObject(errorBody)
+                                val errorMessage =
+                                    jsonError.optString("messages", "Unknown HTTP error")
+                                resultServiceToCart.value =
+                                    Resource.error(data = null, message = errorMessage)
+                            } else {
+                                resultServiceToCart.value =
+                                    Resource.error(data = null, message = "Unknown HTTP error")
+                            }
+                        } catch (e: Exception) {
+                            resultServiceToCart.value =
+                                Resource.error(data = null, message = e.message)
+                        }
+                    } else {
                         resultServiceToCart.value =
                             Resource.error(
                                 data = null,
                                 message = CommonFunctions.getError(exception)
                             )
+                    }
                 }
                 .collect {
                     if (it?.statusCode == 200) {

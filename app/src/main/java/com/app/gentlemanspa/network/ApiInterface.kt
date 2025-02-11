@@ -49,6 +49,7 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.model.
 import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.model.ServiceRescheduleRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.model.ServiceRescheduleResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.myOrders.model.MyOrdersResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.notification.model.NotificationListResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.orderDetail.model.OrderDetailsResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.payment.model.OrderConfirmationResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.product.model.AddProductInCartRequest
@@ -76,11 +77,12 @@ import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.model.Sch
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.model.WeekDaysResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.selectCountry.model.country.CountryResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.selectCountry.model.states.StatesResponse
-import com.app.gentlemanspa.utils.updateStatus.UpdateStatusRequest
-import com.app.gentlemanspa.utils.updateStatus.UpdateStatusResponse
+import com.app.gentlemanspa.utils.updateStatus.model.UpdateFCMTokenRequest
+import com.app.gentlemanspa.utils.updateStatus.model.UpdateFCMTokenResponse
+import com.app.gentlemanspa.utils.updateStatus.model.UpdateOnlineStatusRequest
+import com.app.gentlemanspa.utils.updateStatus.model.UpdateOnlineStatusResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import okhttp3.ResponseBody
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -415,7 +417,18 @@ interface ApiInterface {
     ): DeleteMessageResponse
 
     @POST(ApiConstants.UPDATE_STATUS)
-    suspend fun updateStatus(
-        @Body updateStatusRequest: UpdateStatusRequest
-    ): UpdateStatusResponse
+    suspend fun updateOnlineStatus(
+        @Body updateOnlineStatusRequest: UpdateOnlineStatusRequest
+    ): UpdateOnlineStatusResponse
+
+    @POST(ApiConstants.UPDATE_FCM_TOKEN)
+    suspend fun updateFCMToken(
+        @Body updateFCMTokenRequest: UpdateFCMTokenRequest
+    ): UpdateFCMTokenResponse
+
+    @GET(ApiConstants.GET_NOTIFICATION_LIST)
+    suspend fun getNotificationList(
+        @Query("pageNumber")pageNumber:Int,
+        @Query("pageSize")pageSize:Int,
+    ): NotificationListResponse
 }

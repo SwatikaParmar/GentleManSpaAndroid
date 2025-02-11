@@ -336,7 +336,7 @@
 
     <fragment
         android:id="@+id/notificationFragment"
-        android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.notification.NotificationFragment"
+        android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.notification.CustomerNotificationFragment"
         android:label="NotificationFragment"
         tools:layout="@layout/fragment_notification" />
     <fragment

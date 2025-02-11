@@ -79,4 +79,9 @@ object ApiConstants {
     const val UPDATE_STATUS = "Chat/updateOnlineStatusManually"
 
 
+    //Notification
+    const val UPDATE_FCM_TOKEN= "Notification/updateFCMToken"
+    const val GET_NOTIFICATION_LIST= "Notification/getNotificationList"
+
+
 }

@@ -399,8 +399,6 @@ class RegisterFragment : Fragment(), View.OnClickListener {
             }
         }
     }
-
-
     private fun isValidation(): Boolean {
         when {
             // profileImage == null -> requireContext().showToast("Please select profile picture")
@@ -421,7 +419,6 @@ class RegisterFragment : Fragment(), View.OnClickListener {
         }
         return false
     }
-
     override fun onResume() {
         super.onResume()
         Log.d("imageUri","onResume profileImage->${profileImage}")
@@ -430,11 +427,7 @@ class RegisterFragment : Fragment(), View.OnClickListener {
                 .load(it)
                 .into(binding.ivProfile)
         }
-
-
-
     }
-
     companion object {
         private const val REQUEST_CODE_CAMERA_PERMISSIONS = 101
         private const val REQUEST_CODE_GALLERY_PERMISSIONS = 102

@@ -26,7 +26,6 @@ import com.app.gentlemanspa.utils.areNotificationsEnabled
 import com.app.gentlemanspa.utils.openNotificationSettings
 import com.google.firebase.messaging.FirebaseMessaging
 
-
 @Suppress("DEPRECATION")
 class SplashFragment : Fragment() {
 
@@ -197,6 +196,5 @@ class SplashFragment : Fragment() {
     }
     companion object{
         private const val REQUEST_NOTIFICATION_PERMISSION = 1001
-
     }
 }

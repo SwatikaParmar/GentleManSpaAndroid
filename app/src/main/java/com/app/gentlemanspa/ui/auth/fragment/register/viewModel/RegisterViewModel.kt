@@ -70,7 +70,6 @@ class RegisterViewModel(private var initialRepository: InitialRepository) : Andr
                 }
         }
     }
-
     fun phoneUnique() {
         Log.d("countryCode","countryCode->${dialCode.get()!!}")
         resultPhoneUnique.value = Resource.loading(null)

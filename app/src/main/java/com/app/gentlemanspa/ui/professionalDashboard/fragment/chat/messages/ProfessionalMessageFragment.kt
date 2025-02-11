@@ -25,70 +25,72 @@ import com.app.gentlemanspa.utils.showToast
 
 
 class ProfessionalMessageFragment : Fragment(), View.OnClickListener {
-  lateinit var binding:FragmentProfessionalMessagesBinding
+
+    lateinit var binding: FragmentProfessionalMessagesBinding
     private val viewModel: ProfessionalMessagesViewModel by viewModels {
         ViewModelFactory(
             InitialRepository()
         )
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initObserver()
     }
-
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        if (!this::binding.isInitialized){
-            binding=FragmentProfessionalMessagesBinding.inflate(layoutInflater,container,false)
+        if (!this::binding.isInitialized) {
+            binding = FragmentProfessionalMessagesBinding.inflate(layoutInflater, container, false)
         }
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initUI()
     }
-
     private fun initUI() {
         (activity as ProfessionalActivity).bottomNavigation(false)
-        binding.onClick=this
-        Log.d("UserId","UserId->${AppPrefs(requireContext()).getStringPref(PROFESSIONAL_USER_ID)}")
-        viewModel.userId.set(AppPrefs(requireContext()).getStringPref(PROFESSIONAL_USER_ID).toString())
+        binding.onClick = this
+        Log.d("UserId", "UserId->${AppPrefs(requireContext()).getStringPref(PROFESSIONAL_USER_ID)}")
+        viewModel.userId.set(
+            AppPrefs(requireContext()).getStringPref(PROFESSIONAL_USER_ID).toString()
+        )
         viewModel.getCustomerMessagesListApi()
 
     }
-
     override fun onClick(v: View?) {
-        when(v){
-            binding.ivArrowBack->{
+        when (v) {
+            binding.ivArrowBack -> {
                 findNavController().popBackStack()
             }
         }
     }
-
     private fun setProfessionalMessagesAdapter(customerMessagesList: List<CustomerMessagesData>) {
-        val professionalMessagesAdapter= ProfessionalMessagesAdapter(customerMessagesList)
-        binding.rvProfessionalMessages.adapter=professionalMessagesAdapter
-        professionalMessagesAdapter.setProfessionalMessagesCallbacks(object: ProfessionalMessagesAdapter.ProfessionalMessagesCallbacks{
+        val professionalMessagesAdapter = ProfessionalMessagesAdapter(customerMessagesList)
+        binding.rvProfessionalMessages.adapter = professionalMessagesAdapter
+        professionalMessagesAdapter.setProfessionalMessagesCallbacks(object :
+            ProfessionalMessagesAdapter.ProfessionalMessagesCallbacks {
             override fun rootProfessionalMessages(item: CustomerMessagesData) {
-                Log.d("userId","item->${item}")
-                Log.d("userId","receiverId->${item.userId}")
-                val messageSenderId= AppPrefs(requireContext()).getStringPref(PROFESSIONAL_USER_ID).toString()
-                val messageReceiverId=item.userName
-                val name="${item.firstName} ${item.lastName}"
-                val profilePic=item.profilePic?:""
-                Log.d("userId","messageSenderId${messageSenderId} messageReceiverId->${messageReceiverId} name->${name} profilePic->${profilePic}")
-                val action= ProfessionalMessageFragmentDirections.actionProfessionalMessageFragmentToProfessionalChatFragment(
-                    messageSenderId, messageReceiverId,name,profilePic)
+                Log.d("userId", "item->${item}")
+                Log.d("userId", "receiverId->${item.userId}")
+                val messageSenderId =
+                    AppPrefs(requireContext()).getStringPref(PROFESSIONAL_USER_ID).toString()
+                val messageReceiverId = item.userName
+                val name = "${item.firstName} ${item.lastName}"
+                val profilePic = item.profilePic ?: ""
+                Log.d(
+                    "userId",
+                    "messageSenderId${messageSenderId} messageReceiverId->${messageReceiverId} name->${name} profilePic->${profilePic}"
+                )
+                val action =
+                    ProfessionalMessageFragmentDirections.actionProfessionalMessageFragmentToProfessionalChatFragment(
+                        messageSenderId, messageReceiverId, name, profilePic
+                    )
                 findNavController().navigate(action)
             }
         })
 
     }
-
     private fun initObserver() {
         viewModel.resultCustomerMessagesList.observe(this) { it ->
             it?.let { result ->
@@ -99,19 +101,20 @@ class ProfessionalMessageFragment : Fragment(), View.OnClickListener {
 
                     Status.SUCCESS -> {
                         hideProgress()
-                        Log.d("messages","data->${it.data}")
+                        Log.d("messages", "data->${it.data}")
 
-                        if (it.data?.data!!.isNotEmpty()){
+                        if (it.data?.data!!.isNotEmpty()) {
                             binding.clNoUserExist.setGone()
-                            val sortedMessages = it.data.data.sortedByDescending { it.lastMessageTime }
+                            val sortedMessages =
+                                it.data.data.sortedByDescending { it.lastMessageTime }
                             setProfessionalMessagesAdapter(sortedMessages)
-                        }else{
+                        } else {
                             binding.clNoUserExist.setVisible()
                         }
                     }
 
                     Status.ERROR -> {
-                        Log.d("messages","inside error${it.message}")
+                        Log.d("messages", "inside error${it.message}")
                         requireContext().showToast(it.message.toString())
                         hideProgress()
                     }
@@ -119,6 +122,5 @@ class ProfessionalMessageFragment : Fragment(), View.OnClickListener {
             }
         }
     }
-
 
 }

@@ -21,13 +21,12 @@ import com.app.gentlemanspa.ui.auth.activity.AuthActivity
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.HomeCustomerFragment
 import com.app.gentlemanspa.utils.AppPrefs
 import com.app.gentlemanspa.utils.CUSTOMER_USER_ID
-import com.app.gentlemanspa.utils.PROFESSIONAL_USER_ID
-import com.app.gentlemanspa.utils.ROLE
+import com.app.gentlemanspa.utils.FCM_TOKEN
 import com.app.gentlemanspa.utils.ViewModelFactory
 import com.app.gentlemanspa.utils.isCalendarPermissionGranted
 import com.app.gentlemanspa.utils.setGone
 import com.app.gentlemanspa.utils.setVisible
-import com.app.gentlemanspa.utils.updateStatus.UpdateStatusViewModel
+import com.app.gentlemanspa.utils.updateStatus.viewModel.UpdateStatusViewModel
 import com.bumptech.glide.Glide
 import com.google.android.material.navigation.NavigationView
 
@@ -55,6 +54,12 @@ class CustomerActivity : AppCompatActivity(),HomeCustomerFragment.OnProfileUpdat
         navController = navHost.navController
         setBottomNavigation()
         setNavDrawer()
+        if (AppPrefs(this).getStringPref(FCM_TOKEN).toString().isNotEmpty()){
+            viewModel.updateFCMTokenApi(AppPrefs(this).getStringPref(FCM_TOKEN).toString())
+        }else{
+            Log.d("updateFCMToken","FCM Token is empty")
+
+        }
     }
 
     private fun setBottomNavigation() {
@@ -251,17 +256,17 @@ class CustomerActivity : AppCompatActivity(),HomeCustomerFragment.OnProfileUpdat
     override fun onStart() {
         super.onStart()
         Log.d("online","onStart called userIdIs:${AppPrefs(this).getStringPref(CUSTOMER_USER_ID)}")
-        viewModel.updateStatus(AppPrefs(this).getStringPref(CUSTOMER_USER_ID).toString(),true)
+        viewModel.updateOnlineStatusApi(AppPrefs(this).getStringPref(CUSTOMER_USER_ID).toString(),true)
     }
     override fun onStop() {
         super.onStop()
         Log.d("online","onStop called userIdIs:${AppPrefs(this).getStringPref(CUSTOMER_USER_ID)}")
-        viewModel.updateStatus(AppPrefs(this).getStringPref(CUSTOMER_USER_ID).toString(),false)
+        viewModel.updateOnlineStatusApi(AppPrefs(this).getStringPref(CUSTOMER_USER_ID).toString(),false)
 
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        viewModel.updateStatus(AppPrefs(this).getStringPref(CUSTOMER_USER_ID).toString(),false)
+        viewModel.updateOnlineStatusApi(AppPrefs(this).getStringPref(CUSTOMER_USER_ID).toString(),false)
     }
 }

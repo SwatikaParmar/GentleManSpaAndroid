@@ -103,7 +103,7 @@
                         android:ellipsize="end"
                         android:fontFamily="@font/poppins"
                         android:includeFontPadding="false"
-                        android:maxLines="4"
+                        android:maxLines="3"
                         android:text="Skin Care Specialist"
                         android:textColor="@color/light_grey"
                         android:textSize="@dimen/_11ssp"

@@ -1,4 +1,4 @@
-package com.app.gentlemanspa.ui.professionalDashboard.fragment.notification
+package com.app.gentlemanspa.ui.customerDashboard.fragment.notification
 
 import android.os.Bundle
 import android.util.Log
@@ -10,22 +10,25 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.app.gentlemanspa.base.MyApplication.Companion.hideProgress
 import com.app.gentlemanspa.base.MyApplication.Companion.showProgress
-import com.app.gentlemanspa.databinding.FragmentProfessionalNotificationBinding
+import com.app.gentlemanspa.databinding.FragmentNotificationBinding
 import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.network.Status
+import com.app.gentlemanspa.ui.customerDashboard.activity.CustomerActivity
 import com.app.gentlemanspa.ui.customerDashboard.fragment.notification.adapter.NotificationAdapter
 import com.app.gentlemanspa.ui.customerDashboard.fragment.notification.model.NotificationListDataItem
 import com.app.gentlemanspa.ui.customerDashboard.fragment.notification.viewModel.CustomerNotificationViewModel
 import com.app.gentlemanspa.utils.ViewModelFactory
 import com.app.gentlemanspa.utils.showToast
 
-class ProfessionalNotificationFragment : Fragment(), View.OnClickListener {
-     lateinit var binding:FragmentProfessionalNotificationBinding
+class CustomerNotificationFragment : Fragment(), View.OnClickListener {
+
+    lateinit var binding: FragmentNotificationBinding
     private val viewModel: CustomerNotificationViewModel by viewModels {
         ViewModelFactory(
             InitialRepository()
         )
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initObserver()
@@ -35,9 +38,8 @@ class ProfessionalNotificationFragment : Fragment(), View.OnClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        if(!this::binding.isInitialized){
-            binding=FragmentProfessionalNotificationBinding.inflate(layoutInflater,container,false)
-
+        if (!this::binding.isInitialized) {
+            binding = FragmentNotificationBinding.inflate(layoutInflater, container, false)
         }
         return binding.root
     }
@@ -46,9 +48,11 @@ class ProfessionalNotificationFragment : Fragment(), View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
         initUI()
     }
+
     private fun initUI() {
-        binding.onClick=this
-        viewModel.searchQuery.set("")
+        (activity as CustomerActivity).bottomNavigation(false)
+        binding.onClick = this
+       // viewModel.searchQuery.set("")
         viewModel.getNotificationListApi()
     }
 
@@ -58,14 +62,13 @@ class ProfessionalNotificationFragment : Fragment(), View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-        when(v){
-            binding.ivArrowBack->{
+        when (v) {
+            binding.ivArrowBack -> {
                 findNavController().popBackStack()
             }
         }
 
     }
-
 
     private fun initObserver() {
         viewModel.resultCustomerNotification.observe(this) {
