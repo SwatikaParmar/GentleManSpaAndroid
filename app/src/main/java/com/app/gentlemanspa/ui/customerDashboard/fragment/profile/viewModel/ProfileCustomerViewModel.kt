@@ -1,6 +1,7 @@
 package com.app.gentlemanspa.ui.customerDashboard.fragment.profile.viewModel
 
 import android.app.Application
+import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -16,12 +17,13 @@ import kotlinx.coroutines.launch
 class ProfileCustomerViewModel  (private var initialRepository: InitialRepository) : AndroidViewModel(
     Application()
 ) {
+    val userId = ObservableField<String>()
     val resultProfileCustomerDetail = MutableLiveData<Resource<GetProfessionalDetailResponse>>()
 
     fun getCustomerDetail() {
         resultProfileCustomerDetail.value = Resource.loading(null)
         viewModelScope.launch {
-            initialRepository.getCustomerDetail()
+            initialRepository.getCustomerDetail(userId.get()!!)
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->

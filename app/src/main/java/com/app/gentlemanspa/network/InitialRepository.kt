@@ -19,6 +19,7 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.Customer
 import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.CustomerAddressStatusRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.CustomerAddressStatusResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.DeleteAddressResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.RemoveUserFromChatResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.model.CustomerPlaceOrderRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.model.CustomerPlaceOrderResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.model.PayByStripeRequest
@@ -39,12 +40,12 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.AddUserT
 import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.CancelUpcomingAppointmentRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.CancelUpcomingAppointmentResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.BannerResponse
-import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.LocationResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.model.SpecialityResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.profile.model.GetProfessionalDetailResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.model.UpdateProfileProfessionalRequest
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.model.UpdateProfileProfessionalResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.CategoriesResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.NotificationCountResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductCategoriesResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductsResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.model.ServiceGetAvailableDatesResponse
@@ -53,6 +54,7 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.model.
 import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.model.ServiceRescheduleResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.myOrders.model.MyOrdersResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.notification.model.NotificationListResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.notification.model.ReadNotificationResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.orderDetail.model.OrderDetailsResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.payment.model.OrderConfirmationResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.product.model.AddProductInCartRequest
@@ -81,6 +83,7 @@ import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.model.Wee
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.selectCountry.model.country.CountryResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.selectCountry.model.states.StatesResponse
 import com.app.gentlemanspa.utils.Api
+import com.app.gentlemanspa.utils.updateStatus.model.LogoutResponse
 import com.app.gentlemanspa.utils.updateStatus.model.UpdateFCMTokenRequest
 import com.app.gentlemanspa.utils.updateStatus.model.UpdateFCMTokenResponse
 import com.app.gentlemanspa.utils.updateStatus.model.UpdateOnlineStatusRequest
@@ -91,7 +94,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.http.Query
 
 
 class InitialRepository {
@@ -148,9 +150,9 @@ class InitialRepository {
         }.flowOn(Dispatchers.IO)
     }
 
-    suspend fun getCustomerDetail(): Flow<GetProfessionalDetailResponse?> {
+    suspend fun getCustomerDetail(id:String): Flow<GetProfessionalDetailResponse?> {
         return flow {
-            val result = Api.apiInterface?.getCustomerDetail()
+            val result = Api.apiInterface?.getCustomerDetail(id)
             emit(result)
         }.flowOn(Dispatchers.IO)
     }
@@ -214,20 +216,6 @@ class InitialRepository {
     suspend fun getBanner(): Flow<BannerResponse?> {
         return flow {
             val result =Api.apiInterface?.getBanner()
-            emit(result)
-        }.flowOn(Dispatchers.IO)
-    }
-
-    suspend fun getLocationAddress(): Flow<LocationResponse?> {
-        return flow {
-            val result =Api.apiInterface?.getLocationAddress()
-            emit(result)
-        }.flowOn(Dispatchers.IO)
-    }
-
-    suspend fun getSearchLocationAddress(search: String?): Flow<LocationResponse?> {
-        return flow {
-            val result =Api.apiInterface?.getSearchLocationAddress(search)
             emit(result)
         }.flowOn(Dispatchers.IO)
     }
@@ -415,9 +403,9 @@ class InitialRepository {
     }
 
 
-    suspend fun getServiceAppointments(type:String, pageSize: Int?,pageNumber: Int?): Flow<UpcomingServiceAppointmentResponse?> {
+    suspend fun getServiceAppointments(userId: String,type:String, pageSize: Int?,pageNumber: Int?): Flow<UpcomingServiceAppointmentResponse?> {
         return flow {
-            val result =Api.apiInterface?.getServiceAppointments(type,pageSize,pageNumber)
+            val result =Api.apiInterface?.getServiceAppointments(userId,type,pageSize,pageNumber)
             emit(result)
         }.flowOn(Dispatchers.IO)
     }
@@ -502,6 +490,13 @@ class InitialRepository {
             emit(result)
         }.flowOn(Dispatchers.IO)
     }
+    suspend fun removeUserFromChat(currentUserName:String,targetUserName:String): Flow<RemoveUserFromChatResponse?> {
+        return flow {
+            val result =Api.apiInterface?.removeUserFromChat(currentUserName,targetUserName)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+
     suspend fun getCustomerMessagesList(userId:String): Flow<CustomerMessagesResponse?> {
         return flow {
             val result =Api.apiInterface?.getCustomerMessagesList(userId)
@@ -515,9 +510,9 @@ class InitialRepository {
         }.flowOn(Dispatchers.IO)
     }
 
-    suspend fun getCustomerChatHistory(senderId:String,receiverId:String): Flow<CustomerChatMessageHistoryResponse?> {
+    suspend fun getCustomerChatHistory(senderId:String,receiverId:String,pageNumber:Int,pageSize:Int): Flow<CustomerChatMessageHistoryResponse?> {
         return flow {
-            val result =Api.apiInterface?.getCustomerChatHistory(senderId,receiverId)
+            val result =Api.apiInterface?.getCustomerChatHistory(senderId,receiverId,pageNumber,pageSize)
             emit(result)
         }.flowOn(Dispatchers.IO)
     }
@@ -545,6 +540,26 @@ class InitialRepository {
     suspend fun getNotificationList(pageNumber:Int,pageSize:Int): Flow<NotificationListResponse?> {
         return flow {
             val result =Api.apiInterface?.getNotificationList(pageNumber,pageSize)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+    suspend fun getNotificationCount(): Flow<NotificationCountResponse?> {
+        return flow {
+            val result =Api.apiInterface?.getNotificationCount()
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+    suspend fun readNotification(notificationSentId:Int): Flow<ReadNotificationResponse?> {
+        return flow {
+            val result =Api.apiInterface?.readNotification(notificationSentId)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+
+
+    suspend fun logout(): Flow<LogoutResponse?> {
+        return flow {
+            val result =Api.apiInterface?.logout()
             emit(result)
         }.flowOn(Dispatchers.IO)
     }

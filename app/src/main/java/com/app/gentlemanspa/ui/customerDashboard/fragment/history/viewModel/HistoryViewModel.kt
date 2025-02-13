@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 class HistoryViewModel (private var initialRepository: InitialRepository) : AndroidViewModel(
     Application()
 ) {
+    val userId = ObservableField<String>()
     val type = ObservableField<String>()
     val orderId = ObservableField<Int>()
     val productOrderIds  = ObservableField<Int>()
@@ -35,7 +36,7 @@ class HistoryViewModel (private var initialRepository: InitialRepository) : Andr
     fun getServiceAppointments() {
         resultUpcomingServiceAppointmentList.value = Resource.loading(null)
         viewModelScope.launch {
-            initialRepository.getServiceAppointments(type.get()!!,
+            initialRepository.getServiceAppointments(userId.get()!!,type.get()!!,
                 1000,
                 1,
             )

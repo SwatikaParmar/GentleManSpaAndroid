@@ -16,6 +16,9 @@ object ApiConstants {
     const val SIGN_IN = "Auth/login"
     const val CHANGE_PASSWORD = "Auth/ChangePassword"
     const val RESET_PASSWORD = "Auth/ResetPassword"
+    const val LOGOUT = "Auth/Logout"
+
+    //Home
     const val GET_PROFESSIONAL_DETAIL = "Professional/GetProfessionalProfileDetail"
     const val UPDATE_PROFESSIONAL = "Professional/UpdateProfessionalProfile"
     const val COUNTRY = "Content/GetCountries"
@@ -25,7 +28,6 @@ object ApiConstants {
     const val SPA_CATEGORIES = "Admin/GetSpaCategories"
     const val PRODUCT_CATEGORIES = "Product/ProductCategories"
     const val BANNER = "Content/GetBanners"
-    const val LOCATION_ADDRESS = "Admin/GetSpas"
     const val SERVICE_LIST = "Service/GetServiceList"
     const val SERVICE_DETAIL = "Service/GetServiceDetail"
     const val PROFESSIONAL_LIST = "Professional/GetProfessionalList"
@@ -72,6 +74,7 @@ object ApiConstants {
     //Chat
 
     const val ADD_USER_TO_CHAT = "Chat/addusertochat"
+    const val REMOVE_USER_FROM_CHAT = "Chat/RemoveUserFromPersonalChatRoom"
     const val CHAT_USERS = "Chat/chatUsers"
     const val SEND_MESSAGE = "Chat/sendMessage"
     const val CHAT_HISTORY = "Chat/messages/history"
@@ -82,6 +85,8 @@ object ApiConstants {
     //Notification
     const val UPDATE_FCM_TOKEN= "Notification/updateFCMToken"
     const val GET_NOTIFICATION_LIST= "Notification/getNotificationList"
+    const val GET_NOTIFICATION_COUNT= "Notification/getNotificationCount"
+    const val READ_NOTIFICATION= "Notification/readNotification"
 
 
 }

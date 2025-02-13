@@ -52,8 +52,9 @@ class CustomerNotificationFragment : Fragment(), View.OnClickListener {
     private fun initUI() {
         (activity as CustomerActivity).bottomNavigation(false)
         binding.onClick = this
-       // viewModel.searchQuery.set("")
         viewModel.getNotificationListApi()
+        viewModel.notificationSentId.set(0)
+        viewModel.readNotificationApi()
     }
 
     private fun setNotificationAdapter(dataList: List<NotificationListDataItem>) {
@@ -71,7 +72,7 @@ class CustomerNotificationFragment : Fragment(), View.OnClickListener {
     }
 
     private fun initObserver() {
-        viewModel.resultCustomerNotification.observe(this) {
+        viewModel.resultNotificationList.observe(this) {
             it?.let { result ->
                 when (result.status) {
                     Status.LOADING -> {
@@ -96,6 +97,29 @@ class CustomerNotificationFragment : Fragment(), View.OnClickListener {
             }
 
         }
+        viewModel.resultReadNotification.observe(this) {
+            it?.let { result ->
+                when (result.status) {
+                    Status.LOADING -> {
+                        //showProgress(requireContext())
+                    }
+
+                    Status.SUCCESS -> {
+                        hideProgress()
+                        //  requireContext().showToast(it.message.toString())
+                        Log.d("readNotification","data->${it.data}")
+
+                    }
+
+                    Status.ERROR -> {
+                        requireContext().showToast(it.message.toString())
+                        hideProgress()
+                    }
+                }
+            }
+
+        }
+
 
     }
 }

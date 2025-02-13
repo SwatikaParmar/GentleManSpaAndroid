@@ -40,8 +40,11 @@ class CustomerMessagesAdapter (private var customerMessagesList: List<CustomerMe
             Glide.with(holder.itemView.context).load(ApiConstants.BASE_FILE +item.profilePic).placeholder(
                 R.drawable.profile_placeholder).error(R.drawable.profile_placeholder).into(ivProfile)
 
-            root.setOnClickListener {
-                customerMessagesCallbacks.rootCustomerMessages(item)
+            clItem.setOnClickListener {
+                customerMessagesCallbacks.onMessageItemClick(item)
+            }
+            rlDelete.setOnClickListener{
+                customerMessagesCallbacks.onMessageDeleteItemClick(item)
             }
         }
 
@@ -52,7 +55,8 @@ class CustomerMessagesAdapter (private var customerMessagesList: List<CustomerMe
     }
 
     interface CustomerMessagesCallbacks {
-        fun rootCustomerMessages(item: CustomerMessagesData)
+        fun onMessageItemClick(item: CustomerMessagesData)
+        fun onMessageDeleteItemClick(item: CustomerMessagesData)
     }
 
 }

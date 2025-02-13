@@ -49,9 +49,9 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
     private lateinit var binding: FragmentHomeProfessionalBinding
     private lateinit var profileUpdatedListener: OnProfileUpdatedListener
     private var appointmentType = ""
-    private var professionalUserId = ""
-    private var name = ""
-    private var profilePic = ""
+    private var userId = ""
+/*    private var name = ""
+    private var profilePic = ""*/
     private val appointmentsList: ArrayList<UpcomingServiceAppointmentItem> = ArrayList()
     private val viewModel: HomeProfessionalViewModel by viewModels {
         ViewModelFactory(
@@ -67,7 +67,6 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
             throw ClassCastException("$context must implement OnProfileUpdatedListener")
         }
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initObserver()
@@ -87,7 +86,6 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
         //  registerProfessionalInFirebase()
 
     }
-
     private fun callAppointmentsListApi(type: String) {
         Log.d(
             "type", "type->$type PROFESSIONAL_DETAIL_ID  ${
@@ -103,7 +101,6 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
         )
         viewModel.getAppointmentListApi()
     }
-
     private fun initObserver() {
         viewModel.resultProfileProfessionalDetailAccount.observe(this) {
             it?.let { result ->
@@ -186,7 +183,6 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
                 }
             }
         }
-
         viewModel.resultAddUserToChat.observe(this) {
             it?.let { result ->
                 when (result.status) {
@@ -271,18 +267,15 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
             Log.d("professionalDetailId", "professionalDetailId is empty")
         }
     }
-
     private fun callAddUserToChatApi(userId: String) {
         val request = AddUserToChatRequest(
             AppPrefs(requireContext()).getStringPref(PROFESSIONAL_USER_ID).toString(), userId
         )
         viewModel.addUserToChatApi(request)
     }
-
     private fun setUpCompletedAdapter() {
         binding.rvAppointment.adapter = CompletedAppointmentAdapter(appointmentsList)
     }
-
     private fun setUpComingAdapter() {
         if (ContextCompat.checkSelfPermission(
                 requireActivity(), android.Manifest.permission.READ_CALENDAR
@@ -305,15 +298,14 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
             UpcomingAppointmentAdapter.UpcomingAppointmentCallbacks {
             override fun onItemMessageClick(item: UpcomingServiceAppointmentItem) {
                 //    checkUserExistsAndNavigateToChat(item)
-                Log.d("userId", "receiverUserId or professionalUserId ->${item.professionalUserId}")
-                professionalUserId = item.professionalUserId
-                name = item.professionalName
-                profilePic = item.professionalImage
-                callAddUserToChatApi(item.professionalUserId)
+                Log.d("userId", "receiverUserId or professionalUserId ->${item.professionalUserId} userId->${item.userId}")
+                userId = item.userId
+               /* name = item.professionalName
+                profilePic = item.professionalImage*/
+                callAddUserToChatApi(item.userId)
             }
         })
     }
-
     private fun addEventToCalendar(eventList: ArrayList<UpcomingServiceAppointmentItem>) {
         Log.d("addEventToCalendar", "Starting to process event list: ${eventList.size} events")
         val context = requireContext()
@@ -406,7 +398,6 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
             it.close()
         }
     }
-
     private fun removePreviousEventsFromCalendar(context: Context, calendarId: Long) {
         // Query the calendar to get the events to remove (can be filtered by title, time range, etc.)
         val eventCursor = context.contentResolver.query(
@@ -446,11 +437,9 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
             }
         }
     }
-
     private fun shouldRemoveEvent(title: String, startMillis: Long, endMillis: Long): Boolean {
         return true // For now, just remove all events
     }
-
     private fun addEventToCalendarProvider(
         event: UpcomingServiceAppointmentItem, calendarId: Long, startMillis: Long, endMillis: Long
     ) {
@@ -471,7 +460,6 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
         Log.i("addEventToCalendarProvider", "Event added with ID: $eventId")
     }
 
-
     private fun getEventTimeInMillis(event: UpcomingServiceAppointmentItem): Pair<Long, Long> {
         val fromTime = event.fromTime
         val toTime = event.toTime
@@ -482,11 +470,9 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
         val endMillis = endDate?.time ?: 0L
         return Pair(startMillis, endMillis)
     }
-
     private fun setUpCancelledAdapter() {
         binding.rvAppointment.adapter = CancelledAppointmentAdapter(appointmentsList)
     }
-
     override fun onClick(v: View?) {
         when (v) {
             binding.ivDrawer -> {
@@ -494,12 +480,9 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
             }
 
             binding.ivMessages -> {
-                val professionalUserId =
-                    "${AppPrefs(requireContext()).getStringPref(PROFESSIONAL_USER_ID)}"
+              //  val professionalUserId = "${AppPrefs(requireContext()).getStringPref(PROFESSIONAL_USER_ID)}"
                 val action =
-                    HomeProfessionalFragmentDirections.actionHomeProfessionalFragmentToProfessionalMessageFragment(
-                        professionalUserId
-                    )
+                    HomeProfessionalFragmentDirections.actionHomeProfessionalFragmentToProfessionalMessageFragment()
                 findNavController().navigate(action)
             }
         }
@@ -521,15 +504,16 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
     }
 
     private fun moveToChatFragment() {
-        val action =
+      /*  val action =
             HomeProfessionalFragmentDirections.actionHomeProfessionalFragmentToProfessionalChatFragment(
                 AppPrefs(requireContext()).getStringPref(
                     PROFESSIONAL_USER_ID
                 ).toString(), professionalUserId, name, profilePic
-            )
+            )*/
+        val action =
+            HomeProfessionalFragmentDirections.actionHomeProfessionalFragmentToProfessionalChatFragment(userId)
         findNavController().navigate(action)
     }
-
     interface OnProfileUpdatedListener {
         fun onProfileUpdated(name: String, email: String, profileImage: String)
     }

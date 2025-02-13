@@ -4,8 +4,12 @@ import android.app.Application
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.app.gentlemanspa.network.InitialRepository
+import com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.model.UpdateProfileCustomerResponse
+import com.app.gentlemanspa.utils.Resource
+import com.app.gentlemanspa.utils.updateStatus.model.LogoutResponse
 import com.app.gentlemanspa.utils.updateStatus.model.UpdateFCMTokenRequest
 import com.app.gentlemanspa.utils.updateStatus.model.UpdateOnlineStatusRequest
 import kotlinx.coroutines.flow.catch
@@ -18,6 +22,7 @@ import retrofit2.HttpException
 class UpdateStatusViewModel(private var initialRepository: InitialRepository) : AndroidViewModel(
     Application()
 ) {
+    val resultLogout = MutableLiveData<Resource<LogoutResponse>>()
 
     // Function to update the user's status
     fun updateOnlineStatusApi(userId: String, status: Boolean) {
@@ -122,6 +127,65 @@ class UpdateStatusViewModel(private var initialRepository: InitialRepository) : 
             } catch (exception: Exception) {
                 Log.d("updateFCMToken","exception->${exception.message}")
                 //Toast.makeText(getApplication(), exception.message ?: "Unknown error", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    fun logoutApi() {
+        resultLogout.value = Resource.loading(null)
+        viewModelScope.launch {
+            try {
+                initialRepository.logout()
+                    .onStart {
+                    }
+                    .onCompletion {
+
+                    }
+                    .catch { exception ->
+                        // Catch any errors, show them as Toast messages
+                        when (exception) {
+                            is HttpException -> {
+                                try {
+                                    val errorBody = exception.response()?.errorBody()?.string()
+                                    val errorMessage = if (!errorBody.isNullOrEmpty()) {
+                                        val jsonError = JSONObject(errorBody)
+                                        jsonError.optString("messages", "Unknown HTTP error")
+                                    } else {
+                                        "Unknown HTTP error"
+                                    }
+                                    // Show the error message in a Toast
+                                    Log.d("updateFCMToken","errorMessage${errorMessage}")
+
+                                    //  Toast.makeText(getApplication(), errorMessage, Toast.LENGTH_SHORT).show()
+                                } catch (e: Exception) {
+                                    Toast.makeText(getApplication(), e.message ?: "Error parsing error response", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                            else -> {
+                                Toast.makeText(getApplication(), exception.message ?: "Unknown error", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                    .collect { response ->
+                        // Handle successful response
+                        if(response?.statusCode == 200) {
+                            Log.d("updateFCMToken","success->Logout successfully")
+                            resultLogout.value =
+                                Resource.success(message = response.messages, data = response)
+                            // Toast.makeText(getApplication(), "Status updated successfully", Toast.LENGTH_SHORT).show()
+                        } else {
+                            //      Toast.makeText(getApplication(), response?.messages ?: "Unknown error", Toast.LENGTH_SHORT).show()
+                            Log.d("updateFCMToken","response error message${response?.messages}")
+                            resultLogout.value =
+                                Resource.error(data = null, message = response?.messages)
+
+                        }
+                    }
+            } catch (exception: Exception) {
+                Log.d("updateFCMToken","exception->${exception.message}")
+                //Toast.makeText(getApplication(), exception.message ?: "Unknown error", Toast.LENGTH_SHORT).show()
+                resultLogout.value =
+                    Resource.error(data = null, message = exception.message.toString())
             }
         }
     }

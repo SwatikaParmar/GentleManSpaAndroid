@@ -9,8 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.UpcomingServiceAppointmentResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.BannerResponse
-import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.CategoriesResponse
-import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.LocationResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.NotificationCountResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductCategoriesResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.model.ProfessionalResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.SpaCategoriesResponse
@@ -21,6 +20,8 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import org.json.JSONObject
+import retrofit2.HttpException
 
 class HomeCustomerViewModel (private var initialRepository: InitialRepository) : AndroidViewModel(
     Application()
@@ -28,69 +29,15 @@ class HomeCustomerViewModel (private var initialRepository: InitialRepository) :
 
     val search = ObservableField<String>()
     val spaDetailId = ObservableField<Int>()
-    val resultLocationAddress = MutableLiveData<Resource<LocationResponse>>()
-    val resultSearchLocationAddress = MutableLiveData<Resource<LocationResponse>>()
+    val userId = ObservableField<String>()
     val resultBanner = MutableLiveData<Resource<BannerResponse>>()
-  //  val resultCategories = MutableLiveData<Resource<CategoriesResponse>>()
     val resultCategories = MutableLiveData<Resource<SpaCategoriesResponse>>()
     val resultProductCategories = MutableLiveData<Resource<ProductCategoriesResponse>>()
     val resultProfileCustomerDetail = MutableLiveData<Resource<GetProfessionalDetailResponse>>()
     val resultProfessionalTeam= MutableLiveData<Resource<ProfessionalResponse>>()
     val resultUpcomingAppointmentList = MutableLiveData<Resource<UpcomingServiceAppointmentResponse>>()
+    val resultNotificationCount = MutableLiveData<Resource<NotificationCountResponse>>()
 
-
-    fun getLocationAddress() {
-        resultLocationAddress.value = Resource.loading(null)
-        viewModelScope.launch {
-            initialRepository.getLocationAddress()
-                .onStart { }
-                .onCompletion { }
-                .catch { exception ->
-                    if (!CommonFunctions.getError(exception)!!.contains("401"))
-                        resultLocationAddress.value =
-                            Resource.error(
-                                data = null,
-                                message = CommonFunctions.getError(exception)
-                            )
-                }
-                .collect {
-                    if (it?.statusCode == 200) {
-                        resultLocationAddress.value =
-                            Resource.success(message = it.messages, data = it)
-                    } else {
-                        resultLocationAddress.value =
-                            Resource.error(data = null, message = it?.messages)
-                    }
-                }
-        }
-    }
-
-
-    fun getSearchLocationAddress() {
-        resultLocationAddress.value = Resource.loading(null)
-        viewModelScope.launch {
-            initialRepository.getSearchLocationAddress(search.get())
-                .onStart { }
-                .onCompletion { }
-                .catch { exception ->
-                    if (!CommonFunctions.getError(exception)!!.contains("401"))
-                        resultLocationAddress.value =
-                            Resource.error(
-                                data = null,
-                                message = CommonFunctions.getError(exception)
-                            )
-                }
-                .collect {
-                    if (it?.statusCode == 200) {
-                        resultLocationAddress.value =
-                            Resource.success(message = it.messages, data = it)
-                    } else {
-                        resultLocationAddress.value =
-                            Resource.error(data = null, message = it?.messages)
-                    }
-                }
-        }
-    }
 
     fun getBanner() {
         resultBanner.value = Resource.loading(null)
@@ -117,7 +64,6 @@ class HomeCustomerViewModel (private var initialRepository: InitialRepository) :
                 }
         }
     }
-
     fun getCategories() {
         resultCategories.value = Resource.loading(null)
         viewModelScope.launch {
@@ -143,7 +89,6 @@ class HomeCustomerViewModel (private var initialRepository: InitialRepository) :
                 }
         }
     }
-
     fun getProductCategories() {
         resultProductCategories.value = Resource.loading(null)
         viewModelScope.launch {
@@ -169,11 +114,10 @@ class HomeCustomerViewModel (private var initialRepository: InitialRepository) :
                 }
         }
     }
-
     fun getCustomerDetail() {
         resultProfileCustomerDetail.value = Resource.loading(null)
         viewModelScope.launch {
-            initialRepository.getCustomerDetail()
+            initialRepository.getCustomerDetail(userId.get()!!)
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->
@@ -195,7 +139,6 @@ class HomeCustomerViewModel (private var initialRepository: InitialRepository) :
                 }
         }
     }
-
     fun getProfessionalTeamList() {
         Log.d("professionalTeam","inside getProfessionalTeamList()")
 
@@ -223,12 +166,10 @@ class HomeCustomerViewModel (private var initialRepository: InitialRepository) :
                 }
         }
     }
-
-
     fun getUpcomingAppointments() {
         resultUpcomingAppointmentList.value = Resource.loading(null)
         viewModelScope.launch {
-            initialRepository.getServiceAppointments("Upcoming",
+            initialRepository.getServiceAppointments(userId.get()!!,"Upcoming",
                 1000,
                 1,
             )
@@ -250,6 +191,45 @@ class HomeCustomerViewModel (private var initialRepository: InitialRepository) :
                             Resource.success(message = it.messages, data = it)
                     } else {
                         resultUpcomingAppointmentList.value =
+                            Resource.error(data = null, message = it?.messages)
+                    }
+                }
+        }
+    }
+    fun getNotificationCount() {
+        resultNotificationCount.value = Resource.loading(null)
+        viewModelScope.launch {
+            initialRepository.getNotificationCount()
+                .onStart { }
+                .onCompletion { }
+                .catch { exception ->
+                    if (exception is HttpException) {
+                        try {
+                            val errorBody = exception.response()?.errorBody()?.string()
+                            if (!errorBody.isNullOrEmpty()) {
+                                val jsonError = JSONObject(errorBody)
+                                val errorMessage = jsonError.optString("messages", "Unknown HTTP error")
+                                resultNotificationCount.value = Resource.error(data = null, message = errorMessage)
+                            } else {
+                                resultNotificationCount.value = Resource.error(data = null, message = "Unknown HTTP error")
+                            }
+                        } catch (e: Exception) {
+                            resultNotificationCount.value = Resource.error(data = null, message = e.message)
+                        }
+                    }else{
+                        resultNotificationCount.value =
+                            Resource.error(
+                                data = null,
+                                message = CommonFunctions.getError(exception)
+                            )
+                    }
+                }
+                .collect {
+                    if (it?.statusCode == 200) {
+                        resultNotificationCount.value =
+                            Resource.success(message = it.messages, data = it)
+                    } else {
+                        resultNotificationCount.value =
                             Resource.error(data = null, message = it?.messages)
                     }
                 }

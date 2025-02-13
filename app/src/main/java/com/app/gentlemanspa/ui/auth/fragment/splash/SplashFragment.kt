@@ -85,17 +85,26 @@ class SplashFragment : Fragment() {
     }
 
     private fun moveToCustomerHome() {
-        startActivity(Intent(requireContext(), CustomerActivity::class.java))
+        val type =arguments?.getString("type")?:""
+        val userId =arguments?.getString("userId")?:""
+        Log.d("test" , " splash fragment type-> $type userId->$userId")
+        val intent=Intent(requireContext(), CustomerActivity::class.java).apply {
+            putExtra("type",type)
+            putExtra("userId",userId)
+        }
+        startActivity(intent)
         requireActivity().finishAffinity()
     }
 
     private fun moveToProfessionalHome() {
-        startActivity(
-            Intent(
-                requireContext(),
-                ProfessionalActivity::class.java
-            )
-        )
+        val type =arguments?.getString("type")?:""
+        val userId =arguments?.getString("userId")?:""
+        Log.d("test" , " splash fragment type-> $type userId->$userId")
+        val intent=Intent(requireContext(), ProfessionalActivity::class.java).apply {
+            putExtra("type",type)
+            putExtra("userId",userId)
+        }
+        startActivity(intent)
         requireActivity().finishAffinity()
     }
 

@@ -73,19 +73,18 @@ class ProfessionalMessageFragment : Fragment(), View.OnClickListener {
             override fun rootProfessionalMessages(item: CustomerMessagesData) {
                 Log.d("userId", "item->${item}")
                 Log.d("userId", "receiverId->${item.userId}")
-                val messageSenderId =
-                    AppPrefs(requireContext()).getStringPref(PROFESSIONAL_USER_ID).toString()
-                val messageReceiverId = item.userName
-                val name = "${item.firstName} ${item.lastName}"
-                val profilePic = item.profilePic ?: ""
-                Log.d(
-                    "userId",
-                    "messageSenderId${messageSenderId} messageReceiverId->${messageReceiverId} name->${name} profilePic->${profilePic}"
-                )
-                val action =
+             //   val messageSenderId = AppPrefs(requireContext()).getStringPref(PROFESSIONAL_USER_ID).toString()
+             //   val messageReceiverId = item.userName
+                val messageSenderId = item.userName
+             //   val name = "${item.firstName} ${item.lastName}"
+           //     val profilePic = item.profilePic ?: ""
+
+              /*  val action =
                     ProfessionalMessageFragmentDirections.actionProfessionalMessageFragmentToProfessionalChatFragment(
                         messageSenderId, messageReceiverId, name, profilePic
-                    )
+                    )*/
+                val action =
+                    ProfessionalMessageFragmentDirections.actionProfessionalMessageFragmentToProfessionalChatFragment(messageSenderId)
                 findNavController().navigate(action)
             }
         })
@@ -114,7 +113,7 @@ class ProfessionalMessageFragment : Fragment(), View.OnClickListener {
                     }
 
                     Status.ERROR -> {
-                        Log.d("messages", "inside error${it.message}")
+                        Log.d("messages", "inside error->${it.message}")
                         requireContext().showToast(it.message.toString())
                         hideProgress()
                     }

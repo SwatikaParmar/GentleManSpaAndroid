@@ -27,21 +27,35 @@ class AuthActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAuthBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        if (intent.extras != null) {
+            val type = intent.getStringExtra("type").toString()
+            Log.d("test" , " Auth type-> $type")
+
+           /* for (key in intent.extras!!.keySet()) {
+                val value = intent.extras!![key]
+                Log.d("test", "Auth Key: $key Value: $value")
+            }*/
+        }
         initUI()
     }
 
     private fun initUI() {
         navHost = supportFragmentManager.findFragmentById(R.id.authContainer) as NavHostFragment
         navController = navHost.navController
-
         val navInflater = navController.navInflater
         val graph = navInflater.inflate(R.navigation.auth)
-        val logout = intent.getStringExtra("LOG_OUT").toString()
 
+        val bundle = Bundle().apply {
+            putString("type", intent.getStringExtra("type").toString())
+            putString("userId", intent.getStringExtra("userId").toString())
+        }
+        val logout = intent.getStringExtra("LOG_OUT").toString()
         if (logout == "logout") {
             graph.setStartDestination(R.id.loginFragment)
         } else {
             graph.setStartDestination(R.id.splashFragment)
+            navController.navigate(R.id.splashFragment, bundle)
         }
         navController.graph = graph
     }

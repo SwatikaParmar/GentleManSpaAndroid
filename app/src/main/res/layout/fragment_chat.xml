@@ -62,7 +62,7 @@
                 android:layout_marginStart="@dimen/_5sdp"
                 android:layout_marginTop="@dimen/_5sdp"
                 android:fontFamily="@font/poppins"
-                android:text="@string/name"
+                android:text=""
                 android:textColor="@color/white"
                 android:textSize="@dimen/_12sdp"
                 app:layout_constraintBottom_toTopOf="@id/tvStatus"
@@ -149,7 +149,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/ivSendMessage"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="HardcodedText,TouchTargetSizeCheck,VisualLintTextFieldSize" />
+                tools:ignore="HardcodedText,TouchTargetSizeCheck,VisualLintTextFieldSize,TextContrastCheck" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/ivSendMessage"

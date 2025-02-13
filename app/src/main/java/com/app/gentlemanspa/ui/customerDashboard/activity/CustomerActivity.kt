@@ -15,17 +15,22 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.app.gentlemanspa.R
 import com.app.gentlemanspa.base.MyApplication.Companion.context
+import com.app.gentlemanspa.base.MyApplication.Companion.hideProgress
+import com.app.gentlemanspa.base.MyApplication.Companion.showProgress
 import com.app.gentlemanspa.databinding.ActivityCustomerBinding
 import com.app.gentlemanspa.network.InitialRepository
+import com.app.gentlemanspa.network.Status
 import com.app.gentlemanspa.ui.auth.activity.AuthActivity
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.HomeCustomerFragment
 import com.app.gentlemanspa.utils.AppPrefs
 import com.app.gentlemanspa.utils.CUSTOMER_USER_ID
+import com.app.gentlemanspa.utils.CommonFunctions
 import com.app.gentlemanspa.utils.FCM_TOKEN
 import com.app.gentlemanspa.utils.ViewModelFactory
 import com.app.gentlemanspa.utils.isCalendarPermissionGranted
 import com.app.gentlemanspa.utils.setGone
 import com.app.gentlemanspa.utils.setVisible
+import com.app.gentlemanspa.utils.showToast
 import com.app.gentlemanspa.utils.updateStatus.viewModel.UpdateStatusViewModel
 import com.bumptech.glide.Glide
 import com.google.android.material.navigation.NavigationView
@@ -46,6 +51,7 @@ class CustomerActivity : AppCompatActivity(),HomeCustomerFragment.OnProfileUpdat
         binding = ActivityCustomerBinding.inflate(layoutInflater)
         setContentView(binding.root)
         navView = binding.navView1
+        initObserver()
         initUI()
     }
 
@@ -60,6 +66,29 @@ class CustomerActivity : AppCompatActivity(),HomeCustomerFragment.OnProfileUpdat
             Log.d("updateFCMToken","FCM Token is empty")
 
         }
+        val navInflater = navController.navInflater
+        val graph = navInflater.inflate(R.navigation.customer)
+        val type = intent.getStringExtra("type").toString()
+        val messageSenderId = intent.getStringExtra("userId").toString()
+        val bundle = Bundle().apply {
+            putString("messageSenderId", messageSenderId)
+            putString("from", "notification")
+        }
+        Log.d("test" , "Customer Activity type-> $type messageSenderId->$messageSenderId")
+        when(type){
+            "Chat" ->{
+            //    graph.setStartDestination(R.id.customerChatFragment)
+                navController.navigate(R.id.customerChatFragment, bundle)
+            }
+            /*"Order"->{
+                graph.setStartDestination(R.id.myOrdersFragment)
+
+            }*/else->{
+               graph.setStartDestination(R.id.homeCustomerFragment)
+            }
+        }
+        navController.graph = graph
+
     }
 
     private fun setBottomNavigation() {
@@ -72,7 +101,7 @@ class CustomerActivity : AppCompatActivity(),HomeCustomerFragment.OnProfileUpdat
 
                 R.id.cart -> {
                      navController.navigate(R.id.cartFragment)
-                    true
+                     true
                 }
 
                 R.id.history -> {
@@ -159,7 +188,7 @@ class CustomerActivity : AppCompatActivity(),HomeCustomerFragment.OnProfileUpdat
         builder.setTitle("Alert")
         builder.setMessage("Are you sure you want to Logout?")
         builder.setPositiveButton(android.R.string.yes) { dialog, which ->
-            if (isCalendarPermissionGranted(this)){
+      /*      if (isCalendarPermissionGranted(this)){
                 removeAllEventsOnLogout()
             }
             AppPrefs(this).setString("TOKEN","")
@@ -168,7 +197,8 @@ class CustomerActivity : AppCompatActivity(),HomeCustomerFragment.OnProfileUpdat
             val intent = Intent(this, AuthActivity::class.java)
             intent.putExtra("LOG_OUT","logout")
             startActivity(intent)
-            finish()
+            finish()*/
+            viewModel.logoutApi()
             dialog.dismiss()
         }
 
@@ -243,7 +273,40 @@ class CustomerActivity : AppCompatActivity(),HomeCustomerFragment.OnProfileUpdat
             cursor.close()
         }
     }
+    private fun initObserver() {
 
+        viewModel.resultLogout.observe(this) {
+            it?.let { result ->
+                when (result.status) {
+                    Status.LOADING -> {
+                        showProgress(this)
+                    }
+
+                    Status.SUCCESS -> {
+                        hideProgress()
+                        Log.d("logout","logout->${it.data}")
+                        if (it.data!!.isSuccess){
+                            if (isCalendarPermissionGranted(this)){
+                                removeAllEventsOnLogout()
+                            }
+                            AppPrefs(this).setString("TOKEN","")
+                            AppPrefs(this).setString("ROLE","")
+                            AppPrefs(this).clearAllPrefs()
+                            val intent = Intent(this, AuthActivity::class.java)
+                            intent.putExtra("LOG_OUT","logout")
+                            startActivity(intent)
+                            finish()
+                        }
+
+                    }
+
+                    Status.ERROR -> {
+                        showToast(it.message.toString())
+                        hideProgress()
+                    }
+                }
+            }
+        }}
     override fun onProfileUpdated(name: String, email: String, profileImage: String) {
         val headerView = navView.getHeaderView(0)
         val tvNavName: TextView = headerView.findViewById(R.id.nameTV)

@@ -53,6 +53,10 @@ class CustomerMessagesFragment : Fragment(), View.OnClickListener {
     private fun initUI() {
         (activity as CustomerActivity).bottomNavigation(false)
         binding.onClick=this
+        callCustomerMessageListApi()
+    }
+
+    private fun callCustomerMessageListApi(){
         Log.d("UserId","UserId->${AppPrefs(requireContext()).getStringPref(CUSTOMER_USER_ID)}")
         viewModel.userId.set(AppPrefs(requireContext()).getStringPref(CUSTOMER_USER_ID).toString())
         viewModel.getCustomerMessagesListApi()
@@ -69,17 +73,28 @@ class CustomerMessagesFragment : Fragment(), View.OnClickListener {
         val customerMessagesAdapter=CustomerMessagesAdapter(customerMessagesList)
         binding.rvCustomerChatUsers.adapter=customerMessagesAdapter
         customerMessagesAdapter.setCustomerMessagesCallbacks(object:CustomerMessagesAdapter.CustomerMessagesCallbacks{
-            override fun rootCustomerMessages(item: CustomerMessagesData) {
+            override fun onMessageItemClick(item: CustomerMessagesData) {
                 Log.d("userId","receiverId->${item.userId}")
                 Log.d("userId","userName->${item.userName}")
-                val messageSenderId= AppPrefs(requireContext()).getStringPref(CUSTOMER_USER_ID).toString()
-                val messageReceiverId=item.userName
+                val messageReceiverId= AppPrefs(requireContext()).getStringPref(CUSTOMER_USER_ID).toString()
+                val messageSenderId=item.userName
                 val name="${item.firstName} ${item.lastName}"
                 val profilePic=item.profilePic?:""
-                val action=CustomerMessagesFragmentDirections.actionCustomerMessageFragmentToCustomerChatFragment(
+              /*  val action=CustomerMessagesFragmentDirections.actionCustomerMessageFragmentToCustomerChatFragment(
                     messageSenderId,messageReceiverId,name,profilePic
+                )*/
+                val action=CustomerMessagesFragmentDirections.actionCustomerMessageFragmentToCustomerChatFragment(
+                    messageSenderId
                 )
                 findNavController().navigate(action)
+            }
+
+            override fun onMessageDeleteItemClick(item: CustomerMessagesData) {
+                Log.d("RemoveUserFromChat","currentUserName->${AppPrefs(requireContext()).getStringPref(CUSTOMER_USER_ID)}")
+                Log.d("RemoveUserFromChat","userId->${item.userId} userName->${item.userName}")
+                viewModel.currentUserName.set(AppPrefs(requireContext()).getStringPref(CUSTOMER_USER_ID).toString())
+                viewModel.targetUserName.set(item.userName)
+                viewModel.removeUserFromChatApi()
             }
         })
 
@@ -100,6 +115,8 @@ class CustomerMessagesFragment : Fragment(), View.OnClickListener {
                             setCustomerMessagesAdapter(sortedMessages)
                         }else{
                             binding.clNoUserExist.setVisible()
+                            setCustomerMessagesAdapter(ArrayList())
+
                         }
                     }
 
@@ -110,6 +127,29 @@ class CustomerMessagesFragment : Fragment(), View.OnClickListener {
                 }
             }
         }
+        viewModel.resultRemoveUserFromChat.observe(this) { it ->
+            it?.let { result ->
+                when (result.status) {
+                    Status.LOADING -> {
+                        //  showProgress(requireContext())
+                    }
+
+                    Status.SUCCESS -> {
+                        hideProgress()
+                        Log.d("RemoveUserFromChat","data->${it.data!!.data}")
+                        if (it.data!!.isSuccess){
+                           callCustomerMessageListApi()
+                       }
+                    }
+
+                    Status.ERROR -> {
+                        requireContext().showToast(it.message.toString())
+                        hideProgress()
+                    }
+                }
+            }
+        }
+
     }
 
 

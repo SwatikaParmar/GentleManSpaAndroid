@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.app.gentlemanspa.network.InitialRepository
+import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.RemoveUserFromChatResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.messages.model.CustomerMessagesResponse
 import com.app.gentlemanspa.utils.CommonFunctions
 import com.app.gentlemanspa.utils.Resource
@@ -21,7 +22,10 @@ class CustomerMessagesViewModel(private var initialRepository: InitialRepository
 ) {
 
     val userId=ObservableField<String>()
+    val currentUserName=ObservableField<String>()
+    val targetUserName=ObservableField<String>()
     val resultCustomerMessagesList = MutableLiveData<Resource<CustomerMessagesResponse>>()
+    val resultRemoveUserFromChat= MutableLiveData<Resource<RemoveUserFromChatResponse>>()
 
 
     fun getCustomerMessagesListApi() {
@@ -63,5 +67,46 @@ class CustomerMessagesViewModel(private var initialRepository: InitialRepository
                 }
         }
     }
+
+    fun removeUserFromChatApi() {
+        resultRemoveUserFromChat.value = Resource.loading(null)
+        viewModelScope.launch {
+            initialRepository.removeUserFromChat(currentUserName.get()!!,targetUserName.get()!!)
+                .onStart { }
+                .onCompletion { }
+                .catch { exception ->
+                    if (exception is HttpException) {
+                        try {
+                            val errorBody = exception.response()?.errorBody()?.string()
+                            if (!errorBody.isNullOrEmpty()) {
+                                val jsonError = JSONObject(errorBody)
+                                val errorMessage = jsonError.optString("messages", "Unknown HTTP error")
+                                resultRemoveUserFromChat.value = Resource.error(data = null, message = errorMessage)
+                            } else {
+                                resultRemoveUserFromChat.value = Resource.error(data = null, message = "Unknown HTTP error")
+                            }
+                        } catch (e: Exception) {
+                            resultRemoveUserFromChat.value = Resource.error(data = null, message = e.message)
+                        }
+                    }else{
+                        resultRemoveUserFromChat.value =
+                            Resource.error(
+                                data = null,
+                                message = CommonFunctions.getError(exception)
+                            )
+                    }
+                }
+                .collect {
+                    if (it?.statusCode == 200) {
+                        resultRemoveUserFromChat.value =
+                            Resource.success(message = it.messages, data = it)
+                    } else {
+                        resultRemoveUserFromChat.value =
+                            Resource.error(data = null, message = it?.messages)
+                    }
+                }
+        }
+    }
+
 
 }

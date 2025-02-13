@@ -67,6 +67,7 @@ class ProfileCustomerFragment : Fragment(), View.OnClickListener {
     private fun initUI() {
         Log.d("id", "customerId:${AppPrefs(requireContext()).getStringPref(CUSTOMER_USER_ID)}")
         binding.onClick = this
+        viewModel.userId.set(AppPrefs(requireContext()).getStringPref(CUSTOMER_USER_ID).toString())
         viewModel.getCustomerDetail()
         profileCustomerData =
             AppPrefs(requireContext()).getProfileCustomerData(PROFILE_CUSTOMER_DATA)

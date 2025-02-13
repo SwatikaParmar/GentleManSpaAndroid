@@ -61,7 +61,7 @@
                 android:layout_marginStart="@dimen/_5sdp"
                 android:layout_marginTop="@dimen/_5sdp"
                 android:fontFamily="@font/poppins"
-                android:text="@string/name"
+                android:text=""
                 android:textColor="@color/white"
                 android:textSize="@dimen/_12sdp"
                 app:layout_constraintBottom_toTopOf="@id/tvStatus"

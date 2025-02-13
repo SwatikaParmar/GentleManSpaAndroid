@@ -33,7 +33,7 @@ class CustomerChatViewModel(private var initialRepository: InitialRepository) : 
     fun getCustomerChatHistoryApi() {
         resultCustomerChatHistoryList.value = Resource.loading(null)
         viewModelScope.launch {
-            initialRepository.getCustomerChatHistory(senderId.get()!!,receiverId.get()!!)
+            initialRepository.getCustomerChatHistory(senderId.get()!!,receiverId.get()!!,1,1000)
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->

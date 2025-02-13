@@ -116,7 +116,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginHorizontal="@dimen/_5sdp"
                                     android:ellipsize="end"
-                                    android:maxLines="4"
+                                    android:maxLines="3"
                                     android:fontFamily="@font/poppins"
                                     android:includeFontPadding="false"
                                     android:text="Skin Care Specialist"

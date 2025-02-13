@@ -299,12 +299,15 @@ class HistoryCustomerFragment : Fragment(), View.OnClickListener {
 
     }
     private fun moveToChatFragment() {
-        val action =
+       /* val action =
             HistoryCustomerFragmentDirections.actionHistoryCustomerFragmentToCustomerChatFragment(
                 AppPrefs(requireContext()).getStringPref(
                     CUSTOMER_USER_ID
                 ).toString(), professionalUserId,name,profilePic
-            )
+            )*/
+
+        val action =
+            HistoryCustomerFragmentDirections.actionHistoryCustomerFragmentToCustomerChatFragment(professionalUserId)
         findNavController().navigate(action)
     }
 }

@@ -19,10 +19,12 @@ import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.network.Status
 import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.model.CustomerChatHistoryMessage
 import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.model.CustomerSendMessageRequest
-import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.messages.model.CustomerMessagesData
 import com.app.gentlemanspa.ui.professionalDashboard.activity.ProfessionalActivity
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.chat.chat.adapter.ProfessionalChatHistoryAdapter
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.chat.chat.viewModel.ProfessionalChatViewModel
+import com.app.gentlemanspa.utils.AppPrefs
+import com.app.gentlemanspa.utils.CUSTOMER_USER_ID
+import com.app.gentlemanspa.utils.PROFESSIONAL_USER_ID
 import com.app.gentlemanspa.utils.ViewModelFactory
 import com.app.gentlemanspa.utils.setGone
 import com.app.gentlemanspa.utils.setVisible
@@ -64,8 +66,18 @@ class ProfessionalChatFragment : Fragment(), View.OnClickListener {
     }
 
     private fun callProfessionalChatHistoryApi() {
-        viewModel.senderId.set(args.messageSenderId)
-        viewModel.receiverId.set(args.messageReceiverId)
+        Log.d("test", "messageSenderId->${args.messageSenderId}")
+        Log.d(
+            "test", "CUSTOMER_USER_ID->${
+                AppPrefs(requireActivity()).getStringPref(PROFESSIONAL_USER_ID)
+                    .toString()
+            }"
+        )
+        viewModel.senderId.set(
+            AppPrefs(requireActivity()).getStringPref(PROFESSIONAL_USER_ID)
+                .toString()
+        )
+        viewModel.receiverId.set(args.messageSenderId)
         viewModel.getCustomerChatHistoryApi()
     }
 
@@ -73,9 +85,6 @@ class ProfessionalChatFragment : Fragment(), View.OnClickListener {
     private fun initUI() {
         (activity as ProfessionalActivity).bottomNavigation(false)
         binding.onClick = this
-        binding.tvName.text=args.name
-        Glide.with(requireContext()).load(ApiConstants.BASE_FILE +args.profilePic).placeholder(
-            R.drawable.profile_placeholder).error(R.drawable.profile_placeholder).into(binding.ivProfile)
         callProfessionalChatHistoryApi()
         handler = Handler(Looper.getMainLooper())
         updateRunnable = object : Runnable {
@@ -88,7 +97,10 @@ class ProfessionalChatFragment : Fragment(), View.OnClickListener {
 
     }
 
-
+    override fun onPause() {
+        handler.removeCallbacks(updateRunnable)
+        super.onPause()
+    }
     override fun onClick(v: View?) {
         when (v) {
             binding.ivArrowBack -> {
@@ -111,9 +123,10 @@ class ProfessionalChatFragment : Fragment(), View.OnClickListener {
             0,
             messageContent,
             "text",
-            args.messageReceiverId,
-            args.messageSenderId
+            args.messageSenderId,
+            AppPrefs(requireContext()).getStringPref(PROFESSIONAL_USER_ID).toString()
         )
+        Log.d("SendMessage","request->${request}")
         viewModel.customerSendMessageApi(request)
 
     }
@@ -126,11 +139,12 @@ class ProfessionalChatFragment : Fragment(), View.OnClickListener {
             binding.rvChatHistory.scrollToPosition(professionalChatHistoryAdapter.itemCount - 1)
         }
 
-        professionalChatHistoryAdapter.setProfessionalChatCallBacks(object :ProfessionalChatHistoryAdapter.ProfessionalChatCallBacks{
-            override fun onMessageItemClick(messageId:Int) {
-                Log.d("MessageId","MessageId->$messageId")
+        professionalChatHistoryAdapter.setProfessionalChatCallBacks(object :
+            ProfessionalChatHistoryAdapter.ProfessionalChatCallBacks {
+            override fun onMessageItemClick(messageId: Int) {
+                Log.d("MessageId", "MessageId->$messageId")
                 showMessageOptionsDialog(requireContext(), "Delete this message?") {
-                 viewModel.messageId.set(messageId)
+                    viewModel.messageId.set(messageId)
                     viewModel.deleteMessageApi()
                 }
             }
@@ -151,14 +165,26 @@ class ProfessionalChatFragment : Fragment(), View.OnClickListener {
                         hideProgress()
                         //     requireContext().showToast(it.data!!.messages)
                         Log.d("chatHistory", "data->${it.data!!.data.messages}")
-                        Log.d("chatHistory", "senderOnlineStatus->${it.data.data.receiverOnlineStatus}")
-                        if (it.data.data.receiverOnlineStatus){
+                        Log.d(
+                            "chatHistory",
+                            "senderOnlineStatus->${it.data.data.receiverOnlineStatus}"
+                        )
+
+                        if (it.data.data.receiverOnlineStatus) {
                             binding.tvStatus.setVisible()
-                            binding.tvStatus.text=getString(R.string.online)
-                        }else{
+                            binding.tvStatus.text = getString(R.string.online)
+                        } else {
                             binding.tvStatus.setGone()
                         }
-                        setCustomerChatHistoryAdapter(it.data.data.messages)
+                        binding.tvName.text = it.data.data.name
+                        Glide.with(requireContext())
+                            .load(ApiConstants.BASE_FILE + it.data.data.senderProfilePic)
+                            .placeholder(
+                                R.drawable.profile_placeholder
+                            ).error(R.drawable.profile_placeholder).into(binding.ivProfile)
+                        if (it.data.data.messages.isNotEmpty()) {
+                            setCustomerChatHistoryAdapter(it.data.data.messages)
+                        }
 
                     }
 

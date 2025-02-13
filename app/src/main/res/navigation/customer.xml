@@ -357,14 +357,23 @@
         android:name="com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.CustomerChatFragment"
         android:label="CustomerChatFragment"
         tools:layout="@layout/fragment_customer_chat">
+
+        <action
+            android:id="@+id/action_customerChatFragment_to_homeCustomerFragment"
+            app:destination="@+id/homeCustomerFragment" />
         <argument
             android:name="messageSenderId"
             app:argType="string" />
-        <argument
-            android:name="messageReceiverId"
-            app:argType="string" />
 
         <argument
+            android:name="from"
+            app:argType="string"
+            android:defaultValue=""/>
+<!--        <argument
+            android:name="messageReceiverId"
+            app:argType="string" />-->
+
+     <!--   <argument
             android:name="name"
             app:argType="string"
             app:nullable="true"
@@ -373,7 +382,7 @@
             android:name="profilePic"
             app:argType="string"
             app:nullable="true"
-            />
+            />-->
     </fragment>
     <fragment
         android:id="@+id/orderDetail"

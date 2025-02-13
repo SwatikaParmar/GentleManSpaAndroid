@@ -1,5 +1,6 @@
 package com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -9,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.app.gentlemanspa.R
@@ -22,6 +24,8 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.adapter.Cust
 import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.model.CustomerChatHistoryMessage
 import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.model.CustomerSendMessageRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.viewModel.CustomerChatViewModel
+import com.app.gentlemanspa.utils.AppPrefs
+import com.app.gentlemanspa.utils.CUSTOMER_USER_ID
 import com.app.gentlemanspa.utils.ViewModelFactory
 import com.app.gentlemanspa.utils.setGone
 import com.app.gentlemanspa.utils.setVisible
@@ -59,13 +63,10 @@ class CustomerChatFragment : Fragment(), View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
         initUI()
     }
+
     private fun initUI() {
         (activity as CustomerActivity).bottomNavigation(false)
         binding.onClick = this
-        binding.tvName.text=args.name
-        Glide.with(requireContext()).load(ApiConstants.BASE_FILE +args.profilePic).placeholder(
-            R.drawable.profile_placeholder).error(R.drawable.profile_placeholder).into(binding.ivProfile)
-
         callCustomerChatHistoryApi()
         handler = Handler(Looper.getMainLooper())
         updateRunnable = object : Runnable {
@@ -76,37 +77,65 @@ class CustomerChatFragment : Fragment(), View.OnClickListener {
         }
         handler.postDelayed(updateRunnable, 7000)
     }
+    override fun onPause() {
+        handler.removeCallbacks(updateRunnable)
+        super.onPause()
+    }
+
     private fun callCustomerChatHistoryApi() {
-        viewModel.senderId.set(args.messageSenderId)
-        viewModel.receiverId.set(args.messageReceiverId)
+        Log.d("test", "messageSenderId->${args.messageSenderId}")
+        Log.d(
+            "test", "CUSTOMER_USER_ID->${
+                AppPrefs(requireActivity()).getStringPref(CUSTOMER_USER_ID)
+                    .toString()
+            }"
+        )
+        viewModel.senderId.set(AppPrefs(requireActivity()).getStringPref(CUSTOMER_USER_ID)
+            .toString())
+        // viewModel.receiverId.set(args.messageReceiverId)
+        viewModel.receiverId.set(args.messageSenderId)
         viewModel.getCustomerChatHistoryApi()
     }
+
     override fun onClick(v: View?) {
         when (v) {
             binding.ivArrowBack -> {
-                findNavController().popBackStack()
+                if (args.from.isNotEmpty() && args.from =="notification") {
+                    Log.d("test","inside if part of back")
+                    val action =
+                        CustomerChatFragmentDirections.actionCustomerChatFragmentToHomeCustomerFragment()
+                    val navOptions =
+                        NavOptions.Builder().setPopUpTo(R.id.customerChatFragment, true).build()
+                    findNavController().navigate(action, navOptions)
+                } else {
+                    Log.d("test","inside else part of back")
+                    findNavController().popBackStack()
+
+                }
 
             }
 
             binding.ivSendMessage -> {
-                if (binding.etMessage.text!!.isNotBlank()){
+                if (binding.etMessage.text!!.isNotBlank()) {
                     proceedToSendMessage(binding.etMessage.text.toString().trim())
                 }
             }
         }
     }
-    private fun proceedToSendMessage(messageContent:String) {
+
+    private fun proceedToSendMessage(messageContent: String) {
         binding.etMessage.text!!.clear()
         val request = CustomerSendMessageRequest(
             0,
             messageContent,
             "text",
-            args.messageReceiverId,
-            args.messageSenderId
-        )
+            args.messageSenderId,
+            AppPrefs(requireContext()).getStringPref(CUSTOMER_USER_ID).toString())
+        Log.d("SendMessage","request->${request}")
         viewModel.customerSendMessageApi(request)
 
     }
+
     private fun setCustomerChatHistoryAdapter(chatHistoryList: List<CustomerChatHistoryMessage>) {
         val customerChatHistoryAdapter =
             CustomerChatHistoryAdapter(requireContext(), chatHistoryList)
@@ -115,9 +144,10 @@ class CustomerChatFragment : Fragment(), View.OnClickListener {
             binding.rvChatHistory.scrollToPosition(customerChatHistoryAdapter.itemCount - 1)
         }
 
-        customerChatHistoryAdapter.setCustomerChatCallBacks(object :CustomerChatHistoryAdapter.CustomerChatCallBacks{
+        customerChatHistoryAdapter.setCustomerChatCallBacks(object :
+            CustomerChatHistoryAdapter.CustomerChatCallBacks {
             override fun onMessageItemClick(messageId: Int) {
-                Log.d("MessageId","MessageId->$messageId")
+                Log.d("MessageId", "MessageId->$messageId")
                 showMessageOptionsDialog(requireContext(), "Delete this message?") {
                     viewModel.messageId.set(messageId)
                     viewModel.deleteMessageApi()
@@ -126,6 +156,7 @@ class CustomerChatFragment : Fragment(), View.OnClickListener {
 
         })
     }
+
     private fun initObserver() {
         viewModel.resultCustomerChatHistoryList.observe(this) {
             it?.let { result ->
@@ -137,14 +168,23 @@ class CustomerChatFragment : Fragment(), View.OnClickListener {
                     Status.SUCCESS -> {
                         hideProgress()
                         //     requireContext().showToast(it.data!!.messages)
-                        Log.d("chatHistory", "data->${it.data!!.data.messages}")
-                        Log.d("chatHistory", "senderOnlineStatus->${it.data.data.receiverOnlineStatus}")
-                        if (it.data.data.receiverOnlineStatus){
+                        Log.d("chatHistory", "data->${it.data!!.data}")
+                        Log.d(
+                            "chatHistory",
+                            "senderOnlineStatus->${it.data.data.receiverOnlineStatus}"
+                        )
+                        if (it.data.data.receiverOnlineStatus) {
                             binding.tvStatus.setVisible()
-                            binding.tvStatus.text=getString(R.string.online)
-                        }else{
+                            binding.tvStatus.text = getString(R.string.online)
+                        } else {
                             binding.tvStatus.setGone()
                         }
+                        binding.tvName.text = it.data.data.name
+                        Glide.with(requireContext())
+                            .load(ApiConstants.BASE_FILE + it.data.data.senderProfilePic)
+                            .placeholder(
+                                R.drawable.profile_placeholder
+                            ).error(R.drawable.profile_placeholder).into(binding.ivProfile)
                         setCustomerChatHistoryAdapter(it.data.data.messages)
 
                     }

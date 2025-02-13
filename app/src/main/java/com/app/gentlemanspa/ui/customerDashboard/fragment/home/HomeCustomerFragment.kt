@@ -20,7 +20,6 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.app.gentlemanspa.R
-import com.app.gentlemanspa.base.MyApplication
 import com.app.gentlemanspa.base.MyApplication.Companion.hideProgress
 import com.app.gentlemanspa.base.MyApplication.Companion.showProgress
 import com.app.gentlemanspa.databinding.BottomSheetLocationBinding
@@ -32,18 +31,18 @@ import com.app.gentlemanspa.ui.customerDashboard.activity.CustomerActivity
 import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.UpcomingServiceAppointmentItem
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.adapter.BannerCustomerAdapter
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.adapter.CategoriesAdapter
-import com.app.gentlemanspa.ui.customerDashboard.fragment.home.adapter.LocationAddressAdapter
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.adapter.ProductCategoriesAdapter
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.adapter.ProfessionalTeamAdapter
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.BannerItem
-import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.LocationItem
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductCategoriesItem
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.viewModel.HomeCustomerViewModel
 import com.app.gentlemanspa.ui.customerDashboard.fragment.selectProfessional.model.ProfessionalItem
 import com.app.gentlemanspa.ui.customerDashboard.fragment.service.model.SpaCategoriesData
 import com.app.gentlemanspa.utils.AppPrefs
+import com.app.gentlemanspa.utils.CUSTOMER_USER_ID
 import com.app.gentlemanspa.utils.PROFILE_CUSTOMER_DATA
 import com.app.gentlemanspa.utils.ViewModelFactory
+import com.app.gentlemanspa.utils.setGone
 import com.app.gentlemanspa.utils.setVisible
 import com.app.gentlemanspa.utils.showToast
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -53,6 +52,7 @@ import java.util.Locale
 import java.util.TimeZone
 
 
+@Suppress("DEPRECATION")
 class HomeCustomerFragment : Fragment(), View.OnClickListener {
     private lateinit var categoriesAdapter: CategoriesAdapter
     private lateinit var bannerCustomerAdapter: BannerCustomerAdapter
@@ -62,7 +62,6 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
     private var professionalTeamList: ArrayList<ProfessionalItem> = ArrayList()
     private lateinit var bottomSheetLayout: BottomSheetLocationBinding
     private lateinit var bottomSheet: BottomSheetDialog
-    private var locationAddressList: ArrayList<LocationItem> = ArrayList()
     private lateinit var binding: FragmentHomeCustomerBinding
     private var mainLoader: Int = 0
     private val headerHandler: Handler = Handler(Looper.getMainLooper())
@@ -116,12 +115,14 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
     private fun initUI() {
         binding.ivDrawer.setOnClickListener(this)
         binding.onClick = this
+        viewModel.userId.set(AppPrefs(requireContext()).getStringPref(CUSTOMER_USER_ID).toString())
         viewModel.getCustomerDetail()
         viewModel.getBanner()
         viewModel.spaDetailId.set(21)
         viewModel.getCategories()
         viewModel.getProductCategories()
         viewModel.getProfessionalTeamList()
+        viewModel.getNotificationCount()
         callUpcomingAppointmentApi()
 
     }
@@ -145,6 +146,7 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
                 1
             )
         } else {
+            viewModel.userId.set(AppPrefs(requireContext()).getStringPref(CUSTOMER_USER_ID).toString())
             viewModel.getUpcomingAppointments()
         }
     }
@@ -182,51 +184,7 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
                 }
             }
         }
-        viewModel.resultLocationAddress.observe(this) {
-            it?.let { result ->
-                when (result.status) {
-                    Status.LOADING -> {
-                        //   MyApplication.showProgress(requireContext())
-                    }
 
-                    Status.SUCCESS -> {
-                        hideProgress()
-                        locationAddressList.clear()
-                        it.data?.data?.let { it1 -> locationAddressList.addAll(it1) }
-                        // setLocationBottomSheet()
-                    }
-
-                    Status.ERROR -> {
-                        requireContext().showToast(it.message.toString())
-                        hideProgress()
-                    }
-                }
-            }
-        }
-
-        viewModel.resultSearchLocationAddress.observe(this) {
-            it?.let { result ->
-                when (result.status) {
-                    Status.LOADING -> {
-                        //  MyApplication.showProgress(requireContext())
-                    }
-
-                    Status.SUCCESS -> {
-                        MyApplication.hideProgress()
-                        locationAddressList.clear()
-                        it.data?.data?.let { it1 -> locationAddressList.addAll(it1) }
-                        bottomSheetLayout.rvLocation.adapter =
-                            LocationAddressAdapter(locationAddressList)
-
-                    }
-
-                    Status.ERROR -> {
-                        requireContext().showToast(it.message.toString())
-                        MyApplication.hideProgress()
-                    }
-                }
-            }
-        }
 
         viewModel.resultBanner.observe(this) {
             it?.let { result ->
@@ -236,7 +194,7 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
                     }
 
                     Status.SUCCESS -> {
-                        MyApplication.hideProgress()
+                        hideProgress()
                         bannerCustomerList.clear()
 
                         it.data?.data?.let { it1 -> bannerCustomerList.addAll(it1) }
@@ -246,7 +204,7 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
 
                     Status.ERROR -> {
                         requireContext().showToast(it.message.toString())
-                        MyApplication.hideProgress()
+                        hideProgress()
                     }
                 }
             }
@@ -258,13 +216,13 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
                     Status.LOADING -> {
                         if (mainLoader == 0) {
                             mainLoader = 1
-                            MyApplication.showProgress(requireContext())
+                            showProgress(requireContext())
                         }
 
                     }
 
                     Status.SUCCESS -> {
-                        MyApplication.hideProgress()
+                        hideProgress()
                         categoriesList.clear()
 
                         it.data?.data?.let { it1 -> categoriesList.addAll(it1) }
@@ -274,7 +232,7 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
 
                     Status.ERROR -> {
                         requireContext().showToast(it.message.toString())
-                        MyApplication.hideProgress()
+                        hideProgress()
                     }
                 }
             }
@@ -286,7 +244,7 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
                     Status.LOADING -> {
                         if (mainLoader == 0) {
                             mainLoader = 1
-                            MyApplication.showProgress(requireContext())
+                            showProgress(requireContext())
                         }
 
                     }
@@ -358,6 +316,35 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
                 }
             }
         }
+
+        viewModel.resultNotificationCount.observe(this) {
+            it?.let { result ->
+                when (result.status) {
+                    Status.LOADING -> {
+                        // showProgress(requireContext())
+                    }
+
+                    Status.SUCCESS -> {
+                        hideProgress()
+                        Log.d("notificationCount", "notificationCount->${it.data?.data?.notificationCount}")
+                        if (it.data?.data?.notificationCount!! > 0) {
+                            binding.ivNotificationCount.setVisible()
+                        } else {
+                            binding.ivNotificationCount.setGone()
+                            Log.d("notificationCount", "${it.data?.data?.notificationCount}")
+
+                        }
+
+                    }
+
+                    Status.ERROR -> {
+                        requireContext().showToast(it.message.toString())
+                        hideProgress()
+                    }
+                }
+            }
+        }
+
 
     }
 
@@ -652,40 +639,6 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
         val endMillis = endDate?.time ?: 0L
         return Pair(startMillis, endMillis)
     }
-
-   /*  private fun getEventTimeInMillis(event: UpcomingServiceAppointmentItem): Pair<Long, Long> {
-         // Parse the date from the event (assuming format is "yyyy-MM-dd")
-         Log.d("addEvent","slotDate->${event.slotDate} fromTime->${event.fromTime} toTime->${event.toTime}")
-         val dateParts = event.slotDate.split("-")
-         val year = dateParts[0].toInt()
-         val month = dateParts[1].toInt() - 1 // Calendar month is 0-indexed
-         val day = dateParts[2].toInt()
-
-         // Parse the start time (assuming format is "HH:mm")
-         val fromTimeParts = event.fromTime.split(":")
-         val fromHour = fromTimeParts[0].toInt()
-         val fromMinute = fromTimeParts[1].toInt()
-
-         // Parse the end time (assuming format is "HH:mm")
-         val toTimeParts = event.toTime.split(":")
-         val toHour = toTimeParts[0].toInt()
-         val toMinute = toTimeParts[1].toInt()
-
-         // Set the start time in Calendar instance
-         val startCalendar = Calendar.getInstance().apply {
-             set(year, month, day, fromHour, fromMinute)
-         }
-         val startMillis = startCalendar.timeInMillis
-
-         // Set the end time in Calendar instance
-         val endCalendar = Calendar.getInstance().apply {
-             set(year, month, day, toHour, toMinute)
-         }
-         val endMillis = endCalendar.timeInMillis
-
-         // Return both start and end times as a Pair
-         return Pair(startMillis, endMillis)
-     }*/
 
     @Deprecated("Deprecated in Java")
     override fun onRequestPermissionsResult(

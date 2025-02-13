@@ -13,15 +13,13 @@ import com.app.gentlemanspa.utils.showToast
 
 
 class RequestToManagementFragment : Fragment(), View.OnClickListener {
-   lateinit var binding:FragmentRequestToManagementBinding
+
+    lateinit var binding:FragmentRequestToManagementBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initObserver()
-
     }
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

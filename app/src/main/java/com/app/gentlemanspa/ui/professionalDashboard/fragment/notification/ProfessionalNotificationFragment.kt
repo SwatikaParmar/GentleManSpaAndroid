@@ -68,7 +68,7 @@ class ProfessionalNotificationFragment : Fragment(), View.OnClickListener {
 
 
     private fun initObserver() {
-        viewModel.resultCustomerNotification.observe(this) {
+        viewModel.resultNotificationList.observe(this) {
             it?.let { result ->
                 when (result.status) {
                     Status.LOADING -> {

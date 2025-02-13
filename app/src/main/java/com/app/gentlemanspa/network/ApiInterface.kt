@@ -16,6 +16,7 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.Customer
 import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.CustomerAddressStatusRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.CustomerAddressStatusResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.DeleteAddressResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.RemoveUserFromChatResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.model.CustomerPlaceOrderRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.model.CustomerPlaceOrderResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.model.PayByStripeRequest
@@ -36,12 +37,12 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.AddUserT
 import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.CancelUpcomingAppointmentRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.CancelUpcomingAppointmentResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.BannerResponse
-import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.LocationResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.model.SpecialityResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.profile.model.GetProfessionalDetailResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.model.UpdateProfileProfessionalRequest
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.model.UpdateProfileProfessionalResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.CategoriesResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.NotificationCountResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductCategoriesResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductsResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.model.ServiceGetAvailableDatesResponse
@@ -50,6 +51,7 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.model.
 import com.app.gentlemanspa.ui.customerDashboard.fragment.makeAppointment.model.ServiceRescheduleResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.myOrders.model.MyOrdersResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.notification.model.NotificationListResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.notification.model.ReadNotificationResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.orderDetail.model.OrderDetailsResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.payment.model.OrderConfirmationResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.product.model.AddProductInCartRequest
@@ -77,6 +79,7 @@ import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.model.Sch
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.model.WeekDaysResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.selectCountry.model.country.CountryResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.selectCountry.model.states.StatesResponse
+import com.app.gentlemanspa.utils.updateStatus.model.LogoutResponse
 import com.app.gentlemanspa.utils.updateStatus.model.UpdateFCMTokenRequest
 import com.app.gentlemanspa.utils.updateStatus.model.UpdateFCMTokenResponse
 import com.app.gentlemanspa.utils.updateStatus.model.UpdateOnlineStatusRequest
@@ -131,7 +134,9 @@ interface ApiInterface {
     suspend fun updateProfessional(@Body body: UpdateProfileProfessionalRequest?): UpdateProfileProfessionalResponse
 
     @GET(ApiConstants.GET_CUSTOMER_DETAIL)
-    suspend fun getCustomerDetail(): GetProfessionalDetailResponse
+    suspend fun getCustomerDetail(
+        @Query("id")id:String
+    ): GetProfessionalDetailResponse
 
     @POST(ApiConstants.UPDATE_CUSTOMER)
     suspend fun updateCustomerProfile(@Body body: UpdateProfileCustomerRequest?): UpdateProfileCustomerResponse
@@ -226,15 +231,6 @@ interface ApiInterface {
 
     @GET(ApiConstants.BANNER)
     suspend fun getBanner(): BannerResponse
-
-
-    @GET(ApiConstants.LOCATION_ADDRESS)
-    suspend fun getLocationAddress(): LocationResponse
-
-
-    @GET(ApiConstants.LOCATION_ADDRESS)
-    suspend fun getSearchLocationAddress(@Query("searchQuery") search: String?): LocationResponse
-
 
     @GET(ApiConstants.SERVICE_LIST)
     suspend fun getServiceList(
@@ -347,6 +343,7 @@ interface ApiInterface {
 
     @GET(ApiConstants.GET_SERVICE_APPOINTMENTS)
     suspend fun getServiceAppointments(
+        @Query("UserId") userId: String?,
         @Query("type") type: String?,
         @Query("pageSize") pageSize: Int?,
         @Query("pageNumber") pageNumber: Int?
@@ -394,6 +391,12 @@ interface ApiInterface {
         @Body addUserToChatRequest: AddUserToChatRequest
     ): AddUserToChatResponse
 
+    @DELETE(ApiConstants.REMOVE_USER_FROM_CHAT)
+    suspend fun removeUserFromChat(
+        @Query("currentUserName")currentUserName:String,
+        @Query("targetUserName")targetUserName:String
+    ): RemoveUserFromChatResponse
+
     @GET("${ApiConstants.CHAT_USERS}/{userName}")
     suspend fun getCustomerMessagesList(
         @Path("userName") userName:String
@@ -407,7 +410,9 @@ interface ApiInterface {
     @GET(ApiConstants.CHAT_HISTORY)
     suspend fun getCustomerChatHistory(
         @Query("senderId") senderId:String,
-        @Query("receiverId") receiverId:String
+        @Query("receiverId") receiverId:String,
+        @Query("pageNumber") pageNumber:Int,
+        @Query("pageSize") pageSize:Int
     ): CustomerChatMessageHistoryResponse
 
 
@@ -431,4 +436,19 @@ interface ApiInterface {
         @Query("pageNumber")pageNumber:Int,
         @Query("pageSize")pageSize:Int,
     ): NotificationListResponse
+
+    @GET(ApiConstants.GET_NOTIFICATION_COUNT)
+    suspend fun getNotificationCount(
+    ): NotificationCountResponse
+
+    @GET(ApiConstants.READ_NOTIFICATION)
+    suspend fun readNotification(
+        @Query("notificationSentId")notificationSentId:Int
+    ):ReadNotificationResponse
+
+
+
+    @POST(ApiConstants.LOGOUT)
+    suspend fun logout(
+    ): LogoutResponse
 }

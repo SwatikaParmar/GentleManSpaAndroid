@@ -15,8 +15,11 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.app.gentlemanspa.R
 import com.app.gentlemanspa.base.MyApplication.Companion.context
+import com.app.gentlemanspa.base.MyApplication.Companion.hideProgress
+import com.app.gentlemanspa.base.MyApplication.Companion.showProgress
 import com.app.gentlemanspa.databinding.ActivityProfessionalBinding
 import com.app.gentlemanspa.network.InitialRepository
+import com.app.gentlemanspa.network.Status
 import com.app.gentlemanspa.ui.auth.activity.AuthActivity
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.HomeCustomerFragment
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.home.HomeProfessionalFragment
@@ -28,10 +31,12 @@ import com.app.gentlemanspa.utils.isCalendarPermissionGranted
 import com.app.gentlemanspa.utils.setGone
 import com.app.gentlemanspa.utils.setVisible
 import com.app.gentlemanspa.utils.share
+import com.app.gentlemanspa.utils.showToast
 import com.app.gentlemanspa.utils.updateStatus.viewModel.UpdateStatusViewModel
 import com.bumptech.glide.Glide
 import com.google.android.material.navigation.NavigationView
 
+@Suppress("DEPRECATION", "NAME_SHADOWING")
 class ProfessionalActivity : AppCompatActivity(), HomeProfessionalFragment.OnProfileUpdatedListener {
     private lateinit var binding : ActivityProfessionalBinding
     private lateinit var navController: NavController
@@ -48,6 +53,7 @@ class ProfessionalActivity : AppCompatActivity(), HomeProfessionalFragment.OnPro
         binding = ActivityProfessionalBinding.inflate(layoutInflater)
         setContentView(binding.root)
         navView = binding.navView1
+        initObserver()
         initUI()
 
     }
@@ -61,8 +67,28 @@ class ProfessionalActivity : AppCompatActivity(), HomeProfessionalFragment.OnPro
             viewModel.updateFCMTokenApi(AppPrefs(this).getStringPref(FCM_TOKEN).toString())
         }else{
             Log.d("updateFCMToken","FCM Token is empty")
-
         }
+
+        val navInflater = navController.navInflater
+        val graph = navInflater.inflate(R.navigation.professional)
+        val type = intent.getStringExtra("type").toString()
+        val messageSenderId = intent.getStringExtra("userId").toString()
+        val bundle = Bundle().apply {
+            putString("messageSenderId", messageSenderId)
+            putString("from", "notification")
+        }
+        Log.d("test" , "Customer Activity type-> $type messageSenderId->$messageSenderId")
+        when(type){
+            "Chat" ->{
+                //    graph.setStartDestination(R.id.customerChatFragment)
+                navController.navigate(R.id.professionalChatFragment, bundle)
+            }
+            else->{
+               graph.setStartDestination(R.id.homeProfessionalFragment)
+            }
+        }
+        navController.graph = graph
+
     }
 
     private fun setBottomNavigation() {
@@ -154,23 +180,12 @@ class ProfessionalActivity : AppCompatActivity(), HomeProfessionalFragment.OnPro
         val builder = AlertDialog.Builder(this@ProfessionalActivity)
         builder.setTitle("Alert")
         builder.setMessage("Are you sure you want to Logout?")
-
-        builder.setPositiveButton(android.R.string.yes) { dialog, which ->
-            if (isCalendarPermissionGranted(this)){
-                    removeAllEventsOnLogout()
-            }
-            AppPrefs(this).setString("TOKEN","")
-            AppPrefs(this).setString("ROLE","")
-            AppPrefs(this).clearAllPrefs()
-            val intent = Intent(this, AuthActivity::class.java)
-            intent.putExtra("LOG_OUT","logout")
-            startActivity(intent)
-            finish()
-
+        builder.setPositiveButton(android.R.string.yes) { dialog, _ ->
+            viewModel.logoutApi()
             dialog.dismiss()
         }
 
-        builder.setNegativeButton(android.R.string.no) { dialog, which ->
+        builder.setNegativeButton(android.R.string.no) { dialog, _ ->
             dialog.dismiss()
         }
 
@@ -238,6 +253,7 @@ class ProfessionalActivity : AppCompatActivity(), HomeProfessionalFragment.OnPro
         }
     }
 
+    @Deprecated("This method has been deprecated in favor of using the\n      {@link OnBackPressedDispatcher} via {@link #getOnBackPressedDispatcher()}.\n      The OnBackPressedDispatcher controls how back button events are dispatched\n      to one or more {@link OnBackPressedCallback} objects.")
     override fun onBackPressed() {
         val fragmentPosition = navHost.childFragmentManager.fragments[0]
         if (fragmentPosition is HomeCustomerFragment){
@@ -253,11 +269,11 @@ class ProfessionalActivity : AppCompatActivity(), HomeProfessionalFragment.OnPro
         builder.setTitle("Confirm")
         builder.setMessage("Are you sure want to close app?")
 
-        builder.setPositiveButton(android.R.string.yes) { dialog, which ->
+        builder.setPositiveButton(android.R.string.yes) { _, _ ->
             finishAffinity()
         }
 
-        builder.setNegativeButton(android.R.string.no) { dialog, which ->
+        builder.setNegativeButton(android.R.string.no) { dialog, _ ->
             dialog.dismiss()
         }
 
@@ -272,6 +288,40 @@ class ProfessionalActivity : AppCompatActivity(), HomeProfessionalFragment.OnPro
         Glide.with(this).load(profileImage).into(ivNavProfileImage)
 
     }
+    private fun initObserver() {
+
+        viewModel.resultLogout.observe(this) {
+            it?.let { result ->
+                when (result.status) {
+                    Status.LOADING -> {
+                        showProgress(this)
+                    }
+
+                    Status.SUCCESS -> {
+                        hideProgress()
+                        Log.d("logout","logout->${it.data}")
+                        if (it.data!!.isSuccess){
+                            if (isCalendarPermissionGranted(this)){
+                                removeAllEventsOnLogout()
+                            }
+                            AppPrefs(this).setString("TOKEN","")
+                            AppPrefs(this).setString("ROLE","")
+                            AppPrefs(this).clearAllPrefs()
+                            val intent = Intent(this, AuthActivity::class.java)
+                            intent.putExtra("LOG_OUT","logout")
+                            startActivity(intent)
+                            finish()
+                        }
+
+                    }
+
+                    Status.ERROR -> {
+                        showToast(it.message.toString())
+                        hideProgress()
+                    }
+                }
+            }
+        }}
 
     override fun onStart() {
         super.onStart()
