@@ -68,7 +68,12 @@ object ApiConstants {
     const val GET_PROFESSIONALS_SCHEDULES_BY_PROFESSIONAL_DETAIL_ID =
         "Professional/GetProfessionalSchedulesByProfessionalDetailId"
     const val ADD_UPDATE_PROFESSIONAL_SCHEDULE = "Professional/AddUpdateProfessionalSchedule"
+
+
+   //Event
+
     const val GET_EVENT_LIST = "Event/GetEventList"
+    const val   ADD_OR_UPDATE_EVENT_REGISTRATION = "Event/AddOrUpdateEventRegistration"
 
 
     //Chat

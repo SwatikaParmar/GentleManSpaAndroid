@@ -68,13 +68,12 @@ class HistoryCustomerFragment : Fragment(), View.OnClickListener {
     private fun initUI() {
         setAppointmentSelection(binding.tvUpcoming)
         callGetServiceAppointmentsApi("Upcoming")
-        //  binding.tvUpcoming.isSelected = true
-        //  setUpcomingAdapter()
         binding.onClick = this
     }
     private fun callGetServiceAppointmentsApi(type: String) {
         Log.d("type", "type->$type")
         appointmentType = type
+        viewModel.userId.set(AppPrefs(requireContext()).getStringPref(CUSTOMER_USER_ID).toString())
         viewModel.type.set(type)
         viewModel.getServiceAppointments()
     }

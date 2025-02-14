@@ -34,6 +34,8 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.editAddress.model.AddC
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editAddress.model.AddCustomerAddressResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.model.UpdateProfileCustomerRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.model.UpdateProfileCustomerResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.event.model.AddOrUpdateEventRegistrationRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.event.model.AddOrUpdateEventRegistrationResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.event.model.EventListResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.AddUserToChatRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.AddUserToChatResponse
@@ -477,13 +479,18 @@ class InitialRepository {
         }.flowOn(Dispatchers.IO)
     }
 
-    suspend fun getEventList(): Flow<EventListResponse?> {
+    suspend fun getEventList(userId:String): Flow<EventListResponse?> {
         return flow {
-            val result =Api.apiInterface?.getEventList()
+            val result =Api.apiInterface?.getEventList(userId)
             emit(result)
         }.flowOn(Dispatchers.IO)
     }
-
+    suspend fun addOrUpdateEventRegistrationApi(request: AddOrUpdateEventRegistrationRequest): Flow<AddOrUpdateEventRegistrationResponse?> {
+        return flow {
+            val result =Api.apiInterface?.addOrUpdateEventRegistrationApi(request)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
     suspend fun addUserToChat(addUserToChatRequest: AddUserToChatRequest): Flow<AddUserToChatResponse?> {
         return flow {
             val result =Api.apiInterface?.addUserToChat(addUserToChatRequest)

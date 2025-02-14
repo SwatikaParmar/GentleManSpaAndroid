@@ -17,6 +17,7 @@ import com.app.gentlemanspa.ui.professionalDashboard.activity.ProfessionalActivi
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.chat.messages.adapter.ProfessionalMessagesAdapter
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.chat.messages.viewModel.ProfessionalMessagesViewModel
 import com.app.gentlemanspa.utils.AppPrefs
+import com.app.gentlemanspa.utils.CUSTOMER_USER_ID
 import com.app.gentlemanspa.utils.PROFESSIONAL_USER_ID
 import com.app.gentlemanspa.utils.ViewModelFactory
 import com.app.gentlemanspa.utils.setGone
@@ -51,12 +52,13 @@ class ProfessionalMessageFragment : Fragment(), View.OnClickListener {
     private fun initUI() {
         (activity as ProfessionalActivity).bottomNavigation(false)
         binding.onClick = this
-        Log.d("UserId", "UserId->${AppPrefs(requireContext()).getStringPref(PROFESSIONAL_USER_ID)}")
-        viewModel.userId.set(
-            AppPrefs(requireContext()).getStringPref(PROFESSIONAL_USER_ID).toString()
-        )
-        viewModel.getCustomerMessagesListApi()
+        callCustomerMessageListApi()
+    }
 
+    private fun callCustomerMessageListApi(){
+        Log.d("UserId","UserId->${AppPrefs(requireContext()).getStringPref(PROFESSIONAL_USER_ID)}")
+        viewModel.userId.set(AppPrefs(requireContext()).getStringPref(PROFESSIONAL_USER_ID).toString())
+        viewModel.getCustomerMessagesListApi()
     }
     override fun onClick(v: View?) {
         when (v) {
@@ -70,22 +72,25 @@ class ProfessionalMessageFragment : Fragment(), View.OnClickListener {
         binding.rvProfessionalMessages.adapter = professionalMessagesAdapter
         professionalMessagesAdapter.setProfessionalMessagesCallbacks(object :
             ProfessionalMessagesAdapter.ProfessionalMessagesCallbacks {
-            override fun rootProfessionalMessages(item: CustomerMessagesData) {
+            override fun onMessageItemClick(item: CustomerMessagesData) {
                 Log.d("userId", "item->${item}")
                 Log.d("userId", "receiverId->${item.userId}")
-             //   val messageSenderId = AppPrefs(requireContext()).getStringPref(PROFESSIONAL_USER_ID).toString()
-             //   val messageReceiverId = item.userName
                 val messageSenderId = item.userName
-             //   val name = "${item.firstName} ${item.lastName}"
-           //     val profilePic = item.profilePic ?: ""
-
-              /*  val action =
-                    ProfessionalMessageFragmentDirections.actionProfessionalMessageFragmentToProfessionalChatFragment(
-                        messageSenderId, messageReceiverId, name, profilePic
-                    )*/
                 val action =
                     ProfessionalMessageFragmentDirections.actionProfessionalMessageFragmentToProfessionalChatFragment(messageSenderId)
                 findNavController().navigate(action)
+            }
+
+            override fun onMessageDeleteItemClick(item: CustomerMessagesData) {
+                Log.d("RemoveUserFromChat","currentUserName->${AppPrefs(requireContext()).getStringPref(
+                    PROFESSIONAL_USER_ID
+                )}")
+                Log.d("RemoveUserFromChat","userId->${item.userId} userName->${item.userName}")
+                viewModel.currentUserName.set(AppPrefs(requireContext()).getStringPref(
+                    PROFESSIONAL_USER_ID
+                ).toString())
+                viewModel.targetUserName.set(item.userName)
+                viewModel.removeUserFromChatApi()
             }
         })
 
@@ -109,6 +114,7 @@ class ProfessionalMessageFragment : Fragment(), View.OnClickListener {
                             setProfessionalMessagesAdapter(sortedMessages)
                         } else {
                             binding.clNoUserExist.setVisible()
+                            setProfessionalMessagesAdapter(ArrayList())
                         }
                     }
 
@@ -120,6 +126,29 @@ class ProfessionalMessageFragment : Fragment(), View.OnClickListener {
                 }
             }
         }
+        viewModel.resultRemoveUserFromChat.observe(this) { it ->
+            it?.let { result ->
+                when (result.status) {
+                    Status.LOADING -> {
+                        //  showProgress(requireContext())
+                    }
+
+                    Status.SUCCESS -> {
+                        hideProgress()
+                        Log.d("RemoveUserFromChat","data->${it.data!!.data}")
+                        if (it.data!!.isSuccess){
+                            callCustomerMessageListApi()
+                        }
+                    }
+
+                    Status.ERROR -> {
+                        requireContext().showToast(it.message.toString())
+                        hideProgress()
+                    }
+                }
+            }
+        }
+
     }
 
 }

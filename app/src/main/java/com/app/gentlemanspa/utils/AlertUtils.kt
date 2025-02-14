@@ -33,6 +33,21 @@ fun showMessageOptionsDialog(
     dialogBuilder.show()
 }
 
+fun showMessageDialog(
+    context: Context,
+    title: String,
+    messageContent: String,
+    onYesClick: () -> Unit
+) {
+    val dialogBuilder = AlertDialog.Builder(context)
+    dialogBuilder.setTitle(title)
+    dialogBuilder.setMessage(messageContent)
+    dialogBuilder.setPositiveButton("Yes") { _, _ ->
+        onYesClick()
+    }
+    dialogBuilder.setNegativeButton("Cancel", null)
+    dialogBuilder.show()
+}
 
 
 @SuppressLint("SetTextI18n")

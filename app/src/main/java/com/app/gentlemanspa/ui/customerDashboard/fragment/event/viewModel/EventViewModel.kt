@@ -6,6 +6,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.app.gentlemanspa.network.InitialRepository
+import com.app.gentlemanspa.ui.customerDashboard.fragment.event.model.AddOrUpdateEventRegistrationRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.event.model.AddOrUpdateEventRegistrationResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.event.model.EventListResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.UpcomingServiceAppointmentResponse
 import com.app.gentlemanspa.utils.CommonFunctions
@@ -20,17 +22,15 @@ import retrofit2.HttpException
 class EventViewModel  (private var initialRepository: InitialRepository) : AndroidViewModel(
     Application()
 ) {
-    val type = ObservableField<String>()
-    val orderId = ObservableField<Int>()
-    val productOrderIds  = ObservableField<Int>()
-    val serviceBookingIds  = ObservableField<Int>()
+    val userId = ObservableField<String>()
     val resultEventList = MutableLiveData<Resource<EventListResponse>>()
+    val resultAddOrUpdateEventRegistration= MutableLiveData<Resource<AddOrUpdateEventRegistrationResponse>>()
 
 
     fun getEventListApi() {
         resultEventList.value = Resource.loading(null)
         viewModelScope.launch {
-            initialRepository.getEventList()
+            initialRepository.getEventList(userId.get()!!)
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->
@@ -66,5 +66,43 @@ class EventViewModel  (private var initialRepository: InitialRepository) : Andro
                 }
         }
     }
-
+    fun addOrUpdateEventRegistrationApi(request: AddOrUpdateEventRegistrationRequest) {
+        resultAddOrUpdateEventRegistration.value = Resource.loading(null)
+        viewModelScope.launch {
+            initialRepository.addOrUpdateEventRegistrationApi(request)
+                .onStart { }
+                .onCompletion { }
+                .catch { exception ->
+                    if (exception is HttpException) {
+                        try {
+                            val errorBody = exception.response()?.errorBody()?.string()
+                            if (!errorBody.isNullOrEmpty()) {
+                                val jsonError = JSONObject(errorBody)
+                                val errorMessage = jsonError.optString("messages", "Unknown HTTP error")
+                                resultAddOrUpdateEventRegistration.value = Resource.error(data = null, message = errorMessage)
+                            } else {
+                                resultAddOrUpdateEventRegistration.value = Resource.error(data = null, message = "Unknown HTTP error")
+                            }
+                        } catch (e: Exception) {
+                            resultAddOrUpdateEventRegistration.value = Resource.error(data = null, message = e.message)
+                        }
+                    }else{
+                        resultAddOrUpdateEventRegistration.value =
+                            Resource.error(
+                                data = null,
+                                message = CommonFunctions.getError(exception)
+                            )
+                    }
+                }
+                .collect {
+                    if (it?.statusCode == 200) {
+                        resultAddOrUpdateEventRegistration.value =
+                            Resource.success(message = it.messages, data = it)
+                    } else {
+                        resultAddOrUpdateEventRegistration.value =
+                            Resource.error(data = null, message = it?.messages)
+                    }
+                }
+        }
+    }
 }

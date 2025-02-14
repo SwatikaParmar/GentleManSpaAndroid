@@ -40,9 +40,13 @@ class ProfessionalMessagesAdapter(private var customerMessagesList: List<Custome
             Glide.with(holder.itemView.context).load(ApiConstants.BASE_FILE +item.profilePic).placeholder(
                 R.drawable.profile_placeholder).error(R.drawable.profile_placeholder).into(ivProfile)
 
-            root.setOnClickListener {
-                professionalMessagesCallbacks.rootProfessionalMessages(item)
+            clItem.setOnClickListener {
+                professionalMessagesCallbacks.onMessageItemClick(item)
             }
+            rlDelete.setOnClickListener{
+                professionalMessagesCallbacks.onMessageDeleteItemClick(item)
+            }
+
         }
 
     }
@@ -52,7 +56,9 @@ class ProfessionalMessagesAdapter(private var customerMessagesList: List<Custome
     }
 
     interface ProfessionalMessagesCallbacks {
-        fun rootProfessionalMessages(item: CustomerMessagesData)
+        fun onMessageItemClick(item: CustomerMessagesData)
+        fun onMessageDeleteItemClick(item: CustomerMessagesData)
+
     }
 
 }

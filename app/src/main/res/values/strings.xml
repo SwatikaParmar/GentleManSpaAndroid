@@ -79,4 +79,7 @@
     <string name="payment">Payment</string>
     <string name="proceed">Proceed</string>
     <string name="no_appointment_found">No appointment found</string>
+    <string name="are_you_sure_you_want_to_cancel_your_registration_for_this_event">Are you sure you want to cancel your registration for this event?</string>
+    <string name="events">Events</string>
+    <string name="register">Register</string>
 </resources>

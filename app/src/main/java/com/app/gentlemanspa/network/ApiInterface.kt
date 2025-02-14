@@ -31,6 +31,8 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.editAddress.model.AddC
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editAddress.model.AddCustomerAddressResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.model.UpdateProfileCustomerRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.model.UpdateProfileCustomerResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.event.model.AddOrUpdateEventRegistrationRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.event.model.AddOrUpdateEventRegistrationResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.event.model.EventListResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.AddUserToChatRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.AddUserToChatResponse
@@ -384,7 +386,14 @@ interface ApiInterface {
 
     @GET(ApiConstants.GET_EVENT_LIST)
     suspend fun getEventList(
+        @Query("UserId")userId:String
         ): EventListResponse
+
+
+    @POST(ApiConstants.ADD_OR_UPDATE_EVENT_REGISTRATION)
+    suspend fun addOrUpdateEventRegistrationApi(
+        @Body request: AddOrUpdateEventRegistrationRequest
+    ): AddOrUpdateEventRegistrationResponse
 
     @POST(ApiConstants.ADD_USER_TO_CHAT)
     suspend fun addUserToChat(

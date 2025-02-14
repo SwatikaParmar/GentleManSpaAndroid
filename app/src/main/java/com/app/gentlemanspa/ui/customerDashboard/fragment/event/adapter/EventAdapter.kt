@@ -1,10 +1,12 @@
 package com.app.gentlemanspa.ui.customerDashboard.fragment.event.adapter
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.app.gentlemanspa.R
 import com.app.gentlemanspa.databinding.ItemEventBinding
@@ -13,9 +15,10 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.event.model.EventListD
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductsListItem
 import com.app.gentlemanspa.utils.formatDate
 import com.bumptech.glide.Glide
+import kotlin.coroutines.coroutineContext
 
-class EventAdapter (val eventList:List<EventListData>) : RecyclerView.Adapter<EventAdapter.ViewHolder>() {
-    private lateinit var productsCallbacks: EventCallbacks
+class EventAdapter (val context:Context,val eventList:List<EventListData>) : RecyclerView.Adapter<EventAdapter.ViewHolder>() {
+    private lateinit var eventCallbacks: EventCallbacks
     class ViewHolder(val binding : ItemEventBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -37,15 +40,33 @@ class EventAdapter (val eventList:List<EventListData>) : RecyclerView.Adapter<Ev
             tvLocation.text = item.location
             Glide.with(holder.itemView.context).load(ApiConstants.BASE_FILE +"").error(R.drawable.no_product).placeholder(
                 R.drawable.no_product).into(ivEvent)
-            root.setOnClickListener {
+
+            if (item.isRegistered){
+                btnRegister.text="Registered"
+                btnRegister.backgroundTintList = ContextCompat.getColorStateList(context, R.color.dark_brown)
+                btnRegister.strokeColor = ContextCompat.getColorStateList(context, R.color.dark_brown)
+                btnRegister.setTextColor(ContextCompat.getColor(context, R.color.light_app_color))
+            }else{
+                btnRegister.text="Register"
+                btnRegister.backgroundTintList = ContextCompat.getColorStateList(context, R.color.light_white)
+                btnRegister.strokeColor = ContextCompat.getColorStateList(context, R.color.black)
+                btnRegister.setTextColor(ContextCompat.getColor(context, R.color.black))
+
+            }
+            btnRegister.setOnClickListener{
+              eventCallbacks.addOrUpdateEventRegistration(item)
+            }
+            ivEventLocation.setOnClickListener{
+                eventCallbacks.redirectToEventLocation(item)
             }
         }
     }
-    fun setOnClickEvent(onClick : EventCallbacks){
-        productsCallbacks = onClick
+    fun setEventCallbacks(onClick : EventCallbacks){
+        eventCallbacks = onClick
     }
 
     interface EventCallbacks{
-        fun rootProducts(item: ProductsListItem)
+        fun addOrUpdateEventRegistration(item: EventListData)
+        fun redirectToEventLocation(item: EventListData)
     }
 }

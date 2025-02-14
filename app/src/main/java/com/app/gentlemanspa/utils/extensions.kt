@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.ColorRes
+import androidx.core.content.ContextCompat.startActivity
 import com.app.gentlemanspa.R
 import com.google.android.material.snackbar.Snackbar
 
@@ -79,4 +80,20 @@ fun openNotificationSettings(context: Context) {
 fun openUrlInBrowser(context: Context, url: String) {
     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
     context.startActivity(intent)
+}
+
+fun openGMapAndRedirectToLocation(context: Context, latitude: Double, longitude: Double) {
+    // Create an intent to open Google Maps with directions to the target location from the current location
+    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=$latitude,$longitude"))
+    intent.setPackage("com.google.android.apps.maps")
+
+    // If Google Maps is installed, open it
+    if (intent.resolveActivity(context.packageManager) != null) {
+        context.startActivity(intent)
+    } else {
+        // Fallback if Google Maps isn't installed
+        val fallbackUri = Uri.parse("http://maps.google.com/?q=$latitude,$longitude")
+        val fallbackIntent = Intent(Intent.ACTION_VIEW, fallbackUri)
+        context.startActivity(fallbackIntent)
+    }
 }
