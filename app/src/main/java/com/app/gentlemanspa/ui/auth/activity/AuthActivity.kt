@@ -27,16 +27,6 @@ class AuthActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAuthBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        if (intent.extras != null) {
-            val type = intent.getStringExtra("type").toString()
-            Log.d("test" , " Auth type-> $type")
-
-           /* for (key in intent.extras!!.keySet()) {
-                val value = intent.extras!![key]
-                Log.d("test", "Auth Key: $key Value: $value")
-            }*/
-        }
         initUI()
     }
 

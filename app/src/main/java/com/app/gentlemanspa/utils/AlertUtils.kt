@@ -16,6 +16,7 @@ import com.app.gentlemanspa.databinding.ItemWarningAlert
 
 
 import android.content.Context
+import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import com.app.gentlemanspa.databinding.ItemAlertPayment
 
@@ -47,6 +48,31 @@ fun showMessageDialog(
     }
     dialogBuilder.setNegativeButton("Cancel", null)
     dialogBuilder.show()
+}
+fun showDeleteAccountDialog(
+    context: Context,
+    title: String,
+    messageContent: String,
+    onYesClick: () -> Unit
+) {
+    val dialogBuilder = AlertDialog.Builder(context)
+    dialogBuilder.setTitle(title)
+    dialogBuilder.setMessage(messageContent)
+    dialogBuilder.setPositiveButton("Delete") { _, _ ->
+        onYesClick()
+    }
+    dialogBuilder.setNegativeButton("Cancel", null)
+
+    val dialog = dialogBuilder.create()
+    dialog.show()
+
+    // Change the positive button text color to red
+    val positiveButton: Button = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+    positiveButton.setTextColor(Color.RED)
+
+    // Change the negative button text color to black
+    val negativeButton: Button = dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+    negativeButton.setTextColor(Color.BLACK)
 }
 
 

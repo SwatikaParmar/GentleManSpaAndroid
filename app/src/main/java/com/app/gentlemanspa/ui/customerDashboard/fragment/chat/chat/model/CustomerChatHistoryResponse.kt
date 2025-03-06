@@ -18,7 +18,10 @@ data class CustomerChatHistoryData(
     val senderOnlineStatus: Boolean,
     val senderProfilePic: String,
     val totalMessages: Int,
-    val userName: String
+    val userName: String,
+    val recieverName: String,
+    val recieverProfilePic: String,
+    val isBlocked: Boolean
 )
 
 data class CustomerChatHistoryMessage(

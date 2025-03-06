@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
     <data>
+
         <variable
             name="onClick"
             type="android.view.View.OnClickListener" />
@@ -21,8 +23,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
-
-
 
 
             <ImageView
@@ -54,6 +54,7 @@
                 app:shapeAppearance="@style/circular50"
                 app:strokeColor="@color/white"
                 app:strokeWidth="@dimen/_1sdp" />
+
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tvName"
                 android:layout_width="wrap_content"
@@ -74,14 +75,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginTop="-3dp"
                 android:fontFamily="@font/poppins"
                 android:text="@string/last_seen"
-                android:visibility="gone"
                 android:textColor="@color/green_color"
                 android:textSize="@dimen/_10ssp"
-                android:layout_marginTop="-3dp"
+                android:visibility="gone"
                 app:layout_constraintStart_toEndOf="@id/ivProfile"
                 app:layout_constraintTop_toBottomOf="@+id/tvName" />
+
             <RelativeLayout
                 android:id="@+id/rlOptions"
                 android:layout_width="wrap_content"
@@ -96,6 +98,7 @@
                     android:id="@+id/ivOptions"
                     android:layout_width="@dimen/_20sdp"
                     android:layout_height="@dimen/_20sdp"
+                    android:onClick="@{onClick}"
                     android:layout_centerInParent="true"
                     android:contentDescription="@string/image_description"
                     android:src="@drawable/ic_three_dots" />
@@ -127,8 +130,8 @@
             android:layout_height="wrap_content"
             android:background="@color/app_color"
             android:minHeight="@dimen/_60sdp"
-            android:translationX="@dimen/_2sdp"
             android:padding="@dimen/_7sdp"
+            android:translationX="@dimen/_2sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:ignore="VisualLintBounds">
 
@@ -143,11 +146,30 @@
                 android:includeFontPadding="false"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_12ssp"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/ivSendMessage"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="HardcodedText,TouchTargetSizeCheck,VisualLintTextFieldSize" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tvUnblock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:fontFamily="@font/poppins"
+                android:onClick="@{onClick}"
+                android:text="Unblock"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_13sdp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="TextSizeCheck" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/ivSendMessage"
@@ -157,6 +179,7 @@
                 android:onClick="@{onClick}"
                 android:src="@drawable/ic_message_send"
                 android:tint="@color/black_bg"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

@@ -62,6 +62,7 @@ class ServiceAdapter(private var serviceList: ArrayList<ServiceListItem>) : Recy
              }
 
 
+
              root.setOnClickListener {
                  serviceCallbacks.rootService(item)
              }

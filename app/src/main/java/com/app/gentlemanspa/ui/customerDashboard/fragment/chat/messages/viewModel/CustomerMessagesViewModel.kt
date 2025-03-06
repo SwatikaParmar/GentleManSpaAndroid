@@ -6,7 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.app.gentlemanspa.network.InitialRepository
-import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.RemoveUserFromChatResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.messages.model.RemoveUserFromChatResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.messages.model.CustomerMessagesResponse
 import com.app.gentlemanspa.utils.CommonFunctions
 import com.app.gentlemanspa.utils.Resource

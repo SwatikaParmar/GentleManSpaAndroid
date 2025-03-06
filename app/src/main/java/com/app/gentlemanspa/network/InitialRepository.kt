@@ -19,7 +19,7 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.Customer
 import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.CustomerAddressStatusRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.CustomerAddressStatusResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.DeleteAddressResponse
-import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.RemoveUserFromChatResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.messages.model.RemoveUserFromChatResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.model.CustomerPlaceOrderRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.model.CustomerPlaceOrderResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.model.PayByStripeRequest
@@ -85,11 +85,20 @@ import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.model.Wee
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.selectCountry.model.country.CountryResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.selectCountry.model.states.StatesResponse
 import com.app.gentlemanspa.utils.Api
-import com.app.gentlemanspa.utils.updateStatus.model.LogoutResponse
-import com.app.gentlemanspa.utils.updateStatus.model.UpdateFCMTokenRequest
-import com.app.gentlemanspa.utils.updateStatus.model.UpdateFCMTokenResponse
-import com.app.gentlemanspa.utils.updateStatus.model.UpdateOnlineStatusRequest
-import com.app.gentlemanspa.utils.updateStatus.model.UpdateOnlineStatusResponse
+import com.app.gentlemanspa.ui.common.updateStatus.model.LogoutResponse
+import com.app.gentlemanspa.ui.common.updateStatus.model.UpdateFCMTokenRequest
+import com.app.gentlemanspa.ui.common.updateStatus.model.UpdateFCMTokenResponse
+import com.app.gentlemanspa.ui.common.updateStatus.model.UpdateOnlineStatusRequest
+import com.app.gentlemanspa.ui.common.updateStatus.model.UpdateOnlineStatusResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.model.BlockUserRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.model.BlockUserResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.model.UnBlockUserRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.model.UnBlockUserResponse
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.availableDates.model.AvailableDatesResponse
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.availableDates.model.BlockDatesResponse
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.availableDates.model.SlotStatusRequest
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.availableDates.model.SlotStatusResponse
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.model.DeleteAccountResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -537,6 +546,20 @@ class InitialRepository {
         }.flowOn(Dispatchers.IO)
     }
 
+    suspend fun blockUser(blockUserRequest: BlockUserRequest): Flow<BlockUserResponse?> {
+        return flow {
+            val result =Api.apiInterface?.blockUser(blockUserRequest)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+
+    suspend fun unBlockUser(unBlockUserRequest: UnBlockUserRequest): Flow<UnBlockUserResponse?> {
+        return flow {
+            val result =Api.apiInterface?.unBlockUser(unBlockUserRequest)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+
     suspend fun updateFCMToken(updateFCMTokenRequest: UpdateFCMTokenRequest): Flow<UpdateFCMTokenResponse?> {
         return flow {
             val result =Api.apiInterface?.updateFCMToken(updateFCMTokenRequest)
@@ -562,11 +585,34 @@ class InitialRepository {
             emit(result)
         }.flowOn(Dispatchers.IO)
     }
-
+    suspend fun getProfessionalBlockDates(professionalId: Int,availabilityState:String): Flow<BlockDatesResponse?> {
+        return flow {
+            val result =Api.apiInterface?.getProfessionalBlockDates(professionalId,availabilityState)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+    suspend fun getProfessionalAvailableDates(professionalId: Int): Flow<AvailableDatesResponse?> {
+        return flow {
+            val result =Api.apiInterface?.getProfessionalAvailableDates(professionalId)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+    suspend fun slotStatus(request: SlotStatusRequest): Flow<SlotStatusResponse?> {
+        return flow {
+            val result =Api.apiInterface?.slotStatus(request)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
 
     suspend fun logout(): Flow<LogoutResponse?> {
         return flow {
             val result =Api.apiInterface?.logout()
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+    suspend fun deleteAccount(id: String): Flow<DeleteAccountResponse?> {
+        return flow {
+            val result =Api.apiInterface?.deleteAccount(id)
             emit(result)
         }.flowOn(Dispatchers.IO)
     }

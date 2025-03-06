@@ -26,32 +26,28 @@ import okhttp3.RequestBody
 import org.json.JSONObject
 import retrofit2.HttpException
 
-class AddProductViewModel (private var initialRepository: InitialRepository) : AndroidViewModel(
+class AddProductViewModel(private var initialRepository: InitialRepository) : AndroidViewModel(
     Application()
 ) {
-
-
-
-    val  listingPrice = ObservableField<Double>()
-    val  createdBy = ObservableField<String>()
-    val  name = ObservableField<String>()
-    val  description = ObservableField<String>()
-    val  subCategoryId = ObservableField<Int>()
-    val  spaDetailId = ObservableField<Int>()
-    val  mainCategoryId = ObservableField<Int>()
-    val  basePrice = ObservableField<Double>()
-    val  stock = ObservableField<Int>()
-    val  quantity = ObservableField<Int>()
-    val  productUpdateId = ObservableField<Int>()
-    val  productId = ObservableField<RequestBody>()
-    val  productImages = ObservableField<ArrayList<MultipartBody.Part>>()
+    val listingPrice = ObservableField<Double>()
+    val createdBy = ObservableField<String>()
+    val name = ObservableField<String>()
+    val description = ObservableField<String>()
+    val subCategoryId = ObservableField<Int>()
+    val spaDetailId = ObservableField<Int>()
+    val mainCategoryId = ObservableField<Int>()
+    val basePrice = ObservableField<Double>()
+    val stock = ObservableField<Int>()
+    val quantity = ObservableField<Int>()
+    val productUpdateId = ObservableField<Int>()
+    val productId = ObservableField<RequestBody>()
+    val productImages = ObservableField<ArrayList<MultipartBody.Part>>()
     val id = ObservableField<Int>()
-
     val resultProductCategories = MutableLiveData<Resource<ProductCategoriesResponse>>()
-    val resultAddProduct= MutableLiveData<Resource<AddProductResponse>>()
-    val resultUpdateProduct= MutableLiveData<Resource<UpdateProductResponse>>()
-    val resultUploadProductImage= MutableLiveData<Resource<UploadProductImageResponse>>()
-    val resultProductDetail= MutableLiveData<Resource<ProductDetailResponse>>()
+    val resultAddProduct = MutableLiveData<Resource<AddProductResponse>>()
+    val resultUpdateProduct = MutableLiveData<Resource<UpdateProductResponse>>()
+    val resultUploadProductImage = MutableLiveData<Resource<UploadProductImageResponse>>()
+    val resultProductDetail = MutableLiveData<Resource<ProductDetailResponse>>()
 
     fun getProductCategories() {
         resultProductCategories.value = Resource.loading(null)
@@ -60,26 +56,30 @@ class AddProductViewModel (private var initialRepository: InitialRepository) : A
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->
-                   /* if (!CommonFunctions.getError(exception)!!.contains("401"))
-                        resultProductCategories.value =
-                            Resource.error(
-                                data = null,
-                                message = CommonFunctions.getError(exception)
-                            )*/
+                    /* if (!CommonFunctions.getError(exception)!!.contains("401"))
+                         resultProductCategories.value =
+                             Resource.error(
+                                 data = null,
+                                 message = CommonFunctions.getError(exception)
+                             )*/
                     if (exception is HttpException) {
                         try {
                             val errorBody = exception.response()?.errorBody()?.string()
                             if (!errorBody.isNullOrEmpty()) {
                                 val jsonError = JSONObject(errorBody)
-                                val errorMessage = jsonError.optString("messages", "Unknown HTTP error")
-                                resultProductCategories.value = Resource.error(data = null, message = errorMessage)
+                                val errorMessage =
+                                    jsonError.optString("messages", "Unknown HTTP error")
+                                resultProductCategories.value =
+                                    Resource.error(data = null, message = errorMessage)
                             } else {
-                                resultProductCategories.value = Resource.error(data = null, message = "Unknown HTTP error")
+                                resultProductCategories.value =
+                                    Resource.error(data = null, message = "Unknown HTTP error")
                             }
                         } catch (e: Exception) {
-                            resultProductCategories.value = Resource.error(data = null, message = e.message)
+                            resultProductCategories.value =
+                                Resource.error(data = null, message = e.message)
                         }
-                    }else{
+                    } else {
                         resultProductCategories.value =
                             Resource.error(
                                 data = null,
@@ -102,30 +102,47 @@ class AddProductViewModel (private var initialRepository: InitialRepository) : A
     fun addProduct() {
         resultAddProduct.value = Resource.loading(null)
         viewModelScope.launch {
-            initialRepository.addProduct(AddProductRequest(listingPrice.get(), createdBy.get(),name.get(),description.get(), subCategoryId.get(), spaDetailId.get(), mainCategoryId.get(), basePrice.get(),stock.get(),quantity.get()))
+            initialRepository.addProduct(
+                AddProductRequest(
+                    listingPrice.get(),
+                    createdBy.get(),
+                    name.get(),
+                    description.get(),
+                    subCategoryId.get(),
+                    spaDetailId.get(),
+                    mainCategoryId.get(),
+                    basePrice.get(),
+                    stock.get(),
+                    quantity.get()
+                )
+            )
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->
-                 /*   if (!CommonFunctions.getError(exception)!!.contains("401"))
-                        resultAddProduct.value =
-                            Resource.error(
-                                data = null,
-                                message = CommonFunctions.getError(exception)
-                            )*/
+                    /*   if (!CommonFunctions.getError(exception)!!.contains("401"))
+                           resultAddProduct.value =
+                               Resource.error(
+                                   data = null,
+                                   message = CommonFunctions.getError(exception)
+                               )*/
                     if (exception is HttpException) {
                         try {
                             val errorBody = exception.response()?.errorBody()?.string()
                             if (!errorBody.isNullOrEmpty()) {
                                 val jsonError = JSONObject(errorBody)
-                                val errorMessage = jsonError.optString("messages", "Unknown HTTP error")
-                                resultAddProduct.value = Resource.error(data = null, message = errorMessage)
+                                val errorMessage =
+                                    jsonError.optString("messages", "Unknown HTTP error")
+                                resultAddProduct.value =
+                                    Resource.error(data = null, message = errorMessage)
                             } else {
-                                resultAddProduct.value = Resource.error(data = null, message = "Unknown HTTP error")
+                                resultAddProduct.value =
+                                    Resource.error(data = null, message = "Unknown HTTP error")
                             }
                         } catch (e: Exception) {
-                            resultAddProduct.value = Resource.error(data = null, message = e.message)
+                            resultAddProduct.value =
+                                Resource.error(data = null, message = e.message)
                         }
-                    }else{
+                    } else {
                         resultAddProduct.value =
                             Resource.error(
                                 data = null,
@@ -149,34 +166,50 @@ class AddProductViewModel (private var initialRepository: InitialRepository) : A
         }
     }
 
-
     fun updateProduct() {
         resultUpdateProduct.value = Resource.loading(null)
         viewModelScope.launch {
-            initialRepository.updateProduct(UpdateProductRequest(listingPrice.get(),productUpdateId.get(),name.get(),description.get(),subCategoryId.get(),spaDetailId.get(),mainCategoryId.get(),basePrice.get(),stock.get(),quantity.get()))
+            initialRepository.updateProduct(
+                UpdateProductRequest(
+                    listingPrice.get(),
+                    productUpdateId.get(),
+                    name.get(),
+                    description.get(),
+                    subCategoryId.get(),
+                    spaDetailId.get(),
+                    mainCategoryId.get(),
+                    basePrice.get(),
+                    stock.get(),
+                    quantity.get()
+                )
+            )
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->
-                /*    if (!CommonFunctions.getError(exception)!!.contains("401"))
-                        resultUpdateProduct.value =
-                            Resource.error(
-                                data = null,
-                                message = CommonFunctions.getError(exception)
-                            )*/
+                    /*    if (!CommonFunctions.getError(exception)!!.contains("401"))
+                            resultUpdateProduct.value =
+                                Resource.error(
+                                    data = null,
+                                    message = CommonFunctions.getError(exception)
+                                )*/
                     if (exception is HttpException) {
                         try {
                             val errorBody = exception.response()?.errorBody()?.string()
                             if (!errorBody.isNullOrEmpty()) {
                                 val jsonError = JSONObject(errorBody)
-                                val errorMessage = jsonError.optString("messages", "Unknown HTTP error")
-                                resultUpdateProduct.value = Resource.error(data = null, message = errorMessage)
+                                val errorMessage =
+                                    jsonError.optString("messages", "Unknown HTTP error")
+                                resultUpdateProduct.value =
+                                    Resource.error(data = null, message = errorMessage)
                             } else {
-                                resultUpdateProduct.value = Resource.error(data = null, message = "Unknown HTTP error")
+                                resultUpdateProduct.value =
+                                    Resource.error(data = null, message = "Unknown HTTP error")
                             }
                         } catch (e: Exception) {
-                            resultUpdateProduct.value = Resource.error(data = null, message = e.message)
+                            resultUpdateProduct.value =
+                                Resource.error(data = null, message = e.message)
                         }
-                    }else{
+                    } else {
                         resultUpdateProduct.value =
                             Resource.error(
                                 data = null,
@@ -189,7 +222,7 @@ class AddProductViewModel (private var initialRepository: InitialRepository) : A
                     if (it?.statusCode == 200) {
                         resultUpdateProduct.value =
                             Resource.success(message = it.messages, data = it)
-                    }  else {
+                    } else {
                         resultUpdateProduct.value =
                             Resource.error(data = null, message = it?.messages)
                     }
@@ -200,30 +233,34 @@ class AddProductViewModel (private var initialRepository: InitialRepository) : A
     fun uploadProductImage() {
         resultUploadProductImage.value = Resource.loading(null)
         viewModelScope.launch {
-            initialRepository.uploadProductImage(productId.get(),productImages.get())
+            initialRepository.uploadProductImage(productId.get(), productImages.get())
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->
-                  /*  if (!CommonFunctions.getError(exception)!!.contains("401"))
-                        resultUploadProductImage.value =
-                            Resource.error(
-                                data = null,
-                                message = CommonFunctions.getError(exception)
-                            )*/
+                    /*  if (!CommonFunctions.getError(exception)!!.contains("401"))
+                          resultUploadProductImage.value =
+                              Resource.error(
+                                  data = null,
+                                  message = CommonFunctions.getError(exception)
+                              )*/
                     if (exception is HttpException) {
                         try {
                             val errorBody = exception.response()?.errorBody()?.string()
                             if (!errorBody.isNullOrEmpty()) {
                                 val jsonError = JSONObject(errorBody)
-                                val errorMessage = jsonError.optString("messages", "Unknown HTTP error")
-                                resultUploadProductImage.value = Resource.error(data = null, message = errorMessage)
+                                val errorMessage =
+                                    jsonError.optString("messages", "Unknown HTTP error")
+                                resultUploadProductImage.value =
+                                    Resource.error(data = null, message = errorMessage)
                             } else {
-                                resultUploadProductImage.value = Resource.error(data = null, message = "Unknown HTTP error")
+                                resultUploadProductImage.value =
+                                    Resource.error(data = null, message = "Unknown HTTP error")
                             }
                         } catch (e: Exception) {
-                            resultUploadProductImage.value = Resource.error(data = null, message = e.message)
+                            resultUploadProductImage.value =
+                                Resource.error(data = null, message = e.message)
                         }
-                    }else{
+                    } else {
                         resultUploadProductImage.value =
                             Resource.error(
                                 data = null,
@@ -235,14 +272,13 @@ class AddProductViewModel (private var initialRepository: InitialRepository) : A
                     if (it?.statusCode == 200) {
                         resultUploadProductImage.value =
                             Resource.success(message = it.messages, data = it)
-                    }  else {
+                    } else {
                         resultUploadProductImage.value =
                             Resource.error(data = null, message = it?.messages)
                     }
                 }
         }
     }
-
 
     fun getProductDetails() {
         resultProductDetail.value = Resource.loading(null)
@@ -269,7 +305,6 @@ class AddProductViewModel (private var initialRepository: InitialRepository) : A
                 }
         }
     }
-
 
 
 }

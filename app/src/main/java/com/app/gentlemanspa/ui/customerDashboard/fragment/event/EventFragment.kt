@@ -29,9 +29,7 @@ import com.app.gentlemanspa.utils.showToast
 class EventFragment : Fragment(), View.OnClickListener {
     lateinit var binding: FragmentEventBinding
     private val viewModel: EventViewModel by viewModels {
-        ViewModelFactory(
-            InitialRepository()
-        )
+        ViewModelFactory(InitialRepository())
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,7 +90,6 @@ class EventFragment : Fragment(), View.OnClickListener {
             }
         })
     }
-
     override fun onClick(v: View) {
         when(v){
             binding.ivArrowBack ->{

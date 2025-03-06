@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.ui.auth.fragment.register.model.ProfileRegisterResponse
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.model.DeleteAccountResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.model.ProfessionalDetail
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.model.SpecialityResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.model.UpdateProfileProfessionalRequest
@@ -39,6 +40,7 @@ class UpdateProfessionalViewModel (private var initialRepository: InitialReposit
     val resultProfileRegister = MutableLiveData<Resource<ProfileRegisterResponse>>()
     val resultSpeciality = MutableLiveData<Resource<SpecialityResponse>>()
     val resultUpdateProfessional = MutableLiveData<Resource<UpdateProfileProfessionalResponse>>()
+    val resultDeleteAccount = MutableLiveData<Resource<DeleteAccountResponse>>()
 
     fun updateProfessional() {
         resultUpdateProfessional.value = Resource.loading(null)
@@ -128,6 +130,31 @@ class UpdateProfessionalViewModel (private var initialRepository: InitialReposit
                             Resource.success(message = it.messages, data = it)
                     } else {
                         resultSpeciality.value =
+                            Resource.error(data = null, message = it?.messages)
+                    }
+                }
+        }
+    }
+    fun deleteAccountApi() {
+        resultDeleteAccount.value = Resource.loading(null)
+        viewModelScope.launch {
+            initialRepository.deleteAccount(id.get()!!)
+                .onStart { }
+                .onCompletion { }
+                .catch { exception ->
+                    if (!CommonFunctions.getError(exception)!!.contains("401"))
+                        resultDeleteAccount.value =
+                            Resource.error(
+                                data = null,
+                                message = CommonFunctions.getError(exception)
+                            )
+                }
+                .collect {
+                    if (it?.statusCode == 200) {
+                        resultDeleteAccount.value =
+                            Resource.success(message = it.messages, data = it)
+                    } else {
+                        resultDeleteAccount.value =
                             Resource.error(data = null, message = it?.messages)
                     }
                 }

@@ -103,7 +103,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tlAppointment"
                 tools:itemCount="6"
-                tools:listitem="@layout/item_past_appointment" />
+                tools:listitem="@layout/item_upcoming_appointment" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/clNoDataFound"

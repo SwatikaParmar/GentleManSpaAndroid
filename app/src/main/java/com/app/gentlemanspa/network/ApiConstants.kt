@@ -17,6 +17,7 @@ object ApiConstants {
     const val CHANGE_PASSWORD = "Auth/ChangePassword"
     const val RESET_PASSWORD = "Auth/ResetPassword"
     const val LOGOUT = "Auth/Logout"
+    const val DELETE_ACCOUNT= "Admin/DeleteAccount"
 
     //Home
     const val GET_PROFESSIONAL_DETAIL = "Professional/GetProfessionalProfileDetail"
@@ -69,7 +70,8 @@ object ApiConstants {
         "Professional/GetProfessionalSchedulesByProfessionalDetailId"
     const val ADD_UPDATE_PROFESSIONAL_SCHEDULE = "Professional/AddUpdateProfessionalSchedule"
 
-
+    const val GET_AVAILABLE_DATES = "Service/GetAvailableDates"
+    const val SET_SLOT_STATUS = "Professional/SetSlotStatus"
    //Event
 
     const val GET_EVENT_LIST = "Event/GetEventList"
@@ -85,6 +87,8 @@ object ApiConstants {
     const val CHAT_HISTORY = "Chat/messages/history"
     const val DELETE_MESSAGE = "Chat/messages"
     const val UPDATE_STATUS = "Chat/updateOnlineStatusManually"
+    const val BLOCK_USER = "Chat/blockUser"
+    const val UNBLOCK_USER = "Chat/unblockUser"
 
 
     //Notification

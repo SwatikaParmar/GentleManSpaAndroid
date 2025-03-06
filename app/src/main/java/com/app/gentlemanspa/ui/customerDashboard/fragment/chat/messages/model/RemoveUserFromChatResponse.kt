@@ -1,4 +1,4 @@
-package com.app.gentlemanspa.ui.customerDashboard.fragment.address.model
+package com.app.gentlemanspa.ui.customerDashboard.fragment.chat.messages.model
 
 data class RemoveUserFromChatResponse(
     val `data`: Any,

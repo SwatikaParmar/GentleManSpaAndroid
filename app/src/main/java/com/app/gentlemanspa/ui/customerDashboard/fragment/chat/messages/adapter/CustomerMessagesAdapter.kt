@@ -47,7 +47,6 @@ class CustomerMessagesAdapter (private var customerMessagesList: List<CustomerMe
                 customerMessagesCallbacks.onMessageDeleteItemClick(item)
             }
         }
-
     }
 
     fun setCustomerMessagesCallbacks(onClick : CustomerMessagesCallbacks) {

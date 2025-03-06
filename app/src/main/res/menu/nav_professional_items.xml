@@ -35,7 +35,16 @@
             android:title="Refer"
             android:icon="@drawable/ic_refer"
             />
+        <item
+            android:id="@+id/privacyPolicyCustomer"
+            android:title="Privacy Policy"
+            android:icon="@drawable/privacy"/>
 
+        <item
+            android:id="@+id/aboutUsCustomer"
+            android:title="About Us"
+            android:icon="@drawable/about_us"
+            />
         <item
             android:id="@+id/logOutProfessional"
             android:title="Log Out"

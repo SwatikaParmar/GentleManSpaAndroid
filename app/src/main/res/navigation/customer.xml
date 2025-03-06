@@ -409,5 +409,14 @@
             app:argType="integer" />
     </fragment>
 
-
+    <fragment
+        android:id="@+id/privacyPolicyFragment"
+        android:name="com.app.gentlemanspa.ui.common.privacyPolicy.PrivacyPolicyFragment"
+        android:label="PrivacyPolicyFragment"
+        tools:layout="@layout/fragment_privacy_policy" />
+      <fragment
+          android:id="@+id/aboutUsFragment"
+          android:name="com.app.gentlemanspa.ui.common.aboutUs.AboutUsFragment"
+          android:label="AboutUsFragment"
+          tools:layout="@layout/fragment_about_us" />
 </navigation>

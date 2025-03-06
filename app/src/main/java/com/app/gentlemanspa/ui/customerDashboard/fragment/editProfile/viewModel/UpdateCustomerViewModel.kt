@@ -9,6 +9,7 @@ import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.ui.auth.fragment.register.model.ProfileRegisterResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.model.UpdateProfileCustomerRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.model.UpdateProfileCustomerResponse
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.model.DeleteAccountResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.model.ProfessionalDetail
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.model.SpecialityResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.model.UpdateProfileProfessionalRequest
@@ -38,6 +39,7 @@ class UpdateCustomerViewModel (private var initialRepository: InitialRepository)
     val profileId = ObservableField<RequestBody>()
     val resultUpdateCustomerProfilePic= MutableLiveData<Resource<ProfileRegisterResponse>>()
     val resultUpdateCustomer = MutableLiveData<Resource<UpdateProfileCustomerResponse>>()
+    val resultDeleteAccount = MutableLiveData<Resource<DeleteAccountResponse>>()
 
     fun updateCustomerProfile() {
         resultUpdateCustomer.value = Resource.loading(null)
@@ -99,4 +101,30 @@ class UpdateCustomerViewModel (private var initialRepository: InitialRepository)
                 }
         }
     }
+    fun deleteAccountApi() {
+        resultDeleteAccount.value = Resource.loading(null)
+        viewModelScope.launch {
+            initialRepository.deleteAccount(id.get()!!)
+                .onStart { }
+                .onCompletion { }
+                .catch { exception ->
+                    if (!CommonFunctions.getError(exception)!!.contains("401"))
+                        resultDeleteAccount.value =
+                            Resource.error(
+                                data = null,
+                                message = CommonFunctions.getError(exception)
+                            )
+                }
+                .collect {
+                    if (it?.statusCode == 200) {
+                        resultDeleteAccount.value =
+                            Resource.success(message = it.messages, data = it)
+                    } else {
+                        resultDeleteAccount.value =
+                            Resource.error(data = null, message = it?.messages)
+                    }
+                }
+        }
+    }
+
 }

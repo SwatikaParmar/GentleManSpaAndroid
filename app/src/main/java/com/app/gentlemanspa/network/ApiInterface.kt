@@ -16,7 +16,7 @@ import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.Customer
 import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.CustomerAddressStatusRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.CustomerAddressStatusResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.DeleteAddressResponse
-import com.app.gentlemanspa.ui.customerDashboard.fragment.address.model.RemoveUserFromChatResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.messages.model.RemoveUserFromChatResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.model.CustomerPlaceOrderRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.model.CustomerPlaceOrderResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.cart.model.PayByStripeRequest
@@ -81,11 +81,20 @@ import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.model.Sch
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.model.WeekDaysResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.selectCountry.model.country.CountryResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.selectCountry.model.states.StatesResponse
-import com.app.gentlemanspa.utils.updateStatus.model.LogoutResponse
-import com.app.gentlemanspa.utils.updateStatus.model.UpdateFCMTokenRequest
-import com.app.gentlemanspa.utils.updateStatus.model.UpdateFCMTokenResponse
-import com.app.gentlemanspa.utils.updateStatus.model.UpdateOnlineStatusRequest
-import com.app.gentlemanspa.utils.updateStatus.model.UpdateOnlineStatusResponse
+import com.app.gentlemanspa.ui.common.updateStatus.model.LogoutResponse
+import com.app.gentlemanspa.ui.common.updateStatus.model.UpdateFCMTokenRequest
+import com.app.gentlemanspa.ui.common.updateStatus.model.UpdateFCMTokenResponse
+import com.app.gentlemanspa.ui.common.updateStatus.model.UpdateOnlineStatusRequest
+import com.app.gentlemanspa.ui.common.updateStatus.model.UpdateOnlineStatusResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.model.BlockUserRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.model.BlockUserResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.model.UnBlockUserRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.model.UnBlockUserResponse
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.availableDates.model.AvailableDatesResponse
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.availableDates.model.BlockDatesResponse
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.availableDates.model.SlotStatusRequest
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.availableDates.model.SlotStatusResponse
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.model.DeleteAccountResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
@@ -137,7 +146,7 @@ interface ApiInterface {
 
     @GET(ApiConstants.GET_CUSTOMER_DETAIL)
     suspend fun getCustomerDetail(
-        @Query("id")id:String
+        @Query("id") id: String
     ): GetProfessionalDetailResponse
 
     @POST(ApiConstants.UPDATE_CUSTOMER)
@@ -163,13 +172,13 @@ interface ApiInterface {
 
     @GET(ApiConstants.SPA_CATEGORIES)
     suspend fun getSpaCategories(
-        @Query("spaDetailId")spaDetailId:Int
+        @Query("spaDetailId") spaDetailId: Int
     ): SpaCategoriesResponse
 
     @GET(ApiConstants.SPA_CATEGORIES)
     suspend fun getSpaSubCategories(
-        @Query("spaDetailId")spaDetailId:Int,
-        @Query("categoryId")categoryId:Int
+        @Query("spaDetailId") spaDetailId: Int,
+        @Query("categoryId") categoryId: Int
     ): SpaSubCategoriesResponse
 
     @GET(ApiConstants.PRODUCT_CATEGORIES)
@@ -243,6 +252,7 @@ interface ApiInterface {
         @Query("SearchQuery") searchQuery: String?,
         @Query("spaDetailId") spaDetailId: Int?
     ): ServiceResponse
+
     @GET(ApiConstants.PROFESSIONAL_SERVICE_LIST)
     suspend fun getProfessionalServiceList(
         @Query("pageNumber") pageNumber: Int?,
@@ -361,7 +371,7 @@ interface ApiInterface {
 
     @POST(ApiConstants.CANCEL_UPCOMING_APPOINTMENTS)
     suspend fun cancelUpcomingAppointment(
-       @Body request:CancelUpcomingAppointmentRequest
+        @Body request: CancelUpcomingAppointmentRequest
     ): CancelUpcomingAppointmentResponse
 
     @GET(ApiConstants.GET_ORDERED_PRODUCTS)
@@ -374,20 +384,22 @@ interface ApiInterface {
     @GET("${ApiConstants.GET_ORDER_DETAIL}/{orderId}")
     suspend fun getOrderDetails(
         @Path("orderId") orderId: Int,
-        ): OrderDetailsResponse
+    ): OrderDetailsResponse
 
     @GET(ApiConstants.GET_PROFESSIONALS_SCHEDULES_BY_PROFESSIONAL_DETAIL_ID)
     suspend fun getSchedulesByProfessionalDetailId(
-        @Query("professionalDetailId")professionalDetailId:Int): SchedulesByProfessionalDetailIdResponse
+        @Query("professionalDetailId") professionalDetailId: Int
+    ): SchedulesByProfessionalDetailIdResponse
 
     @POST(ApiConstants.ADD_UPDATE_PROFESSIONAL_SCHEDULE)
     suspend fun addUpdateProfessionalSchedule(
-    @Body request:AddUpdateProfessionalScheduleRequest ): AddUpdateProfessionalScheduleResponse
+        @Body request: AddUpdateProfessionalScheduleRequest
+    ): AddUpdateProfessionalScheduleResponse
 
     @GET(ApiConstants.GET_EVENT_LIST)
     suspend fun getEventList(
-        @Query("UserId")userId:String
-        ): EventListResponse
+        @Query("UserId") userId: String
+    ): EventListResponse
 
 
     @POST(ApiConstants.ADD_OR_UPDATE_EVENT_REGISTRATION)
@@ -402,13 +414,13 @@ interface ApiInterface {
 
     @DELETE(ApiConstants.REMOVE_USER_FROM_CHAT)
     suspend fun removeUserFromChat(
-        @Query("currentUserName")currentUserName:String,
-        @Query("targetUserName")targetUserName:String
+        @Query("currentUserName") currentUserName: String,
+        @Query("targetUserName") targetUserName: String
     ): RemoveUserFromChatResponse
 
     @GET("${ApiConstants.CHAT_USERS}/{userName}")
     suspend fun getCustomerMessagesList(
-        @Path("userName") userName:String
+        @Path("userName") userName: String
     ): CustomerMessagesResponse
 
     @POST(ApiConstants.SEND_MESSAGE)
@@ -418,22 +430,32 @@ interface ApiInterface {
 
     @GET(ApiConstants.CHAT_HISTORY)
     suspend fun getCustomerChatHistory(
-        @Query("senderId") senderId:String,
-        @Query("receiverId") receiverId:String,
-        @Query("pageNumber") pageNumber:Int,
-        @Query("pageSize") pageSize:Int
+        @Query("senderId") senderId: String,
+        @Query("receiverId") receiverId: String,
+        @Query("pageNumber") pageNumber: Int,
+        @Query("pageSize") pageSize: Int
     ): CustomerChatMessageHistoryResponse
 
 
     @DELETE("${ApiConstants.DELETE_MESSAGE}/{messageId}")
     suspend fun deleteMessage(
-        @Path("messageId")messageId:Int
+        @Path("messageId") messageId: Int
     ): DeleteMessageResponse
 
     @POST(ApiConstants.UPDATE_STATUS)
     suspend fun updateOnlineStatus(
         @Body updateOnlineStatusRequest: UpdateOnlineStatusRequest
     ): UpdateOnlineStatusResponse
+
+    @POST(ApiConstants.BLOCK_USER)
+    suspend fun blockUser(
+        @Body blockUserRequest: BlockUserRequest
+    ): BlockUserResponse
+
+    @POST(ApiConstants.UNBLOCK_USER)
+    suspend fun unBlockUser(
+        @Body unBlockUserRequest: UnBlockUserRequest
+    ): UnBlockUserResponse
 
     @POST(ApiConstants.UPDATE_FCM_TOKEN)
     suspend fun updateFCMToken(
@@ -442,8 +464,8 @@ interface ApiInterface {
 
     @GET(ApiConstants.GET_NOTIFICATION_LIST)
     suspend fun getNotificationList(
-        @Query("pageNumber")pageNumber:Int,
-        @Query("pageSize")pageSize:Int,
+        @Query("pageNumber") pageNumber: Int,
+        @Query("pageSize") pageSize: Int,
     ): NotificationListResponse
 
     @GET(ApiConstants.GET_NOTIFICATION_COUNT)
@@ -452,12 +474,30 @@ interface ApiInterface {
 
     @GET(ApiConstants.READ_NOTIFICATION)
     suspend fun readNotification(
-        @Query("notificationSentId")notificationSentId:Int
-    ):ReadNotificationResponse
+        @Query("notificationSentId") notificationSentId: Int
+    ): ReadNotificationResponse
+    @GET(ApiConstants.GET_AVAILABLE_DATES)
+    suspend fun getProfessionalBlockDates(
+        @Query("ProfessionalId") professionalId: Int,
+        @Query("availabilityState") availabilityState: String,
+    ): BlockDatesResponse
 
+    @GET(ApiConstants.GET_AVAILABLE_DATES)
+    suspend fun getProfessionalAvailableDates(
+        @Query("ProfessionalId") professionalId: Int,
+    ): AvailableDatesResponse
 
+    @POST(ApiConstants.SET_SLOT_STATUS)
+    suspend fun slotStatus(
+        @Body request: SlotStatusRequest
+    ): SlotStatusResponse
 
     @POST(ApiConstants.LOGOUT)
     suspend fun logout(
     ): LogoutResponse
+
+    @DELETE(ApiConstants.DELETE_ACCOUNT)
+    suspend fun deleteAccount(
+        @Query("Id") id: String,
+    ): DeleteAccountResponse
 }

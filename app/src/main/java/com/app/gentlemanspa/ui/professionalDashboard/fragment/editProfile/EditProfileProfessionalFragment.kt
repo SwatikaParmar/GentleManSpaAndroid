@@ -34,6 +34,7 @@ import com.app.gentlemanspa.databinding.ImagePickerBottomBinding
 import com.app.gentlemanspa.network.ApiConstants
 import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.network.Status
+import com.app.gentlemanspa.ui.auth.activity.AuthActivity
 import com.app.gentlemanspa.ui.auth.fragment.register.adapter.GenderAdapter
 import com.app.gentlemanspa.ui.auth.fragment.register.model.GenderRequest
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.adapter.SpecialityAdapter
@@ -43,10 +44,12 @@ import com.app.gentlemanspa.ui.professionalDashboard.fragment.profile.model.GetP
 import com.app.gentlemanspa.utils.AppPrefs
 import com.app.gentlemanspa.utils.CommonFunctions
 import com.app.gentlemanspa.utils.PROFESSIONAL_PROFILE_DATA
+import com.app.gentlemanspa.utils.PROFESSIONAL_USER_ID
 import com.app.gentlemanspa.utils.ViewModelFactory
 import com.app.gentlemanspa.utils.checkString
 import com.app.gentlemanspa.utils.checkValidString
 import com.app.gentlemanspa.utils.isValidEmail
+import com.app.gentlemanspa.utils.showDeleteAccountDialog
 import com.app.gentlemanspa.utils.showToast
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -190,6 +193,33 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
                 }
             }
         }
+        viewModel.resultDeleteAccount.observe(this) {
+            it?.let { result ->
+                when (result.status) {
+                    Status.LOADING -> {
+                        showProgress(requireActivity())
+                    }
+
+                    Status.SUCCESS -> {
+                        hideProgress()
+                        Log.d("deleteAccount", "dashboard data ->${it.data?.messages}")
+                        requireContext().showToast(it.data?.messages.toString())
+                        AppPrefs(requireContext()).clearAllPrefs()
+                        val intent = Intent(requireContext(), AuthActivity::class.java)
+                        intent.putExtra("LOG_OUT","logout")
+                        startActivity(intent)
+                        requireActivity().finish()
+
+                    }
+
+                    Status.ERROR -> {
+                        requireContext().showToast(it.message.toString())
+                        hideProgress()
+                    }
+                }
+            }
+        }
+
     }
 
 
@@ -211,17 +241,15 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
     @SuppressLint("SetTextI18n")
     private fun initUI() {
         profileData = AppPrefs(requireContext()).getProfileProfessionalData(PROFESSIONAL_PROFILE_DATA)
+        Log.d("profileUrl","profile data->${profileData}")
         binding.etFirstName.setText(profileData?.data?.firstName)
         binding.etLastName.setText(profileData?.data?.lastName)
         Log.d("profileUrl","dialCode:${profileData?.data?.dialCode}  phoneNumber:${profileData?.data?.phoneNumber}")
-
         binding.etPhone.setText("${profileData?.data?.dialCode} ${profileData?.data?.phoneNumber}")
         binding.etEmail.setText(profileData?.data?.email)
         binding.countryCodePicker.isEnabled = false
         Log.d("profileUrl","profilepic:${profileData?.data?.profilepic}")
-        Glide.with(requireContext()).load(ApiConstants.BASE_FILE + profileData?.data?.profilepic)
-            .into(binding.ivProfile)
-
+        Glide.with(requireContext()).load(ApiConstants.BASE_FILE + profileData?.data?.profilepic).into(binding.ivProfile)
         specialityId = profileData?.data?.professionalDetail?.specialityIds?.split(",") as MutableList<String>?
         val specialityName = profileData?.data?.professionalDetail?.speciality?.joinToString(",")
 
@@ -284,7 +312,6 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
                             )
                         }
                     }
-
                     genderItem = position
                 }
             }
@@ -315,12 +342,21 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
             binding.ivUpload -> {
                 setImagePickerBottomSheet()
             }
+            binding.btnDeleteAccount->{
+                proceedToDeleteAccount()
+            }
+        }
+    }
+
+    private fun proceedToDeleteAccount() {
+        showDeleteAccountDialog(requireContext(),"Delete Account!","Are you sure you want to delete your account?"){
+         viewModel.id.set(AppPrefs(requireContext()).getStringPref(PROFESSIONAL_USER_ID))
+         viewModel.deleteAccountApi()
         }
     }
 
     private fun isValidation(): Boolean {
         when {
-
             checkString(binding.etFirstName) -> requireContext().showToast("Please enter first name")
             checkString(binding.etLastName) -> requireContext().showToast("Please enter last name")
             binding.spGender.selectedItem.toString() == "Select Gender" -> requireContext().showToast(

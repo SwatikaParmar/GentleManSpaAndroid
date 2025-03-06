@@ -6,10 +6,14 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.app.gentlemanspa.network.InitialRepository
+import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.model.BlockUserRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.model.BlockUserResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.model.CustomerChatMessageHistoryResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.model.CustomerSendMessageRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.model.CustomerSendMessageResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.model.DeleteMessageResponse
+import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.model.UnBlockUserRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.model.UnBlockUserResponse
 import com.app.gentlemanspa.utils.CommonFunctions
 import com.app.gentlemanspa.utils.Resource
 import kotlinx.coroutines.flow.catch
@@ -28,6 +32,8 @@ class ProfessionalChatViewModel (private var initialRepository: InitialRepositor
     val resultCustomerChatHistoryList = MutableLiveData<Resource<CustomerChatMessageHistoryResponse>>()
     val resultCustomerSendMessage = MutableLiveData<Resource<CustomerSendMessageResponse>>()
     val resultDeleteMessage = MutableLiveData<Resource<DeleteMessageResponse>>()
+    val resultBlockUser= MutableLiveData<Resource<BlockUserResponse>>()
+    val resultUnBlockUser= MutableLiveData<Resource<UnBlockUserResponse>>()
 
 
     fun getCustomerChatHistoryApi() {
@@ -144,6 +150,84 @@ class ProfessionalChatViewModel (private var initialRepository: InitialRepositor
                             Resource.success(message = it.messages, data = it)
                     } else {
                         resultDeleteMessage.value =
+                            Resource.error(data = null, message = it?.messages)
+                    }
+                }
+        }
+    }
+    fun blockUserApi(blockUserRequest: BlockUserRequest) {
+        resultBlockUser.value = Resource.loading(null)
+        viewModelScope.launch {
+            initialRepository.blockUser(blockUserRequest)
+                .onStart { }
+                .onCompletion { }
+                .catch { exception ->
+                    if (exception is HttpException) {
+                        try {
+                            val errorBody = exception.response()?.errorBody()?.string()
+                            if (!errorBody.isNullOrEmpty()) {
+                                val jsonError = JSONObject(errorBody)
+                                val errorMessage = jsonError.optString("messages", "Unknown HTTP error")
+                                resultBlockUser.value = Resource.error(data = null, message = errorMessage)
+                            } else {
+                                resultBlockUser.value = Resource.error(data = null, message = "Unknown HTTP error")
+                            }
+                        } catch (e: Exception) {
+                            resultBlockUser.value = Resource.error(data = null, message = e.message)
+                        }
+                    }else{
+                        resultBlockUser.value =
+                            Resource.error(
+                                data = null,
+                                message = CommonFunctions.getError(exception)
+                            )
+                    }
+                }
+                .collect {
+                    if (it?.statusCode == 200) {
+                        resultBlockUser.value =
+                            Resource.success(message = it.messages, data = it)
+                    } else {
+                        resultBlockUser.value =
+                            Resource.error(data = null, message = it?.messages)
+                    }
+                }
+        }
+    }
+    fun unBlockUserApi(unBlockUserRequest: UnBlockUserRequest) {
+        resultUnBlockUser.value = Resource.loading(null)
+        viewModelScope.launch {
+            initialRepository.unBlockUser(unBlockUserRequest)
+                .onStart { }
+                .onCompletion { }
+                .catch { exception ->
+                    if (exception is HttpException) {
+                        try {
+                            val errorBody = exception.response()?.errorBody()?.string()
+                            if (!errorBody.isNullOrEmpty()) {
+                                val jsonError = JSONObject(errorBody)
+                                val errorMessage = jsonError.optString("messages", "Unknown HTTP error")
+                                resultUnBlockUser.value = Resource.error(data = null, message = errorMessage)
+                            } else {
+                                resultUnBlockUser.value = Resource.error(data = null, message = "Unknown HTTP error")
+                            }
+                        } catch (e: Exception) {
+                            resultUnBlockUser.value = Resource.error(data = null, message = e.message)
+                        }
+                    }else{
+                        resultUnBlockUser.value =
+                            Resource.error(
+                                data = null,
+                                message = CommonFunctions.getError(exception)
+                            )
+                    }
+                }
+                .collect {
+                    if (it?.statusCode == 200) {
+                        resultUnBlockUser.value =
+                            Resource.success(message = it.messages, data = it)
+                    } else {
+                        resultUnBlockUser.value =
                             Resource.error(data = null, message = it?.messages)
                     }
                 }

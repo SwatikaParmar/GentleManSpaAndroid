@@ -27,7 +27,7 @@ import com.app.gentlemanspa.utils.ViewModelFactory
 import com.app.gentlemanspa.utils.showToast
 
 
-class ScheduleProfessionalFragment : Fragment() {
+class ScheduleProfessionalFragment : Fragment(), View.OnClickListener {
     private var weekDaysList: ArrayList<WeekDaysItem> = ArrayList()
     private var workingTimeSchedulesList: ArrayList<SchedulesByProfessionalDetailData> = ArrayList()
     private lateinit var binding: FragmentScheduleProfessionalBinding
@@ -59,6 +59,7 @@ class ScheduleProfessionalFragment : Fragment() {
     }
 
     private fun initUI() {
+        binding.onClick=this
         (activity as ProfessionalActivity).bottomNavigation(true)
         callWeekDaysAndSchedulesApi()
     }
@@ -77,6 +78,14 @@ class ScheduleProfessionalFragment : Fragment() {
       )
       viewModel.getSchedulesByProfessionalDetailId()
   }
+    override fun onClick(v: View?) {
+        when(v){
+            binding.btnAddUnavailableDates->{
+                val action=ScheduleProfessionalFragmentDirections.actionScheduleProfessionalFragmentToAvailableDatesFragment()
+                findNavController().navigate(action)
+            }
+        }
+    }
     private fun setScheduleAdapter() {
         val scheduleAdapter = ScheduleAdapter(weekDaysList, workingTimeSchedulesList)
         binding.rvSchedule.adapter = scheduleAdapter

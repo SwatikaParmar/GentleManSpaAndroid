@@ -146,7 +146,9 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
                 1
             )
         } else {
-            viewModel.userId.set(AppPrefs(requireContext()).getStringPref(CUSTOMER_USER_ID).toString())
+            viewModel.userId.set(
+                AppPrefs(requireContext()).getStringPref(CUSTOMER_USER_ID).toString()
+            )
             viewModel.getUpcomingAppointments()
         }
     }
@@ -326,7 +328,10 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
 
                     Status.SUCCESS -> {
                         hideProgress()
-                        Log.d("notificationCount", "notificationCount->${it.data?.data?.notificationCount}")
+                        Log.d(
+                            "notificationCount",
+                            "notificationCount->${it.data?.data?.notificationCount}"
+                        )
                         if (it.data?.data?.notificationCount!! > 0) {
                             binding.ivNotificationCount.setVisible()
                         } else {
@@ -414,7 +419,6 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
         } else {
             binding.tlBanner.visibility = View.GONE
         }
-
         TabLayoutMediator(binding.tlBanner, binding.vpBanner) { tab, position ->
         }.attach()
 
@@ -433,7 +437,7 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
             binding.vpBanner.setCurrentItem(binding.vpBanner.currentItem + 1, true)
         else
             binding.vpBanner.setCurrentItem(0, true)
-    }
+        }
 
 
     override fun onResume() {
@@ -491,7 +495,7 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
                     it.getLong(it.getColumnIndexOrThrow(CalendarContract.Calendars._ID))
                 Log.d("addEventToCalendar", "Processing calendar with ID: $calendarId")
                 // First, remove all previous events with the same title, start time, and end time
-              //  removePreviousEventsFromCalendar(context, calendarId)
+                //  removePreviousEventsFromCalendar(context, calendarId)
 
                 for (event in eventList) {
                     Log.d(
@@ -658,6 +662,7 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
             }
         }
     }
+
     interface OnProfileUpdatedListener {
         fun onProfileUpdated(name: String, email: String, profileImage: String)
     }

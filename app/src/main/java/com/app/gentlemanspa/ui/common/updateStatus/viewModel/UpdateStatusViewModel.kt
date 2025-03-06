@@ -1,4 +1,4 @@
-package com.app.gentlemanspa.utils.updateStatus.viewModel
+package com.app.gentlemanspa.ui.common.updateStatus.viewModel
 
 import android.app.Application
 import android.util.Log
@@ -9,9 +9,9 @@ import androidx.lifecycle.viewModelScope
 import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.model.UpdateProfileCustomerResponse
 import com.app.gentlemanspa.utils.Resource
-import com.app.gentlemanspa.utils.updateStatus.model.LogoutResponse
-import com.app.gentlemanspa.utils.updateStatus.model.UpdateFCMTokenRequest
-import com.app.gentlemanspa.utils.updateStatus.model.UpdateOnlineStatusRequest
+import com.app.gentlemanspa.ui.common.updateStatus.model.LogoutResponse
+import com.app.gentlemanspa.ui.common.updateStatus.model.UpdateFCMTokenRequest
+import com.app.gentlemanspa.ui.common.updateStatus.model.UpdateOnlineStatusRequest
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart

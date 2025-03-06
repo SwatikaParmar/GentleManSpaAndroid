@@ -1,6 +1,6 @@
-package com.app.gentlemanspa.utils.updateStatus.model
+package com.app.gentlemanspa.ui.common.updateStatus.model
 
-data class UpdateOnlineStatusResponse(
+data class LogoutResponse(
     val `data`: Any,
     val isSuccess: Boolean,
     val messages: String,

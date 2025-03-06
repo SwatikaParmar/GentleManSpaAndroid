@@ -31,7 +31,7 @@ import com.app.gentlemanspa.utils.isCalendarPermissionGranted
 import com.app.gentlemanspa.utils.setGone
 import com.app.gentlemanspa.utils.setVisible
 import com.app.gentlemanspa.utils.showToast
-import com.app.gentlemanspa.utils.updateStatus.viewModel.UpdateStatusViewModel
+import com.app.gentlemanspa.ui.common.updateStatus.viewModel.UpdateStatusViewModel
 import com.bumptech.glide.Glide
 import com.google.android.material.navigation.NavigationView
 
@@ -64,7 +64,6 @@ class CustomerActivity : AppCompatActivity(),HomeCustomerFragment.OnProfileUpdat
             viewModel.updateFCMTokenApi(AppPrefs(this).getStringPref(FCM_TOKEN).toString())
         }else{
             Log.d("updateFCMToken","FCM Token is empty")
-
         }
         val navInflater = navController.navInflater
         val graph = navInflater.inflate(R.navigation.customer)
@@ -168,11 +167,10 @@ class CustomerActivity : AppCompatActivity(),HomeCustomerFragment.OnProfileUpdat
                 }
 
                 R.id.privacyPolicyCustomer -> {
-                    // navController.navigate(R.id.myProfileFragment)
+                     navController.navigate(R.id.privacyPolicyFragment)
                 }
-
                 R.id.aboutUsCustomer -> {
-                    // navController.navigate(R.id.prescriptionFragment)
+                    navController.navigate(R.id.aboutUsFragment)
                 }
 
                 R.id.logOutCustomer -> {

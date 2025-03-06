@@ -13,12 +13,15 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.app.gentlemanspa.R
 import com.app.gentlemanspa.base.MyApplication.Companion.hideProgress
+import com.app.gentlemanspa.base.MyApplication.Companion.showProgress
 import com.app.gentlemanspa.databinding.FragmentChatBinding
 import com.app.gentlemanspa.network.ApiConstants
 import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.network.Status
+import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.model.BlockUserRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.model.CustomerChatHistoryMessage
 import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.model.CustomerSendMessageRequest
+import com.app.gentlemanspa.ui.customerDashboard.fragment.chat.chat.model.UnBlockUserRequest
 import com.app.gentlemanspa.ui.professionalDashboard.activity.ProfessionalActivity
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.chat.chat.adapter.ProfessionalChatHistoryAdapter
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.chat.chat.viewModel.ProfessionalChatViewModel
@@ -28,6 +31,7 @@ import com.app.gentlemanspa.utils.PROFESSIONAL_USER_ID
 import com.app.gentlemanspa.utils.ViewModelFactory
 import com.app.gentlemanspa.utils.setGone
 import com.app.gentlemanspa.utils.setVisible
+import com.app.gentlemanspa.utils.showMessageDialog
 import com.app.gentlemanspa.utils.showMessageOptionsDialog
 import com.app.gentlemanspa.utils.showToast
 import com.bumptech.glide.Glide
@@ -58,7 +62,6 @@ class ProfessionalChatFragment : Fragment(), View.OnClickListener {
         }
         return binding.root
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -107,11 +110,22 @@ class ProfessionalChatFragment : Fragment(), View.OnClickListener {
                 findNavController().popBackStack()
 
             }
-
+            binding.ivOptions->{
+                showMessageDialog(requireContext(),"Block User","Are your sure you want to block this user?") {
+                   val request= BlockUserRequest(AppPrefs(requireContext()).getStringPref(PROFESSIONAL_USER_ID).toString(),
+                       args.messageSenderId)
+                    viewModel.blockUserApi(request)
+                }
+            }
             binding.ivSendMessage -> {
                 if (binding.etMessage.text!!.isNotBlank()) {
                     proceedToSendMessage(binding.etMessage.text.toString().trim())
                 }
+            }
+            binding.tvUnblock->{
+                val request= UnBlockUserRequest(AppPrefs(requireContext()).getStringPref(PROFESSIONAL_USER_ID).toString(),
+                    args.messageSenderId)
+                viewModel.unBlockUserApi(request)
             }
         }
     }
@@ -176,9 +190,21 @@ class ProfessionalChatFragment : Fragment(), View.OnClickListener {
                         } else {
                             binding.tvStatus.setGone()
                         }
-                        binding.tvName.text = it.data.data.name
+                        if (it.data.data.isBlocked){
+                            binding.etMessage.setGone()
+                            binding.ivSendMessage.setGone()
+                            binding.tvUnblock.setVisible()
+                            binding.ivOptions.setGone()
+
+                        }else{
+                            binding.etMessage.setVisible()
+                            binding.ivSendMessage.setVisible()
+                            binding.tvUnblock.setGone()
+                            binding.ivOptions.setVisible()
+                        }
+                        binding.tvName.text = it.data.data.recieverName
                         Glide.with(requireContext())
-                            .load(ApiConstants.BASE_FILE + it.data.data.senderProfilePic)
+                            .load(ApiConstants.BASE_FILE + it.data.data.recieverProfilePic)
                             .placeholder(
                                 R.drawable.profile_placeholder
                             ).error(R.drawable.profile_placeholder).into(binding.ivProfile)
@@ -241,6 +267,53 @@ class ProfessionalChatFragment : Fragment(), View.OnClickListener {
                 }
             }
         }
+        viewModel.resultBlockUser.observe(this) {
+            it?.let { result ->
+                when (result.status) {
+                    Status.LOADING -> {
+                            showProgress(requireContext())
+                    }
+
+                    Status.SUCCESS -> {
+                        hideProgress()
+                        if (it.data!!.isSuccess) {
+                            callProfessionalChatHistoryApi()
+                        } else {
+                            requireContext().showToast(it.data.messages)
+                        }
+                    }
+
+                    Status.ERROR -> {
+                        requireContext().showToast(it.message.toString())
+                        hideProgress()
+                    }
+                }
+            }
+        }
+        viewModel.resultUnBlockUser.observe(this) {
+            it?.let { result ->
+                when (result.status) {
+                    Status.LOADING -> {
+                        showProgress(requireContext())
+                    }
+
+                    Status.SUCCESS -> {
+                        hideProgress()
+                        if (it.data!!.isSuccess) {
+                            callProfessionalChatHistoryApi()
+                        } else {
+                            requireContext().showToast(it.data.messages)
+                        }
+                    }
+
+                    Status.ERROR -> {
+                        requireContext().showToast(it.message.toString())
+                        hideProgress()
+                    }
+                }
+            }
+        }
+
 
     }
 

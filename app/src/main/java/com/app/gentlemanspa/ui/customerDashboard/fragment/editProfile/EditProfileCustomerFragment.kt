@@ -32,18 +32,22 @@ import com.app.gentlemanspa.databinding.ImagePickerBottomBinding
 import com.app.gentlemanspa.network.ApiConstants
 import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.network.Status
+import com.app.gentlemanspa.ui.auth.activity.AuthActivity
 import com.app.gentlemanspa.ui.auth.fragment.register.adapter.GenderAdapter
 import com.app.gentlemanspa.ui.auth.fragment.register.model.GenderRequest
 import com.app.gentlemanspa.ui.customerDashboard.activity.CustomerActivity
 import com.app.gentlemanspa.ui.customerDashboard.fragment.editProfile.viewModel.UpdateCustomerViewModel
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.profile.model.GetProfessionalDetailResponse
 import com.app.gentlemanspa.utils.AppPrefs
+import com.app.gentlemanspa.utils.CUSTOMER_USER_ID
 import com.app.gentlemanspa.utils.CommonFunctions
+import com.app.gentlemanspa.utils.PROFESSIONAL_USER_ID
 import com.app.gentlemanspa.utils.PROFILE_CUSTOMER_DATA
 import com.app.gentlemanspa.utils.ViewModelFactory
 import com.app.gentlemanspa.utils.checkString
 import com.app.gentlemanspa.utils.checkValidString
 import com.app.gentlemanspa.utils.isValidEmail
+import com.app.gentlemanspa.utils.showDeleteAccountDialog
 import com.app.gentlemanspa.utils.showToast
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -145,6 +149,33 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
                 }
             }
         }
+        viewModel.resultDeleteAccount.observe(viewLifecycleOwner) {
+            it?.let { result ->
+                when (result.status) {
+                    Status.LOADING -> {
+                        showProgress(requireActivity())
+                    }
+
+                    Status.SUCCESS -> {
+                        hideProgress()
+                        Log.d("deleteAccount", "dashboard data ->${it.data?.messages}")
+                        requireContext().showToast(it.data?.messages.toString())
+                        AppPrefs(requireContext()).clearAllPrefs()
+                        val intent = Intent(requireContext(), AuthActivity::class.java)
+                        intent.putExtra("LOG_OUT","logout")
+                        startActivity(intent)
+                        requireActivity().finish()
+
+                    }
+
+                    Status.ERROR -> {
+                        requireContext().showToast(it.message.toString())
+                        hideProgress()
+                    }
+                }
+            }
+        }
+
     }
 
     private fun initUI() {
@@ -239,6 +270,17 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
     }
     override fun onClick(v: View?) {
         when (v) {
+            binding.ivArrowBack -> {
+                findNavController().popBackStack()
+            }
+
+            binding.etSpeciality -> {
+                //setSpecialityBottom()
+            }
+
+            binding.ivUpload -> {
+                setImagePickerBottomSheet()
+            }
             binding.btnUpdate -> {
                 if (isValidation()) {
                     viewModel.firstName.set(binding.etFirstName.text.toString())
@@ -252,18 +294,15 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
                 }
 
             }
-
-            binding.etSpeciality -> {
-                //setSpecialityBottom()
+            binding.btnDeleteAccount->{
+                proceedToDeleteAccount()
             }
-
-            binding.ivUpload -> {
-                setImagePickerBottomSheet()
-            }
-
-            binding.ivArrowBack -> {
-                findNavController().popBackStack()
-            }
+        }
+    }
+    private fun proceedToDeleteAccount() {
+        showDeleteAccountDialog(requireContext(),"Delete Account!","Are you sure you want to delete your account?"){
+            viewModel.id.set(AppPrefs(requireContext()).getStringPref(CUSTOMER_USER_ID))
+            viewModel.deleteAccountApi()
         }
     }
     private fun isValidation(): Boolean {

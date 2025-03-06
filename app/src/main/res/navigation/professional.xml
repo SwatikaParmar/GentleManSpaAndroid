@@ -48,6 +48,9 @@
         <action
             android:id="@+id/action_scheduleProfessionalFragment_to_createScheduleFragment"
             app:destination="@id/createScheduleFragment" />
+        <action
+            android:id="@+id/action_scheduleProfessionalFragment_to_availableDatesFragment"
+            app:destination="@id/availableDatesFragment" />
     </fragment>
     <fragment
         android:id="@+id/createScheduleFragment"
@@ -169,5 +172,19 @@
         android:name="com.app.gentlemanspa.ui.professionalDashboard.fragment.notification.ProfessionalNotificationFragment"
         android:label="ProfessionalNotificationFragment"
         tools:layout="@layout/fragment_professional_notification"/>
-
+    <fragment
+        android:id="@+id/privacyPolicyFragment"
+        android:name="com.app.gentlemanspa.ui.common.privacyPolicy.PrivacyPolicyFragment"
+        android:label="PrivacyPolicyFragment"
+        tools:layout="@layout/fragment_privacy_policy" />
+    <fragment
+        android:id="@+id/aboutUsFragment"
+        android:name="com.app.gentlemanspa.ui.common.aboutUs.AboutUsFragment"
+        android:label="AboutUsFragment"
+        tools:layout="@layout/fragment_about_us" />
+    <fragment
+        android:id="@+id/availableDatesFragment"
+        android:name="com.app.gentlemanspa.ui.professionalDashboard.fragment.availableDates.AvailableDatesFragment"
+        android:label="AvailableDatesFragment"
+        tools:layout="@layout/fragment_available_dates" />
 </navigation>

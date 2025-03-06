@@ -168,8 +168,6 @@ class OtpFragment : Fragment(), View.OnClickListener {
                         if (it.data?.data?.otp.toString().isNotEmpty()){
                             otp=it.data?.data?.otp.toString()
                         }
-
-
                     }
 
                     Status.ERROR -> {
