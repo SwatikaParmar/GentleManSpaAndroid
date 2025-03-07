@@ -312,8 +312,7 @@ class EditProfileCustomerFragment : Fragment(), View.OnClickListener {
             binding.spGender.selectedItem.toString() == "Select Gender" -> requireContext().showToast(
                 "Please select gender"
             )
-
-          //  checkString(binding.etEmail) -> requireContext().showToast("Please enter email")
+            //  checkString(binding.etEmail) -> requireContext().showToast("Please enter email")
             //    !isValidEmail(checkValidString(binding.etEmail)) -> requireContext().showToast("Please enter a valid email address")
             //   checkString(binding.etPhone) -> requireContext().showToast("Please enter phone number")
             //   checkValidString(binding.etPhone).length != 10 -> requireContext().showToast("Please enter a valid 10 digit phone number")

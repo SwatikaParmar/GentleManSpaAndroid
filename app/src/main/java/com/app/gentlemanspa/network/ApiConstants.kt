@@ -64,14 +64,14 @@ object ApiConstants {
     const val GET_ORDER_DETAIL = "Order/GetOrderDetail"
     const val PAY_BY_STRIPE = "Order/PayByStripe"
     const val ORDER_CONFIRMATION = "Order/OrderConfirmation"
-
     const val PROFESSIONAL_SERVICE_LIST = "Service/GetProfessionalServices"
     const val GET_PROFESSIONALS_SCHEDULES_BY_PROFESSIONAL_DETAIL_ID =
         "Professional/GetProfessionalSchedulesByProfessionalDetailId"
     const val ADD_UPDATE_PROFESSIONAL_SCHEDULE = "Professional/AddUpdateProfessionalSchedule"
-
     const val GET_AVAILABLE_DATES = "Service/GetAvailableDates"
     const val SET_SLOT_STATUS = "Professional/SetSlotStatus"
+    const val ADD_UPDATE_PROFESSIONAL_REQUEST = "Professional/AddUpdateProfessionalRequests"
+
    //Event
 
     const val GET_EVENT_LIST = "Event/GetEventList"

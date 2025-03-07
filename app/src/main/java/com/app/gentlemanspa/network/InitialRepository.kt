@@ -99,6 +99,8 @@ import com.app.gentlemanspa.ui.professionalDashboard.fragment.availableDates.mod
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.availableDates.model.SlotStatusRequest
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.availableDates.model.SlotStatusResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.model.DeleteAccountResponse
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.requestToManagement.model.AddUpdateRequestToManagementRequest
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.requestToManagement.model.AddUpdateRequestToManagementResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -600,6 +602,13 @@ class InitialRepository {
     suspend fun slotStatus(request: SlotStatusRequest): Flow<SlotStatusResponse?> {
         return flow {
             val result =Api.apiInterface?.slotStatus(request)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
+
+    suspend fun addUpdateRequestToManagement(request: AddUpdateRequestToManagementRequest): Flow<AddUpdateRequestToManagementResponse?> {
+        return flow {
+            val result =Api.apiInterface?.addUpdateRequestToManagement(request)
             emit(result)
         }.flowOn(Dispatchers.IO)
     }

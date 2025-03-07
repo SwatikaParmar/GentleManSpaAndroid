@@ -95,6 +95,8 @@ import com.app.gentlemanspa.ui.professionalDashboard.fragment.availableDates.mod
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.availableDates.model.SlotStatusRequest
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.availableDates.model.SlotStatusResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.model.DeleteAccountResponse
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.requestToManagement.model.AddUpdateRequestToManagementRequest
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.requestToManagement.model.AddUpdateRequestToManagementResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
@@ -491,6 +493,11 @@ interface ApiInterface {
     suspend fun slotStatus(
         @Body request: SlotStatusRequest
     ): SlotStatusResponse
+
+    @POST(ApiConstants.ADD_UPDATE_PROFESSIONAL_REQUEST)
+    suspend fun addUpdateRequestToManagement(
+        @Body request: AddUpdateRequestToManagementRequest
+    ): AddUpdateRequestToManagementResponse
 
     @POST(ApiConstants.LOGOUT)
     suspend fun logout(

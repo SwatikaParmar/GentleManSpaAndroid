@@ -20,9 +20,6 @@ class ProfileProfessionalDetailViewModel(private var initialRepository: InitialR
     Application()
 ) {
 
-
-
-
     val resultProfileProfessionalDetailAccount = MutableLiveData<Resource<GetProfessionalDetailResponse>>()
     fun getProfessionalDetail() {
         resultProfileProfessionalDetailAccount.value = Resource.loading(null)

@@ -68,7 +68,7 @@ class ServiceFragment : Fragment(), View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
         (activity as CustomerActivity).bottomNavigation(false)
         //subCategoryId=0
-        Log.d("onViewCreated"," onViewCreated categoryId:${categoryId} subCategoryId: ${subCategoryId} selectPosition: ${selectPosition} subCategoryPosition:$subCategoryPosition")
+        Log.d("onViewCreated"," onViewCreated categoryId:${categoryId} subCategoryId: $subCategoryId selectPosition: ${selectPosition} subCategoryPosition:$subCategoryPosition")
         initUI()
     }
     private fun initUI() {

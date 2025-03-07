@@ -45,7 +45,19 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivRequestToManagement"
+                android:layout_width="@dimen/_22sdp"
+                android:layout_height="@dimen/_22sdp"
+                android:onClick="@{onClick}"
+                android:src="@drawable/ic_request_management"
+                android:tint="@color/black"
+                android:layout_marginEnd="@dimen/_6sdp"
+                app:tint="@color/white"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -86,6 +98,7 @@
             android:background="@drawable/bg_edittext_request"
             android:elevation="@dimen/_2sdp"
             android:hint="@string/tittle"
+            android:visibility="gone"
             android:padding="@dimen/_8sdp"
             android:singleLine="true"
             app:layout_constraintTop_toBottomOf="@+id/clSpinner"

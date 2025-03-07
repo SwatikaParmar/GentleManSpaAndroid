@@ -45,6 +45,7 @@ import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.viewModel
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.selectCountry.viewModel.SelectCountryViewModel
 import com.app.gentlemanspa.ui.common.updateStatus.viewModel.UpdateStatusViewModel
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.availableDates.viewModel.AvailableDatesViewModel
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.requestToManagement.viewModel.RequestToManagementViewModel
 
 
 @Suppress("UNCHECKED_CAST")
@@ -215,6 +216,10 @@ class ViewModelFactory(
             modelClass.isAssignableFrom(AvailableDatesViewModel::class.java) -> {
                 return AvailableDatesViewModel(repository) as T
             }
+            modelClass.isAssignableFrom(RequestToManagementViewModel::class.java) -> {
+                return RequestToManagementViewModel(repository) as T
+            }
+
             else -> throw IllegalArgumentException("Class not found")
         }
     }
