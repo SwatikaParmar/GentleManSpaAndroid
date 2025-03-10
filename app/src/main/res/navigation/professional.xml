@@ -117,11 +117,7 @@
             android:name="productId"
             app:argType="integer" />
     </fragment>
-    <fragment
-        android:id="@+id/requestToManagementFragment"
-        android:name="com.app.gentlemanspa.ui.professionalDashboard.fragment.requestToManagement.RequestToManagementFragment"
-        android:label="RequestToManagementFragment"
-        tools:layout="@layout/fragment_request_to_management"/>
+
     <fragment
         android:id="@+id/myService"
         android:name="com.app.gentlemanspa.ui.professionalDashboard.fragment.myService.MyServiceFragment"
@@ -187,4 +183,18 @@
         android:name="com.app.gentlemanspa.ui.professionalDashboard.fragment.availableDates.AvailableDatesFragment"
         android:label="AvailableDatesFragment"
         tools:layout="@layout/fragment_available_dates" />
+    <fragment
+        android:id="@+id/requestToManagementFragment"
+        android:name="com.app.gentlemanspa.ui.professionalDashboard.fragment.requestToManagement.RequestToManagementFragment"
+        android:label="RequestToManagementFragment"
+        tools:layout="@layout/fragment_request_to_management">
+        <action
+            android:id="@+id/action_requestToManagementFragment_to_professionalRequestsFragment"
+            app:destination="@+id/professionalRequestsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/professionalRequestsFragment"
+        android:name="com.app.gentlemanspa.ui.professionalDashboard.fragment.professionalRequests.ProfessionalRequestsFragment"
+        android:label="ProfessionalRequestsFragment"
+        tools:layout="@layout/fragment_professional_requests" />
 </navigation>

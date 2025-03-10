@@ -7,7 +7,6 @@
         name="onClick"
         type="android.view.View.OnClickListener" />
 </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -54,7 +53,7 @@
                 android:tint="@color/black"
                 android:layout_marginEnd="@dimen/_6sdp"
                 app:tint="@color/white"
-                android:visibility="invisible"
+                android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -67,8 +66,8 @@
             android:layout_marginHorizontal="@dimen/_15sdp"
             android:layout_marginTop="@dimen/_20sdp"
             android:background="@drawable/spinner_background"
-            app:layout_constraintTop_toBottomOf="@+id/clHeader">
-
+            app:layout_constraintTop_toBottomOf="@+id/clHeader"
+          >
             <Spinner
                 android:id="@+id/spinner"
                 android:layout_width="match_parent"
@@ -104,8 +103,6 @@
             app:layout_constraintTop_toBottomOf="@+id/clSpinner"
             tools:ignore="TouchTargetSizeCheck,VisualLintTextFieldSize"
             tools:layout_editor_absoluteX="21dp" />
-
-
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/etDescription"
             android:layout_width="match_parent"
@@ -121,7 +118,6 @@
             android:layout_marginHorizontal="@dimen/_15sdp"
             app:layout_constraintTop_toBottomOf="@+id/etTittle"
             tools:ignore="VisualLintTextFieldSize" />
-
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnRequest"
             android:layout_width="wrap_content"

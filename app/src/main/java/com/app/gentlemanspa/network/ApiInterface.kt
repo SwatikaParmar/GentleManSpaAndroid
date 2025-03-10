@@ -97,6 +97,7 @@ import com.app.gentlemanspa.ui.professionalDashboard.fragment.availableDates.mod
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.model.DeleteAccountResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.requestToManagement.model.AddUpdateRequestToManagementRequest
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.requestToManagement.model.AddUpdateRequestToManagementResponse
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.professionalRequests.model.ProfessionalRequestsResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
@@ -498,6 +499,12 @@ interface ApiInterface {
     suspend fun addUpdateRequestToManagement(
         @Body request: AddUpdateRequestToManagementRequest
     ): AddUpdateRequestToManagementResponse
+
+    @GET(ApiConstants.GET_PROFESSIONAL_REQUESTS)
+    suspend fun getProfessionalRequests(
+        @Query("ProfessionalDetailId")professionalDetailId:Int,
+        @Query("SpaDetailId")spaDetailId:Int,
+    ): ProfessionalRequestsResponse
 
     @POST(ApiConstants.LOGOUT)
     suspend fun logout(

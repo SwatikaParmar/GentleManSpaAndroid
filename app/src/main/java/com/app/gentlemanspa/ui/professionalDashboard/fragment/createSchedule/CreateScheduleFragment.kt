@@ -8,15 +8,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TimePicker.OnTimeChangedListener
+import android.widget.NumberPicker
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.app.gentlemanspa.R
-import com.app.gentlemanspa.base.MyApplication
 import com.app.gentlemanspa.base.MyApplication.Companion.hideProgress
 import com.app.gentlemanspa.base.MyApplication.Companion.showProgress
 import com.app.gentlemanspa.databinding.BottomTimePickerBinding
@@ -27,7 +25,6 @@ import com.app.gentlemanspa.ui.professionalDashboard.activity.ProfessionalActivi
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.createSchedule.model.AddUpdateProfessionalScheduleRequest
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.createSchedule.model.WorkingTime
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.createSchedule.viewModel.CreateScheduleViewModel
-import com.app.gentlemanspa.ui.professionalDashboard.fragment.schedule.viewModel.ScheduleViewModel
 import com.app.gentlemanspa.utils.AppPrefs
 import com.app.gentlemanspa.utils.PROFESSIONAL_DETAIL_ID
 import com.app.gentlemanspa.utils.ViewModelFactory
@@ -53,7 +50,6 @@ class CreateScheduleFragment : Fragment(), View.OnClickListener {
     private var startSelectedTime: String = ""
     private var endSelectedTime: String = ""
     private var startSelectedTimeMillis: Long = 0
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initObserver()
@@ -85,63 +81,62 @@ class CreateScheduleFragment : Fragment(), View.OnClickListener {
         binding.onClick = this
     }
 
-    @SuppressLint("DefaultLocale")
-    private fun setStartTimePickerBottomSheet() {
-        val bottomSheet = BottomSheetDialog(requireContext(), R.style.DialogTheme_transparent)
-        val bottomSheetLayout = BottomTimePickerBinding.inflate(layoutInflater)
-        bottomSheet.setContentView(bottomSheetLayout.root)
-        // Adjust the layout parameters for full screen
-        val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout.root.parent as View)
-        bottomSheetBehavior.peekHeight = Resources.getSystem().displayMetrics.heightPixels
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+    /*   @SuppressLint("DefaultLocale")
+       private fun setStartTimePickerBottomSheet() {
+           val bottomSheet = BottomSheetDialog(requireContext(), R.style.DialogTheme_transparent)
+           val bottomSheetLayout = BottomTimePickerBinding.inflate(layoutInflater)
+           bottomSheet.setContentView(bottomSheetLayout.root)
+           // Adjust the layout parameters for full screen
+           val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout.root.parent as View)
+           bottomSheetBehavior.peekHeight = Resources.getSystem().displayMetrics.heightPixels
+           bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 
-        // Set the TimePicker to 12-hour format
+           // Set the TimePicker to 12-hour format
 
-        bottomSheetLayout.timePicker.setIs24HourView(false)
-        bottomSheet.setCancelable(false)
-        bottomSheet.show()
+           bottomSheetLayout.timePicker.setIs24HourView(false)
+           bottomSheet.setCancelable(false)
+           bottomSheet.show()
 
-        // Initialize period variable
-        var period: String = ""
-        bottomSheetLayout.timePicker.setOnTimeChangedListener { _, hourOfDay, minute ->
-            // Determine AM/PM
-            val isAM = hourOfDay < 12
-            period = if (isAM) "AM" else "PM"
-            // Round minutes to the nearest 30-minute interval
-            val roundedMinute = if (minute % 30 == 0) minute else if (minute < 30) 0 else 30
-            bottomSheetLayout.timePicker.minute = roundedMinute
+           // Initialize period variable
+           var period: String = ""
+           bottomSheetLayout.timePicker.setOnTimeChangedListener { _, hourOfDay, minute ->
+               // Determine AM/PM
+               val isAM = hourOfDay < 12
+               period = if (isAM) "AM" else "PM"
+               // Round minutes to the nearest 30-minute interval
+               val roundedMinute = if (minute % 30 == 0) minute else if (minute < 30) 0 else 30
+               bottomSheetLayout.timePicker.minute = roundedMinute
 
-        }
+           }
 
-        bottomSheetLayout.tvDone.setOnClickListener {
-            val hour = bottomSheetLayout.timePicker.hour
-            var minute = bottomSheetLayout.timePicker.minute
-            // Adjust hour for 12-hour format
-            val displayHour = if (hour % 12 == 0) 12 else hour % 12
-            minute = if (minute < 30) 0 else 30
+           bottomSheetLayout.tvDone.setOnClickListener {
+               val hour = bottomSheetLayout.timePicker.hour
+               var minute = bottomSheetLayout.timePicker.minute
+               // Adjust hour for 12-hour format
+               val displayHour = if (hour % 12 == 0) 12 else hour % 12
+               minute = if (minute < 30) 0 else 30
 
-            val isAM = hour < 12
-            period = if (isAM) "AM" else "PM"
-            startSelectedTime = String.format("%02d:%02d %s", displayHour, minute, period)
-            // Store the start time in milliseconds
-            val calendarStart = Calendar.getInstance()
-            calendarStart.set(Calendar.HOUR_OF_DAY, hour)
-            calendarStart.set(Calendar.MINUTE, minute)
-            calendarStart.set(Calendar.SECOND, 0)
-            calendarStart.set(Calendar.MILLISECOND, 0)
-            startSelectedTimeMillis = calendarStart.timeInMillis // Store as milliseconds
+               val isAM = hour < 12
+               period = if (isAM) "AM" else "PM"
+               startSelectedTime = String.format("%02d:%02d %s", displayHour, minute, period)
+               // Store the start time in milliseconds
+               val calendarStart = Calendar.getInstance()
+               calendarStart.set(Calendar.HOUR_OF_DAY, hour)
+               calendarStart.set(Calendar.MINUTE, minute)
+               calendarStart.set(Calendar.SECOND, 0)
+               calendarStart.set(Calendar.MILLISECOND, 0)
+               startSelectedTimeMillis = calendarStart.timeInMillis // Store as milliseconds
 
-            // Update text views with formatted time
-            binding.tvStartHour.text = displayHour.toString().padStart(2, '0')
-            binding.tvStartMin.text = minute.toString().padStart(2, '0')
-            binding.tvStartAm.text = period
-            Log.d("SelectedTime", "startSelectedTime: $startSelectedTime")
-            bottomSheet.dismiss()
-        }
-        bottomSheet.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-    }
-
-    @SuppressLint("DefaultLocale")
+               // Update text views with formatted time
+               binding.tvStartHour.text = displayHour.toString().padStart(2, '0')
+               binding.tvStartMin.text = minute.toString().padStart(2, '0')
+               binding.tvStartAm.text = period
+               Log.d("SelectedTime", "startSelectedTime: $startSelectedTime")
+               bottomSheet.dismiss()
+           }
+           bottomSheet.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+       }*/
+    /*  @SuppressLint("DefaultLocale")
     private fun setEndTimePickerBottomSheet() {
         val bottomSheet = BottomSheetDialog(requireContext(), R.style.DialogTheme_transparent)
         val bottomSheetLayout = BottomTimePickerBinding.inflate(layoutInflater)
@@ -201,6 +196,110 @@ class CreateScheduleFragment : Fragment(), View.OnClickListener {
             }
             bottomSheet.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
+    }*/
+
+    @SuppressLint("SetTextI18n", "DiscouragedApi", "DefaultLocale")
+    private fun setStartTimePickerBottomSheet() {
+        val bottomSheet = BottomSheetDialog(requireContext(), R.style.DialogTheme_transparent)
+        val bottomSheetLayout = BottomTimePickerBinding.inflate(layoutInflater)
+        bottomSheet.setContentView(bottomSheetLayout.root)
+        val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout.root.parent as View)
+        bottomSheetBehavior.peekHeight = Resources.getSystem().displayMetrics.heightPixels
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        bottomSheetLayout.timePicker.setIs24HourView(false) // Set 12-hour format
+        // Modify minute selection to show only 00 and 30
+        val minutePicker = bottomSheetLayout.timePicker.findViewById<NumberPicker>(
+            Resources.getSystem().getIdentifier("minute", "id", "android")
+        )
+        // Restrict minutes to only 00 and 30
+        minutePicker.minValue = 0
+        minutePicker.maxValue = 1
+        minutePicker.displayedValues = arrayOf("00", "30")
+
+        // Done button logic
+        bottomSheetLayout.tvDone.setOnClickListener {
+            val hour = bottomSheetLayout.timePicker.hour
+            val selectedMinuteIndex = minutePicker.value
+            val minute = if (selectedMinuteIndex == 0) 0 else 30
+
+            val displayHour = if (hour % 12 == 0) 12 else hour % 12
+            val period = if (hour < 12) "AM" else "PM"
+
+            startSelectedTime = String.format("%02d:%02d %s", displayHour, minute, period)
+
+            val calendarStart = Calendar.getInstance()
+            calendarStart.set(Calendar.HOUR_OF_DAY, hour)
+            calendarStart.set(Calendar.MINUTE, minute)
+            calendarStart.set(Calendar.SECOND, 0)
+            calendarStart.set(Calendar.MILLISECOND, 0)
+            startSelectedTimeMillis = calendarStart.timeInMillis
+
+            binding.tvStartHour.text = displayHour.toString().padStart(2, '0')
+            binding.tvStartMin.text = minute.toString().padStart(2, '0')
+            binding.tvStartAm.text = period
+
+            Log.d("SelectedTime", "startSelectedTime: $startSelectedTime")
+            bottomSheet.dismiss()
+        }
+        bottomSheet.show()
+    }
+
+    @SuppressLint("DefaultLocale", "SetTextI18n", "DiscouragedApi")
+    private fun setEndTimePickerBottomSheet() {
+        val bottomSheet = BottomSheetDialog(requireContext(), R.style.DialogTheme_transparent)
+        val bottomSheetLayout = BottomTimePickerBinding.inflate(layoutInflater)
+        bottomSheet.setContentView(bottomSheetLayout.root)
+        // Adjust the layout parameters for full screen
+        val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout.root.parent as View)
+        bottomSheetBehavior.peekHeight = Resources.getSystem().displayMetrics.heightPixels
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        // Set the TimePicker to 12-hour format
+        bottomSheetLayout.timePicker.setIs24HourView(false)
+        bottomSheet.setCancelable(false)
+        bottomSheet.show()
+        // Initialize period variable
+        var period = ""
+        // Modify minute selection to show only 00 and 30
+        val minutePicker = bottomSheetLayout.timePicker.findViewById<NumberPicker>(
+            Resources.getSystem().getIdentifier("minute", "id", "android")
+        )
+        // Restrict minutes to only 00 and 30
+        minutePicker.minValue = 0
+        minutePicker.maxValue = 1
+        minutePicker.displayedValues = arrayOf("00", "30")
+
+        bottomSheetLayout.tvDone.setOnClickListener {
+            val hour = bottomSheetLayout.timePicker.hour
+            val selectedMinuteIndex = minutePicker.value
+            val minute = if (selectedMinuteIndex == 0) 0 else 30
+
+            // Adjust hour for 12-hour format
+            val displayHour = if (hour % 12 == 0) 12 else hour % 12
+            period = if (hour < 12) "AM" else "PM"
+
+            endSelectedTime = String.format("%02d:%02d %s", displayHour, minute, period)
+
+            // Convert end time to milliseconds
+            val calendarEnd = Calendar.getInstance()
+            calendarEnd.set(Calendar.HOUR_OF_DAY, hour)
+            calendarEnd.set(Calendar.MINUTE, minute)
+            calendarEnd.set(Calendar.SECOND, 0)
+            calendarEnd.set(Calendar.MILLISECOND, 0)
+            val endSelectedTimeMillis = calendarEnd.timeInMillis
+
+            // Compare the end time with the start time
+            if (endSelectedTimeMillis <= startSelectedTimeMillis) {
+                requireContext().showToast("End time must be greater than start time")
+            } else {
+                binding.tvEndHour.text = displayHour.toString().padStart(2, '0')
+                binding.tvEndMin.text = minute.toString().padStart(2, '0')
+                binding.tvEndAm.text = period
+                Log.d("SelectedTime", "endSelectedTime: $endSelectedTime")
+
+                bottomSheet.dismiss()
+            }
+        }
+        bottomSheet.behavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -209,9 +308,11 @@ class CreateScheduleFragment : Fragment(), View.OnClickListener {
             binding.ivArrowBack -> {
                 findNavController().popBackStack()
             }
+
             binding.clStartTimeValue -> {
                 setStartTimePickerBottomSheet()
             }
+
             binding.clEndTimeValue -> {
                 if (binding.tvStartHour.text.toString()
                         .trim() == "00" && binding.tvStartMin.text.toString().trim() == "00"
@@ -221,6 +322,7 @@ class CreateScheduleFragment : Fragment(), View.OnClickListener {
                 }
                 setEndTimePickerBottomSheet()
             }
+
             binding.btnCreate -> {
                 Log.d("SelectedTime", "btn clicked")
                 Log.d(
@@ -245,25 +347,28 @@ class CreateScheduleFragment : Fragment(), View.OnClickListener {
         Log.d("SelectedTime", "inside proceedToSchedule")
         Log.d("createSchedule", "professionalScheduleId${args.professionalScheduleId}")
 
-    /*    var professionalScheduleId = 0
-        if (binding.btnCreate.text.toString() == "Update") {
-            professionalScheduleId = args.professionalScheduleId
-        } else {
-            professionalScheduleId = 0
-        }*/
-        val professionalDetailId = AppPrefs(requireContext()).getStringPref(PROFESSIONAL_DETAIL_ID)?.toInt()
-        Log.d("createSchedule","oldFromTime->${args.oldFromTime} oldToTime->${args.oldToTime}")
-        val workingTimeList=ArrayList<WorkingTime>()
-        if (args.oldFromTime.isNotBlank() && args.oldToTime.isNotBlank()){
-            workingTimeList.add(WorkingTime(args.oldFromTime,args.oldToTime))
+        /*    var professionalScheduleId = 0
+            if (binding.btnCreate.text.toString() == "Update") {
+                professionalScheduleId = args.professionalScheduleId
+            } else {
+                professionalScheduleId = 0
+            }*/
+        val professionalDetailId =
+            AppPrefs(requireContext()).getStringPref(PROFESSIONAL_DETAIL_ID)?.toInt()
+        Log.d("createSchedule", "oldFromTime->${args.oldFromTime} oldToTime->${args.oldToTime}")
+        val workingTimeList = ArrayList<WorkingTime>()
+        if (args.oldFromTime.isNotBlank() && args.oldToTime.isNotBlank()) {
+            workingTimeList.add(WorkingTime(args.oldFromTime, args.oldToTime))
         }
-        workingTimeList.add(WorkingTime(startSelectedTime,endSelectedTime))
-       // val workingTime = listOf(WorkingTime(args.oldFromTime, args.oldstartSelectedTimeToTime),WorkingTime(, endSelectedTime))
+        workingTimeList.add(WorkingTime(startSelectedTime, endSelectedTime))
+        // val workingTime = listOf(WorkingTime(args.oldFromTime, args.oldstartSelectedTimeToTime),WorkingTime(, endSelectedTime))
         val request = AddUpdateProfessionalScheduleRequest(
-            professionalDetailId!!, args.professionalScheduleId, args.weekDaysItem.weekdaysId!!,
+            professionalDetailId!!,
+            args.professionalScheduleId,
+            args.weekDaysItem.weekdaysId!!,
             workingTimeList
         )
-        Log.d("createSchedule","request->$request")
+        Log.d("createSchedule", "request->$request")
         viewModel.addUpdateProfessionalSchedule(request)
     }
 
@@ -275,12 +380,14 @@ class CreateScheduleFragment : Fragment(), View.OnClickListener {
         val endLocalTime = LocalTime.parse(endTime24Hour, DateTimeFormatter.ofPattern("HH:mm"))
         return startLocalTime.isBefore(endLocalTime)
     }
+
     private fun convertTo24HourFormat(time: String): String {
         val format12Hour = SimpleDateFormat("hh:mm a", Locale.getDefault()) // 12-hour format
         val format24Hour = SimpleDateFormat("HH:mm", Locale.getDefault()) // 24-hour format
         val parsedDate = format12Hour.parse(time) // Parse the 12-hour format time
         return format24Hour.format(parsedDate!!) // Convert to 24-hour format
     }
+
     private fun initObserver() {
         viewModel.resultAddUpdateProfessionalSchedule.observe(this) {
             it?.let { result ->

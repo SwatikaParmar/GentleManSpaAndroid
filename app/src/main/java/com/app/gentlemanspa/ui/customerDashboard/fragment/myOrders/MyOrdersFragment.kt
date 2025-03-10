@@ -39,7 +39,6 @@ class MyOrdersFragment : Fragment(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initObserver()
-
     }
 
     override fun onCreateView(
@@ -62,7 +61,6 @@ class MyOrdersFragment : Fragment(), View.OnClickListener {
         binding.onClick=this
         callMyOrdersApi("Upcoming")
         setOrdersSelection(binding.tvProcessing)
-
     }
 
     private fun callMyOrdersApi(type: String) {
@@ -104,19 +102,14 @@ class MyOrdersFragment : Fragment(), View.OnClickListener {
             binding.tvProcessing->{
                 setOrdersSelection(binding.tvProcessing)
                 callMyOrdersApi("Upcoming")
-
-
             }
             binding.tvCompleted ->{
                 setOrdersSelection(binding.tvCompleted)
                 callMyOrdersApi("Completed")
-
-
             }
             binding.tvCancelled ->{
                 setOrdersSelection(binding.tvCancelled)
                 callMyOrdersApi("Cancelled")
-
             }
         }
 

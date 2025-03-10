@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="@dimen/_8sdp"
+        app:cardUseCompatPadding="true"
+        app:strokeWidth="@dimen/_1sdp"
+        app:cardElevation="@dimen/_2sdp"
+        >
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/light_white"
+            android:padding="@dimen/_7sdp">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvTittle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Face and Body Bleach Services"
+                android:textColor="@color/light_black_item"
+                android:textSize="@dimen/_13ssp"
+                android:includeFontPadding="false"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:fontFamily="@font/poppins_semibold"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvDescription"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Test"
+                android:textColor="@color/light_grey"
+                android:fontFamily="@font/poppins_medium"
+                android:textSize="@dimen/_10ssp"
+                android:maxLines="4"
+                android:includeFontPadding="false"
+                android:layout_marginTop="@dimen/_2sdp"
+                app:layout_constraintTop_toBottomOf="@+id/tvTittle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvStatus"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Test"
+                android:textColor="@color/light_grey"
+                android:fontFamily="@font/poppins_medium"
+                android:textSize="@dimen/_12ssp"
+                android:includeFontPadding="false"
+                android:layout_marginTop="@dimen/_2sdp"
+                app:layout_constraintTop_toBottomOf="@+id/tvDescription"
+                app:layout_constraintEnd_toEndOf="parent"
+                />
+
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+</layout>

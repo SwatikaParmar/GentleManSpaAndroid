@@ -101,6 +101,7 @@ import com.app.gentlemanspa.ui.professionalDashboard.fragment.availableDates.mod
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.editProfile.model.DeleteAccountResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.requestToManagement.model.AddUpdateRequestToManagementRequest
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.requestToManagement.model.AddUpdateRequestToManagementResponse
+import com.app.gentlemanspa.ui.professionalDashboard.fragment.professionalRequests.model.ProfessionalRequestsResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -612,7 +613,12 @@ class InitialRepository {
             emit(result)
         }.flowOn(Dispatchers.IO)
     }
-
+    suspend fun getProfessionalRequests(professionalDetailId:Int,spaDetailId:Int): Flow<ProfessionalRequestsResponse?> {
+        return flow {
+            val result =Api.apiInterface?.getProfessionalRequests(professionalDetailId,spaDetailId)
+            emit(result)
+        }.flowOn(Dispatchers.IO)
+    }
     suspend fun logout(): Flow<LogoutResponse?> {
         return flow {
             val result =Api.apiInterface?.logout()

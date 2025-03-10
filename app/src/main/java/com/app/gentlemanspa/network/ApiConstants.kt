@@ -71,6 +71,7 @@ object ApiConstants {
     const val GET_AVAILABLE_DATES = "Service/GetAvailableDates"
     const val SET_SLOT_STATUS = "Professional/SetSlotStatus"
     const val ADD_UPDATE_PROFESSIONAL_REQUEST = "Professional/AddUpdateProfessionalRequests"
+    const val GET_PROFESSIONAL_REQUESTS = "Professional/GetProfessionalRequests "
 
    //Event
 
