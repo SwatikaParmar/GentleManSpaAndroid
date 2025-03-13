@@ -32,13 +32,11 @@ import com.app.gentlemanspa.utils.showToast
 class RequestToManagementFragment : Fragment(), View.OnClickListener {
 
     lateinit var binding: FragmentRequestToManagementBinding
-
     private val viewModel: RequestToManagementViewModel by viewModels {
         ViewModelFactory(
             InitialRepository()
         )
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initObserver()
@@ -107,7 +105,6 @@ class RequestToManagementFragment : Fragment(), View.OnClickListener {
             }
         }
     }
-
     override fun onClick(v: View?) {
         when (v) {
             binding.ivDrawer -> {
@@ -141,7 +138,6 @@ class RequestToManagementFragment : Fragment(), View.OnClickListener {
             }
         }
     }
-
     private fun initObserver() {
         viewModel.resultAddUpdateRequestToManagement.observe(this) {
             it?.let { result ->
@@ -164,7 +160,6 @@ class RequestToManagementFragment : Fragment(), View.OnClickListener {
             }
         }
     }
-
     private fun isValidation(): Boolean {
         when {
             //   checkString(binding.etTittle) -> requireContext().showToast("Please enter tittle")
@@ -174,8 +169,7 @@ class RequestToManagementFragment : Fragment(), View.OnClickListener {
         }
         return false
     }
-
-    fun removeSpaces(text: String): String {
+    private fun removeSpaces(text: String): String {
         return text.replace("\\s+".toRegex(), "")
     }
 }

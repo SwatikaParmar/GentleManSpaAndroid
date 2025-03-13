@@ -54,11 +54,6 @@ import com.app.gentlemanspa.utils.showToast
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.internal.notify
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -254,12 +249,16 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
         val specialityName = profileData?.data?.professionalDetail?.speciality?.joinToString(",")
 
         binding.etSpeciality.setText(specialityName)
-        if (profileData?.data?.gender == "Male") {
-            genderItem = 1
-        } else if (profileData?.data?.gender == "Female") {
-            genderItem = 2
-        } else if (profileData?.data?.gender == "Other") {
-            genderItem = 3
+        when (profileData?.data?.gender) {
+            "Male" -> {
+                genderItem = 1
+            }
+            "Female" -> {
+                genderItem = 2
+            }
+            "Other" -> {
+                genderItem = 3
+            }
         }
         if (genderItem != null) {
             binding.spGender.setSelection(genderItem!!)

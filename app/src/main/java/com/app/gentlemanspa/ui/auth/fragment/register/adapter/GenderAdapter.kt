@@ -21,7 +21,7 @@ class GenderAdapter(context: Context, private val list: ArrayList<GenderRequest>
     override fun getItemId(position: Int): Long {
         try {
             return list[position].id.toLong()
-        } catch (e: NumberFormatException) {
+        } catch (_: NumberFormatException) {
 
         }
         return 0.toLong()
