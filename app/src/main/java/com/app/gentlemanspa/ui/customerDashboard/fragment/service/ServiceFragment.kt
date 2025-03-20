@@ -89,16 +89,14 @@ class ServiceFragment : Fragment(), View.OnClickListener {
                 searchRunnable?.let { handler.removeCallbacks(it) }
                 // Schedule a new search after 2 seconds
                 searchRunnable = Runnable {
-                    searchProductByName(s.toString())
+                    callServiceListApi(s.toString())
                 }
                 handler.postDelayed(searchRunnable!!, 2000)
             }
             override fun afterTextChanged(s: Editable?) {}
         })
     }
-    private fun searchProductByName(searchQuery: String) {
-        callServiceListApi(searchQuery)
-    }
+
     private fun callSpaSubCategoriesApi(categoryId:Int) {
         viewModel.spaDetailId.set(spaDetailId)
         viewModel.categoryId.set(categoryId)
@@ -212,8 +210,8 @@ class ServiceFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v) {
             binding.btnContinue -> {
-                val action =
-                    ServiceFragmentDirections.actionServiceFragmentToSelectProfessionalFragment()
+               // val action = ServiceFragmentDirections.actionServiceFragmentToSelectProfessionalFragment()
+                val action = ServiceFragmentDirections.actionServiceFragmentToSelectProfessionalServiceFragment()
                 findNavController().navigate(action)
             }
 

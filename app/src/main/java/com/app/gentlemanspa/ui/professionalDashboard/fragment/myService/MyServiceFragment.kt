@@ -33,13 +33,10 @@ class MyServiceFragment : Fragment(), View.OnClickListener {
             InitialRepository()
         )
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initObserver()
     }
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

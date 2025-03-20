@@ -7,7 +7,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductCategoriesResponse
-import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductsResponse
 import com.app.gentlemanspa.ui.customerDashboard.fragment.productDetail.model.ProductDetailResponse
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.AddProductRequest
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.AddProductResponse
@@ -16,7 +15,6 @@ import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.U
 import com.app.gentlemanspa.ui.professionalDashboard.fragment.addProduct.model.UploadProductImageResponse
 import com.app.gentlemanspa.utils.CommonFunctions
 import com.app.gentlemanspa.utils.Resource
-import com.google.gson.annotations.SerializedName
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
@@ -237,12 +235,12 @@ class AddProductViewModel(private var initialRepository: InitialRepository) : An
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->
-                    /*  if (!CommonFunctions.getError(exception)!!.contains("401"))
+                      /* if (!CommonFunctions.getError(exception)!!.contains("401"))
                           resultUploadProductImage.value =
                               Resource.error(
                                   data = null,
                                   message = CommonFunctions.getError(exception)
-                              )*/
+                        )*/
                     if (exception is HttpException) {
                         try {
                             val errorBody = exception.response()?.errorBody()?.string()

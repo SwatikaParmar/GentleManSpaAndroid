@@ -291,7 +291,8 @@ interface ApiInterface {
     @GET(ApiConstants.PROFESSIONAL_LIST)
     suspend fun getProfessionalList(
         @Query("spaServiceId") spaServiceId: Int?,
-        @Query("spaDetailId") spaDetailId: Int?
+        @Query("spaDetailId") spaDetailId: Int?,
+        @Query("searchQuery") searchQuery: String?,
     ): ProfessionalResponse
 
     @GET(ApiConstants.PROFESSIONAL_LIST)

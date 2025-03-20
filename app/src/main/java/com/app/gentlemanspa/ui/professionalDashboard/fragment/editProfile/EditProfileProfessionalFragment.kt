@@ -586,7 +586,7 @@ class EditProfileProfessionalFragment : Fragment(), View.OnClickListener {
                 binding.etSpeciality.setText(specialityName)
                 commaSeparatedSpecialitiesId = selectedSpecialitiesId.joinToString(",")
                 // Convert specialityId to a mutable list if it's not already
-                specialityId = specialityId?.toMutableList() ?: mutableListOf()
+                specialityId = specialityId?.toMutableList()?:mutableListOf()
                 specialityId?.clear()
                 specialityId?.addAll(selectedSpecialitiesId)
                 bottomSheet.dismiss()

@@ -280,11 +280,11 @@ class InitialRepository {
             emit(result)
         }.flowOn(Dispatchers.IO)
     }
-    suspend fun getProfessionalList(spaServiceId: Int?,spaDetailId: Int?): Flow<ProfessionalResponse?> {
+    suspend fun getProfessionalList(spaServiceId: Int?,spaDetailId: Int?,searchQuery: String?): Flow<ProfessionalResponse?> {
         Log.d("professionalList","inside InitialRepository spaServiceId->${spaServiceId} spaDetailId->$spaDetailId")
 
         return flow {
-            val result =Api.apiInterface?.getProfessionalList(spaServiceId,spaDetailId)
+            val result =Api.apiInterface?.getProfessionalList(spaServiceId,spaDetailId,searchQuery)
             emit(result)
         }.flowOn(Dispatchers.IO)
     }

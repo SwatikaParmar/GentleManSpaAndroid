@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.app.gentlemanspa.R
@@ -31,6 +32,7 @@ import com.app.gentlemanspa.databinding.BottomProductCategoryBinding
 import com.app.gentlemanspa.databinding.FragmentAddProductBinding
 import com.app.gentlemanspa.databinding.ImagePickerBottomBinding
 import com.app.gentlemanspa.network.ApiConstants
+import com.app.gentlemanspa.network.ApiConstants.BASE_FILE
 import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.network.Status
 import com.app.gentlemanspa.ui.customerDashboard.fragment.home.model.ProductCategoriesItem
@@ -56,14 +58,18 @@ import com.app.gentlemanspa.utils.showToast
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.MultipartBody
+import java.io.BufferedInputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.io.InputStream
+import java.net.HttpURLConnection
 import java.net.URL
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+
 
 
 class AddProductFragment : Fragment(), View.OnClickListener {
@@ -88,7 +94,7 @@ class AddProductFragment : Fragment(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         addType = args.AddType
-        initObserver()
+        // initObserver()
     }
 
 
@@ -104,6 +110,7 @@ class AddProductFragment : Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initUI()
+        initObserver()
     }
 
     private fun initUI() {
@@ -115,6 +122,8 @@ class AddProductFragment : Fragment(), View.OnClickListener {
             binding.btnAddProduct.text = "Add Product"
         } else {
             val data = args.ProductListItem
+            Log.e("ProductImages", "productId->${data?.productId}")
+
             viewModel.id.set(data?.productId)
             viewModel.getProductDetails()
             binding.tvTitle.text = "Update Product"
@@ -127,7 +136,7 @@ class AddProductFragment : Fragment(), View.OnClickListener {
 
 
         }
-        productsPhoto.add(AddPhotoRequest(profileImage, R.drawable.plus,""))
+        productsPhoto.add(AddPhotoRequest(profileImage, R.drawable.plus, ""))
         setProductPhotoAdapter()
         binding.onClick = this
         viewModel.getProductCategories()
@@ -143,7 +152,7 @@ class AddProductFragment : Fragment(), View.OnClickListener {
     }
 
     private fun initObserver() {
-        viewModel.resultProductCategories.observe(this) {
+        viewModel.resultProductCategories.observe(viewLifecycleOwner) {
             it?.let { result ->
                 when (result.status) {
                     Status.LOADING -> {}
@@ -163,7 +172,7 @@ class AddProductFragment : Fragment(), View.OnClickListener {
 
         }
 
-        viewModel.resultAddProduct.observe(this) {
+        viewModel.resultAddProduct.observe(viewLifecycleOwner) {
             it?.let { result ->
                 when (result.status) {
                     Status.LOADING -> {
@@ -173,12 +182,13 @@ class AddProductFragment : Fragment(), View.OnClickListener {
 
                     Status.SUCCESS -> {
                         // MyApplication.hideProgress()
-                        val productId = getTextRequestBodyParams(it.data?.data?.productId.toString())
+                        val productId =
+                            getTextRequestBodyParams(it.data?.data?.productId.toString())
                         val listOfImages = ArrayList<MultipartBody.Part>()
 
 
                         for (i in 0 until productsPhoto.size) {
-                            if (i !=0) {
+                            if (i != 0) {
                                 if (productsPhoto[i].image != null) {
                                     listOfImages.add(
                                         prepareFilePart(
@@ -188,7 +198,7 @@ class AddProductFragment : Fragment(), View.OnClickListener {
                                     )
                                 }
 
-                                println("listImage"+listOfImages)
+                                println("listImage" + listOfImages)
                             }
                         }
                         messagesProduct = it.data?.messages.toString()
@@ -205,7 +215,7 @@ class AddProductFragment : Fragment(), View.OnClickListener {
             }
         }
 
-        viewModel.resultUploadProductImage.observe(this) {
+        viewModel.resultUploadProductImage.observe(viewLifecycleOwner) {
             it?.let { result ->
                 when (result.status) {
                     Status.LOADING -> {
@@ -214,15 +224,15 @@ class AddProductFragment : Fragment(), View.OnClickListener {
 
                     Status.SUCCESS -> {
                         hideProgress()
-                       // requireContext().showToast(messagesProduct)
-                       // findNavController().popBackStack()
-                        requireContext().showAlertForPlaceOrder(messagesProduct,object :
-                           AlertWithoutCancelCallbackInt{
-                           override fun onOkayClicked(view: View) {
-                               findNavController().popBackStack()
-                           }
+                        // requireContext().showToast(messagesProduct)
+                        // findNavController().popBackStack()
+                        requireContext().showAlertForPlaceOrder(messagesProduct, object :
+                            AlertWithoutCancelCallbackInt {
+                            override fun onOkayClicked(view: View) {
+                                findNavController().popBackStack()
+                            }
 
-                       })
+                        })
                     }
 
                     Status.ERROR -> {
@@ -233,46 +243,60 @@ class AddProductFragment : Fragment(), View.OnClickListener {
             }
         }
 
-        viewModel.resultUpdateProduct.observe(this) {
-            it?.let { result ->
+        viewModel.resultUpdateProduct.observe(viewLifecycleOwner) { result ->
+            result?.let {
                 when (result.status) {
                     Status.LOADING -> {
                         showProgress(requireActivity())
-
                     }
 
                     Status.SUCCESS -> {
-                        hideProgress()
-                        val productId = getTextRequestBodyParams(it.data?.data?.productId.toString())
+                        Log.d("ProductImages", "productsPhoto.size -> ${productsPhoto.size}")
+
+                        val productId =
+                            getTextRequestBodyParams(result.data?.data?.productId.toString())
                         val listOfImages = ArrayList<MultipartBody.Part>()
-
-
-                        for (i in 0 until productsPhoto.size) {
-                            if (i !=0) {
-                                if (productsPhoto[i].image != null) {
-                                    listOfImages.add(prepareFilePart("Images", productsPhoto[i].image!!))
+                        lifecycleScope.launch {
+                            for (i in 0 until productsPhoto.size) {
+                                if (i != 0) { // Skip placeholder image
+                                    productsPhoto[i].image?.let { file ->
+                                        listOfImages.add(prepareFilePart("Images", file))
+                                    }
                                 }
+                            }
+                            for (imageUrl in productsPhoto) {
+                                val fullImageUrl = BASE_FILE + imageUrl.imageApi
+                                Log.d("ProductImages", "Downloading image from -> $fullImageUrl")
+                                val imageFile = downloadImageToFile(fullImageUrl)
+                                Log.d("ProductImages", "Downloaded file -> $imageFile")
+                                imageFile?.let {
+                                    listOfImages.add(prepareFilePart("Images", it))
+                                }
+                            }
 
-                                println("listImage"+listOfImages)
+                            Log.d("ProductImages", "Final listOfImages -> $listOfImages")
+                            Log.d(
+                                "ProductImages",
+                                "productImageList size -> ${productImageList.size}"
+                            )
+                            Log.d("ProductImages", "productImageList -> $productImageList")
+                            if (listOfImages.isNotEmpty()) {
+                                Log.d("ProductImages", "Uploading ${listOfImages.size} images")
+                                messagesProduct = result.data?.messages.toString()
+                                viewModel.productId.set(productId)
+                                viewModel.productImages.set(listOfImages)
+                                viewModel.uploadProductImage()
+                            } else {
+                                hideProgress()
+                                messagesProduct = result.data?.messages.toString()
+                                requireContext().showToast(messagesProduct)
+                                findNavController().popBackStack()
                             }
                         }
-                        if (listOfImages.size>0){
-                            messagesProduct = it.data?.messages.toString()
-                            viewModel.productId.set(productId)
-                            viewModel.productImages.set(listOfImages)
-                            viewModel.uploadProductImage()
-                        }else{
-                            messagesProduct = it.data?.messages.toString()
-                            requireContext().showToast(messagesProduct)
-                            findNavController().popBackStack()
-                        }
-
-
-
                     }
 
                     Status.ERROR -> {
-                        requireContext().showToast(it.message.toString())
+                        requireContext().showToast(result.message.toString())
                         hideProgress()
                     }
                 }
@@ -280,7 +304,8 @@ class AddProductFragment : Fragment(), View.OnClickListener {
         }
 
 
-        viewModel.resultProductDetail.observe(this) {
+
+        viewModel.resultProductDetail.observe(viewLifecycleOwner) {
             it?.let { result ->
                 when (result.status) {
                     Status.LOADING -> {
@@ -290,14 +315,21 @@ class AddProductFragment : Fragment(), View.OnClickListener {
                     Status.SUCCESS -> {
                         hideProgress()
                         productImageList.clear()
-                        val data = it.data?.data
                         it.data?.data?.images?.let { it1 -> productImageList.addAll(it1) }
-                        for (i in 0 until  productImageList.size){
-                            productsPhoto.add(AddPhotoRequest(profileImage,0,productImageList[i]))
+                        for (i in 0 until productImageList.size) {
+                            productsPhoto.add(AddPhotoRequest(profileImage, 0, productImageList[i]))
                         }
-
+                        Log.d(
+                            "ProductImages",
+                            "ProductDetail productImageList -> $productImageList"
+                        )
                         setProductPhotoAdapter()
-
+                        Log.d(
+                            "ProductImages",
+                            "mainCategoryName -> ${it.data?.data?.mainCategoryName}"
+                        )
+                        binding.tvProductCategory.text = it.data?.data?.mainCategoryName
+                        mainCategoryId=it.data?.data?.mainCategoryId!!
                     }
 
                     Status.ERROR -> {
@@ -311,12 +343,13 @@ class AddProductFragment : Fragment(), View.OnClickListener {
     }
 
 
-    private var cameraLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+    private var cameraLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 profileImage = File(currentPhotoPath)
                 compressImageFile(profileImage!!)
-                println("fileImage"+profileImage)
-                productsPhoto.add(AddPhotoRequest(profileImage!!, 0,""))
+                println("fileImage" + profileImage)
+                productsPhoto.add(AddPhotoRequest(profileImage!!, 0, ""))
                 setProductPhotoAdapter()
             }
         }
@@ -332,15 +365,14 @@ class AddProductFragment : Fragment(), View.OnClickListener {
         })
     }
 
-    private var galleryLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+    private var galleryLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val imageUri = result.data?.data
-                profileImage = uriToFile(imageUri!!,requireContext(),requireActivity())
+                profileImage = uriToFile(imageUri!!, requireContext(), requireActivity())
                 compressImageFile(profileImage!!)
-                println("fileImage"+profileImage)
-                productsPhoto.add(AddPhotoRequest(profileImage!!, 0,""))
-
-
+                println("fileImage" + profileImage)
+                productsPhoto.add(AddPhotoRequest(profileImage!!, 0, ""))
                 setProductPhotoAdapter()
             }
         }
@@ -479,7 +511,9 @@ class AddProductFragment : Fragment(), View.OnClickListener {
                     val createdBy = AppPrefs(requireContext()).getString("CREATED_BY")
 
                     if (addType == 0) {
-                        viewModel.listingPrice.set(binding.etListingPrice.text.toString().toDouble())
+                        viewModel.listingPrice.set(
+                            binding.etListingPrice.text.toString().toDouble()
+                        )
                         viewModel.createdBy.set(createdBy)
                         viewModel.name.set(binding.etProductName.text.toString())
                         viewModel.description.set(binding.etDescription.text.toString())
@@ -491,7 +525,9 @@ class AddProductFragment : Fragment(), View.OnClickListener {
                         viewModel.addProduct()
                     } else {
                         viewModel.productUpdateId.set(args.ProductListItem?.productId)
-                        viewModel.listingPrice.set(binding.etListingPrice.text.toString().toDouble())
+                        viewModel.listingPrice.set(
+                            binding.etListingPrice.text.toString().toDouble()
+                        )
                         viewModel.createdBy.set(createdBy)
                         viewModel.name.set(binding.etProductName.text.toString())
                         viewModel.description.set(binding.etDescription.text.toString())
@@ -538,11 +574,13 @@ class AddProductFragment : Fragment(), View.OnClickListener {
     }
 
     private fun isValidation(): Boolean {
-        Log.d("Validation","productsPhoto size-> ${productsPhoto.size}")
+        Log.d("Validation", "productsPhoto size-> ${productsPhoto.size}")
         when {
-            (addType == 0 && productsPhoto.size <=1) -> {
-                requireContext().showToast("Please upload at least one image")
+            //   (addType == 0 && productsPhoto.size <= 1) -> {
+            (productsPhoto.size < 2) -> {
+                requireContext().showToast("Please upload at least one product image")
             }
+
             binding.etProductName.text.toString().trim().isEmpty() -> {
                 requireContext().showToast("Enter product name")
             }
@@ -559,14 +597,14 @@ class AddProductFragment : Fragment(), View.OnClickListener {
                 requireContext().showToast("Enter listing price")
             }
 
-           /* binding.etListingPrice.text.toString().toInt() > binding.etBasePrice.text.toString()
-                .toInt() -> {
-                requireContext().showToast(
-                    "Please do not enter Base Price more than Listing Price"
-                )
-            }*/
+            /* binding.etListingPrice.text.toString().toInt() > binding.etBasePrice.text.toString()
+                 .toInt() -> {
+                 requireContext().showToast(
+                     "Please do not enter Base Price more than Listing Price"
+                 )
+             }*/
             binding.etListingPrice.text.toString().toDouble() > binding.etBasePrice.text.toString()
-                .toDouble()-> {
+                .toDouble() -> {
                 requireContext().showToast(
                     "Please do not enter Base Price more than Listing Price"
                 )
@@ -585,5 +623,44 @@ class AddProductFragment : Fragment(), View.OnClickListener {
         return false
     }
 
+    private suspend fun downloadImageToFile(imageUrl: String): File? {
+        return withContext(Dispatchers.IO) { // Run in background thread
+            try {
+                val url = URL(imageUrl)
+                val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
+                connection.requestMethod = "GET"
+                connection.doInput = true
+                connection.connect()
+
+                if (connection.responseCode != HttpURLConnection.HTTP_OK) {
+                    Log.e(
+                        "ProductImages",
+                        "Failed to download image: HTTP ${connection.responseCode}"
+                    )
+                    return@withContext null
+                }
+
+                val inputStream: InputStream = connection.inputStream
+                val cacheDir = requireContext().cacheDir // Safe for internal storage
+                if (!cacheDir.exists()) cacheDir.mkdirs()
+                val file = File(cacheDir, "image_${System.currentTimeMillis()}.jpg")
+                BufferedInputStream(inputStream).use { input ->
+                    FileOutputStream(file).use { output ->
+                        val buffer = ByteArray(8 * 1024) // 8 KB buffer
+                        var bytesRead: Int
+                        while (input.read(buffer).also { bytesRead = it } != -1) {
+                            output.write(buffer, 0, bytesRead)
+                        }
+                    }
+                }
+
+                Log.d("ProductImages", "Image downloaded and saved at: ${file.absolutePath}")
+                file
+            } catch (e: Exception) {
+                Log.e("ProductImages", "Error downloading image", e)
+                null
+            }
+        }
+    }
 
 }

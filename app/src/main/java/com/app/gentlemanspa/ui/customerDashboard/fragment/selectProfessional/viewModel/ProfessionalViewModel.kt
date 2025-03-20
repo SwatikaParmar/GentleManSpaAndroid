@@ -31,7 +31,7 @@ class ProfessionalViewModel (private var initialRepository: InitialRepository) :
     fun getProfessionalList() {
         resultProfessionalList.value = Resource.loading(null)
         viewModelScope.launch {
-            initialRepository.getProfessionalList(serviceId.get(),spaDetailId.get())
+            initialRepository.getProfessionalList(serviceId.get(),spaDetailId.get(),"")
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->

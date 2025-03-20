@@ -112,7 +112,7 @@ class ProductProfessionalFragment : Fragment(), View.OnClickListener {
             it?.let { result ->
                 when (result.status) {
                     Status.LOADING -> {
-                        MyApplication.showProgress(requireContext())
+                       // MyApplication.showProgress(requireContext())
                     }
 
                     Status.SUCCESS -> {
@@ -209,7 +209,6 @@ class ProductProfessionalFragment : Fragment(), View.OnClickListener {
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle("Alert")
         builder.setMessage("Are you sure you want to delete this product?")
-
         builder.setPositiveButton(android.R.string.yes) { dialog, which ->
             viewModel.id.set(item.productId)
             viewModel.getDeleteProduct()

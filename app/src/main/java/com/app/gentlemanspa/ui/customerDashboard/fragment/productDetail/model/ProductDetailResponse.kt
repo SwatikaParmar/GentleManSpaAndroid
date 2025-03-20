@@ -32,8 +32,14 @@ data class ProductDetailData(
 	@field:SerializedName("productId")
 	val productId: Int? = 0,
 
+	@field:SerializedName("mainCategoryId")
+	val mainCategoryId: Int? = 0,
+
 	@field:SerializedName("name")
 	val name: String? = "",
+
+	@field:SerializedName("mainCategoryName")
+	val mainCategoryName: String? = "",
 
 	@field:SerializedName("description")
 	val description: String? = "",

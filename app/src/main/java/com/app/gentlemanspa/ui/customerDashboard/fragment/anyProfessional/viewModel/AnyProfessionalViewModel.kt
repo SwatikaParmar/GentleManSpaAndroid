@@ -20,6 +20,7 @@ class AnyProfessionalViewModel  (private var initialRepository: InitialRepositor
 
     val spaServiceId = ObservableField<Int>()
     val spaDetailId = ObservableField<Int>()
+    val searchQuery = ObservableField<String>()
     val resultProfessionalList= MutableLiveData<Resource<ProfessionalResponse>>()
 
 
@@ -28,7 +29,7 @@ class AnyProfessionalViewModel  (private var initialRepository: InitialRepositor
     fun getProfessionalList() {
         resultProfessionalList.value = Resource.loading(null)
         viewModelScope.launch {
-            initialRepository.getProfessionalList(spaServiceId.get(),spaDetailId.get())
+            initialRepository.getProfessionalList(spaServiceId.get(),spaDetailId.get(),searchQuery.get())
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->

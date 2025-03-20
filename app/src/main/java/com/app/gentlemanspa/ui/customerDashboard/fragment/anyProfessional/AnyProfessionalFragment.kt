@@ -2,6 +2,10 @@ package com.app.gentlemanspa.ui.customerDashboard.fragment.anyProfessional
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -38,7 +42,8 @@ class AnyProfessionalFragment : Fragment(), View.OnClickListener {
     private var professionalList: ArrayList<ProfessionalItem> = ArrayList()
     private var mainLoader: Int=0
     private val args:AnyProfessionalFragmentArgs by navArgs()
-
+    private var searchRunnable: Runnable? = null
+    private val handler = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +62,6 @@ class AnyProfessionalFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as CustomerActivity).bottomNavigation(false)
         initUI()
     }
     private fun initObserver() {
@@ -91,11 +95,30 @@ class AnyProfessionalFragment : Fragment(), View.OnClickListener {
 
 
     private fun initUI() {
+        (activity as CustomerActivity).bottomNavigation(false)
         binding.onClick = this
+        callProfessionalListApi("")
+        binding.etSearch.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // Remove any previously scheduled searches
+                searchRunnable?.let { handler.removeCallbacks(it) }
+                // Schedule a new search after 2 seconds
+                searchRunnable = Runnable {
+                    callProfessionalListApi(s.toString())
+                }
+                handler.postDelayed(searchRunnable!!, 2000)
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+    }
+    private fun callProfessionalListApi(searchQuery:String){
         viewModel.spaServiceId.set(args.spaServiceId)
         viewModel.spaDetailId.set(args.spaDetailId)
+        viewModel.searchQuery.set(searchQuery)
         viewModel.getProfessionalList()
     }
+
     private fun setSelectProfessionalAdapter() {
         anyProfessionalAdapter = AnyProfessionalAdapter(professionalList)
         binding.rvProfessional.adapter = anyProfessionalAdapter
