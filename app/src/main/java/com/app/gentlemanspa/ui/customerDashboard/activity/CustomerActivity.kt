@@ -299,8 +299,19 @@ class CustomerActivity : AppCompatActivity(),HomeCustomerFragment.OnProfileUpdat
                     }
 
                     Status.ERROR -> {
-                        showToast(it.message.toString())
+                       // showToast(it.message.toString())
                         hideProgress()
+                        if (isCalendarPermissionGranted(this)){
+                            removeAllEventsOnLogout()
+                        }
+                        Log.d("logout","logout error->${it.message.toString()}")
+                        AppPrefs(this).setString("TOKEN","")
+                        AppPrefs(this).setString("ROLE","")
+                        AppPrefs(this).clearAllPrefs()
+                        val intent = Intent(this, AuthActivity::class.java)
+                        intent.putExtra("LOG_OUT","logout")
+                        startActivity(intent)
+                        finish()
                     }
                 }
             }

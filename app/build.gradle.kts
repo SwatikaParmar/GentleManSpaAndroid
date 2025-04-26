@@ -10,6 +10,11 @@ plugins {
     id("com.google.gms.google-services")
 }
 
+
+// key store password :Gentlemanspa
+// key Alias :Gentlemanspa
+// key password :Gentlemanspa
+
 android {
     namespace = "com.app.gentlemanspa"
     compileSdk = 34
@@ -18,8 +23,8 @@ android {
         applicationId = "com.app.gentlemanspa"
         minSdk = 24
         targetSdk = 34
-        versionCode = 3
-        versionName = "1.3"
+        versionCode = 5
+        versionName = "1.5"
         archivesName = "GentleManSpa_V$versionName"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -91,16 +96,16 @@ dependencies {
     implementation(libs.play.services.maps)
     implementation(libs.play.services.location)
 
-/*    // Import the Firebase BoM
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.analytics)
-    // Firebase UI for Realtime Database
-    implementation(libs.firebase.ui.database)
+    /*    // Import the Firebase BoM
+        implementation(platform(libs.firebase.bom))
+        implementation(libs.firebase.analytics)
+        // Firebase UI for Realtime Database
+        implementation(libs.firebase.ui.database)
 
-    // Firebase Database
-    implementation("com.google.firebase:firebase-database-ktx")*/
+        // Firebase Database
+        implementation("com.google.firebase:firebase-database-ktx")*/
 
-    implementation ("com.google.android.material:material:1.12.0")
+    implementation("com.google.android.material:material:1.12.0")
 
 
 }

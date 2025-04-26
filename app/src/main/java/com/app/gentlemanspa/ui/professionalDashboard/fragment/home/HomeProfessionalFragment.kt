@@ -3,6 +3,7 @@ package com.app.gentlemanspa.ui.professionalDashboard.fragment.home
 import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.provider.CalendarContract
@@ -16,12 +17,14 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.app.gentlemanspa.base.MyApplication
+import com.app.gentlemanspa.base.MyApplication.Companion
 import com.app.gentlemanspa.base.MyApplication.Companion.hideProgress
 import com.app.gentlemanspa.base.MyApplication.Companion.showProgress
 import com.app.gentlemanspa.databinding.FragmentHomeProfessionalBinding
 import com.app.gentlemanspa.network.ApiConstants.BASE_FILE
 import com.app.gentlemanspa.network.InitialRepository
 import com.app.gentlemanspa.network.Status
+import com.app.gentlemanspa.ui.auth.activity.AuthActivity
 import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.AddUserToChatRequest
 import com.app.gentlemanspa.ui.customerDashboard.fragment.history.model.UpcomingServiceAppointmentItem
 import com.app.gentlemanspa.ui.professionalDashboard.activity.ProfessionalActivity
@@ -34,8 +37,10 @@ import com.app.gentlemanspa.utils.PROFESSIONAL_DETAIL_ID
 import com.app.gentlemanspa.utils.PROFESSIONAL_PROFILE_DATA
 import com.app.gentlemanspa.utils.PROFESSIONAL_USER_ID
 import com.app.gentlemanspa.utils.ViewModelFactory
+import com.app.gentlemanspa.utils.isCalendarPermissionGranted
 import com.app.gentlemanspa.utils.setGone
 import com.app.gentlemanspa.utils.setVisible
+import com.app.gentlemanspa.utils.showSessionExpiredDialog
 import com.app.gentlemanspa.utils.showToast
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
@@ -50,8 +55,9 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
     private lateinit var profileUpdatedListener: OnProfileUpdatedListener
     private var appointmentType = ""
     private var userId = ""
-/*    private var name = ""
-    private var profilePic = ""*/
+
+    /*    private var name = ""
+        private var profilePic = ""*/
     private val appointmentsList: ArrayList<UpcomingServiceAppointmentItem> = ArrayList()
     private val viewModel: HomeProfessionalViewModel by viewModels {
         ViewModelFactory(
@@ -67,6 +73,7 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
             throw ClassCastException("$context must implement OnProfileUpdatedListener")
         }
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initObserver()
@@ -83,9 +90,9 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initUI()
-        //  registerProfessionalInFirebase()
 
     }
+
     private fun callAppointmentsListApi(type: String) {
         Log.d(
             "type", "type->$type PROFESSIONAL_DETAIL_ID  ${
@@ -101,6 +108,7 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
         )
         viewModel.getAppointmentListApi()
     }
+
     private fun initObserver() {
         viewModel.resultProfileProfessionalDetailAccount.observe(this) {
             it?.let { result ->
@@ -130,8 +138,13 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
                     }
 
                     Status.ERROR -> {
+                        hideProgress()
+                        Log.d(
+                            "data",
+                            "resultProfileProfessionalDetailAccount error ->${it.message}"
+                        )
                         requireContext().showToast(it.message.toString())
-                        MyApplication.hideProgress()
+
                     }
                 }
             }
@@ -177,8 +190,13 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
                     }
 
                     Status.ERROR -> {
-                        requireContext().showToast(it.message.toString())
                         hideProgress()
+                        Log.d("data", "resultAppointmentList error ->${it.message}")
+                        if (it.message=="401"){
+                            showSessionExpired()
+                        }else{
+                            requireContext().showToast(it.message.toString())
+                        }
                     }
                 }
             }
@@ -267,15 +285,18 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
             Log.d("professionalDetailId", "professionalDetailId is empty")
         }
     }
+
     private fun callAddUserToChatApi(userId: String) {
         val request = AddUserToChatRequest(
             AppPrefs(requireContext()).getStringPref(PROFESSIONAL_USER_ID).toString(), userId
         )
         viewModel.addUserToChatApi(request)
     }
+
     private fun setUpCompletedAdapter() {
         binding.rvAppointment.adapter = CompletedAppointmentAdapter(appointmentsList)
     }
+
     private fun setUpComingAdapter() {
         if (ContextCompat.checkSelfPermission(
                 requireActivity(), android.Manifest.permission.READ_CALENDAR
@@ -298,14 +319,18 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
             UpcomingAppointmentAdapter.UpcomingAppointmentCallbacks {
             override fun onItemMessageClick(item: UpcomingServiceAppointmentItem) {
                 //    checkUserExistsAndNavigateToChat(item)
-                Log.d("userId", "receiverUserId or professionalUserId ->${item.professionalUserId} userId->${item.userId}")
+                Log.d(
+                    "userId",
+                    "receiverUserId or professionalUserId ->${item.professionalUserId} userId->${item.userId}"
+                )
                 userId = item.userId
-               /* name = item.professionalName
-                profilePic = item.professionalImage*/
+                /* name = item.professionalName
+                 profilePic = item.professionalImage*/
                 callAddUserToChatApi(item.userId)
             }
         })
     }
+
     private fun addEventToCalendar(eventList: ArrayList<UpcomingServiceAppointmentItem>) {
         Log.d("addEventToCalendar", "Starting to process event list: ${eventList.size} events")
         val context = requireContext()
@@ -398,6 +423,7 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
             it.close()
         }
     }
+
     private fun removePreviousEventsFromCalendar(context: Context, calendarId: Long) {
         // Query the calendar to get the events to remove (can be filtered by title, time range, etc.)
         val eventCursor = context.contentResolver.query(
@@ -437,9 +463,11 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
             }
         }
     }
+
     private fun shouldRemoveEvent(title: String, startMillis: Long, endMillis: Long): Boolean {
         return true // For now, just remove all events
     }
+
     private fun addEventToCalendarProvider(
         event: UpcomingServiceAppointmentItem, calendarId: Long, startMillis: Long, endMillis: Long
     ) {
@@ -470,9 +498,11 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
         val endMillis = endDate?.time ?: 0L
         return Pair(startMillis, endMillis)
     }
+
     private fun setUpCancelledAdapter() {
         binding.rvAppointment.adapter = CancelledAppointmentAdapter(appointmentsList)
     }
+
     override fun onClick(v: View?) {
         when (v) {
             binding.ivDrawer -> {
@@ -480,7 +510,7 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
             }
 
             binding.ivMessages -> {
-              //  val professionalUserId = "${AppPrefs(requireContext()).getStringPref(PROFESSIONAL_USER_ID)}"
+                //  val professionalUserId = "${AppPrefs(requireContext()).getStringPref(PROFESSIONAL_USER_ID)}"
                 val action =
                     HomeProfessionalFragmentDirections.actionHomeProfessionalFragmentToProfessionalMessageFragment()
                 findNavController().navigate(action)
@@ -504,16 +534,109 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
     }
 
     private fun moveToChatFragment() {
-      /*  val action =
-            HomeProfessionalFragmentDirections.actionHomeProfessionalFragmentToProfessionalChatFragment(
-                AppPrefs(requireContext()).getStringPref(
-                    PROFESSIONAL_USER_ID
-                ).toString(), professionalUserId, name, profilePic
-            )*/
         val action =
-            HomeProfessionalFragmentDirections.actionHomeProfessionalFragmentToProfessionalChatFragment(userId)
+            HomeProfessionalFragmentDirections.actionHomeProfessionalFragmentToProfessionalChatFragment(
+                userId
+            )
         findNavController().navigate(action)
     }
+
+    private fun showSessionExpired() {
+        showSessionExpiredDialog(requireContext()) {
+            if (isCalendarPermissionGranted(requireContext())) {
+                removeAllEventsOnLogout()
+            }
+            AppPrefs(requireContext()).setString("TOKEN", "")
+            AppPrefs(requireContext()).setString("ROLE", "")
+            AppPrefs(requireContext()).clearAllPrefs()
+            val intent = Intent(requireContext(), AuthActivity::class.java)
+            intent.putExtra("LOG_OUT", "logout")
+            startActivity(intent)
+        }
+
+    }
+
+    private fun removeAllEventsOnLogout() {
+        val projection = arrayOf("_id", "calendar_displayName")
+        var calCursor = MyApplication.context.contentResolver.query(
+            CalendarContract.Calendars.CONTENT_URI,
+            projection,
+            "${CalendarContract.Calendars.VISIBLE} = 1 AND ${CalendarContract.Calendars.IS_PRIMARY} = 1",
+            null,
+            "${CalendarContract.Calendars._ID} ASC"
+        )
+
+        // If no calendars are visible and primary, try to get any visible calendars
+        if ((calCursor?.count ?: 0) <= 0) {
+            calCursor = MyApplication.context.contentResolver.query(
+                CalendarContract.Calendars.CONTENT_URI,
+                projection,
+                "${CalendarContract.Calendars.VISIBLE} = 1",
+                null,
+                "${CalendarContract.Calendars._ID} ASC"
+            )
+        }
+
+        calCursor?.let { cursor ->
+            while (cursor.moveToNext()) {
+                val calendarId =
+                    cursor.getLong(cursor.getColumnIndexOrThrow(CalendarContract.Calendars._ID))
+                Log.d("removeAllEventsOnLogout", "Processing calendar with ID: $calendarId")
+
+                // Remove events added during this session
+                val eventCursor = MyApplication.context.contentResolver.query(
+                    CalendarContract.Events.CONTENT_URI,
+                    arrayOf(
+                        CalendarContract.Events._ID,
+                        CalendarContract.Events.TITLE,
+                        CalendarContract.Events.DTSTART,
+                        CalendarContract.Events.DTEND
+                    ),
+                    "${CalendarContract.Events.CALENDAR_ID} = ?",
+                    arrayOf(calendarId.toString()),
+                    null
+                )
+
+                eventCursor?.use { eventCursor ->
+                    Log.d("removeAllEventsOnLogout", "eventCursor$eventCursor")
+
+                    if (eventCursor.moveToFirst()) {
+                        do {
+                            val eventId = eventCursor.getLong(
+                                eventCursor.getColumnIndexOrThrow(CalendarContract.Events._ID)
+                            )
+                            val eventTitle = eventCursor.getString(
+                                eventCursor.getColumnIndexOrThrow(CalendarContract.Events.TITLE)
+                            )
+                            val eventStart = eventCursor.getLong(
+                                eventCursor.getColumnIndexOrThrow(CalendarContract.Events.DTSTART)
+                            )
+                            val eventEnd = eventCursor.getLong(
+                                eventCursor.getColumnIndexOrThrow(CalendarContract.Events.DTEND)
+                            )
+
+                            // Check if the event matches the added ones (you could track them via SharedPreferences, or use any other identifier)
+                            val eventKey = "${eventTitle}_${eventStart}_${eventEnd}"
+                            if (AppPrefs(requireContext()).getString(eventKey)!!.isNotEmpty()) {
+                                // Event was added during this session, remove it
+                                val deleteUri = ContentUris.withAppendedId(
+                                    CalendarContract.Events.CONTENT_URI,
+                                    eventId
+                                )
+                                MyApplication.context.contentResolver.delete(deleteUri, null, null)
+                                Log.d(
+                                    "removeAllEventsOnLogout",
+                                    "Event with ID $eventId removed from calendar"
+                                )
+                            }
+                        } while (eventCursor.moveToNext())
+                    }
+                }
+            }
+            cursor.close()
+        }
+    }
+
     interface OnProfileUpdatedListener {
         fun onProfileUpdated(name: String, email: String, profileImage: String)
     }

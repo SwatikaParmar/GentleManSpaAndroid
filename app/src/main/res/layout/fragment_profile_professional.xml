@@ -365,21 +365,6 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tvProduct"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/_5sdp"
-                    android:includeFontPadding="false"
-                    android:text="Product"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/_12ssp"
-                    app:fontFamily="@font/poppins"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/ivArrowProduct"
-                    app:layout_constraintStart_toEndOf="@+id/clImageProduct"
-                    app:layout_constraintTop_toTopOf="parent" />
-
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivArrowProduct"
                     android:layout_width="@dimen/_12sdp"
@@ -450,6 +435,18 @@
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvProduct"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:includeFontPadding="false"
+                android:text="Product"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_12ssp"
+                app:fontFamily="@font/poppins"
+                tools:layout_editor_absoluteY="474dp" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

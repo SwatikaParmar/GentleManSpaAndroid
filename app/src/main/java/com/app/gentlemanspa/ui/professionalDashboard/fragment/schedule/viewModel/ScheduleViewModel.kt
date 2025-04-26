@@ -61,12 +61,47 @@ class ScheduleViewModel (private var initialRepository: InitialRepository) : And
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->
-                    if (!CommonFunctions.getError(exception)!!.contains("401"))
+                    if (exception is HttpException) {
+                        when (exception.code()) {
+                            401 -> {
+                                resultSchedulesByProfessionalDetailId.value = Resource.error(
+                                    data = null,
+                                    message = "${exception.code()}"
+                                )
+                                return@catch
+                            }
+
+                            else -> {
+                                try {
+                                    val errorBody = exception.response()?.errorBody()?.string()
+                                    if (!errorBody.isNullOrEmpty()) {
+                                        val jsonError = JSONObject(errorBody)
+                                        val errorMessage =
+                                            jsonError.optString("messages", "Unknown HTTP error")
+                                        resultSchedulesByProfessionalDetailId.value =
+                                            Resource.error(data = null, message = errorMessage)
+                                    } else {
+                                        resultSchedulesByProfessionalDetailId.value =
+                                            Resource.error(
+                                                data = null,
+                                                message = "Unknown HTTP error"
+                                            )
+                                    }
+                                } catch (e: Exception) {
+                                    resultSchedulesByProfessionalDetailId.value =
+                                        Resource.error(data = null, message = e.message)
+                                }
+
+                            }
+                        }
+
+                    } else {
                         resultSchedulesByProfessionalDetailId.value =
                             Resource.error(
                                 data = null,
                                 message = CommonFunctions.getError(exception)
                             )
+                    }
                 }
                 .collect {
                     if (it?.statusCode == 200) {

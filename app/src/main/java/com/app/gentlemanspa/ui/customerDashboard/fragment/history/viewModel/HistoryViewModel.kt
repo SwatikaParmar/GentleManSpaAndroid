@@ -18,6 +18,8 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import org.json.JSONObject
+import retrofit2.HttpException
 
 class HistoryViewModel (private var initialRepository: InitialRepository) : AndroidViewModel(
     Application()
@@ -43,12 +45,47 @@ class HistoryViewModel (private var initialRepository: InitialRepository) : Andr
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->
-                    if (!CommonFunctions.getError(exception)!!.contains("401"))
+                    if (exception is HttpException) {
+                        when (exception.code()) {
+                            401 -> {
+                                resultUpcomingServiceAppointmentList.value = Resource.error(
+                                    data = null,
+                                    message = "${exception.code()}"
+                                )
+                                return@catch
+                            }
+
+                            else -> {
+                                try {
+                                    val errorBody = exception.response()?.errorBody()?.string()
+                                    if (!errorBody.isNullOrEmpty()) {
+                                        val jsonError = JSONObject(errorBody)
+                                        val errorMessage =
+                                            jsonError.optString("messages", "Unknown HTTP error")
+                                        resultUpcomingServiceAppointmentList.value =
+                                            Resource.error(data = null, message = errorMessage)
+                                    } else {
+                                        resultUpcomingServiceAppointmentList.value =
+                                            Resource.error(
+                                                data = null,
+                                                message = "Unknown HTTP error"
+                                            )
+                                    }
+                                } catch (e: Exception) {
+                                    resultUpcomingServiceAppointmentList.value =
+                                        Resource.error(data = null, message = e.message)
+                                }
+
+                            }
+                        }
+
+                    } else {
                         resultUpcomingServiceAppointmentList.value =
                             Resource.error(
                                 data = null,
                                 message = CommonFunctions.getError(exception)
                             )
+                    }
                 }
                 .collect {
                     if (it?.statusCode == 200) {

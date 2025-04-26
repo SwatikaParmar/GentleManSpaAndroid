@@ -304,7 +304,7 @@ class ProfessionalActivity : AppCompatActivity(), HomeProfessionalFragment.OnPro
 
                     Status.SUCCESS -> {
                         hideProgress()
-                        Log.d("logout","logout->${it.data}")
+                        Log.d("logout","logout data->${it.data}")
                         if (it.data!!.isSuccess){
                             if (isCalendarPermissionGranted(this)){
                                 removeAllEventsOnLogout()
@@ -323,6 +323,16 @@ class ProfessionalActivity : AppCompatActivity(), HomeProfessionalFragment.OnPro
                     Status.ERROR -> {
                         showToast(it.message.toString())
                         hideProgress()
+                        if (isCalendarPermissionGranted(this)){
+                            removeAllEventsOnLogout()
+                        }
+                        AppPrefs(this).setString("TOKEN","")
+                        AppPrefs(this).setString("ROLE","")
+                        AppPrefs(this).clearAllPrefs()
+                        val intent = Intent(this, AuthActivity::class.java)
+                        intent.putExtra("LOG_OUT","logout")
+                        startActivity(intent)
+                        finish()
                     }
                 }
             }

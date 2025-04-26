@@ -54,12 +54,47 @@ class CartViewModel(private var initialRepository: InitialRepository) : AndroidV
                 .onStart { }
                 .onCompletion { }
                 .catch { exception ->
-                    if (!CommonFunctions.getError(exception)!!.contains("401"))
+                    if (exception is HttpException) {
+                        when (exception.code()) {
+                            401 -> {
+                                resultGetCartItems.value = Resource.error(
+                                    data = null,
+                                    message = "${exception.code()}"
+                                )
+                                return@catch
+                            }
+
+                            else -> {
+                                try {
+                                    val errorBody = exception.response()?.errorBody()?.string()
+                                    if (!errorBody.isNullOrEmpty()) {
+                                        val jsonError = JSONObject(errorBody)
+                                        val errorMessage =
+                                            jsonError.optString("messages", "Unknown HTTP error")
+                                        resultGetCartItems.value =
+                                            Resource.error(data = null, message = errorMessage)
+                                    } else {
+                                        resultGetCartItems.value =
+                                            Resource.error(
+                                                data = null,
+                                                message = "Unknown HTTP error"
+                                            )
+                                    }
+                                } catch (e: Exception) {
+                                    resultGetCartItems.value =
+                                        Resource.error(data = null, message = e.message)
+                                }
+
+                            }
+                        }
+
+                    } else {
                         resultGetCartItems.value =
                             Resource.error(
                                 data = null,
                                 message = CommonFunctions.getError(exception)
                             )
+                    }
                 }
                 .collect {
                     if (it?.statusCode == 200) {

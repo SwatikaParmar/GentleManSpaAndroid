@@ -20,13 +20,15 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 import retrofit2.HttpException
 
-class HomeProfessionalViewModel(private var initialRepository: InitialRepository): AndroidViewModel(Application()) {
+class HomeProfessionalViewModel(private var initialRepository: InitialRepository) :
+    AndroidViewModel(Application()) {
 
     val type = ObservableField<String>()
     val professionalDetailId = ObservableField<Int>()
-    val resultProfileProfessionalDetailAccount = MutableLiveData<Resource<GetProfessionalDetailResponse>>()
+    val resultProfileProfessionalDetailAccount =
+        MutableLiveData<Resource<GetProfessionalDetailResponse>>()
     val resultAppointmentList = MutableLiveData<Resource<UpcomingServiceAppointmentResponse>>()
-    val resultAddUserToChat= MutableLiveData<Resource<AddUserToChatResponse>>()
+    val resultAddUserToChat = MutableLiveData<Resource<AddUserToChatResponse>>()
 
 
     fun getProfessionalDetail() {
@@ -37,19 +39,40 @@ class HomeProfessionalViewModel(private var initialRepository: InitialRepository
                 .onCompletion { }
                 .catch { exception ->
                     if (exception is HttpException) {
-                        try {
-                            val errorBody = exception.response()?.errorBody()?.string()
-                            if (!errorBody.isNullOrEmpty()) {
-                                val jsonError = JSONObject(errorBody)
-                                val errorMessage = jsonError.optString("messages", "Unknown HTTP error")
-                                resultProfileProfessionalDetailAccount.value = Resource.error(data = null, message = errorMessage)
-                            } else {
-                                resultProfileProfessionalDetailAccount.value = Resource.error(data = null, message = "Unknown HTTP error")
+                        when (exception.code()) {
+                            401 -> {
+                                resultAppointmentList.value = Resource.error(
+                                    data = null,
+                                    message = "${exception.code()}"
+                                )
+                                return@catch
                             }
-                        } catch (e: Exception) {
-                            resultProfileProfessionalDetailAccount.value = Resource.error(data = null, message = e.message)
+
+                            else -> {
+                                try {
+                                    val errorBody = exception.response()?.errorBody()?.string()
+                                    if (!errorBody.isNullOrEmpty()) {
+                                        val jsonError = JSONObject(errorBody)
+                                        val errorMessage =
+                                            jsonError.optString("messages", "Unknown HTTP error")
+                                        resultProfileProfessionalDetailAccount.value =
+                                            Resource.error(data = null, message = errorMessage)
+                                    } else {
+                                        resultProfileProfessionalDetailAccount.value =
+                                            Resource.error(
+                                                data = null,
+                                                message = "Unknown HTTP error"
+                                            )
+                                    }
+                                } catch (e: Exception) {
+                                    resultProfileProfessionalDetailAccount.value =
+                                        Resource.error(data = null, message = e.message)
+                                }
+
+                            }
                         }
-                    }else{
+
+                    } else {
                         resultProfileProfessionalDetailAccount.value =
                             Resource.error(
                                 data = null,
@@ -72,7 +95,8 @@ class HomeProfessionalViewModel(private var initialRepository: InitialRepository
     fun getAppointmentListApi() {
         resultAppointmentList.value = Resource.loading(null)
         viewModelScope.launch {
-            initialRepository.getAppointmentsList(type.get()!!,
+            initialRepository.getAppointmentsList(
+                type.get()!!,
                 1000,
                 1,
                 professionalDetailId.get()!!
@@ -81,19 +105,37 @@ class HomeProfessionalViewModel(private var initialRepository: InitialRepository
                 .onCompletion { }
                 .catch { exception ->
                     if (exception is HttpException) {
-                        try {
-                            val errorBody = exception.response()?.errorBody()?.string()
-                            if (!errorBody.isNullOrEmpty()) {
-                                val jsonError = JSONObject(errorBody)
-                                val errorMessage = jsonError.optString("messages", "Unknown HTTP error")
-                                resultAppointmentList.value = Resource.error(data = null, message = errorMessage)
-                            } else {
-                                resultAppointmentList.value = Resource.error(data = null, message = "Unknown HTTP error")
+                        when (exception.code()) {
+                            401 -> {
+                                resultAppointmentList.value = Resource.error(
+                                    data = null,
+                                    message = "${exception.code()}"
+                                )
+                                return@catch
                             }
-                        } catch (e: Exception) {
-                            resultAppointmentList.value = Resource.error(data = null, message = e.message)
+
+                            else -> {
+                                try {
+                                    val errorBody = exception.response()?.errorBody()?.string()
+                                    if (!errorBody.isNullOrEmpty()) {
+                                        val jsonError = JSONObject(errorBody)
+                                        val errorMessage =
+                                            jsonError.optString("messages", "Unknown HTTP error")
+                                        resultAppointmentList.value =
+                                            Resource.error(data = null, message = errorMessage)
+                                    } else {
+                                        resultAppointmentList.value = Resource.error(
+                                            data = null,
+                                            message = "Unknown HTTP error"
+                                        )
+                                    }
+                                } catch (e: Exception) {
+                                    resultAppointmentList.value =
+                                        Resource.error(data = null, message = e.message)
+                                }
+                            }
                         }
-                    }else{
+                    } else {
                         resultAppointmentList.value =
                             Resource.error(
                                 data = null,
@@ -103,7 +145,10 @@ class HomeProfessionalViewModel(private var initialRepository: InitialRepository
                 }
                 .collect {
                     if (it?.statusCode == 200) {
-                        Log.d("dataList","inside viewModel dataList size ${it.data.dataList.size} ")
+                        Log.d(
+                            "dataList",
+                            "inside viewModel dataList size ${it.data.dataList.size} "
+                        )
 
                         resultAppointmentList.value =
                             Resource.success(message = it.messages, data = it)
@@ -115,8 +160,8 @@ class HomeProfessionalViewModel(private var initialRepository: InitialRepository
         }
 
 
-
     }
+
     fun addUserToChatApi(addUserToChatRequest: AddUserToChatRequest) {
         resultAddUserToChat.value = Resource.loading(null)
         viewModelScope.launch {

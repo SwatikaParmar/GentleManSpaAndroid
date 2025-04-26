@@ -195,6 +195,17 @@ fun Context.showAlertForPayment(
     }
     dialog.show()
 }
+fun showSessionExpiredDialog(context: Context, onLogout: () -> Unit) {
+    val builder = AlertDialog.Builder(context)
+    builder.setTitle("Session Expired")
+    builder.setMessage("Please login again")
+    builder.setPositiveButton(android.R.string.yes) { dialog, _ ->
+        onLogout()
+        dialog.dismiss()
+    }
+    builder.setCancelable(false)
+    builder.show()
+}
 
 interface AlertCallbackInt {
     fun onOkayClicked(view: View)
