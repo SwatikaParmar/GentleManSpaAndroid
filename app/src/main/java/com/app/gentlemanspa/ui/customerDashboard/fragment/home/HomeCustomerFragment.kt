@@ -163,7 +163,7 @@ class HomeCustomerFragment : Fragment(), View.OnClickListener {
             it?.let { result ->
                 when (result.status) {
                     Status.LOADING -> {
-                        //      showProgress(requireContext())
+                     //   showProgress(requireContext())
                     }
 
                     Status.SUCCESS -> {

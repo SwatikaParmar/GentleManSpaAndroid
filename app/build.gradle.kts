@@ -23,8 +23,8 @@ android {
         applicationId = "com.app.gentlemanspa"
         minSdk = 24
         targetSdk = 34
-        versionCode = 5
-        versionName = "1.5"
+        versionCode = 6
+        versionName = "1.6"
         archivesName = "GentleManSpa_V$versionName"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

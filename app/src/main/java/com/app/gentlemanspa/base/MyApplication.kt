@@ -18,7 +18,7 @@ class MyApplication :Application() {
         private  var dialog: Dialog? = null
         private  var avi: AVLoadingIndicatorView? = null
 
-        fun showProgress(context: Context) {
+      /*  fun showProgress(context: Context) {
             dialog = Dialog(context)
             dialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
             dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -27,7 +27,19 @@ class MyApplication :Application() {
             avi = dialog?.findViewById(R.id.avi)
             avi?.show()
             dialog?.show()
-        }
+        }*/
+      fun showProgress(context: Context) {
+          if (dialog != null && dialog?.isShowing == true) return
+          dialog = Dialog(context)
+          dialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
+          dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+          dialog?.setCancelable(false)
+          dialog?.setContentView(R.layout.loader)
+          avi = dialog?.findViewById(R.id.avi)
+          avi?.show()
+          dialog?.show()
+      }
+
 
         fun hideProgress() {
             avi?.hide()

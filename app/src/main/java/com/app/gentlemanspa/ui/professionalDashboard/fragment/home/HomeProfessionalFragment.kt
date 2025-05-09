@@ -114,7 +114,7 @@ class HomeProfessionalFragment : Fragment(), View.OnClickListener {
             it?.let { result ->
                 when (result.status) {
                     Status.LOADING -> {
-                        MyApplication.showProgress(requireContext())
+                      //  MyApplication.showProgress(requireContext())
                     }
 
                     Status.SUCCESS -> {

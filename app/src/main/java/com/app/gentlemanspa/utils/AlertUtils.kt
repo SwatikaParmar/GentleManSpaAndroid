@@ -158,7 +158,6 @@ fun Context.showAlertForBookingSuccess(
         itemAlertBookingSuccessAlert.btnGoToCart.setVisible()
 
     }
-
     itemAlertBookingSuccessAlert.btnGoToCart.setOnClickListener {
         dialog.dismiss()
         bookingSuccessAlertCallbackInt.onGoToCartClicked(it)
@@ -187,7 +186,6 @@ fun Context.showAlertForPayment(
     params.gravity = Gravity.CENTER
     itemAlertPayment.tvCancel.setOnClickListener {
         dialog.dismiss()
-
     }
     itemAlertPayment.tvProceed.setOnClickListener {
         dialog.dismiss()
@@ -195,6 +193,8 @@ fun Context.showAlertForPayment(
     }
     dialog.show()
 }
+
+
 fun showSessionExpiredDialog(context: Context, onLogout: () -> Unit) {
     val builder = AlertDialog.Builder(context)
     builder.setTitle("Session Expired")
